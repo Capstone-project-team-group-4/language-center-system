@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Sass Compile",
+			"type": "shell",
+			"command": "sass --watch .",
+			"runOptions": {
+				"runOn": "folderOpen"
+			},
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	]
+}

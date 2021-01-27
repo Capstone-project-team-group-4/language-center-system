@@ -59,7 +59,7 @@
         "function-paren-newline": "off",
         "generator-star-spacing": "error",
         "global-require": "error",
-        "grouped-accessor-pairs": "error",
+        "grouped-accessor-pairs": "off",
         "guard-for-in": "error",
         "handle-callback-err": "error",
         "id-blacklist": "error",

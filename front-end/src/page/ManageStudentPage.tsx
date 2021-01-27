@@ -14,7 +14,7 @@ export function ManageStudentPage (): ReactElement {
                 <Container id="PageBodyContainer">
                     <Row>
                         <Col>
-                            <Table striped bordered hover>
+                            <Table striped bordered hover responsive>
                                 <thead>
                                     <tr>
                                         <th>ID</th>

@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-export function HomePage (): ReactElement {
+export function EditStudentInfo (): ReactElement {
     return (
         <Container fluid = {true} id = "PageContentContainer"> 
             <Container fluid = {true} id = "PageHeaderContainer">

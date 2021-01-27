@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import { SignUpPage } from './page/SignUpPage';
+import { ManageStudentPage } from './page/ManageStudentPage';
 
 export function App (): ReactElement {
   
@@ -18,7 +18,7 @@ export function App (): ReactElement {
   return (
     <Switch>
       <Route path="/">
-        <SignUpPage />
+        <ManageStudentPage />
       </Route>
     </Switch>
   );

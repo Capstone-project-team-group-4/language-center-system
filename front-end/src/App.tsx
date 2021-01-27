@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { ReactElement } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
+import { SignUpPage } from './page/SignUpPage';
 
-function App (){
+export function App (): ReactElement {
+  
+
+  /*
+   * function deleteUser (event: MouseEvent<HTMLButtonElement>){
+   *   event.preventDefault ();
+   *   userAPI = new UserAPI ();
+   *   userID = user.userID;
+   *   userAPI.deleteUser (userID);
+   * }
+   */
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Switch>
+      <Route path="/">
+        <SignUpPage />
+      </Route>
+    </Switch>
   );
 }
 
-export default App;
+

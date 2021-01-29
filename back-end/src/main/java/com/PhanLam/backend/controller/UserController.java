@@ -71,10 +71,10 @@ public class UserController {
         }
     }
     
-    @PutMapping("/EditInfo/{userID}")
+    @PutMapping("/editInfo/{userID}")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public User updateStudentInfo (@RequestBody User user, @PathVariable int UserID){
-        User updatedUser = userService.updateStudent(user, UserID);
+    public User updateStudentInfo (@RequestBody User user, @PathVariable int userID){
+        User updatedUser = userService.updateStudent(user, userID);
         return updatedUser;
     }   
 }

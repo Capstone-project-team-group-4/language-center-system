@@ -22,15 +22,21 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User updateStudent(User user, int UserID) {
+    public User updateStudent(User user, int userID) {
         User updatedUser = new User();
+        updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setDob(user.getDob());
         updatedUser.setPhoneNumber(user.getPhoneNumber());
-        updatedUser.setLastName(user.getLastName());
-        return updatedUser;
+        updatedUser.setGender(user.getGender());
+        updatedUser.setJob(user.getJob());
+        updatedUser.setPhotoURI(user.getPhotoURI());
+        updatedUser.setSelfDescription(user.getSelfDescription());
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setAccountStatus(user.getAccountStatus());
+        return userRepository.save(updatedUser);
     }
 }

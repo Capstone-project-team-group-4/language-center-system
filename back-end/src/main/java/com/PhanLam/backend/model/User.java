@@ -7,19 +7,14 @@ package com.PhanLam.backend.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,11 +22,10 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Phan Lam
+ * @author roboc
  */
 @Entity
 @Table(name = "User", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
@@ -64,7 +58,7 @@ public class User implements Serializable {
     private Integer userID;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 400)
+    @Size(min = 1, max = 400)
     @Column(name = "UserName", nullable = false, length = 400)
     private String userName;
     @Size(max = 1000)
@@ -76,7 +70,7 @@ public class User implements Serializable {
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 1000)
+    @Size(min = 1, max = 1000)
     @Column(name = "Email", nullable = false, length = 1000)
     private String email;
     @Column(name = "DOB")
@@ -99,26 +93,20 @@ public class User implements Serializable {
     private String selfDescription;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 1000)
+    @Size(min = 1, max = 1000)
     @Column(name = "Password", nullable = false, length = 1000)
     private String password;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 100)
+    @Size(min = 1, max = 100)
     @Column(name = "AccountStatus", nullable = false, length = 100)
     private String accountStatus;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "DateCreated", nullable = false)
+    @Column(name = "DateCreated")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Column(name = "LastLogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
-    @ManyToMany(mappedBy = "userList", fetch = FetchType.LAZY)
-    private List<Role> roleList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
-    private List<Address> addressList;
 
     public User() {
     }
@@ -127,13 +115,12 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
-    public User(Integer userID, String userName, String email, String password, String accountStatus, Date dateCreated) {
+    public User(Integer userID, String userName, String email, String password, String accountStatus) {
         this.userID = userID;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.accountStatus = accountStatus;
-        this.dateCreated = dateCreated;
     }
 
     public Integer getUserID() {
@@ -254,24 +241,6 @@ public class User implements Serializable {
 
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
-    }
-
-    @XmlTransient
-    public List<Role> getRoleList() {
-        return roleList;
-    }
-
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
-    }
-
-    @XmlTransient
-    public List<Address> getAddressList() {
-        return addressList;
-    }
-
-    public void setAddressList(List<Address> addressList) {
-        this.addressList = addressList;
     }
 
     @Override

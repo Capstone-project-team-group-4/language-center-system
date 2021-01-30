@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Phan Lam
+ * @author This MC
  */
 @Entity
 @Table(name = "Role", catalog = "LanguageCenterDB", schema = "dbo")

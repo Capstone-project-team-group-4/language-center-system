@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Phan Lam
+ * @author This MC
  */
 @Entity
 @Table(name = "User", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
@@ -64,7 +64,7 @@ public class User implements Serializable {
     private Integer userID;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 400)
+    @Size(min = 1, max = 400)
     @Column(name = "UserName", nullable = false, length = 400)
     private String userName;
     @Size(max = 1000)
@@ -76,7 +76,7 @@ public class User implements Serializable {
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 1000)
+    @Size(min = 1, max = 1000)
     @Column(name = "Email", nullable = false, length = 1000)
     private String email;
     @Column(name = "DOB")
@@ -99,12 +99,12 @@ public class User implements Serializable {
     private String selfDescription;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 1000)
+    @Size(min = 1, max = 1000)
     @Column(name = "Password", nullable = false, length = 1000)
     private String password;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 0, max = 100)
+    @Size(min = 1, max = 100)
     @Column(name = "AccountStatus", nullable = false, length = 100)
     private String accountStatus;
     @Basic(optional = false)

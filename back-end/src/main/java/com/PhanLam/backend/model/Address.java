@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Phan Lam
+ * @author This MC
  */
 @Entity
 @Table(name = "Address", catalog = "LanguageCenterDB", schema = "dbo")

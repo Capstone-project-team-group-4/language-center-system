@@ -1,7 +1,10 @@
 import React, { ReactElement } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import { SignUpPage } from './page/SignUpPage';
+import { AdminPageHeader } from './common/component/AdminPageHeader';
+import { PageHeader } from './common/component/PageHeader';
+import { AdminConsolePage } from './page/admin/AdminConsolePage';
+import { HomePage } from './page/HomePage';
 
 export function App (): ReactElement {
   
@@ -17,8 +20,13 @@ export function App (): ReactElement {
 
   return (
     <Switch>
-      <Route path="/">
-        <SignUpPage />
+      <Route exact = {true} path="/">
+        <PageHeader />
+        <HomePage />
+      </Route>
+      <Route path="/log-in">
+        <AdminPageHeader />
+        <AdminConsolePage />
       </Route>
     </Switch>
   );

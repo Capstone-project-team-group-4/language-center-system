@@ -1,16 +1,14 @@
 import React, { 
     ChangeEvent
     , FormEvent
-    , MouseEvent
     , ReactElement
     , useState 
 } from 'react';
-import { User, UserIndexSignature } from '../model/User';
-import { UserAPI } from '../common/service/UserAPI';
+import { User, UserIndexSignature } from '../../model/User';
+import { UserAPI } from '../../common/service/UserAPI';
 import { 
-    Button, Col, Container, Form, FormControl, Nav, Navbar, Row 
+    Button, Col, Container, Form, Row 
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 export function SignUpPage (): ReactElement {
     let [user, setUser] = useState<User> (new User ());
@@ -45,28 +43,7 @@ export function SignUpPage (): ReactElement {
                 <header>
                 </header>
                 <nav>
-                    <Navbar bg = "dark" variant = "dark">
-                        <Navbar.Brand as = {Link} to = "/">
-                            Demo Prototype
-                        </Navbar.Brand>
-                        <Nav className = "mr-auto">
-                            <Nav.Link as = {Link} to = "/">
-                                Sign Up
-                            </Nav.Link>
-                            <Nav.Link as = {Link} to = "/my-profile">
-                                My Profile
-                            </Nav.Link>
-                            <Nav.Link href = "#pricing">Pricing</Nav.Link>
-                        </Nav>
-                        <Form inline>
-                            <FormControl 
-                                type = "text" 
-                                placeholder = "Search" 
-                                className = "mr-sm-2" 
-                            />
-                            <Button variant = "info">Search</Button>
-                        </Form>
-                    </Navbar>
+                    
                 </nav>
             </Container>
             <main>

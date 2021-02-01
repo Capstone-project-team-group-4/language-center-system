@@ -1,10 +1,16 @@
 import React, { ReactElement } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import './App.css';
+import { EditStudentInfo } from './page/EditStudentInfo';
 import { SignUpPage } from './page/SignUpPage';
 
 export function App (): ReactElement {
-  
+
 
   /*
    * function deleteUser (event: MouseEvent<HTMLButtonElement>){
@@ -17,9 +23,13 @@ export function App (): ReactElement {
 
   return (
     <Switch>
-      <Route path="/">
-        <SignUpPage />
-      </Route>
+        <Route exact path="/">
+          <SignUpPage />
+
+        </Route>
+        <Route exact path="/editStudentInfo/:studentID">
+          <EditStudentInfo />
+        </Route>
     </Switch>
   );
 }

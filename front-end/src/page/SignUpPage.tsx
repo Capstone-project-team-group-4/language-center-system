@@ -10,7 +10,7 @@ import { UserAPI } from '../common/service/UserAPI';
 import { 
     Button, Col, Container, Form, FormControl, Nav, Navbar, Row 
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 export function SignUpPage (): ReactElement {
     let [user, setUser] = useState<User> (new User ());
@@ -18,6 +18,7 @@ export function SignUpPage (): ReactElement {
     let inputField: 
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI | undefined;
+    let history = useHistory();
     // let userID: string;
 
     function handleUserChange (
@@ -37,6 +38,10 @@ export function SignUpPage (): ReactElement {
         event.preventDefault ();
         userAPI = new UserAPI ();
         userAPI.registerUser (user);  
+    }
+
+    function add (){
+        history.push(`/editStudentInfo/2`);
     }
 
     return (
@@ -137,6 +142,9 @@ export function SignUpPage (): ReactElement {
                                 >
                                     Register
                                 </Button>
+                                <button onClick = {() => add()}>
+                                    add
+                                </button>
                             </Form>
                         </Col>
                     </Row>

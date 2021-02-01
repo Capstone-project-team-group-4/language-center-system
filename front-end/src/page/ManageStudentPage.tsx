@@ -1,5 +1,6 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState, useEffect } from "react";
 import { Col, Container, Row, Table } from "react-bootstrap";
+import { UserAPI } from "../common/service/UserAPI";
 
 export function ManageStudentPage (): ReactElement {
     return (
@@ -102,4 +103,53 @@ export function ManageStudentPage (): ReactElement {
             </footer>
         </Container>
     );
+}
+
+export function addUsers(): ReactElement {
+    let userAPI: UserAPI | undefined;
+    let param: any = useParams();
+    const [user, setUser] = useState({ userArray: [] });
+    let userID: number;
+    let item = {
+        userID,
+        userName,
+        firstName,
+        lastName,
+        email,
+        dob,
+        phoneNumber,
+        gender,
+        job,
+        photoURI,
+        selfDescription,
+        password,
+        accountStatus,
+        dateCreated,
+        lastLogin
+    }
+    
+    User
+    
+
+    useEffect (() => {
+        UserAPI = new UserAPI();
+        UserAPI = listUsers(param.userID).then(
+            (res) => {
+                setUser(res.data);
+            }
+        )
+    }
+    return (
+      <div>
+          {
+              user.userArray.map(item => (
+                  <td key="{item.objectID}">
+                      {
+                          item.userID
+                      }
+                  </td>
+              ))
+          }
+      </div>
+  );
 }

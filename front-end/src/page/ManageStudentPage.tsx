@@ -1,155 +1,53 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { Col, Container, Row, Table } from "react-bootstrap";
 import { UserAPI } from "../common/service/UserAPI";
 
-export function ManageStudentPage (): ReactElement {
-    return (
-        <Container fluid={true} id="PageContentContainer">
-            <Container fluid={true} id="PageHeaderContainer">
-                <header>
-                </header>
-                <nav>
-                </nav>
-            </Container>
-            <main>
-                <Container id="PageBodyContainer">
-                    <Row>
-                        <Col>
-                            <Table striped bordered hover responsive>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Username</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email</th>
-                                        <th>Date of birth</th>
-                                        <th>Phone</th>
-                                        <th>Gender</th>
-                                        <th>Job</th>
-                                        <th>Avatar</th>
-                                        <th>Description</th>
-                                        <th>Password</th>
-                                        <th>Status</th>
-                                        <th>Created date</th>
-                                        <th>Last login</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>@mdo</td>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>ottomark@gmail.com</td>
-                                        <td>20-01-1990</td>
-                                        <td>012345678</td>
-                                        <td>Male</td>
-                                        <td>Tour Guide</td>
-                                        <td>
-                                            <img src="" alt=""/>
-                                        </td>
-                                        <td>I like traveling</td>
-                                        <td>Otto@0120</td>
-                                        <td>Active</td>
-                                        <td>27-01-2021</td>
-                                        <td>27-01-2021</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>@fat</td>
-                                        <td>Jacob</td>
-                                        <td>Thornton</td>
-                                        <td>jacobthornton@gmail.com</td>
-                                        <td>12-12-1985</td>
-                                        <td>012387654</td>
-                                        <td>Female</td>
-                                        <td>Programmer</td>
-                                        <td>
-                                            <img src="" alt=""/>
-                                        </td>
-                                        <td>I like coding</td>
-                                        <td>Jacob@1212</td>
-                                        <td>Active</td>
-                                        <td>27-01-2021</td>
-                                        <td>27-01-2021</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>@twitter</td>
-                                        <td>Larry </td> 
-                                        <td>the Bird</td>
-                                        <td>larrythebird@gmail.com</td>
-                                        <td>5-5-1995</td>
-                                        <td>012387654</td>
-                                        <td>Female</td>
-                                        <td>Marketing</td>
-                                        <td>
-                                            <img src="" alt=""/>
-                                        </td>
-                                        <td>I like shopping</td>
-                                        <td>Larry@0505</td>
-                                        <td>Active</td>
-                                        <td>27-01-2021</td>
-                                        <td>27-01-2021</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
-                </Container>
-            </main>
-            <footer>
-            </footer>
-        </Container>
-    );
-}
-
-export function addUsers(): ReactElement {
-    let userAPI: UserAPI | undefined;
-    let param: any = useParams();
-    const [user, setUser] = useState({ userArray: [] });
-    let userID: number;
-    let item = {
-        userID,
-        userName,
-        firstName,
-        lastName,
-        email,
-        dob,
-        phoneNumber,
-        gender,
-        job,
-        photoURI,
-        selfDescription,
-        password,
-        accountStatus,
-        dateCreated,
-        lastLogin
-    }
-    
-    User
-    
-
-    useEffect (() => {
-        UserAPI = new UserAPI();
-        UserAPI = listUsers(param.userID).then(
+export function ManageStudentPage () : ReactElement {
+    let [user, setUser] = useState<[]>([]);
+    let userAPI : UserAPI = new UserAPI();
+    useEffect(() => {
+        userAPI.listUsers().then(
             (res) => {
                 setUser(res.data);
             }
-        )
-    }
+        );
+      }, []);
     return (
-      <div>
-          {
-              user.userArray.map(item => (
-                  <td key="{item.objectID}">
-                      {
-                          item.userID
-                      }
-                  </td>
-              ))
-          }
-      </div>
-  );
+        <div className="container">
+            <h3>Students</h3>
+            <div className="container">
+                
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Email</th>
+                            <th>Phone number</th>
+                            <th>Avatar</th>
+                            <th>Status</th>
+                            <th>Last login</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {user.map((item, index) => <tr key={index}>
+                            <td>{item["userID"]}</td>
+                            <td>{item["userName"]}</td>
+                            <td>{item["firstName"]}</td>
+                            <td>{item["lastName"]}</td>
+                            <td>{item["email"]}</td>
+                            <td>{item["phoneNumber"]}</td>
+                            <td>{item["photoURI"]}</td>
+                            <td>{item["accountStatus"]}</td>
+                            <td>{item["lastLogin"]}</td>
+                            </tr>)
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 }
+
+export default ManageStudentPage;

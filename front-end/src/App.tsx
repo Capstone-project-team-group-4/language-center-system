@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import { ManageStudentPage } from './page/ManageStudentPage';
+import ManageStudentPage from './page/ManageStudentPage';
 
 export function App (): ReactElement {
   

@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { User } from "../../model/User";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { TypeGuard } from "./TypeGuard";
@@ -11,25 +11,30 @@ export class UserAPI {
     private axiosInstanceGetter: AxiosInstanceGet | undefined;
     private typeGuardian: TypeGuard | undefined;
     
-    public async listUsers (users: User): Promise<AxiosResponse> {
-        this.axiosInstanceGetter = new AxiosInstanceGet ();
-        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
-        try {
-            this.serverResponse = await this.axiosInstance.get (
-                "/users"
-            );
-            this.typeGuardian = new TypeGuard ();
-            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
-                return this.serverResponse;
-            }
-            else {
-                throw new Error ("This server response is not valid !");
-            }
-        }
-        catch (error){
-            console.error (error.toJSON ());
-            return Promise.reject<AxiosResponse> (error);
-        }   
+    /*
+     * public async listUsers (): Promise<AxiosResponse> {
+     *     this.axiosInstanceGetter = new AxiosInstanceGet ();
+     *     this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+     *     try {
+     *         this.serverResponse = await this.axiosInstance.get (
+     *             "/users"
+     *         );
+     *         this.typeGuardian = new TypeGuard ();
+     *         if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+     *             return this.serverResponse;
+     *         }
+     *         else {
+     *             throw new Error ("This server response is not valid !");
+     *         }
+     *     }
+     *     catch (error){
+     *         console.error (error.toJSON ());
+     *         return Promise.reject<AxiosResponse> (error);
+     *     }   
+     * }
+     */
+    public listUsers (): Promise<AxiosResponse> {
+        return axios.get("http://localhost:8080/users");
     }
 
     public async registerUser (user: User): Promise<AxiosResponse> {

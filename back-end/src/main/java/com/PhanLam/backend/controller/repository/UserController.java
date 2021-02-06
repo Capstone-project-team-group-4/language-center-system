@@ -118,7 +118,7 @@ public class UserController {
 //        user.setPassword ("");
 //        return user;
 //    }
-        @GetMapping("/users/{userID}")
+        @GetMapping("/getUsers/{userID}")
     public Optional showAllUserByID(@RequestBody User user, @PathVariable int userID) {
         Optional showUser = userService.showInfo(user, userID);
         return showUser;

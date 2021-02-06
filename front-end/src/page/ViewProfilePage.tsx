@@ -1,9 +1,13 @@
-import React, { ReactElement } from "react";
-import { Col, Container, Row } from "react-bootstrap";
-import { User, UserIndexSignature } from '../model/User';
+import React, {
+    ChangeEvent, FormEvent, MouseEvent, ReactElement, useEffect, useState
+} from 'react';
+import {
+    Button, Col, Container, Form, FormControl, Nav, Navbar, Row
+} from 'react-bootstrap';
 import { UserAPI } from '../common/service/UserAPI';
-import { Link } from 'react-router-dom';
-import { DataGrid, ColDef, ValueGetterParams } from '@material-ui/data-grid';
+import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { User, UserIndexSignature } from '../model/User';
+import { ColDef, DataGrid, ValueGetterParams } from '@material-ui/data-grid';
 
 const columns: ColDef[] = [
     { field: 'userID', headerName: 'ID', width: 70 },
@@ -32,22 +36,32 @@ const columns: ColDef[] = [
     { field: 'roleList', headerName: 'Role', width: 70 },
     { field: 'addressList', headerName: 'Address', width: 130 },
 
-    
+
 ];
 
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+export function ViewProfilePage(): ReactElement {
 
-export function HomePage(): ReactElement {
+    let [user, getUser] = useState<User>(new User());
+    let userID: number;
+    let showUser: User | undefined;
+    let userAPI: UserAPI | undefined;
+    let match = useRouteMatch();
+    let param: any = useParams();
+    let studentID: number;
+    let [student, getStudent] = useState<User>(new User());
+
+    useEffect(() => {
+        userAPI = new UserAPI();
+        userAPI.displayUser(param.studentID).then(
+            (res) => {
+                getStudent(res.data);
+                console.log(student.userName);
+            }
+        );
+    });
+
+    console.log(param.studentID);
+
     return (
         <Container fluid={true} id="PageContentContainer">
             <Container fluid={true} id="PageHeaderContainer">
@@ -61,7 +75,7 @@ export function HomePage(): ReactElement {
                     <Row>
                         <Col>
                             <div style={{ height: 400, width: '100%' }}>
-                                <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+                                <DataGrid rows={useEffect} columns={columns} pageSize={5} checkboxSelection />
                             </div>
                         </Col>
                     </Row>

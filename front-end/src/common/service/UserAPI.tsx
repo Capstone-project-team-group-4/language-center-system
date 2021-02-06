@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { User } from "../../model/User";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { TypeGuard } from "./TypeGuard";
@@ -58,7 +58,7 @@ export class UserAPI {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
-            this.serverResponse = await this.axiosInstance.post (
+            this.serverResponse = await this.axiosInstance.put (
                 `/editInfo/${userID}`
                 , user
             );
@@ -95,5 +95,14 @@ export class UserAPI {
             console.error (error.toJSON ());
             return Promise.reject<AxiosResponse> (error);
         }   
+    }
+    
+    public updateStudents (user: User, userID: number){
+        try {
+            return axios.put(`http://localhost:8080/editInfo/${userID}`, user);}
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
     }
 }

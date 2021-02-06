@@ -1,40 +1,38 @@
 import React, {
-    ChangeEvent, FormEvent, MouseEvent, ReactElement, useEffect, useState
+    ChangeEvent, FormEvent, ReactElement, useEffect, useState
 } from 'react';
 import {
-    Button, Col, Container, Form, FormControl, Nav, Navbar, Row
+    Button, Col, Container, Form, Row
 } from 'react-bootstrap';
 import { UserAPI } from '../common/service/UserAPI';
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { User, UserIndexSignature } from '../model/User';
 
 export function EditStudentInfo (): ReactElement {
     let [user, setUser] = useState<User>(new User());
-    let userID: number;
     let updatedUser: User | undefined;
     let inputField:
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI | undefined;
-    let match = useRouteMatch();
     let param: any = useParams();
-    let studentID: number;
     let [student, setStudent] = useState<User>(new User());
-    
+    let date: string;
     useEffect (() => {
         userAPI = new UserAPI();
         userAPI.displayStudent(param.studentID).then(
             (res) => {
                 setStudent(res.data);
-                console.log(student.userName);
+                // console.log(student.userName);
             }
     );
-    });
+    }, []);
+
     
     function handleUserChange (
         event: ChangeEvent<
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >
-    ): void {
+    ){
         updatedUser = user;
         inputField = event.target;
         updatedUser[
@@ -43,10 +41,11 @@ export function EditStudentInfo (): ReactElement {
         setUser(updatedUser);
     }
 
-    function updateStudent (event: FormEvent<HTMLFormElement>) {
+    function updateStudent (event: FormEvent<HTMLFormElement>, userID: number) {
         event.preventDefault();
         userAPI = new UserAPI();
         userAPI.update(user, userID);
+        console.log(userID);
     }
  
     console.log(param.studentID);
@@ -61,13 +60,13 @@ export function EditStudentInfo (): ReactElement {
             </Container>
             <main>
                 <Container id="PageBodyContainer">
-                    {/* <h1>{param.studentID}</h1> */}
+                    <h1>{param.studentID}</h1>
                     <Row>
                         <Col>
                             <Form
-                                noValidate={true}
+                                noValidate={false}
                                 onSubmit={(event) => {
-                                    updateStudent(event);
+                                    updateStudent(event, param.studentID);
                                 }}
                             >
                                 <Form.Group>
@@ -84,7 +83,7 @@ export function EditStudentInfo (): ReactElement {
                                         placeholder={student.userName}
                                         required={true}
                                         spellCheck={false}
-                                        // value = {user.userName}
+                                        // value = {student.userName}
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
@@ -135,7 +134,7 @@ export function EditStudentInfo (): ReactElement {
                                         name="email"
                                         id="email"
                                         placeholder={student.email}
-                                        required={true}
+                                        required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
                                     />
@@ -145,12 +144,13 @@ export function EditStudentInfo (): ReactElement {
                                         DOB:
                                     </Form.Label>
                                     <Form.Control
-                                        type="Date"
+                                        type="date"
                                         autoComplete="on"
                                         autoFocus={false}
                                         name="dob"
                                         id="dob"
-                                        required={true}
+                                        //value="07/08/1997"
+                                        required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
                                     />
@@ -166,7 +166,7 @@ export function EditStudentInfo (): ReactElement {
                                         name="phoneNumber"
                                         id="phoneNumber"
                                         placeholder={student.phoneNumber}
-                                        required={true}
+                                        required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
                                     />
@@ -181,6 +181,23 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="gender"
                                         id="gender"
+                                        placeholder={student.gender}
+                                        required={false}
+                                        spellCheck={false}
+                                        onChange={handleUserChange}
+                                    />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>
+                                        Job:
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        autoComplete="on"
+                                        autoFocus={false}
+                                        name="job"
+                                        id="job"
+                                        placeholder={student.job}
                                         required={true}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -198,16 +215,32 @@ export function EditStudentInfo (): ReactElement {
                                         id="password"
                                         pattern="^\\S+$"
                                         placeholder="Your new password"
-                                        required={true}
+                                        required={false}
                                         spellCheck={false}
+                                        onChange={handleUserChange}
+                                    />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>
+                                        Account Status
+                                    </Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        autoComplete="on"
+                                        autoFocus={true}
+                                        name="accountStatus"
+                                        id="accountStatus"
+                                        placeholder={student.accountStatus}
+                                        required={false}
+                                        spellCheck={false}
+                                        // value = {user.userName}
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
                                 <Button
                                     variant="success"
                                     type="submit"
-                                    block={true}
-                                // onClick = {this.updateStudent()}
+                                    block = {true}
                                 >
                                     Save
                                 </Button>

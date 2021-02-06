@@ -75,8 +75,7 @@ public class UserController {
     @PutMapping("/editInfo/{userID}")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User updateStudentInfo (@RequestBody User user, @PathVariable int userID){
-        User updatedUser = userService.updateStudent(user, userID);
-        return updatedUser;
+         return userService.updateStudent(user, userID);
     }   
     
     @GetMapping("/getStudent/{userID}")

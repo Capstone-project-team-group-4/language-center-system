@@ -7,11 +7,15 @@ package com.PhanLam.backend.controller;
 
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,15 +26,27 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
-//@CrossOrigin (origins = "*")
+@CrossOrigin (origins = "*")
 @RestController
 public class UserController {
     
     // Variables declaration:
     private UserRepository userRepository;
+    
+    private UserService userService;
 
-    public UserController (UserRepository userRepository){
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
+    }
+    
+    
+    
+    @GetMapping ("/users")
+    public List<User> listUsers() {
+        List listUsers = new ArrayList<>();
+        listUsers = userService.getAll();
+        return listUsers;
     }
     
     @PostMapping ("/users")

@@ -10,7 +10,6 @@ import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +26,21 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
-//@CrossOrigin (origins = "*")
+@CrossOrigin (origins = "*")
 @RestController
 public class UserController {
     
     // Variables declaration:
-    @Autowired
     private UserRepository userRepository;
     
-    @Autowired
     private UserService userService;
 
-    public UserController (UserRepository userRepository){
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
+    
+    
     
     @GetMapping ("/users")
     public List<User> listUsers() {

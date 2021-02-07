@@ -5,7 +5,7 @@
  */
 package com.PhanLam.backend.service;
 
-import com.PhanLam.backend.dal.repository.UserRepository;
+import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  *
- * @author This MC
+ * @author Phan Lam
  */
 @Service
 public class UserService {

@@ -61,23 +61,31 @@ public class User implements Serializable {
     @Size(min = 1, max = 400)
     @Column(name = "UserName", nullable = false, length = 400)
     private String userName;
-    @Size(max = 1000)
-    @Column(name = "FirstName", length = 1000)
-    private String firstName;
-    @Size(max = 1000)
-    @Column(name = "LastName", length = 1000)
-    private String lastName;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1000)
+    @Column(name = "FirstName", nullable = false, length = 1000)
+    private String firstName;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 1000)
+<<<<<<< HEAD
     @Column(name = "Email", nullable = false, length = 1000)
+=======
+    @Column(name = "LastName", nullable = false, length = 1000)
+    private String lastName;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 1000)
+    @Column(name = "Email", length = 1000)
+>>>>>>> develop
     private String email;
     @Column(name = "DOB")
     @Temporal(TemporalType.DATE)
     private Date dob;
-    @Size(max = 100)
-    @Column(name = "PhoneNumber", length = 100)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "PhoneNumber", nullable = false, length = 100)
     private String phoneNumber;
     @Size(max = 100)
     @Column(name = "Gender", length = 100)
@@ -115,10 +123,16 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
+<<<<<<< HEAD
     public User(Integer userID, String userName, String email, String password, String accountStatus) {
+=======
+    public User(Integer userID, String userName, String firstName, String lastName, String phoneNumber, String password, String accountStatus, Date dateCreated) {
+>>>>>>> develop
         this.userID = userID;
         this.userName = userName;
-        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.accountStatus = accountStatus;
     }

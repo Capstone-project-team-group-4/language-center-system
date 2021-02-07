@@ -6510,6 +6510,22 @@ button.bg-dark:focus {
   padding-top: 100%;
 }
 
+.embed-responsive-21by9::before {
+  padding-top: 42.8571428571%;
+}
+
+.embed-responsive-16by9::before {
+  padding-top: 56.25%;
+}
+
+.embed-responsive-4by3::before {
+  padding-top: 75%;
+}
+
+.embed-responsive-1by1::before {
+  padding-top: 100%;
+}
+
 .flex-row {
   flex-direction: row !important;
 }
@@ -9928,5 +9944,30 @@ h3 {
     border-color: #dee2e6;
   }
 }
+#HeaderCarousel img {
+  width: 100vw;
+  height: 100vh;
+  filter: brightness(50%);
+}
 
-/*# sourceMappingURL=App.css.map */
+#NavLinkSection a {
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 5px;
+}
+#NavLinkSection a:hover {
+  background-color: #9c1c1f;
+}
+
+.carousel-caption {
+  top: 30%;
+}
+
+@media (max-width: 991.98px) {
+  .carousel-caption {
+    top: 40%;
+  }
+}
+
+/*# sourceMappingURL=PageHeader.css.map */

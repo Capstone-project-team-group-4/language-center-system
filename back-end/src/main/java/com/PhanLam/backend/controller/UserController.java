@@ -5,10 +5,11 @@
  */
 package com.PhanLam.backend.controller;
 
-import com.PhanLam.backend.dal.repository.UserRepository;
+import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +31,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     
-    @Autowired
-    private UserService userService;
     // Variables declaration:
-    @Autowired
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
+    
+    private UserService userService;
 
-    public UserController (UserRepository userRepository){
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
+    }
+    
+    
+    
+    @GetMapping ("/users")
+    public List<User> listUsers() {
+        List listUsers = new ArrayList<>();
+        listUsers = userService.getAll();
+        return listUsers;
     }
     
     @PostMapping ("/users")

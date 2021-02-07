@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.PhanLam.backend.dal.repository;
+package com.PhanLam.backend.dal.repository_interface;
 
 import com.PhanLam.backend.model.User;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -22,5 +23,9 @@ public interface UserRepository extends JpaRepository <User, Integer> {
 
     @Override
     public void deleteById (Integer userID);
+<<<<<<< HEAD:back-end/src/main/java/com/PhanLam/backend/dal/repository/UserRepository.java
     
+=======
+
+>>>>>>> develop:back-end/src/main/java/com/PhanLam/backend/dal/repository_interface/UserRepository.java
 }

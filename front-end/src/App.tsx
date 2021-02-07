@@ -9,6 +9,7 @@ import { AdminConsolePage } from './page/admin/AdminConsolePage';
 import { CreateAccountPage } from './page/admin/CreateAccountPage';
 import { HomePage } from './page/HomePage';
 import { SignUpPage } from './page/SignupPage';
+import { EditStudentInfo } from './page/EditStudentInfo';
 
 export function App (): ReactElement {
   
@@ -43,6 +44,9 @@ export function App (): ReactElement {
 
   return (
     <Switch>
+        <Route exact path="/editStudentInfo/:studentID">
+          <EditStudentInfo />
+        </Route>
       <Route exact = {true} path="/">
         <PageHeader />
         <HomePage />
@@ -75,5 +79,4 @@ export function App (): ReactElement {
     </Switch>
   );
 }
-
 

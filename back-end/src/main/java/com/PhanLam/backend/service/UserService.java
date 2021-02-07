@@ -13,15 +13,36 @@ import org.springframework.stereotype.Service;
 
 /**
  *
- * @author Phan Lam
+ * @author roboc
  */
 @Service
 public class UserService {
-    
     @Autowired
     private UserRepository userRepository;
-    
+
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+    
+    public User updateStudent(User user, int userID) {
+        User updatedUser = new User();
+        updatedUser.setUserID(userID);
+        updatedUser.setUserName(user.getUserName());
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setLastName(user.getLastName());
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setDob(user.getDob());
+        updatedUser.setPhoneNumber(user.getPhoneNumber());
+        updatedUser.setGender(user.getGender());
+        updatedUser.setJob(user.getJob());
+        updatedUser.setPhotoURI(user.getPhotoURI());
+        updatedUser.setSelfDescription(user.getSelfDescription());
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setAccountStatus(user.getAccountStatus());
+        return userRepository.save(updatedUser);
+    }
+    
+    public User getById(int userID){
+        return userRepository.findById(userID).orElseThrow();
     }
 }

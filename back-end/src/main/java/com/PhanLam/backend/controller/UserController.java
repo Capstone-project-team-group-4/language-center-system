@@ -83,6 +83,7 @@ public class UserController {
     }
     
     @PutMapping("/editInfo/{userID}")
+    @ResponseStatus (HttpStatus.OK)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User updateStudentInfo (@RequestBody User user, @PathVariable int userID){
          return userService.updateStudent(user, userID);

@@ -20,6 +20,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+    
     public User updateStudent(User user, int userID) {
         User updatedUser = new User();
         updatedUser.setUserID(userID);
@@ -41,17 +45,4 @@ public class UserService {
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
     }
- /* 
- * @author Phan Lam
- */
-@Service
-public class UserService {
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
 }
-    }

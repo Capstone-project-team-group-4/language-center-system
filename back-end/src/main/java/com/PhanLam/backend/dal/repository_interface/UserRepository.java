@@ -23,9 +23,4 @@ public interface UserRepository extends JpaRepository <User, Integer> {
 
     @Override
     public void deleteById (Integer userID);
-<<<<<<< HEAD:back-end/src/main/java/com/PhanLam/backend/dal/repository/UserRepository.java
-    
-=======
-
->>>>>>> develop:back-end/src/main/java/com/PhanLam/backend/dal/repository_interface/UserRepository.java
 }

@@ -5,20 +5,14 @@
  */
 package com.PhanLam.backend.service;
 
-<<<<<<< HEAD
-import com.PhanLam.backend.dal.repository.UserRepository;
-import com.PhanLam.backend.model.User;
-=======
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import java.util.List;
->>>>>>> develop
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  *
-<<<<<<< HEAD
  * @author roboc
  */
 @Service
@@ -46,7 +40,8 @@ public class UserService {
     
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
-=======
+    }
+ /* 
  * @author Phan Lam
  */
 @Service
@@ -57,6 +52,6 @@ public class UserService {
     
     public List<User> getAll() {
         return userRepository.findAll();
->>>>>>> develop
     }
 }
+    }

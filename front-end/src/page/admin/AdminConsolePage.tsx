@@ -1,14 +1,63 @@
+// Import package members section:
 import React, { ReactElement } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { 
+    Accordion
+    , Breadcrumb
+    , Button, Card, Col
+    , Container
+    , Row 
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "./AdminConsolePage.css";
 
 export function AdminConsolePage (): ReactElement {
     return (
-        <Container fluid = {true} id = "PageContentContainer">
+        <Container fluid = {true}>
             <main>
-                <Container id = "PageBodyContainer">
+                <Container>
                     <Row>
                         <Col>
-                            yyyyyyyy
+                            <Breadcrumb>
+                                <Breadcrumb.Item active>
+                                    Admin Console
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                            <Accordion>
+                                <Card>
+                                    <Accordion.Toggle 
+                                        as = {Card.Header} 
+                                        eventKey = "0"
+                                    >
+                                        Student Management
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey = "0">
+                                        <Card.Body>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link} 
+                                                to = "/create-account-requests"
+                                            >
+                                                Waiting for approval 
+                                                create-account-requests
+                                            </Button>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                                <Card>
+                                    <Accordion.Toggle 
+                                        as={Card.Header} 
+                                        eventKey="1"
+                                    >
+                                        Click me!
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey="1">
+                                        <Card.Body>
+                                            Hello! I&apos;m another body
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Accordion>
                         </Col>
                     </Row>
                 </Container>

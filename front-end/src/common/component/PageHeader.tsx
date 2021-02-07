@@ -1,3 +1,4 @@
+// Import package members section:
 import React, { ReactElement } from "react";
 import { 
     Button, Carousel, Container, Form, FormControl, Nav, Navbar 
@@ -11,8 +12,7 @@ import Carousel3 from './Carousel-3.jpg';
 export function PageHeader (): ReactElement {
     return (
         <Container 
-            fluid = {true} 
-            id = "PageHeaderContainer"
+            fluid = {true}
         >
             <header>
                 <Carousel id = "HeaderCarousel">
@@ -73,11 +73,11 @@ export function PageHeader (): ReactElement {
                             container-fluid`
                         }
                     >
-                        <Nav.Link as = {Link} to = "/my-profile">
-                            My Profile
+                        <Nav.Link as = {Link} to = "/sign-up">
+                            Sign up
                         </Nav.Link>
                         <Nav.Link as = {Link} to = "/log-in">
-                            Log-In
+                            Log in
                         </Nav.Link>
                     </Nav>
                     <Form className = "d-md-inline-flex">

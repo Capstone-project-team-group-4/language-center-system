@@ -1,4 +1,4 @@
-export class User implements UserIndexSignature {
+export class User {
 
     // Variables declaration:
     public userID: number;
@@ -23,7 +23,7 @@ export class User implements UserIndexSignature {
 		this.firstName = "";
 		this.lastName = "";
 		this.email = "";
-		this.dob = new Date ();
+		this.dob = new Date (0);
 		this.phoneNumber = "";
 		this.gender = "";
 		this.job = "";
@@ -31,8 +31,8 @@ export class User implements UserIndexSignature {
 		this.selfDescription = "";
 		this.password = "";
 		this.accountStatus = "";
-		this.dateCreated = new Date ();
-		this.lastLogin = new Date ();
+		this.dateCreated = new Date (0);
+		this.lastLogin = new Date (0);
 	}
 }
 

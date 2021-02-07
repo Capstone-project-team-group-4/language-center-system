@@ -19,12 +19,12 @@
 }
 
 .carousel-caption {
-    top: 40%;
+    top: 30%;
 }
 
-@include media-breakpoint-up (md){
+@include media-breakpoint-down (md){
     .carousel-caption {
-        top: 30%;
+        top: 40%;
     }
 }
 

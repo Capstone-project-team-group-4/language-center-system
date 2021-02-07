@@ -1,3 +1,4 @@
+// Import package members section:
 import React, { ReactElement } from "react";
 import { Col, Container, Jumbotron, Media, Row } from "react-bootstrap";
 import './HomePage.css';
@@ -5,11 +6,10 @@ import AboutUs from './AboutUs.jpg';
 
 export function HomePage (): ReactElement {
     return (
-        <Container fluid = {true} id = "PageContentContainer">
+        <Container fluid = {true}>
             <main>
                 <Container 
                     fluid = {true} 
-                    id = "PageBodyContainer" 
                     className = "px-0"
                 >
                     <Row>

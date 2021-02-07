@@ -5,7 +5,7 @@
  */
 package com.PhanLam.backend.controller;
 
-import com.PhanLam.backend.dal.repository.UserRepository;
+import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
-@CrossOrigin (origins = "*")
+//@CrossOrigin (origins = "*")
 @RestController
 public class UserController {
     

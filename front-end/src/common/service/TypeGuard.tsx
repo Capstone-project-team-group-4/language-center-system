@@ -1,17 +1,26 @@
-import { AxiosResponse } from "axios";
+// Import package members section:
+import { AxiosError, AxiosResponse } from "axios";
 
 export class TypeGuard {
 
     // Variables declaration:
-    private _isValid: boolean | undefined;
+    private isValid: boolean | undefined;
     
     public isAxiosResponse (
-        serverResponse: AxiosResponse | undefined
+        serverResponse: unknown
     ): serverResponse is AxiosResponse {
-        this._isValid = false;
+        this.isValid = false;
         if ((serverResponse as AxiosResponse).status !== undefined){
-            this._isValid = true; 
+            this.isValid = true; 
         }
-        return this._isValid;
+        return this.isValid;
+    }
+
+    public isAxiosError (error: unknown): error is AxiosError<unknown> {
+        this.isValid = false;
+        if ((error as AxiosError).isAxiosError){
+            this.isValid = true; 
+        }
+        return this.isValid;
     }
 }

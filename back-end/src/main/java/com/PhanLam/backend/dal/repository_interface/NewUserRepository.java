@@ -7,7 +7,6 @@ package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
 import com.PhanLam.backend.model.NewUser;
-import java.util.ArrayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

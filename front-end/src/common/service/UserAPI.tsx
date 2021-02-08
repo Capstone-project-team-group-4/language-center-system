@@ -80,10 +80,6 @@ export class UserAPI {
         }
     }
 
-<<<<<<< HEAD
-    
-    public async displayUser (userID: number): Promise<AxiosResponse> {
-=======
     public async update (user: User, userID: number): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
@@ -107,16 +103,11 @@ export class UserAPI {
     }
     
     public async displayStudent (userID: number): Promise<AxiosResponse> {
->>>>>>> develop
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
             this.serverResponse = await this.axiosInstance.get (
-<<<<<<< HEAD
                 `/getUsers/${userID}`
-=======
-                `/getStudent/${userID}`
->>>>>>> develop
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
@@ -131,8 +122,6 @@ export class UserAPI {
             return Promise.reject<AxiosResponse> (error);
         }   
     }
-<<<<<<< HEAD
-=======
     
     public updateStudents (user: User, userID: number){
         try {
@@ -142,5 +131,4 @@ export class UserAPI {
             return Promise.reject<AxiosResponse> (error);
         }
     }
->>>>>>> develop
 }

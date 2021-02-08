@@ -10,6 +10,7 @@ import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 /**
  *
@@ -49,5 +50,23 @@ public class UserService {
     
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
+    }
+
+    public Optional<User> showInfo(User user, int userID) {
+        User showUser = new User();
+        showUser.getUserID();
+        showUser.getUserName();
+        showUser.getFirstName();
+        showUser.getLastName();
+        showUser.getEmail();
+        showUser.getDob();
+        showUser.getPhoneNumber();
+        showUser.getGender();
+        showUser.getJob();
+        showUser.getPhotoURI();
+        showUser.getSelfDescription();
+        showUser.getPassword();
+        showUser.getAccountStatus();
+        return userRepository.findById(userID);
     }
 }

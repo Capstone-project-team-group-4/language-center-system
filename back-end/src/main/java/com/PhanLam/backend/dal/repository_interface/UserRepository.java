@@ -7,6 +7,8 @@ package com.PhanLam.backend.dal.repository_interface;
 
 import com.PhanLam.backend.model.User;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -23,4 +25,10 @@ public interface UserRepository extends JpaRepository <User, Integer> {
 
     @Override
     public void deleteById (Integer userID);
+    
+    @Override
+    public Optional<User> findById (Integer userID);
+    
+    @Override
+    public List<User> findAll();
 }

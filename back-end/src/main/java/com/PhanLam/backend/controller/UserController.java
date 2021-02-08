@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.controller;
 
+// Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
@@ -31,16 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     
     // Variables declaration:
-    private UserRepository userRepository;
-    
+    private UserRepository userRepository;   
     private UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository, UserService userService){
         this.userRepository = userRepository;
         this.userService = userService;
     }
-    
-    
     
     @GetMapping ("/users")
     public List<User> listUsers() {

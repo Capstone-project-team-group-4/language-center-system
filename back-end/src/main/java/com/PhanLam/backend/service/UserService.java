@@ -5,10 +5,10 @@
  */
 package com.PhanLam.backend.service;
 
+// Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.User;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,8 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     
-    @Autowired
+    // Variables declaration:
     private UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     
     public List<User> getAll() {
         return userRepository.findAll();

@@ -52,7 +52,7 @@ export function CreateAccountPage (
         function fetchTableData (): void {
             getAllCreateAccountRequests ();
         }
-    , []
+        , []
     );
 
     return (

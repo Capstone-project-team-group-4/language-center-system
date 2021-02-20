@@ -11,9 +11,21 @@ import { User } from '../model/User';
 import { ColDef, DataGrid, ValueGetterParams } from '@material-ui/data-grid';
 
 const columns: ColDef[] = [
-    { field: 'userID', headerName: 'ID', width: 70 },
-    { field: 'firstName', headerName: 'First name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 },
+    { 
+        field: 'userID'
+        , headerName: 'ID'
+        , width: 70 
+    },
+    { 
+        field: 'firstName'
+        , headerName: 'First name'
+        , width: 130 
+    },
+    { 
+        field: 'lastName'
+        , headerName: 'Last name'
+        , width: 130 
+    },
     {
         field: 'fullName',
         headerName: 'Full name',
@@ -24,24 +36,74 @@ const columns: ColDef[] = [
             `${params.getValue('firstName') || ''} 
             ${params.getValue('lastName') || ''}`,
     },
-    { field: 'email', headerName: 'Email', width: 130 },
-    { field: 'dbo', headerName: 'Date of Birth', type: 'Date', width: 90 },
-    { field: 'phoneNumber', headerName: 'Phone', width: 70 },
-    { field: 'gender', headerName: 'Gender', width: 30 },
-    { field: 'job', headerName: 'Job', width: 70 },
-    { field: 'photoURI', headerName: 'Photo URI', width: 130 },
-    { field: 'selfDescription', headerName: 'Self Description', width: 200 },
-    { field: 'password', headerName: 'Password', width: 70 },
-    { field: 'accountStatus', headerName: 'Account Status', width: 70 },
+    { 
+        field: 'email'
+        , headerName: 'Email'
+        , width: 130 
+    },
+    { 
+        field: 'dbo'
+        , headerName: 'Date of Birth'
+        , type: 'Date'
+        , width: 90 
+    },
+    { 
+        field: 'phoneNumber'
+        , headerName: 'Phone'
+        , width: 70 
+    },
+    { 
+        field: 'gender'
+        , headerName: 'Gender'
+        , width: 30 
+    },
+    { 
+        field: 'job'
+        , headerName: 'Job'
+        , width: 70 
+    },
+    { 
+        field: 'photoURI'
+        , headerName: 'Photo URI'
+        , width: 130 
+    },
+    { 
+        field: 'selfDescription'
+        , headerName: 'Self Description'
+        , width: 200 
+    },
+    { 
+        field: 'password'
+        , headerName: 'Password'
+        , width: 70 
+    },
+    { 
+        field: 'accountStatus'
+        , headerName: 'Account Status'
+        , width: 70 
+    },
     { 
         field: 'dateCreated'
         , headerName: 'Date Created'
         , type: 'Date'
         , width: 70 
     },
-    { field: 'lastLogin', headerName: 'Last Login', type: 'Date', width: 70 },
-    { field: 'roleList', headerName: 'Role', width: 70 },
-    { field: 'addressList', headerName: 'Address', width: 130 },
+    { 
+        field: 'lastLogin'
+        , headerName: 'Last Login'
+        , type: 'Date'
+        , width: 70 
+    },
+    { 
+        field: 'roleList'
+        , headerName: 'Role'
+        , width: 70 
+    },
+    { 
+        field: 'addressList'
+        , headerName: 'Address'
+        , width: 130 
+    },
 
 
 ];

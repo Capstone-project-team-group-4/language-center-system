@@ -6,20 +6,16 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
-import com.PhanLam.backend.model.User;
-import java.util.Optional;
+import com.PhanLam.backend.model.Role;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author Phan Lam
  */
-public interface UserRepository extends JpaRepository <User, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     @Override
-    public User save (User user); 
-    
-    public boolean existsByUserName (String userName);
-    
-    public Optional <User> findByUserName (String userName);
+    public List<Role> findAll ();
 }

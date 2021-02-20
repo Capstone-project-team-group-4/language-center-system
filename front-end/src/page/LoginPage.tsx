@@ -13,7 +13,7 @@ import { TypeGuard } from '../common/service/TypeGuard';
 import { DialogControl } from '../common/component/ModalDialog';
 import { UserAPI } from '../common/service/UserAPI';
 import { LoggedInUser } from '../model/LoggedInUser';
-import { Location, History } from "../../node_modules/@types/history";
+import { Location, History } from "history";
 import { useHistory, useLocation } from 'react-router-dom';
 import { LocationState } from '../common/component/ProtectedRoute';
 import { Role } from '../model/Role';

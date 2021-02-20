@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +34,6 @@ public class UserController {
     // Variables declaration:
     private UserService userService; 
     private UserRepository userRepository;
-    private UserService userService;
 
     public UserController (
             UserService userService
@@ -94,8 +90,10 @@ public class UserController {
 
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public User updateStudentInfo(@RequestBody User user, @PathVariable int userID) {
+    public User updateStudentInfo(
+            @RequestBody User user
+            , @PathVariable int userID
+    ){
         return userService.updateStudent(user, userID);
     }
 
@@ -106,7 +104,10 @@ public class UserController {
     }
 
     @GetMapping("/getUsers/{userID}")
-    public Optional showAllUserByID(@RequestBody User user, @PathVariable int userID) {
+    public Optional showAllUserByID(
+            @RequestBody User user
+            , @PathVariable int userID
+    ){
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
     }

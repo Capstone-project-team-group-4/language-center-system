@@ -7,6 +7,7 @@ package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
 import com.PhanLam.backend.model.NewUser;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,10 @@ public interface NewUserRepository extends JpaRepository<NewUser, Integer> {
     
     @Override
     public Page <NewUser> findAll (Pageable pagingInformation); 
+    
+    @Override
+    public Optional <NewUser> findById (Integer userID);
+
+    @Override
+    public void delete (NewUser newUser);
 }

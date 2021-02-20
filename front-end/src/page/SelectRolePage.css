@@ -6510,6 +6510,22 @@ button.bg-dark:focus {
   padding-top: 100%;
 }
 
+.embed-responsive-21by9::before {
+  padding-top: 42.8571428571%;
+}
+
+.embed-responsive-16by9::before {
+  padding-top: 56.25%;
+}
+
+.embed-responsive-4by3::before {
+  padding-top: 75%;
+}
+
+.embed-responsive-1by1::before {
+  padding-top: 100%;
+}
+
 .flex-row {
   flex-direction: row !important;
 }
@@ -9928,8 +9944,14 @@ h3 {
     border-color: #dee2e6;
   }
 }
-#root {
-  background-color: teal;
+#SelectRoleCard {
+  width: 30%;
 }
 
-/*# sourceMappingURL=App.css.map */
+@media (max-width: 991.98px) {
+  #SelectRoleCard {
+    width: 90%;
+  }
+}
+
+/*# sourceMappingURL=SelectRolePage.css.map */

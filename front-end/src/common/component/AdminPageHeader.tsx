@@ -5,7 +5,11 @@ import {
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export function AdminPageHeader (): ReactElement {
+interface AdminPageHeaderProps {
+    logOut (): Promise<void>;
+}
+
+export function AdminPageHeader (props: AdminPageHeaderProps): ReactElement {
     return (
         <Container fluid = {true}>
             <header>
@@ -15,7 +19,13 @@ export function AdminPageHeader (): ReactElement {
                     <Navbar.Brand as = {Link} to = "/">
                         Language Center
                     </Navbar.Brand>
-                    <Nav className = "mr-auto">
+                    <Nav className = "ml-auto mr-3">
+                        <Button 
+                            variant = "danger"
+                            onClick = {props.logOut}
+                        >
+                            Log out
+                        </Button>
                     </Nav>
                     <Form inline>
                         <FormControl 

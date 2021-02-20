@@ -6,7 +6,6 @@
 package com.PhanLam.backend.controller.exception;
 
 // Import package members section:
-import java.util.Optional;
 import org.springframework.core.NestedExceptionUtils;
 
 /**
@@ -20,22 +19,15 @@ public class ExceptionResponseBody {
     private String message; 
 
     public ExceptionResponseBody (Exception exception){
+        Throwable exceptionOrRootCause;
         Class exceptionClass;
-        Optional <Throwable> nullableRootCause;
-        Throwable rootCause;
         
-        exceptionClass = exception.getClass (); 
-        this.exceptionName = exceptionClass.getSimpleName ();
-        nullableRootCause = Optional.ofNullable (
-                NestedExceptionUtils.getRootCause (exception)
+        exceptionOrRootCause = NestedExceptionUtils.getMostSpecificCause (
+                exception
         );
-        if (nullableRootCause.isPresent () == false){
-            message = exception.getLocalizedMessage ();
-        }
-        else {
-            rootCause = nullableRootCause.get ();
-            message = rootCause.getLocalizedMessage ();
-        }
+        exceptionClass = exceptionOrRootCause.getClass (); 
+        exceptionName = exceptionClass.getSimpleName ();
+        message = exceptionOrRootCause.getLocalizedMessage ();
     }
 
     public String getExceptionName (){

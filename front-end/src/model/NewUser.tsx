@@ -9,14 +9,29 @@ export class NewUser {
 	public phoneNumber: string;
 	public password: string;
 	
-	constructor (){
-		this.userID = 0;
-		this.userName = "";
-		this.firstName = "";
-		this.lastName = "";
-		this.email = "";
-		this.phoneNumber = "";
-		this.password = "";
+	public constructor ();
+
+	public constructor (newUser: NewUser);
+
+	public constructor (newUser?: NewUser){
+		if (typeof newUser !== "undefined"){
+			this.userID = newUser.userID;
+			this.userName = newUser.userName;
+			this.firstName = newUser.firstName;
+			this.lastName = newUser.lastName;
+			this.email = newUser.email;
+			this.phoneNumber = newUser.phoneNumber;
+			this.password = newUser.password;	
+		}
+		else {
+			this.userID = 0;
+			this.userName = "";
+			this.firstName = "";
+			this.lastName = "";
+			this.email = "";
+			this.phoneNumber = "";
+			this.password = "";
+		}
 	}
 }
 

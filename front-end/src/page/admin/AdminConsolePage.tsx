@@ -10,9 +10,14 @@ import {
 import { Link } from "react-router-dom";
 import "./AdminConsolePage.css";
 
-export function AdminConsolePage (): ReactElement {
+interface AdminConsolePageProps {
+    modalDialog: ReactElement;
+}
+
+export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
     return (
         <Container fluid = {true}>
+            {props.modalDialog}
             <main>
                 <Container>
                     <Row>
@@ -35,8 +40,12 @@ export function AdminConsolePage (): ReactElement {
                                             <Button 
                                                 variant = "success"
                                                 block = {true}
-                                                as = {Link} 
-                                                to = "/create-account-requests"
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console" 
+// eslint-disable-next-line max-len
+                                                    + "/create-account-request-page"
+                                                }
                                             >
                                                 Waiting for approval 
                                                 create-account-requests

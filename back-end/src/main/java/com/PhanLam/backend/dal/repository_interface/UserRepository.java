@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.dal.repository_interface;
 
+// Import package members section:
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +32,8 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     
     @Override
     public List<User> findAll();
+    
+    public boolean existsByUserName (String userName);
+    
+    public Optional <User> findByUserName (String userName);
 }

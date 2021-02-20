@@ -7,14 +7,16 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
+import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.security.Principal;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,15 +31,19 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
-@CrossOrigin(origins = "*")
 @RestController
 public class UserController {
 
     // Variables declaration:
+    private UserService userService; 
     private UserRepository userRepository;
     private UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController (
+            UserService userService
+            , UserRepository userRepository
+    ){
+        this.userService = userService;
         this.userRepository = userRepository;
         this.userService = userService;
     }
@@ -48,11 +54,19 @@ public class UserController {
         listUsers = userService.getAll();
         return listUsers;
     }
-
-    @PostMapping("/users")
-    @ResponseStatus(HttpStatus.CREATED)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void registerUser(@RequestBody User user) {
+    
+    @GetMapping ("/logged-in-user")
+    @ResponseStatus (HttpStatus.OK)
+    public LoggedInUser getCurrentLoggedInUser (Principal principal){
+        LoggedInUser loggedInUser;
+        
+        loggedInUser = userService.getLoggedInUser (principal);
+        return loggedInUser;
+    }
+    
+    @PostMapping ("/users")
+    @ResponseStatus (HttpStatus.CREATED)
+    public void registerUser (@RequestBody User user){
         int userID;
         boolean userAlreadyExist;
 
@@ -64,11 +78,10 @@ public class UserController {
             userRepository.save(user);
         }
     }
-
-    @DeleteMapping("/users/{userID}")
-    @ResponseStatus(HttpStatus.OK)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteUser(@PathVariable int userID) {
+    
+    @DeleteMapping ("/users/{userID}")
+    @ResponseStatus (HttpStatus.OK)
+    public void deleteUser (@PathVariable int userID){
         boolean userAlreadyExist;
 
         userAlreadyExist = userRepository.existsById(userID);

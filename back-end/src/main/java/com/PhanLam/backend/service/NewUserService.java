@@ -144,4 +144,18 @@ public class NewUserService {
             );
         }
     }
+    
+    public void deleteNewUserByID (int userID){
+        Optional<NewUser> nullableNewUser;
+        NewUser newUser;
+        
+        nullableNewUser = newUserRepository.findById (userID);
+        if (nullableNewUser.isPresent () == false){
+            throw new NotFoundException ("user ID");
+        }
+        else {
+            newUser = nullableNewUser.get ();
+            newUserRepository.delete (newUser);
+        }
+    }
 }

@@ -39,7 +39,7 @@ public class UserService {
     public LoggedInUser getLoggedInUser (Principal principal){
         LoggedInUser loggedInUser;
         String userName;
-        Optional <User> nullableUser;
+        Optional<User> nullableUser;
         User user;
         ArrayList<Role> roleHolder;
 

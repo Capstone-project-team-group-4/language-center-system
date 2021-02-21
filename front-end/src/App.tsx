@@ -133,7 +133,6 @@ export function App (): ReactElement {
           dialogController = {dialogController}
           modalDialog = {modalDialog}
           setIsAuthenticated = {setIsAuthenticated}
-          loggedInUser = {loggedInUser}
           setLoggedInUser = {setLoggedInUser}
         />
       </Route>

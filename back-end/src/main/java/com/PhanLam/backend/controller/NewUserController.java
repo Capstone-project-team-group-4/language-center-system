@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,11 +58,17 @@ public class NewUserController {
     }
     
     @PatchMapping ("/new-users/{userID}:accept")
-    @ResponseStatus (HttpStatus.OK)
+    @ResponseStatus (HttpStatus.NO_CONTENT)
     public void acceptCreateAccountRequest (
             @PathVariable int userID
             , @RequestBody ArrayList<Role> newAccountRoleList
     ){
         newUserService.useNewUserToCreateUser (userID, newAccountRoleList);
     } 
+    
+    @DeleteMapping ("/new-users/{userID}")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void rejectCreateAccountRequest (@PathVariable int userID){
+        newUserService.deleteNewUserByID (userID);
+    }
 }

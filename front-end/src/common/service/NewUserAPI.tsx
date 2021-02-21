@@ -102,4 +102,25 @@ export class NewUserAPI {
             }
         }
     }
+
+    public async rejectCreateAccountRequest (
+            userID: number
+    ): Promise<void> {
+        try {
+            await this.axiosInstance.delete<undefined> (
+                    `/new-users/${userID}`
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject ();
+            }
+        }
+    }
 }

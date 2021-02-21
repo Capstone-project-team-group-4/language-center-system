@@ -36,6 +36,9 @@ function renderNewUserTable (
         , handleAcceptRequest: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
         ) => Promise<void> 
+        , handleRejectRequest: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => Promise<void> 
 ): ReactElement {
     return (
         <tr key = {newUser.userID}>
@@ -67,6 +70,7 @@ function renderNewUserTable (
                     variant = "danger"
                     type = "button"
                     value = {newUser.userID}
+                    onClick = {handleRejectRequest}
                 >
                     Reject
                 </Button>
@@ -101,7 +105,7 @@ export function CreateAccountPage (
     let updatedNewAccountRoleList: Role[] | undefined;
     let updatedRoleHolder: Role[] | undefined;
     let defaultRoleSelection: Role | undefined;
-    let acceptButton: HTMLButtonElement | undefined; 
+    let button: HTMLButtonElement | undefined; 
     let userID: number | undefined;
 
     newUserAPI = new NewUserAPI ();
@@ -112,8 +116,8 @@ export function CreateAccountPage (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): Promise<void> {
         if (newAccountRoleList.length > 0){
-            acceptButton = event.target as HTMLButtonElement;
-            userID = Number (acceptButton.value);
+            button = event.target as HTMLButtonElement;
+            userID = Number (button.value);
             try {
                 await newUserAPI.acceptCreateAccountRequest (
                         userID
@@ -143,16 +147,43 @@ export function CreateAccountPage (
         else {
             props.dialogController.setDialogTitle ("Error !");
             props.dialogController.setDialogBody (
-                    `Please add at least one role.`
+                    "Please add at least one role."
             );
             props.dialogController.setDialogType ("error");
             props.dialogController.setShowDialog (true);
         }
     }
 
-    // function handleRejectRequest (){
-
-    // }
+    async function handleRejectRequest (
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+    ): Promise<void> {
+        button = event.target as HTMLButtonElement;
+        userID = Number (button.value);
+        try {
+            await newUserAPI.rejectCreateAccountRequest (
+                    userID
+            );
+            loadNewUserTable ();
+        }
+        catch (apiError: unknown){
+            if (typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            else {
+                throw new Error ("This api error is not valid !");
+            }
+        }
+    }
 
     function handleAddRole (){
         for (i = 0; i < roleHolder.length; i++){
@@ -372,6 +403,7 @@ export function CreateAccountPage (
                                                     newUser
                                                     , index
                                                     , handleAcceptRequest
+                                                    , handleRejectRequest
                                             )
                                         )}
                                     </tbody>

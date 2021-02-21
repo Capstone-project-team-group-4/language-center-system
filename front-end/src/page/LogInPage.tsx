@@ -36,7 +36,6 @@ interface LogInPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
     setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-    loggedInUser: LoggedInUser;
     setLoggedInUser: Dispatch<SetStateAction<LoggedInUser>>; 
 }
 
@@ -57,6 +56,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let roleHolder: Role[] | undefined;
     let role: Role | undefined; 
     let roleName: string | undefined;
+    let loggedInUser: LoggedInUser | undefined;
 
     userAPI = new UserAPI ();
     typeGuardian = new TypeGuard ();
@@ -80,18 +80,19 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     async function logIn (event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault ();
         try {
-            props.setLoggedInUser (await userAPI.getCurrentLoggedInUser (
+            loggedInUser = await userAPI.getCurrentLoggedInUser (
                     userName
                     , password
-            ));
-            props.setIsAuthenticated (true);
+            );
+            props.setIsAuthenticated (true); 
+            props.setLoggedInUser (loggedInUser);      
             if (currentLocation.state instanceof LocationState){
                 locationState = currentLocation.state;
                 previousLocation = locationState.from;
                 history.replace (previousLocation);
             } 
             else {
-                roleHolder = props.loggedInUser.roleHolder;
+                roleHolder = loggedInUser.roleHolder;
                 loginSucceededLocation = new LoginSucceededLocation ();
                 if (roleHolder.length === 1){
                     role = roleHolder[0];

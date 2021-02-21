@@ -138,14 +138,14 @@ export function ViewProfilePage (): ReactElement {
                 <Container id="PageBodyContainer">
                     <Row>
                         <Col>
-                            <div style={{ height: 400, width: '100%' }}>
+                            {/* <div style={{ height: 400, width: '100%' }}>
                                 <DataGrid 
                                     rows={useEffect} 
                                     columns={columns} 
                                     pageSize={5} 
                                     checkboxSelection 
                                 />
-                            </div>
+                            </div> */}
                         </Col>
                     </Row>
                 </Container>

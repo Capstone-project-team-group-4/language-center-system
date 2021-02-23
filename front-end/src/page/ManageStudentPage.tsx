@@ -1,5 +1,6 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { UserAPI } from "../common/service/UserAPI";
+import '../font-awesome-4.7.0/css/font-awesome.min.css';
 
 export function ManageStudentPage (): ReactElement {
     let [user, setUser] = useState<[]>([]);
@@ -37,7 +38,7 @@ export function ManageStudentPage (): ReactElement {
                                         <span
                                             className="fa fa-search mr-5">
                                         </span>
-                                                Tìm
+                                        Tìm        
                             </button>
                                 </span>
                             </div>
@@ -109,14 +110,14 @@ export function ManageStudentPage (): ReactElement {
                                             Số điện thoại
                                                 </th>
                                         <th className="text-center">
+                                            Nghề nghiệp
+                                                </th>
+                                        <th className="text-center">
                                             Avatar
                                                 </th>
                                         <th className="text-center">
                                             Trạng Thái
                                                 </th>
-                                        <th className="text-center">
-                                            Lần cuối đăng nhập
-                                                </th>      
                                         <th className="text-center">
                                             Hành Động
                                                 </th>
@@ -125,6 +126,10 @@ export function ManageStudentPage (): ReactElement {
                                 <tbody>
                                     <tr>
                                         <td></td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
                                         <td>
                                             <input type="text"
                                                 className="form-control" />
@@ -161,7 +166,6 @@ export function ManageStudentPage (): ReactElement {
                                             </select>
                                         </td>
                                         <td></td>
-                                        <td></td>
                                     </tr>
                                     {user.map((item, index) => <tr key={index}>
                                         <td>{item["userID"]}</td>
@@ -170,6 +174,7 @@ export function ManageStudentPage (): ReactElement {
                                         <td>{item["lastName"]}</td>
                                         <td>{item["email"]}</td>
                                         <td>{item["phoneNumber"]}</td>
+                                        <td>{item["job"]}</td>
                                         <td>{item["photoURI"]}</td>
                                         <td className="text-center">
                                             <span
@@ -177,20 +182,21 @@ export function ManageStudentPage (): ReactElement {
                                                 {item["accountStatus"]}
                                                 </span>
                                         </td>
-                                        <td>{item["lastLogin"]}</td>
-                                        <td className="text-center">
+                                        <td className="text-center d-flex">
                                         <button type="button"
                                             className="btn btn-info">
                                                 <span className=
-                                                    "fa fa-pencil mr-5">
-                                                </span>Xem
+                                                    "fa fa-eye mr-5">
+                                                </span>
+                                                Xem
                                         </button>
                                         &nbsp;
                                         <button type="button"
                                             className="btn btn-warning">
                                                 <span className=
                                                     "fa fa-pencil mr-5">
-                                                </span>Sửa    
+                                                </span>
+                                                Sửa    
                                         </button>
                                         &nbsp;
                                         <button type="button"

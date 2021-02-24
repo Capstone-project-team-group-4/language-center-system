@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -14,8 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -49,10 +48,8 @@ public class Role implements Serializable {
     @Size(min = 1, max = 500)
     @Column(name = "RoleName", nullable = false, length = 500)
     private String roleName;
-    @JoinTable(name = "UserRole", joinColumns = {
-        @JoinColumn(name = "RoleID", referencedColumnName = "RoleID", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)})
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany (mappedBy = "roleList", fetch = FetchType.LAZY)
     private List<User> userList;
 
     public Role() {

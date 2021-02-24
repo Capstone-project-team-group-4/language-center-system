@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { UserAPI } from "../common/service/UserAPI";
+import { UserAPI } from "../../common/service/UserAPI";
 import '../font-awesome-4.7.0/css/font-awesome.min.css';
 
 export function ManageStudentPage (): ReactElement {

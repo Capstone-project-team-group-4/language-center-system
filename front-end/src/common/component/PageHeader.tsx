@@ -73,10 +73,10 @@ export function PageHeader (): ReactElement {
                             container-fluid`
                         }
                     >
-                        <Nav.Link as = {Link} to = "/sign-up">
+                        <Nav.Link as = {Link} to = "/sign-up-page">
                             Sign up
                         </Nav.Link>
-                        <Nav.Link as = {Link} to = "/log-in">
+                        <Nav.Link as = {Link} to = "/log-in-page">
                             Log in
                         </Nav.Link>
                     </Nav>
@@ -86,7 +86,7 @@ export function PageHeader (): ReactElement {
                             placeholder = "Search" 
                             className = "mr-md-2" 
                         />
-                        <Button variant = "info">Search</Button>
+                        <Button variant = "success">Search</Button>
                     </Form>
                 </Navbar>
             </nav>

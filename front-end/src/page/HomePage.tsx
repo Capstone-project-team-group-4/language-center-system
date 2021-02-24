@@ -4,9 +4,14 @@ import { Col, Container, Jumbotron, Media, Row } from "react-bootstrap";
 import './HomePage.css';
 import AboutUs from './AboutUs.jpg';
 
-export function HomePage (): ReactElement {
+interface HomePageProps {
+    modalDialog: ReactElement;
+}
+
+export function HomePage (props: HomePageProps): ReactElement {
     return (
         <Container fluid = {true}>
+            {props.modalDialog}
             <main>
                 <Container 
                     fluid = {true} 

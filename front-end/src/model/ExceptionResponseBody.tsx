@@ -4,7 +4,7 @@ export class ExceptionResponseBody {
     public exceptionName: string;
     public message: string;
 
-	constructor (exceptionName: string, message: string){
+	public constructor (exceptionName: string, message: string){
 		this.exceptionName = exceptionName;
 		this.message = message;
 	}

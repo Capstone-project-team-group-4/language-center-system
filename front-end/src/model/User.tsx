@@ -17,7 +17,7 @@ export class User {
 	public dateCreated: Date;
 	public lastLogin: Date;
 	
-	constructor (){
+	public constructor (){
 		this.userID = 0;
 		this.userName = "";
 		this.firstName = "";

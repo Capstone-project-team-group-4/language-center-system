@@ -9,16 +9,13 @@ import { NewUserAPI } from '../common/service/NewUserAPI';
 import { 
     Button, Container, Form, Row 
 } from 'react-bootstrap';
-import './SignupPage.css';
+import './SignUpPage.css';
 import { NewUser, NewUserIndexSignature } from '../model/NewUser';
 import { TypeGuard } from '../common/service/TypeGuard';
+import { DialogControl } from '../common/component/ModalDialog';
 
 interface SignUpPageProps {
-    setShowDialog (showDialog: boolean): void;
-    setDialogTitle (dialogTitle: string): void;
-    setDialogBody (dialogBody: string): void;
-    setDialogType (dialogType: string): void;
-    handleCloseDialog (): void;
+    dialogController: DialogControl;
     modalDialog: ReactElement;
 }
 
@@ -32,12 +29,15 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
     let newUserAPI: NewUserAPI;
     let typeGuardian: TypeGuard;
 
+    newUserAPI = new NewUserAPI ();
+    typeGuardian = new TypeGuard ();
+
     function handleUserChange (
-        event: ChangeEvent<
-            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
+            event: ChangeEvent<
+                HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+            >
     ): void {  
-        updatedNewUser = newUser;
+        updatedNewUser = new NewUser (newUser);
         inputField = event.target;
         updatedNewUser[
             inputField.name as keyof NewUserIndexSignature
@@ -45,32 +45,31 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
         setNewUser (updatedNewUser);
     }
 
-    newUserAPI = new NewUserAPI ();
-    typeGuardian = new TypeGuard ();
-
     async function signUp (event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault ();
         try {
-            await newUserAPI.registerNewUser (newUser); 
-            props.setDialogTitle ("Success !");
-            props.setDialogBody (
+            await newUserAPI.registerNewCreateAccountRequest (newUser); 
+            props.dialogController.setDialogTitle ("Success !");
+            props.dialogController.setDialogBody (
                 `Your create-account-request have been registered
-                , waiting for admin approval !`
+                , waiting for admin approval...`
             );
-            props.setDialogType ("sign-up-succeeded");
-            props.setShowDialog (true);
+            props.dialogController.setDialogType ("sign-up-succeeded");
+            props.dialogController.setShowDialog (true);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
-                    props.setDialogTitle (`${apiError.code}: ${apiError.name}`);
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
                 }
                 else {
-                    props.setDialogTitle (apiError.name);
+                    props.dialogController.setDialogTitle (apiError.name);
                 }
-                props.setDialogBody (apiError.message);
-                props.setDialogType ("error");
-                props.setShowDialog (true);
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
             }
             else {
                 throw new Error ("This api error is not valid !");
@@ -94,16 +93,15 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                     fluid = {true} 
                     className = "h-100"
                 >
-                    <Row className 
-                        = {`h-100 align-items-center 
-                        justify-content-center`}
-                    >
+                    <Row className = "h-100 justify-content-md-center">
                         <Form
                             id = "SignUpForm"
                             className = "bg-white p-5"
-                            onSubmit = {(event) => {
-                                signUp (event);
-                            }}
+                            onSubmit = {
+                                (event) => {
+                                    signUp (event);
+                                }
+                            }
                         >
                             <Form.Row>
                                 <Form.Group className = "col-md-6">
@@ -120,8 +118,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         placeholder = "Your first name"
                                         required = {true}
                                         spellCheck = {false}
-                                        defaultValue = {newUser.firstName}
-                                        onChange = {handleUserChange}
+                                        value = {newUser.firstName}
+                                        onChange = {
+                                            (event) => {
+                                                handleUserChange (event);
+                                            }
+                                        }
                                     />
                                     <Form.Text className = "text-muted">
                                         format: characters only !  
@@ -141,8 +143,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         placeholder = "Your last name"
                                         required = {true}
                                         spellCheck = {false}
-                                        defaultValue = {newUser.lastName}
-                                        onChange = {handleUserChange}
+                                        value = {newUser.lastName}
+                                        onChange = {
+                                            (event) => {
+                                                handleUserChange (event);
+                                            }
+                                        }
                                     />
                                     <Form.Text className = "text-muted">
                                         format: characters only !  
@@ -164,8 +170,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     placeholder = "Enter your phone number"
                                     required = {true}
                                     spellCheck = {false}
-                                    defaultValue = {newUser.phoneNumber}
-                                    onChange = {handleUserChange}
+                                    value = {newUser.phoneNumber}
+                                    onChange = {
+                                        (event) => {
+                                            handleUserChange (event);
+                                        }
+                                    }
                                 />
                                 <Form.Text className = "text-muted">
                                     format: valid phone numbers 
@@ -186,12 +196,16 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     placeholder = "Enter your email"
                                     required = {false}
                                     spellCheck = {false}
-                                    defaultValue = {newUser.email}
-                                    onChange = {handleUserChange}
+                                    value = {newUser.email}
+                                    onChange = {
+                                        (event) => {
+                                            handleUserChange (event);
+                                        }
+                                    }
                                 />
                                 <Form.Text className = "text-muted">
                                     format: valid email address 
-                                    with an &quot;@&quot; only !  
+                                    with an {"'"}@{"'"} only !  
                                 </Form.Text>
                             </Form.Group>
 
@@ -209,8 +223,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     placeholder = "Any user name"
                                     required = {true}
                                     spellCheck = {false}
-                                    defaultValue = {newUser.userName}
-                                    onChange = {handleUserChange}
+                                    value = {newUser.userName}
+                                    onChange = {
+                                        (event) => {
+                                            handleUserChange (event);
+                                        }
+                                    }
                                 />
                                 <Form.Text className = "text-muted">
                                     format: characters only !  
@@ -232,8 +250,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     required = {true}
                                     spellCheck = {false}
                                     minLength = {8}
-                                    defaultValue = {newUser.password}
-                                    onChange = {handleUserChange}
+                                    value = {newUser.password}
+                                    onChange = {
+                                        (event) => {
+                                            handleUserChange (event);
+                                        }
+                                    }
                                 />
                                 <Form.Text className = "text-muted">
                                     format: must be at least 8 characters long 

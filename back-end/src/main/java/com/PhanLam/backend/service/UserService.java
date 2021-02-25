@@ -6,6 +6,7 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.LoggedInUser;
@@ -15,6 +16,9 @@ import java.util.List;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.TypedSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,17 +49,116 @@ public class UserService {
 
         userName = principal.getName ();
         nullableUser = userRepository.findByUserName (userName);
-        if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("user");
-        }
-        else {
-            user = nullableUser.get ();
-            roleHolder = new ArrayList<> (user.getRoleList ());
-        }
+        user = nullableUser.get ();
+        roleHolder = new ArrayList<> (user.getRoleList ());
         loggedInUser = new LoggedInUser (userName, roleHolder);
         return loggedInUser;
     }
-
+    
+    @Transactional (readOnly = true)
+    public ArrayList<User> getAllUserWithUserNameIsNot (
+            Principal principal
+            ,int pageNumber
+            , int pageSize
+    ){
+        String userName;
+        TypedSort<User> userSortInformation;
+        Sort sortInformation;
+        PageRequest pagingInformation;
+        ArrayList<User> userHolder;
+        
+        if ((pageNumber >= 0) && (pageSize >= 0)){
+            userName = principal.getName ();
+            userSortInformation = Sort.sort (User.class);
+            sortInformation 
+                = userSortInformation.by (User::getFirstName).ascending ()
+                .and (userSortInformation.by (User::getLastName)
+                        .ascending ()
+                );
+            pagingInformation = PageRequest.of (
+                    pageNumber
+                    , pageSize
+                    , sortInformation
+            );
+            userHolder = new ArrayList<> (
+                    userRepository.findAllByUserNameNot (
+                            userName
+                            , pagingInformation
+                    )
+            );
+            return userHolder;
+        }
+        else {
+            throw new InvalidRequestArgumentException (
+                    "The page number and page size number parameters "
+                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "Parameter name: pageNumber, pageSize"
+            );
+        }
+    }
+    
+    public void disableUserByID (int userID, Principal principal){
+        Optional <User> nullableUser;
+        User user;
+        String userName;
+        
+        nullableUser = userRepository.findById (userID);
+        if (nullableUser.isPresent () == false){
+            throw new NotFoundException ("user ID");
+        }
+        else {
+            userName = principal.getName ();
+            user = nullableUser.get ();
+            if (user.getUserName ().equals (userName)){
+                throw new InvalidRequestArgumentException (
+                        "Disable current logged in user is not allowed !"
+                );
+            }
+            else {
+                user.setAccountStatus ("Disabled");
+                userRepository.save (user);
+            }
+        }
+    }
+    
+    public void enableUserByID (int userID){
+        Optional <User> nullableUser;
+        User user;
+        
+        nullableUser = userRepository.findById (userID);
+        if (nullableUser.isPresent () == false){
+            throw new NotFoundException ("user ID");
+        }
+        else {
+            user = nullableUser.get ();
+            user.setAccountStatus ("Active");
+            userRepository.save (user);
+        }
+    }
+    
+    public void deleteUserByID (int userID, Principal principal){
+        Optional <User> nullableUser;
+        User user;
+        String userName;
+        
+        nullableUser = userRepository.findById (userID);
+        if (nullableUser.isPresent () == false){
+            throw new NotFoundException ("user ID");
+        }
+        else {
+            userName = principal.getName ();
+            user = nullableUser.get ();
+            if (user.getUserName ().equals (userName)){
+                throw new InvalidRequestArgumentException (
+                        "Delete current logged in user is not allowed !"
+                );
+            }
+            else {
+                userRepository.delete (user);
+            }
+        }
+    }
+    
     public List<User> getAll() {
         return userRepository.findAll();
     }

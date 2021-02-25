@@ -72,26 +72,35 @@ public class NewUserService {
     @Transactional (readOnly = true)
     public ArrayList<NewUser> getAllNewUser (int pageNumber, int pageSize){
         ArrayList<NewUser> newUserHolder;
-        PageRequest pageRequestInformation;
+        PageRequest pagingInformation;
         Page<NewUser> newUserPage;
         TypedSort<NewUser> newUserSortInformation;
         Sort sortInformation; 
         
-        newUserSortInformation = Sort.sort (NewUser.class);
-        sortInformation 
-            = newUserSortInformation.by (NewUser::getFirstName).ascending ()
-            .and (
-                    newUserSortInformation.by (NewUser::getLastName)
-                    .ascending ()
+        if ((pageNumber >= 0) && (pageSize >= 0)){
+            newUserSortInformation = Sort.sort (NewUser.class);
+            sortInformation 
+                = newUserSortInformation.by (NewUser::getFirstName).ascending ()
+                .and (
+                        newUserSortInformation.by (NewUser::getLastName)
+                        .ascending ()
+                );
+            pagingInformation = PageRequest.of (
+                    pageNumber
+                    , pageSize
+                    , sortInformation
             );
-        pageRequestInformation = PageRequest.of (
-                pageNumber
-                , pageSize
-                , sortInformation
-        );
-        newUserPage = newUserRepository.findAll (pageRequestInformation);
-        newUserHolder = new ArrayList<> (newUserPage.getContent ());
-        return newUserHolder;
+            newUserPage = newUserRepository.findAll (pagingInformation);
+            newUserHolder = new ArrayList<> (newUserPage.getContent ());
+            return newUserHolder;
+        }
+        else {
+            throw new InvalidRequestArgumentException (
+                    "The page number and page size number parameters "
+                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "Parameter name: pageNumber, pageSize"
+            );
+        }
     }
     
     public void useNewUserToCreateUser (
@@ -104,6 +113,7 @@ public class NewUserService {
         String firstName;
         String lastName;
         String phoneNumber;
+        String email;
         String password;
         String accountStatus;
         Date dateCreated;
@@ -121,6 +131,7 @@ public class NewUserService {
                 firstName = newUser.getFirstName ();
                 lastName = newUser.getLastName ();
                 phoneNumber = newUser.getPhoneNumber ();
+                email = newUser.getEmail ();
                 password = newUser.getPassword ();
                 accountStatus = "Active";
                 dateCreated = new Date ();
@@ -129,6 +140,7 @@ public class NewUserService {
                         , firstName
                         , lastName
                         , phoneNumber
+                        , email
                         , password
                         , accountStatus
                         , dateCreated

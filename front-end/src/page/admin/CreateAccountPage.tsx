@@ -6,7 +6,16 @@ import React, {
     , useEffect
     , useState 
 } from "react";
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+import { 
+    Breadcrumb
+    , Button
+    , Col
+    , Container
+    , Form
+    , Row
+    , Table 
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { NewUserAPI } from "../../common/service/NewUserAPI";
 import { RoleAPI } from "../../common/service/RoleAPI";
@@ -38,7 +47,7 @@ function renderNewUserTable (
         ) => Promise<void> 
         , handleRejectRequest: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void> 
+        ) => void 
 ): ReactElement {
     return (
         <tr key = {newUser.userID}>
@@ -105,8 +114,8 @@ export function CreateAccountPage (
     let updatedNewAccountRoleList: Role[] | undefined;
     let updatedRoleHolder: Role[] | undefined;
     let defaultRoleSelection: Role | undefined;
-    let button: HTMLButtonElement | undefined; 
-    let userID: number | undefined;
+    let button: HTMLButtonElement | undefined;
+    let [userID, setUserID] = useState<number> (0);
 
     newUserAPI = new NewUserAPI ();
     typeGuardian = new TypeGuard ();
@@ -117,10 +126,9 @@ export function CreateAccountPage (
     ): Promise<void> {
         if (newAccountRoleList.length > 0){
             button = event.target as HTMLButtonElement;
-            userID = Number (button.value);
             try {
                 await newUserAPI.acceptCreateAccountRequest (
-                        userID
+                        Number (button.value)
                         , newAccountRoleList
                 );
                 loadNewUserTable ();
@@ -154,11 +162,20 @@ export function CreateAccountPage (
         }
     }
 
-    async function handleRejectRequest (
+    function handleRejectRequest (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): Promise<void> {
+    ): void {
         button = event.target as HTMLButtonElement;
-        userID = Number (button.value);
+        setUserID (Number (button.value));
+        props.dialogController.setDialogTitle ("Confirm Rejection");
+        props.dialogController.setDialogBody (
+                "Are you sure you want to reject this create account request ?"
+        );
+        props.dialogController.setDialogType ("confirm");
+        props.dialogController.setShowDialog (true);
+    }
+
+    async function executeRequestRejection (): Promise<void> {
         try {
             await newUserAPI.rejectCreateAccountRequest (
                     userID
@@ -274,11 +291,21 @@ export function CreateAccountPage (
     }
 
     useEffect (
-        function fetchTableData (): void {
+        (): void => {
             loadRoleDropdownList ();
             loadNewUserTable ();
         }
         , []
+    );
+
+    useEffect (
+        (): void => {
+            if (props.dialogController.dialogIsConfirmed === true){
+                executeRequestRejection ();
+                props.dialogController.setDialogIsConfirmed (false); 
+            }
+        }
+        , [props.dialogController.dialogIsConfirmed]
     );
 
     return (
@@ -288,6 +315,23 @@ export function CreateAccountPage (
                 <Container>
                     <Row className = "bg-white">
                         <Col>
+                            <Breadcrumb>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/"}}
+                                >
+                                    Home
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/admin-console"}}
+                                >
+                                    Admin Console
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item active>
+                                    Create Account Requests
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
                             <h1>
                                 Create Account Requests
                             </h1>

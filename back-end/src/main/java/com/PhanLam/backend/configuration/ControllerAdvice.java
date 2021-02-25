@@ -12,6 +12,7 @@ import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -57,6 +58,15 @@ public class ControllerAdvice {
     @ResponseStatus (HttpStatus.UNAUTHORIZED)
     public ExceptionResponseBody handleBadCredentialsException (
             BadCredentialsException exception
+    ){
+        responseBody = new ExceptionResponseBody (exception);
+        return responseBody;
+    }
+    
+    @ExceptionHandler (DisabledException.class)
+    @ResponseStatus (HttpStatus.FORBIDDEN)
+    public ExceptionResponseBody handleDisabledException (
+            DisabledException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
         return responseBody;

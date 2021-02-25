@@ -143,6 +143,7 @@ public class User implements Serializable {
             , String firstName
             , String lastName
             , String phoneNumber
+            , String email
             , String password
             , String accountStatus
             , Date dateCreated
@@ -150,12 +151,13 @@ public class User implements Serializable {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.accountStatus = accountStatus;
         this.dateCreated = dateCreated;
     }
-
+    
     public Integer getUserID() {
         return userID;
     }

@@ -7,8 +7,7 @@ import {
 import { UserAPI } from '../common/service/UserAPI';
 import { Link, useParams, useRouteMatch } from 'react-router-dom';
 import { User, UserIndexSignature } from '../model/User';
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
+import './ViewProfilePage.css';
 function renderUserTable(
     user: User
     , index: number
@@ -86,10 +85,9 @@ export function ViewProfilePage(): ReactElement {
             </Container>
             <main>
                 <Container id="PageBodyContainer">
-                    <Row>
+                    <Row className = "bg-white">
                         <Col>
-                            <div style={{ height: 400, width: '100%' }}>
-                                <Table responsive="md" hover={true}>
+                        <Table responsive="md" hover={true}>
                                     <thead>
                                         <tr>
                                             <th>
@@ -142,7 +140,6 @@ export function ViewProfilePage(): ReactElement {
                                         )}
                                     </tbody>
                                 </Table>
-                            </div>
                         </Col>
                     </Row>
                 </Container>

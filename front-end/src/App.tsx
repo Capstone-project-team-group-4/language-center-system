@@ -10,6 +10,7 @@ import { CreateAccountPage } from './page/admin/CreateAccountPage';
 import { HomePage } from './page/HomePage';
 import { SignUpPage } from './page/SignupPage';
 import { EditStudentInfo } from './page/EditStudentInfo';
+import { ViewProfilePage } from './page/ViewProfilePage';
 
 export function App (): ReactElement {
   
@@ -75,6 +76,10 @@ export function App (): ReactElement {
           handleCloseDialog = {handleCloseDialog}
           modalDialog = {modalDialog} 
         />
+      </Route>
+      <Route path = "/user_view">
+        <AdminPageHeader />
+        <ViewProfilePage />
       </Route>
     </Switch>
   );

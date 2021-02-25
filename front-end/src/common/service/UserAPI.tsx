@@ -107,7 +107,7 @@ export class UserAPI {
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
             this.serverResponse = await this.axiosInstance.get (
-                `/getUsers/${userID}`
+                `/users`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){

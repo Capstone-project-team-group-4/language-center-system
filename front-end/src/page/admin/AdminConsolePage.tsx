@@ -41,6 +41,14 @@ export function AdminConsolePage (): ReactElement {
                                                 Waiting for approval 
                                                 create-account-requests
                                             </Button>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link} 
+                                                to = "/user_view"
+                                            >
+                                                View student profile
+                                            </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>

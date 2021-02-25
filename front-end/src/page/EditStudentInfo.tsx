@@ -149,7 +149,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="dob"
                                         id="dob"
-                                        //value="07/08/1997"
+                                        // value="07/08/1997"
                                         required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}

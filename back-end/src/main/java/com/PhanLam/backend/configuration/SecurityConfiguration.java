@@ -129,6 +129,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/getStudent/*")
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
                 .anyRequest ().denyAll ();

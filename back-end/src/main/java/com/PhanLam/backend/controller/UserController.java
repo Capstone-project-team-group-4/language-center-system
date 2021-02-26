@@ -114,6 +114,7 @@ public class UserController {
     }
 
     @GetMapping("/getStudent/{userID}")
+    @ResponseStatus(HttpStatus.OK)
     public User getStudentById(@PathVariable int userID) {
         User user = userService.getById(userID);
         return user;

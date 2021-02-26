@@ -125,7 +125,7 @@ export function App (): ReactElement {
 
   return (
     <Switch>
-      <Route exact path="/editStudentInfo/:studentID">
+      <Route exact path="/admin-console/editStudentInfo/:studentID">
         <EditStudentInfo />
       </Route>
       <Route exact = {true} path="/">

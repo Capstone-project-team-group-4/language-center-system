@@ -10,7 +10,7 @@ export class ErrorHandle {
     private typeGuardian: TypeGuard;
     private exceptionResponseBody: ExceptionResponseBody | undefined; 
     
-    constructor (){
+    public constructor (){
         this.typeGuardian = new TypeGuard ();
     }
 

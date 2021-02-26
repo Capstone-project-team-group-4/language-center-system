@@ -9944,18 +9944,14 @@ h3 {
     border-color: #dee2e6;
   }
 }
-#SignupPageContentContainer {
-  background-color: teal;
-}
-
-#SignUpForm {
-  width: 50%;
+#SelectRoleCard {
+  width: 30%;
 }
 
 @media (max-width: 991.98px) {
-  #SignUpForm {
+  #SelectRoleCard {
     width: 90%;
   }
 }
 
-/*# sourceMappingURL=SignupPage.css.map */
+/*# sourceMappingURL=SelectRolePage.css.map */

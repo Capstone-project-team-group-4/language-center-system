@@ -10,15 +10,26 @@ import {
 import { Link } from "react-router-dom";
 import "./AdminConsolePage.css";
 
-export function AdminConsolePage (): ReactElement {
+interface AdminConsolePageProps {
+    modalDialog: ReactElement;
+}
+
+export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
     return (
         <Container fluid = {true}>
+            {props.modalDialog}
             <main>
                 <Container>
                     <Row>
                         <Col>
                             <Breadcrumb>
-                                <Breadcrumb.Item active>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/"}}
+                                >
+                                    Home
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item active = {true}>
                                     Admin Console
                                 </Breadcrumb.Item>
                             </Breadcrumb>
@@ -35,11 +46,27 @@ export function AdminConsolePage (): ReactElement {
                                             <Button 
                                                 variant = "success"
                                                 block = {true}
-                                                as = {Link} 
-                                                to = "/create-account-requests"
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console" 
+// eslint-disable-next-line max-len
+                                                    + "/create-account-request-page"
+                                                }
                                             >
                                                 Waiting for approval 
                                                 create-account-requests
+                                            </Button>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console" 
+// eslint-disable-next-line max-len
+                                                    + "/disable-or-delete-account-page"
+                                                }
+                                            >
+                                                Disable or delete user account
                                             </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>

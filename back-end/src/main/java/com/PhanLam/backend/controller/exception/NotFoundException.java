@@ -9,12 +9,9 @@ package com.PhanLam.backend.controller.exception;
  *
  * @author Phan Lam
  */
-public class UserAlreadyExistException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
-    public UserAlreadyExistException (){
-        super (
-                "This user name has already been used"
-                + ", please enter another user name !!!"
-        );
-    } 
+    public NotFoundException (String missingObjectName){
+        super ("This " + missingObjectName + " is not found !!!");
+    }
 }

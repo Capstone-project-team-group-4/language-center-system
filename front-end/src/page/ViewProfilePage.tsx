@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
-    ChangeEvent, FormEvent, MouseEvent, ReactElement, useEffect, useState
+    ReactElement, useEffect, useState
 } from 'react';
 import {
     Button, Col, Container, Form, FormControl, Nav, Navbar, Row, Table
@@ -55,11 +56,7 @@ function renderUserTable(
 }
 export function ViewProfilePage(): ReactElement {
 
-    let [user, getUser] = useState<User>(new User());
-    let userID: number;
-    let showUser: User | undefined;
     let userAPI: UserAPI | undefined;
-    let match = useRouteMatch();
     let param: any = useParams();
     let studentID: number;
     let [student, setStudent] = useState<User[]>([]);

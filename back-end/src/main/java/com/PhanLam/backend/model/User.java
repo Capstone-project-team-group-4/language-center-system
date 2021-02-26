@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -101,6 +104,7 @@ public class User implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "SelfDescription", length = 2147483647)
     private String selfDescription;
+    @JsonIgnore
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1000)
@@ -119,29 +123,41 @@ public class User implements Serializable {
     @Column(name = "LastLogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
-    @ManyToMany(mappedBy = "userList", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinTable (name = "UserRole", joinColumns = {
+        @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)
+    }, inverseJoinColumns = {
+        @JoinColumn (name = "RoleID", referencedColumnName = "RoleID", nullable = false)
+    })
+    @ManyToMany (fetch = FetchType.LAZY)
     private List<Role> roleList;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
 
-    public User() {
+    public User (){
     }
 
-    public User(Integer userID) {
-        this.userID = userID;
-    }
-
-    public User(Integer userID, String userName, String firstName, String lastName, String phoneNumber, String password, String accountStatus, Date dateCreated) {
-        this.userID = userID;
+    public User (
+            String userName
+            , String firstName
+            , String lastName
+            , String phoneNumber
+            , String email
+            , String password
+            , String accountStatus
+            , Date dateCreated
+    ){
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.accountStatus = accountStatus;
         this.dateCreated = dateCreated;
     }
-
+    
     public Integer getUserID() {
         return userID;
     }

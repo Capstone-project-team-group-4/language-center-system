@@ -4,15 +4,17 @@
     height: 100%;
 }
 
+#grid {
+    position: relative;
+}
+
 #table {
     position: absolute;
-    vertical-align: center;
     margin: 0 auto;
     padding-left: 0;
-    font-size: 0.75rem;
 }
 
 .act-btn {
     height: 60px;
-    width: 70px;
+    width: 65px;
 }

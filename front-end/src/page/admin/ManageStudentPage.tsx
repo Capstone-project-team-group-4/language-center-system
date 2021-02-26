@@ -27,7 +27,7 @@ export function ManageStudentPage (): ReactElement {
                         <span className=
                             "fa fa-plus mr-5">
                         </span>
-                                Thêm học viên
+                        Thêm học viên   
                 </button>
                     <div className="row mt-15">
                         <div className=

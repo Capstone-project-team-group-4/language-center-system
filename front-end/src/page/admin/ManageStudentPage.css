@@ -1,0 +1,18 @@
+.container {
+    background-color: white;
+    background-size: cover;
+    height: 100%;
+}
+
+#table {
+    position: absolute;
+    vertical-align: center;
+    margin: 0 auto;
+    padding-left: 0;
+    font-size: 0.75rem;
+}
+
+.act-btn {
+    height: 60px;
+    width: 70px;
+}

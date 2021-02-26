@@ -24,6 +24,7 @@ import { LogInPage } from './page/LogInPage';
 import { SelectRolePage } from './page/SelectRolePage';
 import { SignUpPage } from './page/SignUpPage';
 import { History } from '../node_modules/@types/history';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
 
 export function App (): ReactElement {
   
@@ -126,6 +127,11 @@ export function App (): ReactElement {
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />
+      </Route>
+
+      <Route exact path="/listStudent">
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageStudentPage />
       </Route>
 
       <Route path = "/log-in-page">

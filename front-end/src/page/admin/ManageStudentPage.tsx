@@ -1,6 +1,8 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { UserAPI } from "../../common/service/UserAPI";
-import '../font-awesome-4.7.0/css/font-awesome.min.css';
+import '../../../node_modules/font-awesome/css/font-awesome.min.css';
+import './ManageStudentPage.css';
+import { User } from "../../model/User";
 
 export function ManageStudentPage (): ReactElement {
     let [user, setUser] = useState<[]>([]);
@@ -8,6 +10,7 @@ export function ManageStudentPage (): ReactElement {
     useEffect(() => {
         userAPI.listUsers().then(
             (res) => {
+                console.log(res);
                 setUser(res.data);
             }
         );
@@ -18,8 +21,8 @@ export function ManageStudentPage (): ReactElement {
                 <h1>Quản Lý Học Viên</h1>
                 <hr />
             </div>
-            <div className="row">
-                <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <div className="row" id="grid">
+                <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8" id="table">
                     <button type="button" className="btn btn-primary">
                         <span className=
                             "fa fa-plus mr-5">
@@ -184,7 +187,7 @@ export function ManageStudentPage (): ReactElement {
                                         </td>
                                         <td className="text-center d-flex">
                                         <button type="button"
-                                            className="btn btn-info">
+                                            className="btn btn-info act-btn">
                                                 <span className=
                                                     "fa fa-eye mr-5">
                                                 </span>
@@ -192,15 +195,16 @@ export function ManageStudentPage (): ReactElement {
                                         </button>
                                         &nbsp;
                                         <button type="button"
-                                            className="btn btn-warning">
+                                            className="btn btn-warning act-btn">
                                                 <span className=
                                                     "fa fa-pencil mr-5">
                                                 </span>
-                                                Sửa    
+                                                Sửa
                                         </button>
                                         &nbsp;
                                         <button type="button"
-                                                className="btn btn-danger">
+                                                className="btn btn-danger 
+                                                act-btn">
                                                 <span className=
                                                     "fa fa-trash mr-5">
                                                 </span>

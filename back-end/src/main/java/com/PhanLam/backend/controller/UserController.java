@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
+@CrossOrigin ("*")
 @RestController
 public class UserController {
 

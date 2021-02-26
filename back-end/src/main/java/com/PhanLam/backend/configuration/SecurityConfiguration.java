@@ -30,8 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * @author Phan Lam
  */
 @Configuration
-@EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+//@EnableWebSecurity
+public class SecurityConfiguration {
     
     // Variables declaration:
     private UserInformationGet userInformationGetter;
@@ -93,7 +93,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return logoutSuccessHandler;
     } 
     
-    @Override
+//    @Override
     protected void configure (
             AuthenticationManagerBuilder authenticationManagerBuilder
     ) throws Exception { 
@@ -102,7 +102,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder (getPasswordEncoderForMatches ());
     }
 
-    @Override
+//    @Override
     protected void configure (HttpSecurity security) throws Exception {
         security.csrf ().disable ();
         security.cors ();

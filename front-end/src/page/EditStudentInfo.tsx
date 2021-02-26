@@ -16,12 +16,12 @@ export function EditStudentInfo (): ReactElement {
     let userAPI: UserAPI | undefined;
     let param: any = useParams();
     let [student, setStudent] = useState<User>(new User());
-    let date: string;
+    
     useEffect (() => {
         userAPI = new UserAPI();
         userAPI.displayStudent(param.studentID).then(
             (res) => {
-                setStudent(res.data);
+                setUser(res.data);
                 // console.log(student.userName);
             }
     );
@@ -33,7 +33,7 @@ export function EditStudentInfo (): ReactElement {
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >
     ){
-        updatedUser = user;
+        updatedUser = new User(user);
         inputField = event.target;
         updatedUser[
             inputField.name as keyof UserIndexSignature
@@ -79,11 +79,10 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="userName"
                                         id="userName"
-                                        pattern="^[\\p{L} .'-]+$"
-                                        placeholder={student.userName}
+                                        pattern="^[a-z0-9_-]{3,15}$"
                                         required={true}
                                         spellCheck={false}
-                                        // value = {student.userName}
+                                        value = {user.userName}
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
@@ -97,8 +96,8 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="firstName"
                                         id="firstName"
-                                        pattern="^[\\p{L} .'-]+$"
-                                        placeholder={student.firstName}
+                                        pattern="^[a-z0-9_-]{3,15}$"
+                                        value={user.firstName}
                                         required={true}
                                         spellCheck={false}
                                         // value = {user.userName}
@@ -115,8 +114,8 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="lastName"
                                         id="lastName"
-                                        pattern="^[\\p{L} .'-]+$"
-                                        placeholder={student.lastName}
+                                        pattern="^[a-z0-9_-]{1,15}$"
+                                        value={user.lastName}
                                         required={true}
                                         spellCheck={false}
                                         // value = {user.userName}
@@ -133,7 +132,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="email"
                                         id="email"
-                                        placeholder={student.email}
+                                        value={user.email}
                                         required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -149,7 +148,6 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="dob"
                                         id="dob"
-                                        //value="07/08/1997"
                                         required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -165,7 +163,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="phoneNumber"
                                         id="phoneNumber"
-                                        placeholder={student.phoneNumber}
+                                        value={user.phoneNumber}
                                         required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -181,7 +179,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="gender"
                                         id="gender"
-                                        placeholder={student.gender}
+                                        value={user.gender}
                                         required={false}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -197,7 +195,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="job"
                                         id="job"
-                                        placeholder={student.job}
+                                        value={user.job}
                                         required={true}
                                         spellCheck={false}
                                         onChange={handleUserChange}
@@ -213,7 +211,6 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="password"
                                         id="password"
-                                        pattern="^\\S+$"
                                         placeholder="Your new password"
                                         required={false}
                                         spellCheck={false}
@@ -230,7 +227,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="accountStatus"
                                         id="accountStatus"
-                                        placeholder={student.accountStatus}
+                                        value={user.accountStatus}
                                         required={false}
                                         spellCheck={false}
                                         // value = {user.userName}

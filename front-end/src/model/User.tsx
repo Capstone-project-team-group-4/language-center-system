@@ -17,22 +17,45 @@ export class User {
 	public dateCreated: Date;
 	public lastLogin: Date;
 	
-	constructor (){
-		this.userID = 0;
-		this.userName = "";
-		this.firstName = "";
-		this.lastName = "";
-		this.email = "";
-		this.dob = new Date (0);
-		this.phoneNumber = "";
-		this.gender = "";
-		this.job = "";
-		this.photoURI = "";
-		this.selfDescription = "";
-		this.password = "";
-		this.accountStatus = "";
-		this.dateCreated = new Date (0);
-		this.lastLogin = new Date (0);
+	public constructor ();
+
+	public constructor (user: User);
+
+	public constructor (user?: User){
+		if (typeof user !== "undefined"){
+			this.userID = user.userID;
+			this.userName = user.userName;
+			this.firstName = user.firstName;
+			this.lastName = user.lastName;
+			this.email = user.email;
+			this.phoneNumber = user.phoneNumber;
+			this.password = user.password;
+			this.dob = user.dob;
+			this.gender = user.gender;
+			this.job = user.job;
+			this.photoURI = user.photoURI;
+			this.selfDescription = user.selfDescription;
+			this.accountStatus = user.accountStatus;
+			this.dateCreated = user.dateCreated;
+			this.lastLogin = user.lastLogin;
+		}
+		else {
+			this.userID = 0;
+			this.userName = "";
+			this.firstName = "";
+			this.lastName = "";
+			this.email = "";
+			this.phoneNumber = "";
+			this.password = "";
+			this.dob = new Date (0);
+			this.gender = "";
+			this.job = "";
+			this.photoURI = "";
+			this.selfDescription = "";
+			this.accountStatus = "";
+			this.dateCreated = new Date (0);
+			this.lastLogin = new Date (0);
+		}
 	}
 }
 

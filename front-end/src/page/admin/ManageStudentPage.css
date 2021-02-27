@@ -1,5 +1,8 @@
-.container {
+#root {
     background-color: white;
+}
+
+.container {
     background-size: cover;
     height: 100%;
 }

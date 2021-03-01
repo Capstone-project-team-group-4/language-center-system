@@ -155,6 +155,7 @@ public class UserService {
         updatedUser.setSelfDescription(user.getSelfDescription());
         updatedUser.setPassword(user.getPassword());
         updatedUser.setAccountStatus(user.getAccountStatus());
+        updatedUser.setDateCreated(user.getDateCreated());
         return userRepository.save(updatedUser);
     }
 

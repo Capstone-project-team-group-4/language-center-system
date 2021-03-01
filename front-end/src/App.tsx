@@ -179,7 +179,7 @@ export function App (): ReactElement {
         <AdminConsolePage modalDialog = {modalDialog}/>
       </Route>
       <Route path = "/user_view">
-        <AdminPageHeader />
+      <AdminPageHeader logOut = {logOut}/>
         <ViewProfilePage />
       </Route>
 

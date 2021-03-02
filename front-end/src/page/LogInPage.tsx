@@ -69,10 +69,10 @@ export function LogInPage (props: LogInPageProps): ReactElement {
             >
     ): void {
         inputField = event.target;
-        if (inputField.name === "userName"){
+        if (inputField.name === "userNameField"){
             setUserName (inputField.value);
         }
-        else if (inputField.name === "password"){
+        else if (inputField.name === "passwordField"){
             setPassword (inputField.value);
         }
     }
@@ -96,9 +96,14 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                 loginSucceededLocation = new LoginSucceededLocation ();
                 if (roleHolder.length === 1){
                     role = roleHolder[0];
-                    roleName = role.roleName;  
-                    if (roleName === "ROLE_ADMIN"){
-                        loginSucceededLocation.pathname = "/admin-console";
+                    roleName = role.roleName;
+                    switch (roleName){
+                        default:
+                            throw new Error ("Unknown role name !");
+
+                        case "ROLE_ADMIN":
+                            loginSucceededLocation.pathname = "/admin-console";
+                            break;
                     }
                 }
                 else {
@@ -131,7 +136,6 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     return (
         <Container 
             fluid = {true} 
-            id = "LogInPageContentContainer" 
             className = "vh-100"
         >   
             {props.modalDialog}
@@ -166,8 +170,8 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     type = "text"
                                     autoComplete = "off"
                                     autoFocus = {true}
-                                    name = "userName"
-                                    id = "userName"
+                                    name = "userNameField"
+                                    id = "UserNameField"
                                     placeholder = "Your user name"
                                     required = {true}
                                     spellCheck = {false}
@@ -188,8 +192,8 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     type = "password"
                                     autoComplete = "off"
                                     autoFocus = {false}
-                                    name = "password"
-                                    id = "password"
+                                    name = "passwordField"
+                                    id = "PasswordField"
                                     placeholder = "Your password"
                                     required = {true}
                                     spellCheck = {false}

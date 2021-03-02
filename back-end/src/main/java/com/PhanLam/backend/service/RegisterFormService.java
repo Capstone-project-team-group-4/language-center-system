@@ -9,9 +9,7 @@ package com.PhanLam.backend.service;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
-import com.PhanLam.backend.dal.repository_interface.NewUserRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.NewUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.PhanLam.backend.dal.repository_interface.RegisterFormRepository;
+import com.PhanLam.backend.model.RegisterForm;
 
 /**
  *
@@ -32,67 +32,76 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false) 
-public class NewUserService {
+public class RegisterFormService {
     
     // Variables declaration:
-    private NewUserRepository newUserRepository;
+    private RegisterFormRepository registerFormRepository;
     private Argon2PasswordEncoder passwordEncoder;
     private UserRepository userRepository; 
 
-    public NewUserService (
-            NewUserRepository newUserRepository
+    public RegisterFormService (
+            RegisterFormRepository registerFormRepository
             , Argon2PasswordEncoder passwordEncoder
             , UserRepository userRepository
     ){
-        this.newUserRepository = newUserRepository;
+        this.registerFormRepository = registerFormRepository;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
-    public void createNewUser (NewUser newUser){
+    public void createRegisterForm (RegisterForm registerForm){
         String userName;
-        boolean newUserAlreadyExist;
+        boolean registerFormAlreadyExist;
         boolean userAlreadyExist;
         String password;
         
-        userName = newUser.getUserName ();
-        newUserAlreadyExist = newUserRepository.existsByUserName (userName);
+        userName = registerForm.getUserName ();
+        registerFormAlreadyExist = registerFormRepository.existsByUserName (
+                userName
+        );
         userAlreadyExist = userRepository.existsByUserName (userName);
-        if ((newUserAlreadyExist == true) || (userAlreadyExist == true)){
-            throw new AlreadyExistException ("user name");
+        if ((registerFormAlreadyExist == true) || (userAlreadyExist == true)){
+            throw new AlreadyExistException ("User Name");
         }
         else {
-            password = newUser.getPassword ();
+            password = registerForm.getPassword ();
             password = passwordEncoder.encode (password);
-            newUser.setPassword (password);
-            newUserRepository.save (newUser);
+            registerForm.setPassword (password);
+            registerFormRepository.save (registerForm);
         }
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<NewUser> getAllNewUser (int pageNumber, int pageSize){
-        ArrayList<NewUser> newUserHolder;
+    public ArrayList<RegisterForm> getAllRegisterForm (
+            int pageNumber
+            , int pageSize
+    ){
+        ArrayList<RegisterForm> RegisterFormHolder;
         PageRequest pagingInformation;
-        Page<NewUser> newUserPage;
-        TypedSort<NewUser> newUserSortInformation;
+        Page<RegisterForm> RegisterFormPage;
+        TypedSort<RegisterForm> RegisterFormSortInformation;
         Sort sortInformation; 
         
         if ((pageNumber >= 0) && (pageSize >= 0)){
-            newUserSortInformation = Sort.sort (NewUser.class);
+            RegisterFormSortInformation = Sort.sort (RegisterForm.class);
             sortInformation 
-                = newUserSortInformation.by (NewUser::getFirstName).ascending ()
-                .and (
-                        newUserSortInformation.by (NewUser::getLastName)
-                        .ascending ()
-                );
+                = RegisterFormSortInformation
+                    .by (RegisterForm::getFirstName).ascending ()
+                    .and (RegisterFormSortInformation
+                        .by (RegisterForm::getLastName).ascending ()
+                    );
             pagingInformation = PageRequest.of (
                     pageNumber
                     , pageSize
                     , sortInformation
             );
-            newUserPage = newUserRepository.findAll (pagingInformation);
-            newUserHolder = new ArrayList<> (newUserPage.getContent ());
-            return newUserHolder;
+            RegisterFormPage = registerFormRepository.findAll (
+                    pagingInformation
+            );
+            RegisterFormHolder = new ArrayList<> (
+                    RegisterFormPage.getContent ()
+            );
+            return RegisterFormHolder;
         }
         else {
             throw new InvalidRequestArgumentException (
@@ -103,46 +112,46 @@ public class NewUserService {
         }
     }
     
-    public void useNewUserToCreateUser (
-            int userID
+    public void useRegisterFormToCreateUser (
+            int formID
             , ArrayList<Role> newAccountRoleList
     ){
-        Optional <NewUser> nullableNewUser;
-        NewUser newUser;
+        Optional <RegisterForm> nullableRegisterForm;
+        RegisterForm registerForm;
         String userName;
         String firstName;
+        String middleName;
         String lastName;
         String phoneNumber;
         String email;
         String password;
-        String accountStatus;
         Date dateCreated;
         User user;
         
         if (newAccountRoleList.size () > 0){
-            nullableNewUser = newUserRepository.findById (userID);
-            if (nullableNewUser.isPresent () == false){
+            nullableRegisterForm = registerFormRepository.findById (formID);
+            if (nullableRegisterForm.isPresent () == false){
                 throw new NotFoundException ("create-account-request");
             }
             else {
-                newUser = nullableNewUser.get ();
-                newUserRepository.delete (newUser);
-                userName = newUser.getUserName ();
-                firstName = newUser.getFirstName ();
-                lastName = newUser.getLastName ();
-                phoneNumber = newUser.getPhoneNumber ();
-                email = newUser.getEmail ();
-                password = newUser.getPassword ();
-                accountStatus = "Active";
+                registerForm = nullableRegisterForm.get ();
+                registerFormRepository.delete (registerForm);
+                userName = registerForm.getUserName ();
+                firstName = registerForm.getFirstName ();
+                middleName = registerForm.getMiddleName ();
+                lastName = registerForm.getLastName ();
+                phoneNumber = registerForm.getPhoneNumber ();
+                email = registerForm.getEmail ();
+                password = registerForm.getPassword ();
                 dateCreated = new Date ();
                 user = new User (
                         userName
                         , firstName
+                        , middleName
                         , lastName
                         , phoneNumber
                         , email
                         , password
-                        , accountStatus
                         , dateCreated
                 );
                 user.setRoleList (newAccountRoleList);
@@ -152,22 +161,22 @@ public class NewUserService {
         else {
             throw new InvalidRequestArgumentException (
                     "The new account role list is empty"
-                    + ", please send at least 1 role for the new account !"
+                    + ", please send at least 1 role for the new account."
             );
         }
     }
     
-    public void deleteNewUserByID (int userID){
-        Optional<NewUser> nullableNewUser;
-        NewUser newUser;
+    public void deleteRegisterFormByID (int formID){
+        Optional<RegisterForm> nullableRegisterForm;
+        RegisterForm registerForm;
         
-        nullableNewUser = newUserRepository.findById (userID);
-        if (nullableNewUser.isPresent () == false){
-            throw new NotFoundException ("user ID");
+        nullableRegisterForm = registerFormRepository.findById (formID);
+        if (nullableRegisterForm.isPresent () == false){
+            throw new NotFoundException ("User ID");
         }
         else {
-            newUser = nullableNewUser.get ();
-            newUserRepository.delete (newUser);
+            registerForm = nullableRegisterForm.get ();
+            registerFormRepository.delete (registerForm);
         }
     }
 }

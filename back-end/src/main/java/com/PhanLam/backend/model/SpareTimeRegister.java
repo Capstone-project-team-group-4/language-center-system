@@ -26,90 +26,90 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Phan Lam
+ * @author roboc
  */
 @Entity
-@Table (name = "SpareTimeRegister", catalog = "LanguageCenterDB", schema = "dbo")
+@Table(name = "SpareTimeRegister", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "SpareTimeRegister.findAll", query = "SELECT s FROM SpareTimeRegister s"),
-    @NamedQuery (name = "SpareTimeRegister.findBySpareTimeID", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTimeID = :spareTimeID"),
-    @NamedQuery (name = "SpareTimeRegister.findBySpareTime", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTime = :spareTime")})
+@NamedQueries({
+    @NamedQuery(name = "SpareTimeRegister.findAll", query = "SELECT s FROM SpareTimeRegister s"),
+    @NamedQuery(name = "SpareTimeRegister.findBySpareTimeID", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTimeID = :spareTimeID"),
+    @NamedQuery(name = "SpareTimeRegister.findBySpareTime", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTime = :spareTime")})
 public class SpareTimeRegister implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Basic (optional = false)
-    @Column (name = "SpareTimeID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "SpareTimeID", nullable = false)
     private Integer spareTimeID;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Column (name = "SpareTime", nullable = false)
-    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "SpareTime", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date spareTime;
-    @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User userID;
 
-    public SpareTimeRegister (){
+    public SpareTimeRegister() {
     }
 
-    public SpareTimeRegister (Integer spareTimeID){
+    public SpareTimeRegister(Integer spareTimeID) {
         this.spareTimeID = spareTimeID;
     }
 
-    public SpareTimeRegister (Integer spareTimeID, Date spareTime){
+    public SpareTimeRegister(Integer spareTimeID, Date spareTime) {
         this.spareTimeID = spareTimeID;
         this.spareTime = spareTime;
     }
 
-    public Integer getSpareTimeID (){
+    public Integer getSpareTimeID() {
         return spareTimeID;
     }
 
-    public void setSpareTimeID (Integer spareTimeID){
+    public void setSpareTimeID(Integer spareTimeID) {
         this.spareTimeID = spareTimeID;
     }
 
-    public Date getSpareTime (){
+    public Date getSpareTime() {
         return spareTime;
     }
 
-    public void setSpareTime (Date spareTime){
+    public void setSpareTime(Date spareTime) {
         this.spareTime = spareTime;
     }
 
-    public User getUserID (){
+    public User getUserID() {
         return userID;
     }
 
-    public void setUserID (User userID){
+    public void setUserID(User userID) {
         this.userID = userID;
     }
 
     @Override
-    public int hashCode (){
+    public int hashCode() {
         int hash = 0;
-        hash += (spareTimeID != null ? spareTimeID.hashCode () : 0);
+        hash += (spareTimeID != null ? spareTimeID.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SpareTimeRegister)){
+        if (!(object instanceof SpareTimeRegister)) {
             return false;
         }
         SpareTimeRegister other = (SpareTimeRegister) object;
-        if ((this.spareTimeID == null && other.spareTimeID != null) || (this.spareTimeID != null && !this.spareTimeID.equals (other.spareTimeID))){
+        if ((this.spareTimeID == null && other.spareTimeID != null) || (this.spareTimeID != null && !this.spareTimeID.equals(other.spareTimeID))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return "com.PhanLam.backend.model.SpareTimeRegister[ spareTimeID=" + spareTimeID + " ]";
     }
     

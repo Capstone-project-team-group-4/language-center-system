@@ -7,7 +7,7 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.LoggedInUser;
+// import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.ArrayList;
@@ -95,23 +95,23 @@ public class UserController {
         userService.deleteUserByID (userID, principal);
     }
     
-    @GetMapping ("/logged-in-user")
-    @ResponseStatus (HttpStatus.OK)
-    public LoggedInUser getCurrentLoggedInUser (Principal principal){
-        LoggedInUser loggedInUser;
-        
-        loggedInUser = userService.getLoggedInUser (principal);
-        return loggedInUser;
-    }
-    
-    @PutMapping("/editInfo/{userID}")
-    @ResponseStatus(HttpStatus.OK)
-    public User updateStudentInfo(
-            @RequestBody User user
-            , @PathVariable int userID
-    ){
-        return userService.updateStudent(user, userID);
-    }
+//    @GetMapping ("/logged-in-user")
+//    @ResponseStatus (HttpStatus.OK)
+//    public LoggedInUser getCurrentLoggedInUser (Principal principal){
+//        LoggedInUser loggedInUser;
+//        
+//        loggedInUser = userService.getLoggedInUser (principal);
+//        return loggedInUser;
+//    }
+//    
+//    @PutMapping("/editInfo/{userID}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public User updateStudentInfo(
+//            @RequestBody User user
+//            , @PathVariable int userID
+//    ){
+//        return userService.updateStudent(user, userID);
+//    }
 
     @GetMapping("/getStudent/{userID}")
     @ResponseStatus(HttpStatus.OK)

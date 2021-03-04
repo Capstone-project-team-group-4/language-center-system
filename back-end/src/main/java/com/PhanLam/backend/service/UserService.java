@@ -9,7 +9,7 @@ package com.PhanLam.backend.service;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.LoggedInUser;
+// import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import java.util.List;
@@ -39,21 +39,21 @@ public class UserService {
         this.userRepository = userRepository;
     }
     
-    @Transactional (readOnly = true)
-    public LoggedInUser getLoggedInUser (Principal principal){
-        LoggedInUser loggedInUser;
-        String userName;
-        Optional<User> nullableUser;
-        User user;
-        ArrayList<Role> roleHolder;
-
-        userName = principal.getName ();
-        nullableUser = userRepository.findByUserName (userName);
-        user = nullableUser.get ();
-        roleHolder = new ArrayList<> (user.getRoleList ());
-        loggedInUser = new LoggedInUser (userName, roleHolder);
-        return loggedInUser;
-    }
+//    @Transactional (readOnly = true)
+//    public LoggedInUser getLoggedInUser (Principal principal){
+//        LoggedInUser loggedInUser;
+//        String userName;
+//        Optional<User> nullableUser;
+//        User user;
+//        ArrayList<Role> roleHolder;
+//
+//        userName = principal.getName ();
+//        nullableUser = userRepository.findByUserName (userName);
+//        user = nullableUser.get ();
+//        roleHolder = new ArrayList<> (user.getRoleList ());
+//        loggedInUser = new LoggedInUser (userName, roleHolder);
+//        return loggedInUser;
+//    }
     
     @Transactional (readOnly = true)
     public ArrayList<User> getAllUserWithUserNameIsNot (

@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -156,13 +159,7 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
-    private List<SpareTimeRegister> spareTimeRegisterList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
-    private List<StudentScore> studentScoreList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
-    private List<Class> classList1;
-
+    
     public User() {
     }
 
@@ -386,33 +383,6 @@ public class User implements Serializable {
 
     public void setAddressList(List<Address> addressList) {
         this.addressList = addressList;
-    }
-
-    @XmlTransient
-    public List<SpareTimeRegister> getSpareTimeRegisterList() {
-        return spareTimeRegisterList;
-    }
-
-    public void setSpareTimeRegisterList(List<SpareTimeRegister> spareTimeRegisterList) {
-        this.spareTimeRegisterList = spareTimeRegisterList;
-    }
-
-    @XmlTransient
-    public List<StudentScore> getStudentScoreList() {
-        return studentScoreList;
-    }
-
-    public void setStudentScoreList(List<StudentScore> studentScoreList) {
-        this.studentScoreList = studentScoreList;
-    }
-
-    @XmlTransient
-    public List<Class> getClassList1() {
-        return classList1;
-    }
-
-    public void setClassList1(List<Class> classList1) {
-        this.classList1 = classList1;
     }
 
     @Override

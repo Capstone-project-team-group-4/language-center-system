@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 // Import package members section:
 import React, { 
-    ChangeEvent
-    , MouseEvent
+    MouseEvent
     , ReactElement
     , useEffect
     , useState 
@@ -18,12 +17,8 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { NewUserAPI } from "../../common/service/NewUserAPI";
-import { RoleAPI } from "../../common/service/RoleAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
-import { NewUser } from "../../model/NewUser";
-import { Role } from "../../model/Role";
 import { User } from "../../model/User";
 
 function renderUserTable (
@@ -102,8 +97,8 @@ export function DisableOrDeleteAccountPage (
     let [userHolder, setUserHolder] = useState<User[]> ([]);
     let userAPI: UserAPI;
     let typeGuardian: TypeGuard;
-    let [pageNumber, setPageNumber] = useState<number> (0);
-    let [pageSize, setPageSize] = useState<number> (10);
+    let [pageNumber] = useState<number> (0);
+    let [pageSize] = useState<number> (10);
     let button: HTMLButtonElement | undefined;
     let [userID, setUserID] = useState<number> (0);
     let [pendingAction, setPendingAction] = useState<string> ("");

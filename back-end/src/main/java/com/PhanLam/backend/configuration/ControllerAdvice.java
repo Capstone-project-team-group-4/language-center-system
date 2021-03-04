@@ -32,7 +32,11 @@ public class ControllerAdvice {
     public ExceptionResponseBody handleAlreadyExistException (
             AlreadyExistException exception
     ){
+        String exceptionTitle;
+        
+        exceptionTitle = exception.getExceptionTitle ();
         responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle (exceptionTitle);
         return responseBody;
     }
     
@@ -51,6 +55,7 @@ public class ControllerAdvice {
             InvalidRequestArgumentException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle ("Invalid Request Argument !");
         return responseBody;
     }
     
@@ -60,6 +65,9 @@ public class ControllerAdvice {
             BadCredentialsException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle (
+                "User Name Or Password Is Incorrect !"
+        );
         return responseBody;
     }
     
@@ -69,6 +77,9 @@ public class ControllerAdvice {
             DisabledException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle (
+                "Your Account Has Been Blocked !"
+        );
         return responseBody;
     }
 }

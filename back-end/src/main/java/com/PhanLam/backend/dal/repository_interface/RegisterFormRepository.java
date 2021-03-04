@@ -16,10 +16,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Phan Lam
  */
-public interface NewUserRepository extends JpaRepository<RegisterForm, Integer> {
+public interface RegisterFormRepository extends JpaRepository<RegisterForm, Integer> {
     
     @Override
-    public RegisterForm save (RegisterForm newUser); 
+    public RegisterForm save (RegisterForm registerForm); 
     
     public boolean existsByUserName (String userName);
     
@@ -27,8 +27,8 @@ public interface NewUserRepository extends JpaRepository<RegisterForm, Integer> 
     public Page <RegisterForm> findAll (Pageable pagingInformation); 
     
     @Override
-    public Optional <RegisterForm> findById (Integer userID);
+    public Optional <RegisterForm> findById (Integer formID);
 
     @Override
-    public void delete (RegisterForm newUser);
+    public void delete (RegisterForm registerForm);
 }

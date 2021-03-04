@@ -1,20 +1,20 @@
 /* eslint prefer-promise-reject-errors: ["error", {"allowEmptyReject": true}] */
 // Import package members section:
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { NewUser } from "../../model/NewUser";
+import { RegisterForm } from "../../model/RegisterForm";
 import { Role } from "../../model/Role";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
 import { TypeGuard } from "./TypeGuard";
 
-export class NewUserAPI {
+export class RegisterFormAPI {
 
     // Variables declaration:
     private axiosInstance: AxiosInstance;
     private axiosInstanceGetter: AxiosInstanceGet;
     private errorHandler: ErrorHandle;
     private axiosError: AxiosError<unknown> | undefined; 
-    private newUserHolder: NewUser[] | undefined;
+    private registerFormHolder: RegisterForm[] | undefined;
     private serverResponse: AxiosResponse<unknown> | undefined;
     private requestParameterHolder: URLSearchParams | undefined; 
     private typeGuardian: TypeGuard;
@@ -27,12 +27,12 @@ export class NewUserAPI {
     }
     
     public async registerNewCreateAccountRequest (
-            newUser: NewUser
+            registerForm: RegisterForm
     ): Promise<void> {
         try {
             await this.axiosInstance.post<undefined> (
-                    "/new-users"
-                    , newUser
+                    "/register-forms"
+                    , registerForm
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -51,18 +51,22 @@ export class NewUserAPI {
     public async getAllCreateAccountRequest (
             pageNumber: number
             , pageSize: number
-    ): Promise<NewUser[]> {
+    ): Promise<RegisterForm[]> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/new-users"
+                    "/register-forms"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isNewUserArray (this.serverResponse.data)){
-                this.newUserHolder = this.serverResponse.data;
-                return Promise.resolve<NewUser[]> (this.newUserHolder);
+            if (this.typeGuardian.isRegisterFormArray (
+                    this.serverResponse.data
+            )){
+                this.registerFormHolder = this.serverResponse.data;
+                return Promise.resolve<RegisterForm[]> (
+                        this.registerFormHolder
+                );
             } 
             else {
                 throw new Error ("This server response is not valid !");
@@ -81,12 +85,12 @@ export class NewUserAPI {
     }
 
     public async acceptCreateAccountRequest (
-        userID: number
+        formID: number
         , newAccountRoleList: Role[]  
     ): Promise<void> {
         try {
             await this.axiosInstance.patch<undefined> (
-                    `/new-users/${userID}:accept`
+                    `/register-forms/${formID}:accept`
                     , newAccountRoleList
             );
             return Promise.resolve<undefined> (undefined);
@@ -104,11 +108,11 @@ export class NewUserAPI {
     }
 
     public async rejectCreateAccountRequest (
-            userID: number
+            formID: number
     ): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
-                    `/new-users/${userID}`
+                    `/register-forms/${formID}`
             );
             return Promise.resolve<undefined> (undefined);
         }

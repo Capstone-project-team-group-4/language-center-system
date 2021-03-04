@@ -22,7 +22,7 @@ export class ErrorHandle {
                 this.exceptionResponseBody = (
                     apiError.response.data as ExceptionResponseBody
                 );
-                apiError.name = this.exceptionResponseBody.exceptionName;
+                apiError.name = this.exceptionResponseBody.exceptionTitle;
                 apiError.message = this.exceptionResponseBody.message;
                 return Promise.resolve<AxiosError<unknown>> (apiError);
             }

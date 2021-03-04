@@ -5,7 +5,7 @@
  */
 package com.PhanLam.backend.controller;
 
-// Import package members section:
+//Import package members section:
 import com.PhanLam.backend.model.NewUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.service.NewUserService;

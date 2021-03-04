@@ -168,6 +168,7 @@ public class UserService {
         updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setMiddleName(user.getMiddleName());
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setDob(user.getDob());

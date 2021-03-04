@@ -11,7 +11,7 @@ import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.dal.repository_interface.NewUserRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.NewUser;
+import com.PhanLam.backend.model.RegisterForm;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class NewUserService {
         this.userRepository = userRepository;
     }
 
-    public void createNewUser (NewUser newUser){
+    public void createNewUser (RegisterForm newUser){
         String userName;
         boolean newUserAlreadyExist;
         boolean userAlreadyExist;
@@ -70,7 +70,7 @@ public class NewUserService {
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<NewUser> getAllNewUser (int pageNumber, int pageSize){
+    public ArrayList<RegisterForm> getAllNewUser (int pageNumber, int pageSize){
         ArrayList<NewUser> newUserHolder;
         PageRequest pagingInformation;
         Page<NewUser> newUserPage;

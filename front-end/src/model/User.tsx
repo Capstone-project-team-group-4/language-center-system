@@ -3,6 +3,7 @@ export class User {
     // Variables declaration:
     public userID: number;
 	public userName: string;
+	public middleName: string;
 	public firstName: string;
 	public lastName: string;
 	public email: string;
@@ -26,6 +27,7 @@ export class User {
 			this.userID = user.userID;
 			this.userName = user.userName;
 			this.firstName = user.firstName;
+			this.middleName = user.middleName;
 			this.lastName = user.lastName;
 			this.email = user.email;
 			this.phoneNumber = user.phoneNumber;
@@ -43,6 +45,7 @@ export class User {
 			this.userID = 0;
 			this.userName = "";
 			this.firstName = "";
+			this.middleName = "";
 			this.lastName = "";
 			this.email = "";
 			this.phoneNumber = "";
@@ -62,6 +65,7 @@ export class User {
 type stringTypeKey 
     = "userName" 
     | "firstName"
+	| "middleName"
     | "lastName"
     | "email"
     | "phoneNumber"

@@ -1,11 +1,11 @@
 export class ExceptionResponseBody {
     
     // Variables declaration:
-    public exceptionName: string;
+    public exceptionTitle: string;
     public message: string;
 
-	public constructor (exceptionName: string, message: string){
-		this.exceptionName = exceptionName;
+	public constructor (exceptionTitle: string, message: string){
+		this.exceptionTitle = exceptionTitle;
 		this.message = message;
 	}
 }

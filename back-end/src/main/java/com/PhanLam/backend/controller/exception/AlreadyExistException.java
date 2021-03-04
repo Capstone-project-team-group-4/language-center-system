@@ -11,10 +11,18 @@ package com.PhanLam.backend.controller.exception;
  */
 public class AlreadyExistException extends RuntimeException {
 
+    // Variables declaration:
+    private String exceptionTitle; 
+    
     public AlreadyExistException (String duplicateObjectName){
         super (
                 "This " + duplicateObjectName + " has already been used"
-                + ", please enter another " + duplicateObjectName + " !"
+                + ", please enter another " + duplicateObjectName + "."
         );
+        exceptionTitle = duplicateObjectName + " Already Exists !";
     } 
+
+    public String getExceptionTitle (){
+        return exceptionTitle;
+    }
 }

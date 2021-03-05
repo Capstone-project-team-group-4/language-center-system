@@ -79,7 +79,7 @@ public class UserController {
     
     @DeleteMapping ("/users/{userID}")
     @ResponseStatus (HttpStatus.OK)
-    public void deleteUser (@PathVariable int userID){
+    public void deleteUser (@PathVariable int userID, Principal principal){
         boolean userAlreadyExist;
 
         userAlreadyExist = userRepository.existsById(userID);
@@ -112,5 +112,11 @@ public class UserController {
     ){
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
+    }
+    
+    @DeleteMapping("/students/{userID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStudent(@PathVariable int userID) {
+        userService.deleteStudentByID(userID);
     }
 }

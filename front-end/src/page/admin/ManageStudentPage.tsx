@@ -1,17 +1,19 @@
+/* eslint-disable max-len */
 import React, { ReactElement, useState, useEffect } from "react";
 import { UserAPI } from "../../common/service/UserAPI";
 import '../../../node_modules/font-awesome/css/font-awesome.min.css';
 import './ManageStudentPage.css';
 import { User } from "../../model/User";
+import { Link } from 'react-router-dom';
 
 export function ManageStudentPage (): ReactElement {
-    let [user, setUser] = useState<[]>([]);
+    let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI = new UserAPI();
     useEffect(() => {
         userAPI.listUsers().then(
             (res) => {
                 console.log(res);
-                setUser(res.data);
+                setUser(res.data as User[]);
             }
         );
     }, []);
@@ -23,12 +25,12 @@ export function ManageStudentPage (): ReactElement {
             </div>
             <div className="row" id="grid">
                 <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8" id="table">
-                    <button type="button" className="btn btn-primary">
+                    {/* <button type="button" className="btn btn-primary">
                         <span className=
                             "fa fa-plus mr-5">
                         </span>
                         Thêm học viên   
-                </button>
+                </button> */}
                     <div className="row mt-15">
                         <div className=
                             "col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -188,18 +190,26 @@ export function ManageStudentPage (): ReactElement {
                                         <td className="text-center d-flex">
                                         <button type="button"
                                             className="btn btn-info act-btn">
+                                                <Link to = "/user-view" 
+                                                className="button_view">
                                                 <span className=
                                                     "fa fa-eye mr-5">
                                                 </span>
                                                 Xem
+                                                </Link>
                                         </button>
                                         &nbsp;
                                         <button type="button"
                                             className="btn btn-warning act-btn">
-                                                <span className=
+                                                <Link to 
+                                                = {`/editStudentInfo/${item["userID"]}`}
+                                                className="button_edit">
+                                                    <span className=
                                                     "fa fa-pencil mr-5">
                                                 </span>
                                                 Sửa
+                                                </Link>
+                                                
                                         </button>
                                         &nbsp;
                                         <button type="button"

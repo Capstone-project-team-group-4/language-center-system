@@ -113,15 +113,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         );
         security.logout ().logoutSuccessHandler (getLogoutSuccessHandler ());
         security.authorizeRequests ()
-                .antMatchers (HttpMethod.GET, "/logged-in-user*/**")
+                .antMatchers (HttpMethod.GET, "/logged-in-user")
                         .authenticated ()
-                .antMatchers (HttpMethod.GET, "/new-users*/**")
+                .antMatchers (HttpMethod.GET, "/register-forms")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.POST, "/new-users")
+                .antMatchers (HttpMethod.POST, "/register-forms")
                         .permitAll ()
-                .antMatchers (HttpMethod.PATCH, "/new-users*/**")
+                .antMatchers (HttpMethod.PATCH, "/register-forms/*")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.GET, "/roles*/**")
+                .antMatchers (HttpMethod.DELETE, "/register-forms/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/users*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/users/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.DELETE, "/users/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
                 .anyRequest ().denyAll ();
     }

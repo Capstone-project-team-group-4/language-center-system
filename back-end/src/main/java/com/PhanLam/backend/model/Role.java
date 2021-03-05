@@ -43,10 +43,10 @@ public class Role implements Serializable {
     @Basic(optional = false)
     @Column(name = "RoleID", nullable = false)
     private Integer roleID;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "RoleName", nullable = false, length = 500)
+    @Size (min = 1, max = 400)
+    @Column (name = "RoleName", nullable = false, length = 400)
     private String roleName;
     @JsonIgnore
     @ManyToMany (mappedBy = "roleList", fetch = FetchType.LAZY)
@@ -71,21 +71,21 @@ public class Role implements Serializable {
     public void setRoleID(Integer roleID) {
         this.roleID = roleID;
     }
-
-    public String getRoleName() {
+    
+    public String getRoleName (){
         return roleName;
     }
 
-    public void setRoleName(String roleName) {
+    public void setRoleName (String roleName){
         this.roleName = roleName;
     }
 
     @XmlTransient
-    public List<User> getUserList() {
+    public List<User> getUserList (){
         return userList;
     }
 
-    public void setUserList(List<User> userList) {
+    public void setUserList (List<User> userList){
         this.userList = userList;
     }
 
@@ -112,6 +112,5 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "com.PhanLam.backend.model.Role[ roleID=" + roleID + " ]";
-    }
-    
+    } 
 }

@@ -16,6 +16,8 @@ export class UserAPI {
     private loggedInUser: LoggedInUser | undefined;
     private axiosError: AxiosError<unknown> | undefined;
     private errorHandler: ErrorHandle;
+    private requestParameterHolder: URLSearchParams | undefined;
+    private userHolder: User[] | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -26,6 +28,101 @@ export class UserAPI {
 
     public listUsers (): Promise<AxiosResponse> {
         return axios.get("http://localhost:8080/users");
+    }
+
+    public async getAllUserExcludingCurrentLoggedInUser (
+            pageNumber: number
+            , pageSize: number
+    ): Promise<User[]> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/users:excluding-logged-in-user"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isUserArray (this.serverResponse.data)){
+                this.userHolder = this.serverResponse.data;
+                return Promise.resolve<User[]> (this.userHolder);
+            } 
+            else {
+                throw new Error ("This server response is not valid !");
+            }  
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject ();
+            }
+        }
+    }
+
+    public async disableAnotherUser (
+            userID: number
+    ): Promise<void> {
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/users/${userID}:disable`
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject ();
+            }
+        }
+    }
+
+    public async enableUser (
+            userID: number
+    ): Promise<void> {
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/users/${userID}:enable`
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject ();
+            }
+        }
+    }
+    
+    public async deleteAnotherUser (
+            userID: number
+    ): Promise<void> {
+        try {
+            await this.axiosInstance.delete<undefined> (
+                    `/users/${userID}`
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject ();
+            }
+        }
     }
 
     public async getCurrentLoggedInUser (

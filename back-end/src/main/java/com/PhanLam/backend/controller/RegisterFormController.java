@@ -6,13 +6,12 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
-import com.PhanLam.backend.model.NewUser;
+import com.PhanLam.backend.model.RegisterForm;
 import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.service.NewUserService;
+import com.PhanLam.backend.service.RegisterFormService;
 import java.util.ArrayList;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,47 +27,53 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Phan Lam
  */
 @RestController
-public class NewUserController {
+public class RegisterFormController {
     
     // Variables declaration:
-    private NewUserService newUserService;
+    private RegisterFormService registerFormService;
 
-    public NewUserController (NewUserService newUserService){
-        this.newUserService = newUserService;
+    public RegisterFormController (RegisterFormService registerFormService){
+        this.registerFormService = registerFormService;
     }
     
-    @GetMapping ("/new-users")
+    @GetMapping ("/register-forms")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<NewUser> getAllCreateAccountRequest (
+    public ArrayList<RegisterForm> getAllCreateAccountRequest (
             @RequestParam int pageNumber
             , @RequestParam int pageSize
     ){
-        ArrayList<NewUser> newUserHolder;
+        ArrayList<RegisterForm> registerFormHolder;
         
-        newUserHolder = newUserService.getAllNewUser (pageNumber, pageSize);
-        return newUserHolder;
+        registerFormHolder = registerFormService.getAllRegisterForm (
+                pageNumber
+                , pageSize
+        );
+        return registerFormHolder;
     } 
     
-    @PostMapping ("/new-users")
+    @PostMapping ("/register-forms")
     @ResponseStatus (HttpStatus.CREATED)
     public void registerNewCreateAccountRequest (
-            @Valid @RequestBody NewUser newUser
+            @Valid @RequestBody RegisterForm registerForm
     ){
-        newUserService.createNewUser (newUser);
+        registerFormService.createRegisterForm (registerForm);
     }
     
-    @PatchMapping ("/new-users/{userID}:accept")
+    @PatchMapping ("/register-forms/{formID}:accept")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void acceptCreateAccountRequest (
-            @PathVariable int userID
+            @PathVariable int formID
             , @RequestBody ArrayList<Role> newAccountRoleList
     ){
-        newUserService.useNewUserToCreateUser (userID, newAccountRoleList);
+        registerFormService.useRegisterFormToCreateUser (
+                formID
+                , newAccountRoleList
+        );
     } 
     
-    @DeleteMapping ("/new-users/{userID}")
+    @DeleteMapping ("/register-forms/{formID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void rejectCreateAccountRequest (@PathVariable int userID){
-        newUserService.deleteNewUserByID (userID);
+    public void rejectCreateAccountRequest (@PathVariable int formID){
+        registerFormService.deleteRegisterFormByID (formID);
     }
 }

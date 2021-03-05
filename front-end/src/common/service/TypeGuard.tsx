@@ -1,7 +1,8 @@
 // Import package members section:
 import { AxiosError, AxiosResponse } from "axios";
 import { LoggedInUser } from "../../model/LoggedInUser";
-import { NewUser } from "../../model/NewUser";
+import { RegisterForm } from "../../model/RegisterForm";
+import { User } from "../../model/User";
 
 export class TypeGuard {
 
@@ -33,14 +34,14 @@ export class TypeGuard {
         return this.isValid;
     }
 
-    public isNewUserArray (
+    public isRegisterFormArray (
             unknownObject: unknown
-    ): unknownObject is Array<NewUser> {
+    ): unknownObject is Array<RegisterForm> {
         this.isValid = false;
         if (Array.isArray (unknownObject)){
             if (unknownObject.length > 0){
                 this.testSample = unknownObject[0]; 
-                if (this.isNewUser (this.testSample)){
+                if (this.isRegisterForm (this.testSample)){
                     this.isValid = true;
                 }
             }
@@ -63,13 +64,43 @@ export class TypeGuard {
         return this.isValid;
     }
 
-    public isNewUser (unknownObject: unknown): unknownObject is NewUser {
+    public isRegisterForm (
+            unknownObject: unknown
+    ): unknownObject is RegisterForm {
         this.isValid = false;
         if (unknownObject != undefined){
-            if ((unknownObject as NewUser).userName != undefined){
+            if ((unknownObject as RegisterForm).userName != undefined){
                 this.isValid = true;
             }
         }
         return this.isValid;
     } 
+
+    public isUser (unknownObject: unknown): unknownObject is User {
+        this.isValid = false;
+        if (unknownObject != undefined){
+            if ((unknownObject as User).accountStatus != undefined){
+                this.isValid = true;
+            }
+        }
+        return this.isValid;
+    }
+
+    public isUserArray (
+            unknownObject: unknown
+    ): unknownObject is Array<User> {
+        this.isValid = false;
+        if (Array.isArray (unknownObject)){
+            if (unknownObject.length > 0){
+                this.testSample = unknownObject[0]; 
+                if (this.isUser (this.testSample)){
+                    this.isValid = true;
+                }
+            }
+            else {
+                this.isValid = true;
+            }  
+        }
+        return this.isValid;
+    }
 }

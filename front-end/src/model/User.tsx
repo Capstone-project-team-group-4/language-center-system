@@ -50,14 +50,14 @@ export class User implements UserIndexSignature {
 			this.email = "";
 			this.phoneNumber = "";
 			this.password = "";
-			this.dob = new Date(0);
+			this.dob = new Date (0);
 			this.gender = "";
 			this.job = "";
 			this.photoURI = "";
 			this.selfDescription = "";
 			this.accountStatus = "";
-			this.dateCreated = new Date(0);
-			this.lastLogin = new Date(0);
+			this.dateCreated = new Date (0);
+			this.lastLogin = new Date (0);
 		}
 	}
 }

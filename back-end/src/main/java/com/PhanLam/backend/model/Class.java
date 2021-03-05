@@ -33,141 +33,141 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Phan Lam
+ * @author DELL
  */
 @Entity
-@Table (name = "Class", catalog = "LanguageCenterDB", schema = "dbo")
+@Table(name = "Class", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "Class.findAll", query = "SELECT c FROM Class c"),
-    @NamedQuery (name = "Class.findByClassID", query = "SELECT c FROM Class c WHERE c.classID = :classID"),
-    @NamedQuery (name = "Class.findByStartTime", query = "SELECT c FROM Class c WHERE c.startTime = :startTime"),
-    @NamedQuery (name = "Class.findByStatus", query = "SELECT c FROM Class c WHERE c.status = :status")})
+@NamedQueries({
+    @NamedQuery(name = "Class.findAll", query = "SELECT c FROM Class c"),
+    @NamedQuery(name = "Class.findByClassID", query = "SELECT c FROM Class c WHERE c.classID = :classID"),
+    @NamedQuery(name = "Class.findByStartTime", query = "SELECT c FROM Class c WHERE c.startTime = :startTime"),
+    @NamedQuery(name = "Class.findByStatus", query = "SELECT c FROM Class c WHERE c.status = :status")})
 public class Class implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Basic (optional = false)
-    @Column (name = "ClassID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ClassID", nullable = false)
     private Integer classID;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Column (name = "StartTime", nullable = false)
-    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "StartTime", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 500)
-    @Column (name = "Status", nullable = false, length = 500)
+    @Size(min = 1, max = 500)
+    @Column(name = "Status", nullable = false, length = 500)
     private String status;
-    @JoinTable (name = "UserClass", joinColumns = {
-        @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)})
-    @ManyToMany (fetch = FetchType.LAZY)
+    @JoinTable(name = "UserClass", joinColumns = {
+        @JoinColumn(name = "ClassID", referencedColumnName = "ClassID", nullable = false)}, inverseJoinColumns = {
+        @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)})
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> userList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
-    @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "CourseID", referencedColumnName = "CourseID", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Course courseID;
-    @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "TeacherID", referencedColumnName = "UserID", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User teacherID;
 
-    public Class (){
+    public Class() {
     }
 
-    public Class (Integer classID){
+    public Class(Integer classID) {
         this.classID = classID;
     }
 
-    public Class (Integer classID, Date startTime, String status){
+    public Class(Integer classID, Date startTime, String status) {
         this.classID = classID;
         this.startTime = startTime;
         this.status = status;
     }
 
-    public Integer getClassID (){
+    public Integer getClassID() {
         return classID;
     }
 
-    public void setClassID (Integer classID){
+    public void setClassID(Integer classID) {
         this.classID = classID;
     }
 
-    public Date getStartTime (){
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime (Date startTime){
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public String getStatus (){
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus (String status){
+    public void setStatus(String status) {
         this.status = status;
     }
 
     @XmlTransient
-    public List<User> getUserList (){
+    public List<User> getUserList() {
         return userList;
     }
 
-    public void setUserList (List<User> userList){
+    public void setUserList(List<User> userList) {
         this.userList = userList;
     }
 
     @XmlTransient
-    public List<HomeWork> getHomeWorkList (){
+    public List<HomeWork> getHomeWorkList() {
         return homeWorkList;
     }
 
-    public void setHomeWorkList (List<HomeWork> homeWorkList){
+    public void setHomeWorkList(List<HomeWork> homeWorkList) {
         this.homeWorkList = homeWorkList;
     }
 
-    public Course getCourseID (){
+    public Course getCourseID() {
         return courseID;
     }
 
-    public void setCourseID (Course courseID){
+    public void setCourseID(Course courseID) {
         this.courseID = courseID;
     }
 
-    public User getTeacherID (){
+    public User getTeacherID() {
         return teacherID;
     }
 
-    public void setTeacherID (User teacherID){
+    public void setTeacherID(User teacherID) {
         this.teacherID = teacherID;
     }
 
     @Override
-    public int hashCode (){
+    public int hashCode() {
         int hash = 0;
-        hash += (classID != null ? classID.hashCode () : 0);
+        hash += (classID != null ? classID.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Class)){
+        if (!(object instanceof Class)) {
             return false;
         }
         Class other = (Class) object;
-        if ((this.classID == null && other.classID != null) || (this.classID != null && !this.classID.equals (other.classID))){
+        if ((this.classID == null && other.classID != null) || (this.classID != null && !this.classID.equals(other.classID))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return "com.PhanLam.backend.model.Class[ classID=" + classID + " ]";
     }
     

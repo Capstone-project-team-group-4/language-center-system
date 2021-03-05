@@ -65,6 +65,7 @@ export function ViewProfilePage(): ReactElement {
         userAPI = new UserAPI();
         userAPI.displayStudent(param.studentID).then(
             (res) => {
+
                 setStudent(res.data);
             }
         );

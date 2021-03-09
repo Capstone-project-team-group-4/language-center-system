@@ -68,16 +68,6 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                             >
                                                 Disable or delete user account
                                             </Button>
-                                            <Button 
-                                                variant = "success"
-                                                block = {true}
-                                                as = {Link}
-                                                to = {
-                                                    "/user_view"
-                                                }
-                                            >
-                                                View student profile
-                                            </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>

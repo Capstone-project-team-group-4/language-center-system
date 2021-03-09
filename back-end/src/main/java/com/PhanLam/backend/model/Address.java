@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author DELL
+ * @author Phan Lam
  */
 @Entity
 @Table(name = "Address", catalog = "LanguageCenterDB", schema = "dbo")
@@ -32,12 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a"),
     @NamedQuery(name = "Address.findByAddressID", query = "SELECT a FROM Address a WHERE a.addressID = :addressID"),
-    @NamedQuery(name = "Address.findByCity", query = "SELECT a FROM Address a WHERE a.city = :city"),
-    @NamedQuery(name = "Address.findByDistrict", query = "SELECT a FROM Address a WHERE a.district = :district"),
-    @NamedQuery(name = "Address.findByWard", query = "SELECT a FROM Address a WHERE a.ward = :ward"),
-    @NamedQuery(name = "Address.findByStreet", query = "SELECT a FROM Address a WHERE a.street = :street"),
-    @NamedQuery(name = "Address.findByApartmentNumber", query = "SELECT a FROM Address a WHERE a.apartmentNumber = :apartmentNumber"),
-    @NamedQuery(name = "Address.findByCountry", query = "SELECT a FROM Address a WHERE a.country = :country")})
+    @NamedQuery(name = "Address.findByCity", query = "SELECT a FROM Address a WHERE a.city = :city")})
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,39 +41,39 @@ public class Address implements Serializable {
     @Basic(optional = false)
     @Column(name = "AddressID", nullable = false)
     private Integer addressID;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "City", nullable = false, length = 500)
-    private String city;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "District", nullable = false, length = 500)
-    private String district;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "Ward", nullable = false, length = 500)
-    private String ward;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "Street", nullable = false, length = 500)
-    private String street;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "ApartmentNumber", nullable = false, length = 500)
-    private String apartmentNumber;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 500)
-    @Column(name = "Country", nullable = false, length = 500)
-    private String country;
     @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User userID;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "City", nullable = false, length = 500)
+    private String city;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "District", nullable = false, length = 500)
+    private String district;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Ward", nullable = false, length = 500)
+    private String ward;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Street", nullable = false, length = 500)
+    private String street;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "ApartmentNumber", nullable = false, length = 500)
+    private String apartmentNumber;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Country", nullable = false, length = 500)
+    private String country;
 
     public Address() {
     }
@@ -87,70 +82,12 @@ public class Address implements Serializable {
         this.addressID = addressID;
     }
 
-    public Address(Integer addressID, String city, String district, String ward, String street, String apartmentNumber, String country) {
-        this.addressID = addressID;
-        this.city = city;
-        this.district = district;
-        this.ward = ward;
-        this.street = street;
-        this.apartmentNumber = apartmentNumber;
-        this.country = country;
-    }
-
     public Integer getAddressID() {
         return addressID;
     }
 
     public void setAddressID(Integer addressID) {
         this.addressID = addressID;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getWard() {
-        return ward;
-    }
-
-    public void setWard(String ward) {
-        this.ward = ward;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getApartmentNumber() {
-        return apartmentNumber;
-    }
-
-    public void setApartmentNumber(String apartmentNumber) {
-        this.apartmentNumber = apartmentNumber;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public User getUserID() {
@@ -184,6 +121,54 @@ public class Address implements Serializable {
     @Override
     public String toString() {
         return "com.PhanLam.backend.model.Address[ addressID=" + addressID + " ]";
+    }
+
+    public String getCity (){
+        return city;
+    }
+
+    public void setCity (String city){
+        this.city = city;
+    }
+
+    public String getDistrict (){
+        return district;
+    }
+
+    public void setDistrict (String district){
+        this.district = district;
+    }
+
+    public String getWard (){
+        return ward;
+    }
+
+    public void setWard (String ward){
+        this.ward = ward;
+    }
+
+    public String getStreet (){
+        return street;
+    }
+
+    public void setStreet (String street){
+        this.street = street;
+    }
+
+    public String getApartmentNumber (){
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber (String apartmentNumber){
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    public String getCountry (){
+        return country;
+    }
+
+    public void setCountry (String country){
+        this.country = country;
     }
     
 }

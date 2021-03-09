@@ -20,7 +20,6 @@ import { AdminConsolePage } from './page/admin/AdminConsolePage';
 import { CreateAccountPage } from './page/admin/CreateAccountPage';
 import { HomePage } from './page/HomePage';
 import { EditStudentInfo } from './page/EditStudentInfo';
-import { ViewProfilePage } from './page/ViewProfilePage';
 import { LogInPage } from './page/LogInPage';
 import { SelectRolePage } from './page/SelectRolePage';
 import { SignUpPage } from './page/SignUpPage';
@@ -177,10 +176,6 @@ export function App (): ReactElement {
       <Route path = "/admin-console">
         <AdminPageHeader logOut = {logOut}/>
         <AdminConsolePage modalDialog = {modalDialog}/>
-      </Route>
-      <Route path = "/user_view">
-      <AdminPageHeader logOut = {logOut}/>
-        <ViewProfilePage />
       </Route>
 
       <ProtectedRoute 

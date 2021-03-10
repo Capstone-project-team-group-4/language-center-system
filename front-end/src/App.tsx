@@ -27,6 +27,12 @@ import { History } from '../node_modules/@types/history';
 import { 
   DisableOrDeleteAccountPage 
 } from './page/admin/DisableOrDeleteAccountPage';
+import { ManageCoursePage } from './page/admin/ManageCoursePage';
+
+export interface DataPage<T> {
+  totalPageCount: number;
+  pageDataHolder: T[];
+}
 
 export function App (): ReactElement {
   
@@ -42,7 +48,7 @@ export function App (): ReactElement {
   );
   let dialogController: DialogControl | undefined;
   let acceptableRoleNameHolder: string[] | undefined;
-  let createAccountPageSecurity: SecurityContext | undefined;
+  let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;  
   let logOutAPI: LogOutAPI;
   let typeGuardian: TypeGuard;
@@ -80,7 +86,7 @@ export function App (): ReactElement {
     , dialogIsConfirmed
   );
   acceptableRoleNameHolder = new Array ("ROLE_ADMIN");
-  createAccountPageSecurity = new SecurityContext (
+  adminPageSecurity = new SecurityContext (
     isAuthenticated
     , loggedInUser
     , acceptableRoleNameHolder
@@ -151,7 +157,7 @@ export function App (): ReactElement {
 
       <ProtectedRoute 
         path = "/admin-console/create-account-request-page"
-        securityContext = {createAccountPageSecurity}
+        securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
         <AdminPageHeader logOut = {logOut}/>
@@ -163,7 +169,7 @@ export function App (): ReactElement {
 
       <ProtectedRoute 
         path = "/admin-console/disable-or-delete-account-page"
-        securityContext = {createAccountPageSecurity}
+        securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
         <AdminPageHeader logOut = {logOut}/>
@@ -173,6 +179,18 @@ export function App (): ReactElement {
         />
       </ProtectedRoute>
       
+      <ProtectedRoute 
+        path = "/admin-console/manage-course-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
       <Route path = "/admin-console">
         <AdminPageHeader logOut = {logOut}/>
         <AdminConsolePage modalDialog = {modalDialog}/>

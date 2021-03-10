@@ -46,6 +46,7 @@ public class ControllerAdvice {
             NotFoundException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle ("Not Found !");
         return responseBody;
     }
     

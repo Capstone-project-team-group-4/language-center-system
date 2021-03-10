@@ -57,7 +57,7 @@ export class UserAPI {
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
-                return Promise.reject ();
+                return Promise.reject (apiError2);
             }
         }
     }
@@ -78,7 +78,7 @@ export class UserAPI {
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
-                return Promise.reject ();
+                return Promise.reject (apiError2);
             }
         }
     }
@@ -99,7 +99,7 @@ export class UserAPI {
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
-                return Promise.reject ();
+                return Promise.reject (apiError2);
             }
         }
     }
@@ -120,7 +120,7 @@ export class UserAPI {
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
-                return Promise.reject ();
+                return Promise.reject (apiError2);
             }
         }
     }
@@ -154,7 +154,7 @@ export class UserAPI {
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
-                return Promise.reject ();
+                return Promise.reject (apiError2);
             }
         }
     }

@@ -61,7 +61,13 @@ function renderRegisterFormTable (
                 {index + 1}
             </td>
             <td>
-                {`${registerForm.firstName} ${registerForm.lastName}`}
+                {`${
+                    registerForm.firstName
+                } ${
+                    registerForm.middleName
+                } ${
+                    registerForm.lastName
+                }`}
             </td>
             <td>
                 {registerForm.phoneNumber}
@@ -77,7 +83,15 @@ function renderRegisterFormTable (
                     variant = "success"
                     type = "button"
                     value = {registerForm.formID}
-                    onClick = {handleAcceptRequest}
+                    onClick = {
+                        (event) => {
+                            handleAcceptRequest (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
                 >
                     Accept
                 </Button>
@@ -140,6 +154,7 @@ export function CreateAccountPage (
                         , newAccountRoleList
                 );
                 loadRegisterFormTable ();
+                return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
                 if (typeGuardian.isAxiosError (apiError)){
@@ -155,9 +170,7 @@ export function CreateAccountPage (
                     props.dialogController.setDialogType ("error");
                     props.dialogController.setShowDialog (true);
                 }
-                else {
-                    throw new Error ("This api error is not valid !");
-                }
+                return Promise.reject (apiError);
             }
         }
         else {
@@ -167,6 +180,9 @@ export function CreateAccountPage (
             );
             props.dialogController.setDialogType ("error");
             props.dialogController.setShowDialog (true);
+            return Promise.reject (
+                    new Error ("Please add at least one role !")
+            );
         }
     }
 
@@ -189,6 +205,7 @@ export function CreateAccountPage (
                     userID
             );
             loadRegisterFormTable ();
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -204,9 +221,7 @@ export function CreateAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
@@ -233,7 +248,11 @@ export function CreateAccountPage (
     }
 
     function handleReset (){
-        loadRoleDropdownList ();
+        loadRoleDropdownList ().catch (
+                (error: unknown) => {
+                    console.error (error);
+                }
+        );
         updatedNewAccountRoleList = new Array<Role> ();
         setNewAccountRoleList (updatedNewAccountRoleList);
     }
@@ -253,6 +272,7 @@ export function CreateAccountPage (
             defaultRoleSelection = updatedRoleHolder[0];
             roleNameWithoutPrefix = defaultRoleSelection.roleName.slice (5);
             setSelectedRoleName (roleNameWithoutPrefix);
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -268,9 +288,7 @@ export function CreateAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
@@ -282,6 +300,7 @@ export function CreateAccountPage (
                             , pageSize
                     )
             );
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -297,16 +316,22 @@ export function CreateAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
     useEffect (
         (): void => {
-            loadRoleDropdownList ();
-            loadRegisterFormTable ();
+            loadRoleDropdownList ().catch (
+                    (error: unknown) => {
+                        console.error (error);
+                    }
+            );
+            loadRegisterFormTable ().catch (
+                    (error: unknown) => {
+                        console.error (error);
+                    }
+            );
         }
         , []
     );
@@ -314,7 +339,11 @@ export function CreateAccountPage (
     useEffect (
         (): void => {
             if (props.dialogController.dialogIsConfirmed === true){
-                executeRequestRejection ();
+                executeRequestRejection ().catch (
+                        (error: unknown) => {
+                            console.error (error);
+                        }
+                );
                 props.dialogController.setDialogIsConfirmed (false); 
             }
         }

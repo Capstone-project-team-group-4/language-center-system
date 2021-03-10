@@ -115,6 +115,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         security.authorizeRequests ()
                 .antMatchers (HttpMethod.GET, "/logged-in-user")
                         .authenticated ()
+                
                 .antMatchers (HttpMethod.GET, "/register-forms")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.POST, "/register-forms")
@@ -123,14 +124,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/register-forms/*")
                         .hasRole ("ADMIN")
+                
                 .antMatchers (HttpMethod.GET, "/users*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PATCH, "/users/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
+                
+                .antMatchers (HttpMethod.POST, "/courses")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/courses")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PUT, "/courses/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.DELETE, "/courses/*")
+                        .hasRole ("ADMIN")
+                
                 .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
+                
+                .antMatchers (HttpMethod.GET, "/course-types")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/course-types/*/course-levels")
+                        .hasRole ("ADMIN")
                 .anyRequest ().denyAll ();
     }
 }

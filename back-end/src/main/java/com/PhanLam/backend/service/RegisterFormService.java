@@ -76,18 +76,18 @@ public class RegisterFormService {
             int pageNumber
             , int pageSize
     ){
-        ArrayList<RegisterForm> RegisterFormHolder;
+        ArrayList<RegisterForm> registerFormHolder;
         PageRequest pagingInformation;
-        Page<RegisterForm> RegisterFormPage;
-        TypedSort<RegisterForm> RegisterFormSortInformation;
+        Page<RegisterForm> registerFormPage;
+        TypedSort<RegisterForm> registerFormSortInformation;
         Sort sortInformation; 
         
         if ((pageNumber >= 0) && (pageSize >= 0)){
-            RegisterFormSortInformation = Sort.sort (RegisterForm.class);
+            registerFormSortInformation = Sort.sort (RegisterForm.class);
             sortInformation 
-                = RegisterFormSortInformation
+                = registerFormSortInformation
                     .by (RegisterForm::getFirstName).ascending ()
-                    .and (RegisterFormSortInformation
+                    .and (registerFormSortInformation
                         .by (RegisterForm::getLastName).ascending ()
                     );
             pagingInformation = PageRequest.of (
@@ -95,13 +95,13 @@ public class RegisterFormService {
                     , pageSize
                     , sortInformation
             );
-            RegisterFormPage = registerFormRepository.findAll (
+            registerFormPage = registerFormRepository.findAll (
                     pagingInformation
             );
-            RegisterFormHolder = new ArrayList<> (
-                    RegisterFormPage.getContent ()
+            registerFormHolder = new ArrayList<> (
+                    registerFormPage.getContent ()
             );
-            return RegisterFormHolder;
+            return registerFormHolder;
         }
         else {
             throw new InvalidRequestArgumentException (

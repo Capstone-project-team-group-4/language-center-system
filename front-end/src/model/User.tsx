@@ -4,6 +4,7 @@ export class User {
     public userID: number;
 	public userName: string;
 	public firstName: string;
+	public middleName: string;
 	public lastName: string;
 	public email: string;
 	public dob: Date;
@@ -16,6 +17,7 @@ export class User {
 	public accountStatus: string;
 	public dateCreated: Date;
 	public lastLogin: Date;
+	public lastModified: Date;
 	
 	public constructor ();
 
@@ -26,6 +28,7 @@ export class User {
 			this.userID = user.userID;
 			this.userName = user.userName;
 			this.firstName = user.firstName;
+			this.middleName = user.middleName;
 			this.lastName = user.lastName;
 			this.email = user.email;
 			this.phoneNumber = user.phoneNumber;
@@ -38,11 +41,13 @@ export class User {
 			this.accountStatus = user.accountStatus;
 			this.dateCreated = user.dateCreated;
 			this.lastLogin = user.lastLogin;
+			this.lastModified = user.lastModified;
 		}
 		else {
 			this.userID = 0;
 			this.userName = "";
 			this.firstName = "";
+			this.middleName = "";
 			this.lastName = "";
 			this.email = "";
 			this.phoneNumber = "";
@@ -55,6 +60,7 @@ export class User {
 			this.accountStatus = "";
 			this.dateCreated = new Date (0);
 			this.lastLogin = new Date (0);
+			this.lastModified = new Date (0);
 		}
 	}
 }

@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,8 +19,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -30,7 +31,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -45,12 +45,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery (name = "Course.findByCourseID", query = "SELECT c FROM Course c WHERE c.courseID = :courseID"),
     @NamedQuery (name = "Course.findByCourseName", query = "SELECT c FROM Course c WHERE c.courseName = :courseName"),
     @NamedQuery (name = "Course.findByDescription", query = "SELECT c FROM Course c WHERE c.description = :description"),
-    @NamedQuery (name = "Course.findByType", query = "SELECT c FROM Course c WHERE c.type = :type"),
-    @NamedQuery (name = "Course.findByDifficultyLevel", query = "SELECT c FROM Course c WHERE c.difficultyLevel = :difficultyLevel"),
+    @NamedQuery (name = "Course.findByCourseType", query = "SELECT c FROM Course c WHERE c.courseType = :courseType"),
+    @NamedQuery (name = "Course.findByCourseLevel", query = "SELECT c FROM Course c WHERE c.courseLevel = :courseLevel"),
     @NamedQuery (name = "Course.findByTuitionFee", query = "SELECT c FROM Course c WHERE c.tuitionFee = :tuitionFee"),
-    @NamedQuery (name = "Course.findByDateCreated", query = "SELECT c FROM Course c WHERE c.dateCreated = :dateCreated")})
+    @NamedQuery (name = "Course.findByDateCreated", query = "SELECT c FROM Course c WHERE c.dateCreated = :dateCreated"),
+    @NamedQuery (name = "Course.findByLastModified", query = "SELECT c FROM Course c WHERE c.lastModified = :lastModified")})
 public class Course implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -65,16 +66,23 @@ public class Course implements Serializable {
     @Size (max = 1000)
     @Column (name = "Description", length = 1000)
     private String description;
-    @Basic (optional = false)
-    @NotNull
-    @Size (min = 1, max = 500)
-    @Column (name = "Type", nullable = false, length = 500)
-    private String type;
-    @Basic (optional = false)
-    @NotNull
-    @Size (min = 1, max = 500)
-    @Column (name = "DifficultyLevel", nullable = false, length = 500)
-    private String difficultyLevel;
+    
+    @JoinColumn (
+            name = "TypeID"
+            , referencedColumnName = "TypeID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private CourseType courseType;
+    
+    @JoinColumn (
+            name = "LevelID"
+            , referencedColumnName = "LevelID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private CourseLevel courseLevel;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic (optional = false)
     @NotNull
@@ -85,16 +93,47 @@ public class Course implements Serializable {
     @Column (name = "DateCreated", nullable = false)
     @Temporal (TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @JoinTable (name = "UserCourse", joinColumns = {
-        @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)})
-    @ManyToMany (fetch = FetchType.LAZY)
+    @Column (name = "LastModified")
+    @Temporal (TemporalType.TIMESTAMP)
+    private Date lastModified;
+    
+    @JsonIgnore
+    @ManyToMany (
+            mappedBy = "courseList"
+            , cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY)
     private List<User> userList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "courseID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "courseID"
+            , fetch = FetchType.LAZY
+    )
     private List<Lesson> lessonList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "courseID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "courseID"
+            , fetch = FetchType.LAZY
+    )
     private List<Class> classList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "courseID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "courseID"
+            , fetch = FetchType.LAZY
+    )
     private List<Examination> examinationList;
 
     public Course (){
@@ -104,15 +143,20 @@ public class Course implements Serializable {
         this.courseID = courseID;
     }
 
-    public Course (Integer courseID, String courseName, String type, String difficultyLevel, BigDecimal tuitionFee, Date dateCreated){
-        this.courseID = courseID;
+    public Course (
+            String courseName
+            , String description
+            , BigDecimal tuitionFee
+            , Date dateCreated
+            , Date lastModified
+    ){
         this.courseName = courseName;
-        this.type = type;
-        this.difficultyLevel = difficultyLevel;
+        this.description = description;
         this.tuitionFee = tuitionFee;
         this.dateCreated = dateCreated;
+        this.lastModified = lastModified;
     }
-
+    
     public Integer getCourseID (){
         return courseID;
     }
@@ -136,23 +180,23 @@ public class Course implements Serializable {
     public void setDescription (String description){
         this.description = description;
     }
-
-    public String getType (){
-        return type;
+    
+    public CourseType getCourseType (){
+        return courseType;
     }
 
-    public void setType (String type){
-        this.type = type;
+    public void setCourseType (CourseType courseType){
+        this.courseType = courseType;
     }
 
-    public String getDifficultyLevel (){
-        return difficultyLevel;
+    public CourseLevel getCourseLevel (){
+        return courseLevel;
     }
 
-    public void setDifficultyLevel (String difficultyLevel){
-        this.difficultyLevel = difficultyLevel;
+    public void setCourseLevel (CourseLevel courseLevel){
+        this.courseLevel = courseLevel;
     }
-
+    
     public BigDecimal getTuitionFee (){
         return tuitionFee;
     }
@@ -160,7 +204,7 @@ public class Course implements Serializable {
     public void setTuitionFee (BigDecimal tuitionFee){
         this.tuitionFee = tuitionFee;
     }
-
+    
     public Date getDateCreated (){
         return dateCreated;
     }
@@ -168,8 +212,15 @@ public class Course implements Serializable {
     public void setDateCreated (Date dateCreated){
         this.dateCreated = dateCreated;
     }
+    
+    public Date getLastModified (){
+        return lastModified;
+    }
 
-    @XmlTransient
+    public void setLastModified (Date lastModified){
+        this.lastModified = lastModified;
+    }
+
     public List<User> getUserList (){
         return userList;
     }
@@ -178,7 +229,6 @@ public class Course implements Serializable {
         this.userList = userList;
     }
 
-    @XmlTransient
     public List<Lesson> getLessonList (){
         return lessonList;
     }
@@ -187,7 +237,6 @@ public class Course implements Serializable {
         this.lessonList = lessonList;
     }
 
-    @XmlTransient
     public List<Class> getClassList (){
         return classList;
     }
@@ -196,7 +245,6 @@ public class Course implements Serializable {
         this.classList = classList;
     }
 
-    @XmlTransient
     public List<Examination> getExaminationList (){
         return examinationList;
     }
@@ -204,7 +252,7 @@ public class Course implements Serializable {
     public void setExaminationList (List<Examination> examinationList){
         this.examinationList = examinationList;
     }
-
+    
     @Override
     public int hashCode (){
         int hash = 0;
@@ -228,6 +276,5 @@ public class Course implements Serializable {
     @Override
     public String toString (){
         return "com.PhanLam.backend.model.Course[ courseID=" + courseID + " ]";
-    }
-    
+    }  
 }

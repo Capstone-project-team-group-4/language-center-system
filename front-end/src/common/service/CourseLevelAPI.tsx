@@ -1,11 +1,11 @@
 // Import package members section:
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import { CourseLevel } from "../../model/CourseLevel";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
-import { Role } from "../../model/Role";
 import { TypeGuard } from "./TypeGuard";
 
-export class RoleAPI {
+export class CourseLevelAPI {
 
     // Variables declaration:
     private axiosInstance: AxiosInstance;
@@ -13,7 +13,7 @@ export class RoleAPI {
     private errorHandler: ErrorHandle;
     private axiosError: AxiosError<unknown> | undefined; 
     private serverResponse: AxiosResponse<unknown> | undefined;
-    private roleHolder: Role[] | undefined;
+    private courseLevelHolder: CourseLevel[] | undefined;
     private typeGuardian: TypeGuard;
 
     public constructor (){
@@ -23,14 +23,18 @@ export class RoleAPI {
         this.typeGuardian = new TypeGuard ();
     }
 
-    public async getAllRole (): Promise<Role[]> {
+    public async getAllCourseLevelByTypeID (
+            typeID: number
+    ): Promise<CourseLevel[]> {
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/roles"
+                `/course-types/${typeID}/course-levels`
             );
-            if (this.typeGuardian.isRoleArray (this.serverResponse.data)){
-                this.roleHolder = this.serverResponse.data;
-                return Promise.resolve<Role[]> (this.roleHolder);
+            if (this.typeGuardian.isCourseLevelArray (
+                    this.serverResponse.data
+            )){
+                this.courseLevelHolder = this.serverResponse.data;
+                return Promise.resolve<CourseLevel[]> (this.courseLevelHolder);
             }
             else {
                 throw new Error ("This server response is not valid !");

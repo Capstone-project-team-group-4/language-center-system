@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,8 +49,18 @@ public class Role implements Serializable {
     @Size (min = 1, max = 400)
     @Column (name = "RoleName", nullable = false, length = 400)
     private String roleName;
+    
     @JsonIgnore
-    @ManyToMany (mappedBy = "roleList", fetch = FetchType.LAZY)
+    @ManyToMany (
+            mappedBy = "roleList"
+            , cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            } 
+            , fetch = FetchType.LAZY
+    )
     private List<User> userList;
 
     public Role() {

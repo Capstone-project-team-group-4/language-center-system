@@ -111,6 +111,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                 }
                 history.replace (loginSucceededLocation);
             }
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -127,9 +128,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
     
@@ -158,7 +157,11 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             className = "bg-white p-5 h-auto"
                             onSubmit = {
                                 (event) => {
-                                    logIn (event);
+                                    logIn (event).catch (
+                                            (error: unknown) => {
+                                                console.error (error);
+                                            }
+                                    );
                                 }
                             }
                         >

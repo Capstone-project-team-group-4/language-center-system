@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -29,102 +30,114 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author roboc
+ * @author Phan Lam
  */
 @Entity
-@Table(name = "CourseLevel", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"LevelName"})})
+@Table (name = "CourseLevel", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
+    @UniqueConstraint (columnNames = {"LevelName"})})
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "CourseLevel.findAll", query = "SELECT c FROM CourseLevel c"),
-    @NamedQuery(name = "CourseLevel.findByLevelID", query = "SELECT c FROM CourseLevel c WHERE c.levelID = :levelID"),
-    @NamedQuery(name = "CourseLevel.findByLevelName", query = "SELECT c FROM CourseLevel c WHERE c.levelName = :levelName")})
+@NamedQueries ({
+    @NamedQuery (name = "CourseLevel.findAll", query = "SELECT c FROM CourseLevel c"),
+    @NamedQuery (name = "CourseLevel.findByLevelID", query = "SELECT c FROM CourseLevel c WHERE c.levelID = :levelID"),
+    @NamedQuery (name = "CourseLevel.findByLevelName", query = "SELECT c FROM CourseLevel c WHERE c.levelName = :levelName")})
 public class CourseLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "LevelID", nullable = false)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Basic (optional = false)
+    @Column (name = "LevelID", nullable = false)
     private Integer levelID;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "LevelName", nullable = false, length = 400)
+    @Size (min = 1, max = 400)
+    @Column (name = "LevelName", nullable = false, length = 400)
     private String levelName;
-    @JoinColumn(name = "TypeID", referencedColumnName = "TypeID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private CourseType typeID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "levelID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "courseLevel"
+            , fetch = FetchType.LAZY
+    )
     private List<Course> courseList;
+    
+    @JoinColumn (
+            name = "TypeID"
+            , referencedColumnName = "TypeID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private CourseType courseType;
 
-    public CourseLevel() {
+    public CourseLevel (){
     }
 
-    public CourseLevel(Integer levelID) {
+    public CourseLevel (Integer levelID){
         this.levelID = levelID;
     }
 
-    public CourseLevel(Integer levelID, String levelName) {
+    public CourseLevel (Integer levelID, String levelName){
         this.levelID = levelID;
         this.levelName = levelName;
     }
 
-    public Integer getLevelID() {
+    public Integer getLevelID (){
         return levelID;
     }
 
-    public void setLevelID(Integer levelID) {
+    public void setLevelID (Integer levelID){
         this.levelID = levelID;
     }
 
-    public String getLevelName() {
+    public String getLevelName (){
         return levelName;
     }
 
-    public void setLevelName(String levelName) {
+    public void setLevelName (String levelName){
         this.levelName = levelName;
     }
 
-    public CourseType getTypeID() {
-        return typeID;
-    }
-
-    public void setTypeID(CourseType typeID) {
-        this.typeID = typeID;
-    }
-
     @XmlTransient
-    public List<Course> getCourseList() {
+    public List<Course> getCourseList (){
         return courseList;
     }
 
-    public void setCourseList(List<Course> courseList) {
+    public void setCourseList (List<Course> courseList){
         this.courseList = courseList;
     }
 
+    public CourseType getCourseType (){
+        return courseType;
+    }
+
+    public void setCourseType (CourseType courseType){
+        this.courseType = courseType;
+    }
+
     @Override
-    public int hashCode() {
+    public int hashCode (){
         int hash = 0;
-        hash += (levelID != null ? levelID.hashCode() : 0);
+        hash += (levelID != null ? levelID.hashCode () : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals (Object object){
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CourseLevel)) {
+        if (!(object instanceof CourseLevel)){
             return false;
         }
         CourseLevel other = (CourseLevel) object;
-        if ((this.levelID == null && other.levelID != null) || (this.levelID != null && !this.levelID.equals(other.levelID))) {
+        if ((this.levelID == null && other.levelID != null) || (this.levelID != null && !this.levelID.equals (other.levelID))){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
+    public String toString (){
         return "com.PhanLam.backend.model.CourseLevel[ levelID=" + levelID + " ]";
     }
     

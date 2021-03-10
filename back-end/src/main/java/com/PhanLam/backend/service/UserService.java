@@ -104,7 +104,7 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("user ID");
+            throw new NotFoundException ("User ID");
         }
         else {
             userName = principal.getName ();
@@ -116,7 +116,6 @@ public class UserService {
             }
             else {
                 user.setAccountStatus ("Disabled");
-                userRepository.save (user);
             }
         }
     }
@@ -127,12 +126,11 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("user ID");
+            throw new NotFoundException ("User ID");
         }
         else {
             user = nullableUser.get ();
             user.setAccountStatus ("Active");
-            userRepository.save (user);
         }
     }
     
@@ -143,7 +141,7 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("user ID");
+            throw new NotFoundException ("User ID");
         }
         else {
             userName = principal.getName ();

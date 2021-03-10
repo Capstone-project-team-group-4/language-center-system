@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,10 +52,18 @@ public class Role implements Serializable {
     @Size(min = 1, max = 400)
     @Column(name = "RoleName", nullable = false, length = 400)
     private String roleName;
-    @JoinTable(name = "UserRole", joinColumns = {
-        @JoinColumn(name = "RoleID", referencedColumnName = "RoleID", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)})
-    @ManyToMany(fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @ManyToMany (
+            mappedBy = "roleList"
+            , cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            } 
+            , fetch = FetchType.LAZY
+    )
     private List<User> userList;
 
     public Role() {

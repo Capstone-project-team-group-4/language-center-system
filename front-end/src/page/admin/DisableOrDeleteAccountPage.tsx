@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 // Import package members section:
 import React, { 
     MouseEvent
@@ -40,7 +39,13 @@ function renderUserTable (
                 {index + 1}
             </td>
             <td>
-                {`${user.firstName} ${user.lastName}`}
+                {`${
+                    user.firstName
+                } ${
+                    user.middleName
+                } ${
+                    user.lastName
+                }`}
             </td>
             <td>
                 {user.phoneNumber}
@@ -59,7 +64,11 @@ function renderUserTable (
                     variant = "warning"
                     type = "button"
                     value = {user.userID}
-                    onClick = {handleDisableUser}
+                    onClick = {
+                        (event) => {
+                            handleDisableUser (event);
+                        }
+                    }
                 >
                     Disable
                 </Button>
@@ -67,7 +76,15 @@ function renderUserTable (
                     variant = "success"
                     type = "button"
                     value = {user.userID}
-                    onClick = {handleEnableUser}
+                    onClick = {
+                        (event) => {
+                            handleEnableUser (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
                 >
                     Enable
                 </Button>
@@ -75,7 +92,11 @@ function renderUserTable (
                     variant = "danger"
                     type = "button"
                     value = {user.userID}
-                    onClick = {handleDeleteUser}
+                    onClick = {
+                        (event) => {
+                            handleDeleteUser (event);
+                        }
+                    }
                 >
                     Delete
                 </Button>
@@ -97,10 +118,10 @@ export function DisableOrDeleteAccountPage (
     let [userHolder, setUserHolder] = useState<User[]> ([]);
     let userAPI: UserAPI;
     let typeGuardian: TypeGuard;
-    let [pageNumber] = useState<number> (0);
+    let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let button: HTMLButtonElement | undefined;
-    let [userID, setUserID] = useState<number> (0);
+    let [pendingUserID, setPendingUserID] = useState<number> (0);
     let [pendingAction, setPendingAction] = useState<string> ("");
 
     userAPI = new UserAPI ();
@@ -110,7 +131,7 @@ export function DisableOrDeleteAccountPage (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): void {
         button = event.target as HTMLButtonElement;
-        setUserID (Number (button.value));
+        setPendingUserID (Number (button.value));
         setPendingAction ("Disable user");
         props.dialogController.setDialogTitle ("Confirm Disable User");
         props.dialogController.setDialogBody (
@@ -127,6 +148,7 @@ export function DisableOrDeleteAccountPage (
         try {
             await userAPI.enableUser (Number (button.value));
             loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -142,18 +164,17 @@ export function DisableOrDeleteAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
     async function executeUserDisablement (): Promise<void> {
         try {
             await userAPI.disableAnotherUser (
-                    userID
+                    pendingUserID
             );
             loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -169,9 +190,7 @@ export function DisableOrDeleteAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
@@ -179,7 +198,7 @@ export function DisableOrDeleteAccountPage (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): void {
         button = event.target as HTMLButtonElement;
-        setUserID (Number (button.value));
+        setPendingUserID (Number (button.value));
         setPendingAction ("Delete user");
         props.dialogController.setDialogTitle ("Confirm Delete User");
         props.dialogController.setDialogBody (
@@ -191,10 +210,9 @@ export function DisableOrDeleteAccountPage (
 
     async function executeUserDeletion (): Promise<void> {
         try {
-            await userAPI.deleteAnotherUser (
-                    userID
-            );
+            await userAPI.deleteAnotherUser (pendingUserID);
             loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -210,9 +228,7 @@ export function DisableOrDeleteAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
@@ -220,10 +236,11 @@ export function DisableOrDeleteAccountPage (
         try {
             setUserHolder (
                 await userAPI.getAllUserExcludingCurrentLoggedInUser (
-                    pageNumber
+                    pageIndex
                     , pageSize
                 )
             );
+            return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -239,15 +256,17 @@ export function DisableOrDeleteAccountPage (
                 props.dialogController.setDialogType ("error");
                 props.dialogController.setShowDialog (true);
             }
-            else {
-                throw new Error ("This api error is not valid !");
-            }
+            return Promise.reject (apiError);
         }
     }
 
     useEffect (
         (): void => {
-            loadUserTable ();
+            loadUserTable ().catch (
+                    (error: unknown) => {
+                        console.error (error);
+                    }
+            );
         }
         , []
     );
@@ -256,10 +275,18 @@ export function DisableOrDeleteAccountPage (
         (): void => {
             if (props.dialogController.dialogIsConfirmed === true){
                 if (pendingAction === "Disable user"){
-                    executeUserDisablement ();
+                    executeUserDisablement ().catch (
+                            (error: unknown) => {
+                                console.error (error);
+                            }
+                    );
                 }
                 else if (pendingAction === "Delete user"){
-                    executeUserDeletion ();
+                    executeUserDeletion ().catch (
+                            (error: unknown) => {
+                                console.error (error);
+                            }
+                    );
                 }
                 props.dialogController.setDialogIsConfirmed (false); 
             }
@@ -291,13 +318,10 @@ export function DisableOrDeleteAccountPage (
                                     Disable Or Delete Account
                                 </Breadcrumb.Item>
                             </Breadcrumb>
-                            <h1>
+                            <h1 className = "mb-3">
                                 Disable Or Delete Account
                             </h1>
                             <Form>
-                                <Form.Group>
-                                    
-                                </Form.Group>
                                 <Table responsive = "md" hover = {true}>
                                     <thead>
                                         <tr>

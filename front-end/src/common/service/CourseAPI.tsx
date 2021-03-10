@@ -1,37 +1,35 @@
 // Import package members section:
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { RegisterForm } from "../../model/RegisterForm";
-import { Role } from "../../model/Role";
+import { DataPage } from "../../App";
+import { Course } from "../../model/Course";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
 import { TypeGuard } from "./TypeGuard";
 
-export class RegisterFormAPI {
+export class CourseAPI {
 
     // Variables declaration:
     private axiosInstance: AxiosInstance;
     private axiosInstanceGetter: AxiosInstanceGet;
     private errorHandler: ErrorHandle;
-    private axiosError: AxiosError<unknown> | undefined; 
-    private registerFormHolder: RegisterForm[] | undefined;
+    private axiosError: AxiosError<unknown> | undefined;
+    private requestParameterHolder: URLSearchParams | undefined;
     private serverResponse: AxiosResponse<unknown> | undefined;
-    private requestParameterHolder: URLSearchParams | undefined; 
     private typeGuardian: TypeGuard;
-    
+    private courseDataPage: DataPage<Course> | undefined;
+
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         this.errorHandler = new ErrorHandle ();
-        this.typeGuardian = new TypeGuard (); 
+        this.typeGuardian = new TypeGuard ();
     }
-    
-    public async registerNewCreateAccountRequest (
-            registerForm: RegisterForm
-    ): Promise<void> {
+
+    public async createNewCourse (course: Course): Promise<void> {
         try {
             await this.axiosInstance.post<undefined> (
-                    "/register-forms"
-                    , registerForm
+                    "/courses"
+                    , course
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -44,28 +42,26 @@ export class RegisterFormAPI {
             catch (apiError2: unknown){
                 return Promise.reject (apiError2);
             }
-        }   
+        }
     }
 
-    public async getAllCreateAccountRequest (
-            pageNumber: number
+    public async getAllCourse (
+            pageIndex: number
             , pageSize: number
-    ): Promise<RegisterForm[]> {
+    ): Promise<DataPage<Course>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/register-forms"
+                    "/courses"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isRegisterFormArray (
+            if (this.typeGuardian.isDataPage<Course> (
                     this.serverResponse.data
             )){
-                this.registerFormHolder = this.serverResponse.data;
-                return Promise.resolve<RegisterForm[]> (
-                        this.registerFormHolder
-                );
+                this.courseDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<Course>> (this.courseDataPage);
             } 
             else {
                 throw new Error ("This server response is not valid !");
@@ -83,14 +79,11 @@ export class RegisterFormAPI {
         }
     }
 
-    public async acceptCreateAccountRequest (
-            formID: number
-            , newAccountRoleList: Role[]  
-    ): Promise<void> {
+    public async updateCourse (updatedCourse: Course): Promise<void> {
         try {
-            await this.axiosInstance.patch<undefined> (
-                    `/register-forms/${formID}:accept`
-                    , newAccountRoleList
+            await this.axiosInstance.put<undefined> (
+                    `/courses/${updatedCourse.courseID}`
+                    , updatedCourse
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -106,12 +99,10 @@ export class RegisterFormAPI {
         }
     }
 
-    public async rejectCreateAccountRequest (
-            formID: number
-    ): Promise<void> {
+    public async deleteCourse (courseID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
-                    `/register-forms/${formID}`
+                    `/courses/${courseID}`
             );
             return Promise.resolve<undefined> (undefined);
         }

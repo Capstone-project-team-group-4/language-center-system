@@ -6,8 +6,8 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.service.RoleService;
+import com.PhanLam.backend.model.CourseType;
+import com.PhanLam.backend.service.CourseTypeService;
 import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,21 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Phan Lam
  */
 @RestController
-public class RoleController {
+public class CourseTypeController {
     
     // Variables declaration:
-    private RoleService roleService; 
+    private CourseTypeService courseTypeService;
 
-    public RoleController (RoleService roleService){
-        this.roleService = roleService;
+    public CourseTypeController (CourseTypeService courseTypeService){
+        this.courseTypeService = courseTypeService;
     }
     
-    @GetMapping ("/roles")
+    @GetMapping ("/course-types")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<Role> getAllRole (){
-        ArrayList<Role> roleHolder;
+    public ArrayList<CourseType> getAllCourseTypeInTheSystem (){
+        ArrayList<CourseType> courseTypeHolder;
         
-        roleHolder = roleService.getAllRole ();
-        return roleHolder;
+        courseTypeHolder = courseTypeService.getAllCourseType ();
+        return courseTypeHolder;
     }
 }

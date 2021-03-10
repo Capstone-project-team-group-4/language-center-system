@@ -5,6 +5,7 @@ export class User {
 	public userName: string;
 	public middleName: string;
 	public firstName: string;
+	public middleName: string;
 	public lastName: string;
 	public email: string;
 	public dob: Date;
@@ -17,6 +18,7 @@ export class User {
 	public accountStatus: string;
 	public dateCreated: Date;
 	public lastLogin: Date;
+	public lastModified: Date;
 	
 	public constructor ();
 
@@ -40,6 +42,7 @@ export class User {
 			this.accountStatus = user.accountStatus;
 			this.dateCreated = user.dateCreated;
 			this.lastLogin = user.lastLogin;
+			this.lastModified = user.lastModified;
 		}
 		else {
 			this.userID = 0;
@@ -58,6 +61,7 @@ export class User {
 			this.accountStatus = "";
 			this.dateCreated = new Date (0);
 			this.lastLogin = new Date (0);
+			this.lastModified = new Date (0);
 		}
 	}
 }

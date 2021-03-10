@@ -138,18 +138,60 @@ public class User implements Serializable {
     @Column(name = "LastModified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-    @ManyToMany(mappedBy = "userList", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @JoinTable (name = "UserCourse", joinColumns = {
+        @JoinColumn (
+                name = "UserID"
+                , referencedColumnName = "UserID"
+                , nullable = false
+        )
+    }, inverseJoinColumns = {
+        @JoinColumn (
+                name = "CourseID"
+                , referencedColumnName = "CourseID"
+                , nullable = false
+        )
+    })
+    @ManyToMany (
+            cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY
+    )
     private List<Course> courseList;
+    
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     private List<Class> classList;
+    
     @JsonIgnore
     @JoinTable (name = "UserRole", joinColumns = {
-        @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)
+        @JoinColumn (
+                name = "UserID"
+                , referencedColumnName = "UserID"
+                , nullable = false
+        )
     }, inverseJoinColumns = {
-        @JoinColumn (name = "RoleID", referencedColumnName = "RoleID", nullable = false)
+        @JoinColumn (
+                name = "RoleID"
+                , referencedColumnName = "RoleID"
+                , nullable = false
+        )
     })
-    @ManyToMany (fetch = FetchType.LAZY)
+    @ManyToMany (
+            cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY
+    )
     private List<Role> roleList;
+    
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)

@@ -79,7 +79,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="userName"
                                         id="userName"
-                                        pattern="^[a-z0-9_-]{3,15}$"
+                                        pattern="^[\p{L} .'-]+$"
                                         required={true}
                                         spellCheck={false}
                                         value = {user.userName}
@@ -96,7 +96,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="firstName"
                                         id="firstName"
-                                        pattern="^[a-z0-9_-]{3,15}$"
+                                        pattern="^[\p{L} .'-]+$"
                                         value={user.firstName}
                                         required={true}
                                         spellCheck={false}
@@ -114,7 +114,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="middleName"
                                         id="middleName"
-                                        pattern="^[a-z0-9_-]{3,15}$"
+                                        pattern="^[\p{L} .'-]+$"
                                         value={user.middleName}
                                         required={true}
                                         spellCheck={false}
@@ -132,7 +132,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={true}
                                         name="lastName"
                                         id="lastName"
-                                        pattern="^[a-z0-9_-]{1,15}$"
+                                        pattern="^[\p{L} .'-]+$"
                                         value={user.lastName}
                                         required={true}
                                         spellCheck={false}
@@ -181,6 +181,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="phoneNumber"
                                         id="phoneNumber"
+                                        pattern="^(?:[0-9] ?){6,14}[0-9]$"
                                         value={user.phoneNumber}
                                         required={false}
                                         spellCheck={false}
@@ -191,17 +192,11 @@ export function EditStudentInfo (): ReactElement {
                                     <Form.Label>
                                         Gender
                                     </Form.Label>
-                                    <Form.Control
-                                        type=""
-                                        autoComplete="on"
-                                        autoFocus={false}
-                                        name="gender"
-                                        id="gender"
-                                        value={user.gender}
-                                        required={false}
-                                        spellCheck={false}
-                                        onChange={handleUserChange}
-                                    />
+                                    <Form.Control as="select" name="gender" id="gender">
+                                        <option value="male">male</option>
+                                        <option value="female">female</option>
+                                        <option value="bisexual">bisexual</option>
+                                    </Form.Control>
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>
@@ -213,6 +208,7 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="job"
                                         id="job"
+                                        pattern="^(?:[0-9] ?){6,14}[0-9]$"
                                         value={user.job}
                                         required={true}
                                         spellCheck={false}
@@ -229,8 +225,10 @@ export function EditStudentInfo (): ReactElement {
                                         autoFocus={false}
                                         name="password"
                                         id="password"
+                                        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{0,}$"
                                         placeholder="Your new password"
                                         required={false}
+                                        minLength = {8}
                                         spellCheck={false}
                                         onChange={handleUserChange}
                                     />

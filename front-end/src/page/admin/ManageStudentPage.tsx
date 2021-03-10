@@ -18,6 +18,7 @@ export function ManageStudentPage (): ReactElement {
         );
     }, []);
     return (
+        <div className="parent-container">
         <div className="container">
             <div className="text-center">
                 <h1>Quản Lý Học Viên</h1>
@@ -107,6 +108,8 @@ export function ManageStudentPage (): ReactElement {
                                         <th className="text-center">
                                             Tên</th>
                                         <th className="text-center">
+                                            Tên đệm</th>
+                                        <th className="text-center">
                                             Họ</th>
                                         <th className="text-center">
                                             Email
@@ -155,6 +158,10 @@ export function ManageStudentPage (): ReactElement {
                                             <input type="text"
                                                 className="form-control" />
                                         </td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
                                         <td></td>
                                         <td>
                                             <select
@@ -176,6 +183,7 @@ export function ManageStudentPage (): ReactElement {
                                         <td>{item["userID"]}</td>
                                         <td>{item["userName"]}</td>
                                         <td>{item["firstName"]}</td>
+                                        <td>{item["middleName"]}</td>
                                         <td>{item["lastName"]}</td>
                                         <td>{item["email"]}</td>
                                         <td>{item["phoneNumber"]}</td>
@@ -230,6 +238,7 @@ export function ManageStudentPage (): ReactElement {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

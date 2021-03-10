@@ -113,23 +113,15 @@ public class SecurityConfiguration {
         );
         security.logout ().logoutSuccessHandler (getLogoutSuccessHandler ());
         security.authorizeRequests ()
-                .antMatchers (HttpMethod.GET, "/logged-in-user")
+                .antMatchers (HttpMethod.GET, "/logged-in-user*/**")
                         .authenticated ()
-                .antMatchers (HttpMethod.GET, "/register-forms")
+                .antMatchers (HttpMethod.GET, "/new-users*/**")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.POST, "/register-forms")
+                .antMatchers (HttpMethod.POST, "/new-users")
                         .permitAll ()
-                .antMatchers (HttpMethod.PATCH, "/register-forms/*")
+                .antMatchers (HttpMethod.PATCH, "/new-users*/**")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.DELETE, "/register-forms/*")
-                        .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.GET, "/users*")
-                        .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.PATCH, "/users/*")
-                        .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.DELETE, "/users/*")
-                        .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.GET, "/roles")
+                .antMatchers (HttpMethod.GET, "/roles*/**")
                         .authenticated ()
                 .anyRequest ().denyAll ();
     }

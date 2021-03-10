@@ -46,7 +46,7 @@
         "consistent-this": "error",
         "curly": "error",
         "default-case": "error",
-        "default-case-last": "off",
+        "default-case-last": "error",
         "default-param-last": "error",
         "dot-location": "off",
         "dot-notation": "off",

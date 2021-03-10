@@ -6510,22 +6510,6 @@ button.bg-dark:focus {
   padding-top: 100%;
 }
 
-.embed-responsive-21by9::before {
-  padding-top: 42.8571428571%;
-}
-
-.embed-responsive-16by9::before {
-  padding-top: 56.25%;
-}
-
-.embed-responsive-4by3::before {
-  padding-top: 75%;
-}
-
-.embed-responsive-1by1::before {
-  padding-top: 100%;
-}
-
 .flex-row {
   flex-direction: row !important;
 }
@@ -9944,18 +9928,5 @@ h3 {
     border-color: #dee2e6;
   }
 }
-#SignupPageContentContainer {
-  background-color: teal;
-}
 
-#SignUpForm {
-  width: 50%;
-}
-
-@media (max-width: 991.98px) {
-  #SignUpForm {
-    width: 90%;
-  }
-}
-
-/*# sourceMappingURL=SignUpPage.css.map */
+/*# sourceMappingURL=ViewProfilePage.css.map */

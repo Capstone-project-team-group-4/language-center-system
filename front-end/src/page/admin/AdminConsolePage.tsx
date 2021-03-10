@@ -23,13 +23,7 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                     <Row>
                         <Col>
                             <Breadcrumb>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/"}}
-                                >
-                                    Home
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item active = {true}>
+                                <Breadcrumb.Item active>
                                     Admin Console
                                 </Breadcrumb.Item>
                             </Breadcrumb>
@@ -55,18 +49,6 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                             >
                                                 Waiting for approval 
                                                 create-account-requests
-                                            </Button>
-                                            <Button 
-                                                variant = "success"
-                                                block = {true}
-                                                as = {Link}
-                                                to = {
-                                                    "/admin-console" 
-// eslint-disable-next-line max-len
-                                                    + "/disable-or-delete-account-page"
-                                                }
-                                            >
-                                                Disable or delete user account
                                             </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>

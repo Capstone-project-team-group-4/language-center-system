@@ -5,6 +5,8 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -22,40 +24,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author This MC
+ * @author Phan Lam
  */
 @Entity
-@Table(name = "RegisterForm", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
+@Table(name = "NewUser", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"UserName"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "RegisterForm.findAll", query = "SELECT r FROM RegisterForm r"),
-    @NamedQuery(name = "RegisterForm.findByFormID", query = "SELECT r FROM RegisterForm r WHERE r.formID = :formID"),
-    @NamedQuery(name = "RegisterForm.findByUserName", query = "SELECT r FROM RegisterForm r WHERE r.userName = :userName"),
-    @NamedQuery(name = "RegisterForm.findByMiddleName", query = "SELECT r FROM RegisterForm r WHERE r.middleName = :middleName"),
-    @NamedQuery(name = "RegisterForm.findByFirstName", query = "SELECT r FROM RegisterForm r WHERE r.firstName = :firstName"),
-    @NamedQuery(name = "RegisterForm.findByLastName", query = "SELECT r FROM RegisterForm r WHERE r.lastName = :lastName"),
-    @NamedQuery(name = "RegisterForm.findByPhoneNumber", query = "SELECT r FROM RegisterForm r WHERE r.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "RegisterForm.findByEmail", query = "SELECT r FROM RegisterForm r WHERE r.email = :email"),
-    @NamedQuery(name = "RegisterForm.findByPassword", query = "SELECT r FROM RegisterForm r WHERE r.password = :password")})
-public class RegisterForm implements Serializable {
+    @NamedQuery(name = "NewUser.findAll", query = "SELECT n FROM NewUser n"),
+    @NamedQuery(name = "NewUser.findByUserID", query = "SELECT n FROM NewUser n WHERE n.userID = :userID"),
+    @NamedQuery(name = "NewUser.findByUserName", query = "SELECT n FROM NewUser n WHERE n.userName = :userName"),
+    @NamedQuery(name = "NewUser.findByFirstName", query = "SELECT n FROM NewUser n WHERE n.firstName = :firstName"),
+    @NamedQuery(name = "NewUser.findByLastName", query = "SELECT n FROM NewUser n WHERE n.lastName = :lastName"),
+    @NamedQuery(name = "NewUser.findByPhoneNumber", query = "SELECT n FROM NewUser n WHERE n.phoneNumber = :phoneNumber"),
+    @NamedQuery(name = "NewUser.findByEmail", query = "SELECT n FROM NewUser n WHERE n.email = :email"),
+    @NamedQuery(name = "NewUser.findByPassword", query = "SELECT n FROM NewUser n WHERE n.password = :password")})
+public class NewUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "FormID", nullable = false)
-    private Integer formID;
+    @Column(name = "UserID", nullable = false)
+    private Integer userID;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 400)
     @Column(name = "UserName", nullable = false, length = 400)
     private String userName;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1000)
-    @Column(name = "MiddleName", nullable = false, length = 1000)
-    private String middleName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1000)
@@ -72,10 +68,8 @@ public class RegisterForm implements Serializable {
     @Column(name = "PhoneNumber", nullable = false, length = 100)
     private String phoneNumber;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1000)
-    @Column(name = "Email", nullable = false, length = 1000)
+    @Size(max = 1000)
+    @Column(name = "Email", length = 1000)
     private String email;
     @Basic(optional = false)
     @NotNull
@@ -83,30 +77,28 @@ public class RegisterForm implements Serializable {
     @Column(name = "Password", nullable = false, length = 1000)
     private String password;
 
-    public RegisterForm() {
+    public NewUser() {
     }
 
-    public RegisterForm(Integer formID) {
-        this.formID = formID;
+    public NewUser(Integer userID) {
+        this.userID = userID;
     }
 
-    public RegisterForm(Integer formID, String userName, String middleName, String firstName, String lastName, String phoneNumber, String email, String password) {
-        this.formID = formID;
+    public NewUser(Integer userID, String userName, String firstName, String lastName, String phoneNumber, String password) {
+        this.userID = userID;
         this.userName = userName;
-        this.middleName = middleName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.email = email;
         this.password = password;
     }
 
-    public Integer getFormID() {
-        return formID;
+    public Integer getUserID() {
+        return userID;
     }
 
-    public void setFormID(Integer formID) {
-        this.formID = formID;
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
     public String getUserName() {
@@ -115,14 +107,6 @@ public class RegisterForm implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
     }
 
     public String getFirstName() {
@@ -156,11 +140,13 @@ public class RegisterForm implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
-
+    
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
@@ -168,18 +154,18 @@ public class RegisterForm implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (formID != null ? formID.hashCode() : 0);
+        hash += (userID != null ? userID.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RegisterForm)) {
+        if (!(object instanceof NewUser)) {
             return false;
         }
-        RegisterForm other = (RegisterForm) object;
-        if ((this.formID == null && other.formID != null) || (this.formID != null && !this.formID.equals(other.formID))) {
+        NewUser other = (NewUser) object;
+        if ((this.userID == null && other.userID != null) || (this.userID != null && !this.userID.equals(other.userID))) {
             return false;
         }
         return true;
@@ -187,7 +173,7 @@ public class RegisterForm implements Serializable {
 
     @Override
     public String toString() {
-        return "com.PhanLam.backend.model.RegisterForm[ formID=" + formID + " ]";
+        return "com.PhanLam.backend.model.NewUser[ userID=" + userID + " ]";
     }
     
 }

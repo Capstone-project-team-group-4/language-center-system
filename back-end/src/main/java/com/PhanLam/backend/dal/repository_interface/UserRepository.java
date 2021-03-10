@@ -9,7 +9,6 @@ package com.PhanLam.backend.dal.repository_interface;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -23,6 +22,12 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     public User save (User user); 
 
     @Override
+    public boolean existsById (Integer userID);
+
+    @Override
+    public void deleteById (Integer userID);
+    
+    @Override
     public Optional<User> findById (Integer userID);
     
     @Override
@@ -30,13 +35,5 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     
     public boolean existsByUserName (String userName);
     
-    public Optional<User> findByUserName (String userName);
-    
-    public List<User> findAllByUserNameNot (
-            String userName
-            , Pageable pagingInformation
-    ); 
-
-    @Override
-    public void delete (User user);
+    public Optional <User> findByUserName (String userName);
 }

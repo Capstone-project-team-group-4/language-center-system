@@ -6,7 +6,7 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
-import com.PhanLam.backend.model.RegisterForm;
+import com.PhanLam.backend.model.NewUser;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,19 +16,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Phan Lam
  */
-public interface RegisterFormRepository extends JpaRepository<RegisterForm, Integer> {
+public interface NewUserRepository extends JpaRepository<NewUser, Integer> {
     
     @Override
-    public RegisterForm save (RegisterForm registerForm); 
+    public NewUser save (NewUser newUser); 
     
     public boolean existsByUserName (String userName);
     
     @Override
-    public Page <RegisterForm> findAll (Pageable pagingInformation); 
+    public Page <NewUser> findAll (Pageable pagingInformation); 
     
     @Override
-    public Optional <RegisterForm> findById (Integer formID);
+    public Optional <NewUser> findById (Integer userID);
 
     @Override
-    public void delete (RegisterForm registerForm);
+    public void delete (NewUser newUser);
 }

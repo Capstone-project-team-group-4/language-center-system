@@ -5,12 +5,12 @@ import React, {
     , ReactElement
     , useState 
 } from 'react';
-import { RegisterFormAPI } from '../common/service/RegisterFormAPI';
+import { NewUserAPI } from '../common/service/NewUserAPI';
 import { 
     Button, Container, Form, Row 
 } from 'react-bootstrap';
 import './SignUpPage.css';
-import { RegisterForm } from '../model/RegisterForm';
+import { NewUser, NewUserIndexSignature } from '../model/NewUser';
 import { TypeGuard } from '../common/service/TypeGuard';
 import { DialogControl } from '../common/component/ModalDialog';
 
@@ -22,16 +22,14 @@ interface SignUpPageProps {
 export function SignUpPage (props: SignUpPageProps): ReactElement {
 
     // Variables declaration:
-    let [registerForm, setRegisterForm] = useState<RegisterForm> (
-            new RegisterForm ()
-    );
-    let updatedRegisterForm: RegisterForm | undefined;
-    let htmlElement: 
+    let [newUser, setNewUser] = useState<NewUser> (new NewUser ());
+    let updatedNewUser: NewUser | undefined;
+    let inputField: 
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
-    let registerFormAPI: RegisterFormAPI;
+    let newUserAPI: NewUserAPI;
     let typeGuardian: TypeGuard;
 
-    registerFormAPI = new RegisterFormAPI ();
+    newUserAPI = new NewUserAPI ();
     typeGuardian = new TypeGuard ();
 
     function handleUserChange (
@@ -39,49 +37,18 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                 HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
             >
     ): void {  
-        updatedRegisterForm = new RegisterForm (registerForm);
-        htmlElement = event.target;
-        switch (htmlElement.name){
-            default:
-                throw new Error ("Unknown html element !");
-
-            case "firstNameField":
-                updatedRegisterForm.firstName = htmlElement.value;
-                break;
-                
-            case "middleNameField":
-                updatedRegisterForm.middleName = htmlElement.value;
-                break;
-
-            case "lastNameField":
-                updatedRegisterForm.lastName = htmlElement.value;
-                break;
-                
-            case "phoneNumberField":
-                updatedRegisterForm.phoneNumber = htmlElement.value;
-                break;
-
-            case "emailField":
-                updatedRegisterForm.email = htmlElement.value;
-                break;
-
-            case "userNameField":
-                updatedRegisterForm.userName = htmlElement.value;
-                break;
-
-            case "passwordField":
-                updatedRegisterForm.password = htmlElement.value;
-                break;
-        }
-        setRegisterForm (updatedRegisterForm);
+        updatedNewUser = new NewUser (newUser);
+        inputField = event.target;
+        updatedNewUser[
+            inputField.name as keyof NewUserIndexSignature
+        ] = inputField.value;
+        setNewUser (updatedNewUser);
     }
 
     async function signUp (event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault ();
         try {
-            await registerFormAPI.registerNewCreateAccountRequest (
-                    registerForm
-            ); 
+            await newUserAPI.registerNewCreateAccountRequest (newUser); 
             props.dialogController.setDialogTitle ("Success !");
             props.dialogController.setDialogBody (
                 `Your create-account-request have been registered
@@ -113,6 +80,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
     return (
         <Container 
             fluid = {true} 
+            id = "SignupPageContentContainer" 
             className = "h-100"
         >   
             {props.modalDialog}
@@ -136,7 +104,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                             }
                         >
                             <Form.Row>
-                                <Form.Group className = "col-md-4">
+                                <Form.Group className = "col-md-6">
                                     <Form.Label>
                                         First Name:
                                     </Form.Label>
@@ -144,13 +112,13 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         type = "text"
                                         autoComplete = "on"
                                         autoFocus = {true}
-                                        name = "firstNameField"
-                                        id = "FirstNameField"
+                                        name = "firstName"
+                                        id = "firstName"
                                         pattern = "^[\p{L} .'-]+$"
                                         placeholder = "Your first name"
                                         required = {true}
                                         spellCheck = {false}
-                                        value = {registerForm.firstName}
+                                        value = {newUser.firstName}
                                         onChange = {
                                             (event) => {
                                                 handleUserChange (event);
@@ -161,32 +129,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         format: characters only !  
                                     </Form.Text>
                                 </Form.Group>
-                                <Form.Group className = "col-md-4">
-                                    <Form.Label>
-                                        Middle Name:
-                                    </Form.Label>
-                                    <Form.Control
-                                        type = "text"
-                                        autoComplete = "on"
-                                        autoFocus = {false}
-                                        name = "middleNameField"
-                                        id = "MiddleNameField"
-                                        pattern = "^[\p{L} .'-]+$"
-                                        placeholder = "Your middle name"
-                                        required = {true}
-                                        spellCheck = {false}
-                                        value = {registerForm.middleName}
-                                        onChange = {
-                                            (event) => {
-                                                handleUserChange (event);
-                                            }
-                                        }
-                                    />
-                                    <Form.Text className = "text-muted">
-                                        format: characters only !  
-                                    </Form.Text>
-                                </Form.Group>
-                                <Form.Group className = "col-md-4">
+                                <Form.Group className = "col-md-6">
                                     <Form.Label>
                                         Last Name:
                                     </Form.Label>
@@ -194,13 +137,13 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         type = "text"
                                         autoComplete = "on"
                                         autoFocus = {false}
-                                        name = "lastNameField"
-                                        id = "LastNameField"
+                                        name = "lastName"
+                                        id = "lastName"
                                         pattern = "^[\p{L} .'-]+$"
                                         placeholder = "Your last name"
                                         required = {true}
                                         spellCheck = {false}
-                                        value = {registerForm.lastName}
+                                        value = {newUser.lastName}
                                         onChange = {
                                             (event) => {
                                                 handleUserChange (event);
@@ -221,14 +164,13 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     type = "tel"
                                     autoComplete = "on"
                                     autoFocus = {false}
-                                    name = "phoneNumberField"
-                                    id = "PhoneNumberField"
+                                    name = "phoneNumber"
+                                    id = "phoneNumber"
                                     pattern = "^(?:[0-9] ?){6,14}[0-9]$"
-                                    minLength = {8}
                                     placeholder = "Enter your phone number"
                                     required = {true}
                                     spellCheck = {false}
-                                    value = {registerForm.phoneNumber}
+                                    value = {newUser.phoneNumber}
                                     onChange = {
                                         (event) => {
                                             handleUserChange (event);
@@ -237,8 +179,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                 />
                                 <Form.Text className = "text-muted">
                                     format: valid phone numbers 
-                                    containing numbers only and must be 
-                                    at least 8 digits long !  
+                                    containing numbers only !  
                                 </Form.Text>
                             </Form.Group>
 
@@ -250,12 +191,12 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     type = "email"
                                     autoComplete = "on"
                                     autoFocus = {false}
-                                    name = "emailField"
-                                    id = "EmailField"
+                                    name = "email"
+                                    id = "email"
                                     placeholder = "Enter your email"
-                                    required = {true}
+                                    required = {false}
                                     spellCheck = {false}
-                                    value = {registerForm.email}
+                                    value = {newUser.email}
                                     onChange = {
                                         (event) => {
                                             handleUserChange (event);
@@ -276,13 +217,13 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     type = "text"
                                     autoComplete = "on"
                                     autoFocus = {false}
-                                    name = "userNameField"
-                                    id = "UserNameField"
+                                    name = "userName"
+                                    id = "userName"
                                     pattern = "^[\p{L} .'-]+$"
-                                    placeholder = "Your new user name"
+                                    placeholder = "Any user name"
                                     required = {true}
                                     spellCheck = {false}
-                                    value = {registerForm.userName}
+                                    value = {newUser.userName}
                                     onChange = {
                                         (event) => {
                                             handleUserChange (event);
@@ -302,15 +243,14 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     type = "password"
                                     autoComplete = "off"
                                     autoFocus = {false}
-                                    name = "passwordField"
-                                    id = "PasswordField"
-                                // eslint-disable-next-line max-len
-                                    pattern = "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{0,}$"
+                                    name = "password"
+                                    id = "password"
+                                    pattern = "^\S+$"
                                     placeholder = "Your new password"
                                     required = {true}
                                     spellCheck = {false}
                                     minLength = {8}
-                                    value = {registerForm.password}
+                                    value = {newUser.password}
                                     onChange = {
                                         (event) => {
                                             handleUserChange (event);
@@ -318,14 +258,8 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     }
                                 />
                                 <Form.Text className = "text-muted">
-                                    format:<br/> 
-                                    &emsp;&emsp;+&nbsp;
-                                    Must be at least 8 characters long.<br/> 
-                                    &emsp;&emsp;+&nbsp;
-                                    Must contain at least 1 
-                                    uppercase letter
-                                    , 1 lowercase letter
-                                    , and 1 number.<br/> 
+                                    format: must be at least 8 characters long 
+                                    without having any space character !  
                                 </Form.Text>
                             </Form.Group>
 

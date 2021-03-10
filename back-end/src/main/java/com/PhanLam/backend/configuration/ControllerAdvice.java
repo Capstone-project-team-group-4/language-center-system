@@ -12,7 +12,6 @@ import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,11 +31,7 @@ public class ControllerAdvice {
     public ExceptionResponseBody handleAlreadyExistException (
             AlreadyExistException exception
     ){
-        String exceptionTitle;
-        
-        exceptionTitle = exception.getExceptionTitle ();
         responseBody = new ExceptionResponseBody (exception);
-        responseBody.setExceptionTitle (exceptionTitle);
         return responseBody;
     }
     
@@ -55,7 +50,6 @@ public class ControllerAdvice {
             InvalidRequestArgumentException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
-        responseBody.setExceptionTitle ("Invalid Request Argument !");
         return responseBody;
     }
     
@@ -65,21 +59,6 @@ public class ControllerAdvice {
             BadCredentialsException exception
     ){
         responseBody = new ExceptionResponseBody (exception);
-        responseBody.setExceptionTitle (
-                "User Name Or Password Is Incorrect !"
-        );
-        return responseBody;
-    }
-    
-    @ExceptionHandler (DisabledException.class)
-    @ResponseStatus (HttpStatus.FORBIDDEN)
-    public ExceptionResponseBody handleDisabledException (
-            DisabledException exception
-    ){
-        responseBody = new ExceptionResponseBody (exception);
-        responseBody.setExceptionTitle (
-                "Your Account Has Been Blocked !"
-        );
         return responseBody;
     }
 }

@@ -7,7 +7,7 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-//import com.PhanLam.backend.model.LoggedInUser;!!
+import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.ArrayList;
@@ -18,11 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,52 +53,33 @@ public class UserController {
         return listUsers;
     }
     
-    @GetMapping ("/users:excluding-logged-in-user")
+    @GetMapping ("/logged-in-user")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<User> getAllUserExcludingCurrentLoggedInUser (
-            Principal principal
-            , @RequestParam int pageNumber
-            , @RequestParam int pageSize
-    ){
-        ArrayList<User> userHolder;
+    public LoggedInUser getCurrentLoggedInUser (Principal principal){
+        LoggedInUser loggedInUser;
         
-        userHolder = userService.getAllUserWithUserNameIsNot (
-                principal
-                , pageNumber
-                , pageSize
-        );
-        return userHolder;
+        loggedInUser = userService.getLoggedInUser (principal);
+        return loggedInUser;
     }
     
-    @PatchMapping ("/users/{userID}:disable")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void disableAnotherUser (
-            @PathVariable int userID
-            , Principal principal
-    ){
-        userService.disableUserByID (userID, principal);
-    }
-    
-    @PatchMapping ("/users/{userID}:enable")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void enableUser (
-            @PathVariable int userID
-    ){
-        userService.enableUserByID (userID);
+    @PostMapping ("/users")
+    @ResponseStatus (HttpStatus.CREATED)
+    public void registerUser (@RequestBody User user){
+        int userID;
+        boolean userAlreadyExist;
+
+        userID = user.getUserID();
+        userAlreadyExist = userRepository.existsById(userID);
+        if (userAlreadyExist == true) {
+            return;
+        } else {
+            userRepository.save(user);
+        }
     }
     
     @DeleteMapping ("/users/{userID}")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteAnotherUser (
-            @PathVariable int userID
-            , Principal principal
-    ){
-        userService.deleteUserByID (userID, principal);
-    }
-    
-    @GetMapping ("/logged-in-user")
     @ResponseStatus (HttpStatus.OK)
-    public void deleteUser (@PathVariable int userID, Principal principal){
+    public void deleteUser (@PathVariable int userID){
         boolean userAlreadyExist;
 
         userAlreadyExist = userRepository.existsById(userID);
@@ -110,13 +90,6 @@ public class UserController {
         }
     }
 
-//    public LoggedInUser getCurrentLoggedInUser (Principal principal){
-//        LoggedInUser loggedInUser;
-//        
-//        loggedInUser = userService.getLoggedInUser (principal);
-//        return loggedInUser;
-//    }
-    
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(
@@ -139,11 +112,5 @@ public class UserController {
     ){
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
-    }
-    
-    @DeleteMapping("/students/{userID}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteStudent(@PathVariable int userID) {
-        userService.deleteStudentByID(userID);
     }
 }

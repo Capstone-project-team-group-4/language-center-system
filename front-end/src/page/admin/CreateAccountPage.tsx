@@ -6,77 +6,62 @@ import React, {
     , useEffect
     , useState 
 } from "react";
-import { 
-    Breadcrumb
-    , Button
-    , Col
-    , Container
-    , Form
-    , Row
-    , Table 
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { RegisterFormAPI } from "../../common/service/RegisterFormAPI";
+import { NewUserAPI } from "../../common/service/NewUserAPI";
 import { RoleAPI } from "../../common/service/RoleAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { RegisterForm } from "../../model/RegisterForm";
+import { NewUser } from "../../model/NewUser";
 import { Role } from "../../model/Role";
 
 function renderRoleDropdownList (role: Role): ReactElement {
-    let roleNameWithoutPrefix: string | undefined;
-
-    roleNameWithoutPrefix = role.roleName.slice (5);
     return (
         <option key = {role.roleID}>
-            {roleNameWithoutPrefix}
+            {role.roleName}
         </option>
     );
 }
 
 function renderRoleListSection (role: Role): ReactElement {
-    let roleNameWithoutPrefix: string | undefined;
-    
-    roleNameWithoutPrefix = role.roleName.slice (5);
     return (
         <span key = {role.roleID}>
-            {roleNameWithoutPrefix},&nbsp;
+            {role.roleName},&nbsp;
         </span>
     );
 }
 
-function renderRegisterFormTable (
-        registerForm: RegisterForm
+function renderNewUserTable (
+        newUser: NewUser
         , index: number
         , handleAcceptRequest: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
         ) => Promise<void> 
         , handleRejectRequest: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
+        ) => Promise<void> 
 ): ReactElement {
     return (
-        <tr key = {registerForm.formID}>
+        <tr key = {newUser.userID}>
             <td>
                 {index + 1}
             </td>
             <td>
-                {`${registerForm.firstName} ${registerForm.lastName}`}
+                {`${newUser.firstName} ${newUser.lastName}`}
             </td>
             <td>
-                {registerForm.phoneNumber}
+                {newUser.phoneNumber}
             </td>
             <td>
-                {registerForm.email}
+                {newUser.email}
             </td>
             <td>
-                {registerForm.userName}
+                {newUser.userName}
             </td>
             <td>
                 <Button 
                     variant = "success"
                     type = "button"
-                    value = {registerForm.formID}
+                    value = {newUser.userID}
                     onClick = {handleAcceptRequest}
                 >
                     Accept
@@ -84,7 +69,7 @@ function renderRegisterFormTable (
                 <Button 
                     variant = "danger"
                     type = "button"
-                    value = {registerForm.formID}
+                    value = {newUser.userID}
                     onClick = {handleRejectRequest}
                 >
                     Reject
@@ -104,9 +89,8 @@ export function CreateAccountPage (
 ): ReactElement {
 
     // Variables declaration:
-    let [registerFormHolder, setRegisterFormHolder] 
-        = useState<RegisterForm[]> ([]);
-    let registerFormAPI: RegisterFormAPI;
+    let [newUserHolder, setNewUserHolder] = useState<NewUser[]> ([]);
+    let newUserAPI: NewUserAPI;
     let typeGuardian: TypeGuard;
     let [pageNumber, setPageNumber] = useState<number> (0);
     let [pageSize, setPageSize] = useState<number> (10);
@@ -121,11 +105,10 @@ export function CreateAccountPage (
     let updatedNewAccountRoleList: Role[] | undefined;
     let updatedRoleHolder: Role[] | undefined;
     let defaultRoleSelection: Role | undefined;
-    let button: HTMLButtonElement | undefined;
-    let [userID, setUserID] = useState<number> (0);
-    let roleNameWithoutPrefix: string | undefined;
+    let button: HTMLButtonElement | undefined; 
+    let userID: number | undefined;
 
-    registerFormAPI = new RegisterFormAPI ();
+    newUserAPI = new NewUserAPI ();
     typeGuardian = new TypeGuard ();
     roleAPI = new RoleAPI ();
     
@@ -134,12 +117,13 @@ export function CreateAccountPage (
     ): Promise<void> {
         if (newAccountRoleList.length > 0){
             button = event.target as HTMLButtonElement;
+            userID = Number (button.value);
             try {
-                await registerFormAPI.acceptCreateAccountRequest (
-                        Number (button.value)
+                await newUserAPI.acceptCreateAccountRequest (
+                        userID
                         , newAccountRoleList
                 );
-                loadRegisterFormTable ();
+                loadNewUserTable ();
             }
             catch (apiError: unknown){
                 if (typeGuardian.isAxiosError (apiError)){
@@ -170,25 +154,16 @@ export function CreateAccountPage (
         }
     }
 
-    function handleRejectRequest (
+    async function handleRejectRequest (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): void {
+    ): Promise<void> {
         button = event.target as HTMLButtonElement;
-        setUserID (Number (button.value));
-        props.dialogController.setDialogTitle ("Confirm Rejection");
-        props.dialogController.setDialogBody (
-                "Are you sure you want to reject this create account request ?"
-        );
-        props.dialogController.setDialogType ("confirm");
-        props.dialogController.setShowDialog (true);
-    }
-
-    async function executeRequestRejection (): Promise<void> {
+        userID = Number (button.value);
         try {
-            await registerFormAPI.rejectCreateAccountRequest (
+            await newUserAPI.rejectCreateAccountRequest (
                     userID
             );
-            loadRegisterFormTable ();
+            loadNewUserTable ();
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -213,15 +188,13 @@ export function CreateAccountPage (
     function handleAddRole (){
         for (i = 0; i < roleHolder.length; i++){
             role = roleHolder[i];
-            if (role.roleName === `ROLE_${selectedRoleName}`){
+            if (role.roleName === selectedRoleName){
                 updatedRoleHolder = roleHolder.slice ();
                 selectedRoleArray = updatedRoleHolder.splice (i, 1);
                 setRoleHolder (updatedRoleHolder);
                 if (updatedRoleHolder.length > 0){
                     defaultRoleSelection = updatedRoleHolder[0];
-                    roleNameWithoutPrefix 
-                        = defaultRoleSelection.roleName.slice (5); 
-                    setSelectedRoleName (roleNameWithoutPrefix);
+                    setSelectedRoleName (defaultRoleSelection.roleName);
                 }
                 selectedRole = selectedRoleArray[0];
                 updatedNewAccountRoleList = newAccountRoleList.slice ();
@@ -251,8 +224,7 @@ export function CreateAccountPage (
             updatedRoleHolder = await roleAPI.getAllRole (); 
             setRoleHolder (updatedRoleHolder);
             defaultRoleSelection = updatedRoleHolder[0];
-            roleNameWithoutPrefix = defaultRoleSelection.roleName.slice (5);
-            setSelectedRoleName (roleNameWithoutPrefix);
+            setSelectedRoleName (defaultRoleSelection.roleName);
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -274,14 +246,12 @@ export function CreateAccountPage (
         }
     }
 
-    async function loadRegisterFormTable (): Promise<void> {
+    async function loadNewUserTable (): Promise<void> {
         try {
-            setRegisterFormHolder (
-                    await registerFormAPI.getAllCreateAccountRequest (
-                            pageNumber
-                            , pageSize
-                    )
-            );
+            setNewUserHolder (await newUserAPI.getAllCreateAccountRequest (
+                pageNumber
+                , pageSize
+            ));
         }
         catch (apiError: unknown){
             if (typeGuardian.isAxiosError (apiError)){
@@ -304,21 +274,11 @@ export function CreateAccountPage (
     }
 
     useEffect (
-        (): void => {
+        function fetchTableData (): void {
             loadRoleDropdownList ();
-            loadRegisterFormTable ();
+            loadNewUserTable ();
         }
         , []
-    );
-
-    useEffect (
-        (): void => {
-            if (props.dialogController.dialogIsConfirmed === true){
-                executeRequestRejection ();
-                props.dialogController.setDialogIsConfirmed (false); 
-            }
-        }
-        , [props.dialogController.dialogIsConfirmed]
     );
 
     return (
@@ -328,23 +288,6 @@ export function CreateAccountPage (
                 <Container>
                     <Row className = "bg-white">
                         <Col>
-                            <Breadcrumb>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/"}}
-                                >
-                                    Home
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/admin-console"}}
-                                >
-                                    Admin Console
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item active>
-                                    Create Account Requests
-                                </Breadcrumb.Item>
-                            </Breadcrumb>
                             <h1>
                                 Create Account Requests
                             </h1>
@@ -366,7 +309,7 @@ export function CreateAccountPage (
                                                 value = {selectedRoleName}
                                                 onChange = {
                                                     (event) => {
-                                            // eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
                                                         handleSelectedRoleChange (
                                                             event
                                                         );
@@ -376,7 +319,7 @@ export function CreateAccountPage (
                                                 {roleHolder.map (
                                                     (
                                                             role
-                                            // eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
                                                     ) => renderRoleDropdownList (
                                                             role
                                                     )  
@@ -452,12 +395,12 @@ export function CreateAccountPage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {registerFormHolder.map (
+                                        {newUserHolder.map (
                                             (
-                                                    registerForm
+                                                    newUser
                                                     , index
-                                            ) => renderRegisterFormTable (
-                                                    registerForm
+                                            ) => renderNewUserTable (
+                                                    newUser
                                                     , index
                                                     , handleAcceptRequest
                                                     , handleRejectRequest

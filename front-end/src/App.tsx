@@ -26,8 +26,8 @@ import { SignUpPage } from './page/SignUpPage';
 import { History } from '../node_modules/@types/history';
 import { ManageStudentPage } from './page/admin/ManageStudentPage';
 import { ViewProfilePage } from './page/ViewProfilePage';
-import { ManageLessonPage } from './page/ManageLessonPage';
-import { EditLessonPage } from './page/EditLessonPage';
+// import { ManageLessonPage } from './page/ManageLessonPage';
+// import { EditLessonPage } from './page/EditLessonPage';
 
 export function App (): ReactElement {
   
@@ -137,7 +137,7 @@ export function App (): ReactElement {
         <ManageStudentPage />
       </Route>
 
-      <Route exact path="/course/lesson">
+      {/* <Route exact path="/course/lesson">
         <AdminPageHeader logOut = {logOut}/>
         <ManageLessonPage />
       </Route>
@@ -145,7 +145,7 @@ export function App (): ReactElement {
       <Route exact path="/course/lesson-edit">
         <AdminPageHeader logOut = {logOut}/>
         <EditLessonPage />
-      </Route>
+      </Route> */}
 
       <Route exact path="/user-view">
         <AdminPageHeader logOut = {logOut}/>

@@ -1,0 +1,30 @@
+@import '../../../node_modules/bootstrap/scss/functions';
+@import '../../../node_modules/bootstrap/scss/variables';
+@import '../../../node_modules/bootstrap/scss/bootstrap';
+
+#HeaderCarousel img {
+    width: 100vw;
+    height: 100vh;
+    filter: brightness(50%);
+}
+
+#NavLinkSection a {
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 5px;
+    &:hover {
+        background-color: #9c1c1f;
+    }
+}
+
+.carousel-caption {
+    top: 30%;
+}
+
+@include media-breakpoint-down (md){
+    .carousel-caption {
+        top: 40%;
+    }
+}
+

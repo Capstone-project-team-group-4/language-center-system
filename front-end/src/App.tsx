@@ -24,10 +24,15 @@ import { LogInPage } from './page/LogInPage';
 import { SelectRolePage } from './page/SelectRolePage';
 import { SignUpPage } from './page/SignUpPage';
 import { History } from '../node_modules/@types/history';
-import { ManageStudentPage } from './page/admin/ManageStudentPage';
-import { ViewProfilePage } from './page/ViewProfilePage';
-// import { ManageLessonPage } from './page/ManageLessonPage';
-// import { EditLessonPage } from './page/EditLessonPage';
+import { 
+  DisableOrDeleteAccountPage 
+} from './page/admin/DisableOrDeleteAccountPage';
+import { ManageCoursePage } from './page/admin/ManageCoursePage';
+
+export interface DataPage<T> {
+  totalPageCount: number;
+  pageDataHolder: T[];
+}
 
 export function App (): ReactElement {
   
@@ -43,17 +48,23 @@ export function App (): ReactElement {
   );
   let dialogController: DialogControl | undefined;
   let acceptableRoleNameHolder: string[] | undefined;
-  let createAccountPageSecurity: SecurityContext | undefined;
+  let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;  
   let logOutAPI: LogOutAPI;
   let typeGuardian: TypeGuard;
   let history: History<unknown>;
+  let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean> (false);
 
   logOutAPI = new LogOutAPI ();
   typeGuardian = new TypeGuard ();
   history = useHistory ();
 
   function handleCloseDialog (): void {
+    setShowDialog (false);
+  }
+
+  function handleConfirmDialog (): void {
+    setDialogIsConfirmed (true);
     setShowDialog (false);
   }
 
@@ -64,15 +75,18 @@ export function App (): ReactElement {
       dialogBody = {dialogBody}
       dialogType = {dialogType}
       handleCloseDialog = {handleCloseDialog}
+      handleConfirmDialog = {handleConfirmDialog}
     />;       
   dialogController = new DialogControl (
     setShowDialog
     , setDialogTitle
     , setDialogBody
     , setDialogType
+    , setDialogIsConfirmed
+    , dialogIsConfirmed
   );
   acceptableRoleNameHolder = new Array ("ROLE_ADMIN");
-  createAccountPageSecurity = new SecurityContext (
+  adminPageSecurity = new SecurityContext (
     isAuthenticated
     , loggedInUser
     , acceptableRoleNameHolder
@@ -117,9 +131,9 @@ export function App (): ReactElement {
 
   return (
     <Switch>
-        <Route exact path="/editStudentInfo/:studentID">
-          <EditStudentInfo />
-        </Route>
+      <Route exact path="/editStudentInfo/:studentID">
+        <EditStudentInfo />
+      </Route>
       <Route exact = {true} path="/">
         <PageHeader />
         <HomePage modalDialog = {modalDialog}/>
@@ -130,26 +144,6 @@ export function App (): ReactElement {
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />
-      </Route>
-
-      <Route exact path="/listStudent">
-        <AdminPageHeader logOut = {logOut}/>
-        <ManageStudentPage />
-      </Route>
-
-      {/* <Route exact path="/course/lesson">
-        <AdminPageHeader logOut = {logOut}/>
-        <ManageLessonPage />
-      </Route>
-
-      <Route exact path="/course/lesson-edit">
-        <AdminPageHeader logOut = {logOut}/>
-        <EditLessonPage />
-      </Route> */}
-
-      <Route exact path="/user-view">
-        <AdminPageHeader logOut = {logOut}/>
-        <ViewProfilePage />
       </Route>
 
       <Route path = "/log-in-page">
@@ -163,7 +157,7 @@ export function App (): ReactElement {
 
       <ProtectedRoute 
         path = "/admin-console/create-account-request-page"
-        securityContext = {createAccountPageSecurity}
+        securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
         <AdminPageHeader logOut = {logOut}/>
@@ -172,7 +166,31 @@ export function App (): ReactElement {
           modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/admin-console/disable-or-delete-account-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <AdminPageHeader logOut = {logOut}/>
+        <DisableOrDeleteAccountPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
       
+      <ProtectedRoute 
+        path = "/admin-console/manage-course-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
       <Route path = "/admin-console">
         <AdminPageHeader logOut = {logOut}/>
         <AdminConsolePage modalDialog = {modalDialog}/>

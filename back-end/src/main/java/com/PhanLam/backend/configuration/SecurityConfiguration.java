@@ -30,8 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * @author Phan Lam
  */
 @Configuration
-//@EnableWebSecurity
-public class SecurityConfiguration {
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     // Variables declaration:
     private UserInformationGet userInformationGetter;
@@ -93,7 +93,7 @@ public class SecurityConfiguration {
         return logoutSuccessHandler;
     } 
     
-//    @Override
+    @Override
     protected void configure (
             AuthenticationManagerBuilder authenticationManagerBuilder
     ) throws Exception { 
@@ -102,7 +102,7 @@ public class SecurityConfiguration {
                 .passwordEncoder (getPasswordEncoderForMatches ());
     }
 
-//    @Override
+    @Override
     protected void configure (HttpSecurity security) throws Exception {
         security.csrf ().disable ();
         security.cors ();
@@ -113,16 +113,41 @@ public class SecurityConfiguration {
         );
         security.logout ().logoutSuccessHandler (getLogoutSuccessHandler ());
         security.authorizeRequests ()
-                .antMatchers (HttpMethod.GET, "/logged-in-user*/**")
+                .antMatchers (HttpMethod.GET, "/logged-in-user")
                         .authenticated ()
-                .antMatchers (HttpMethod.GET, "/new-users*/**")
+                
+                .antMatchers (HttpMethod.GET, "/register-forms")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.POST, "/new-users")
+                .antMatchers (HttpMethod.POST, "/register-forms")
                         .permitAll ()
-                .antMatchers (HttpMethod.PATCH, "/new-users*/**")
+                .antMatchers (HttpMethod.PATCH, "/register-forms/*")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.GET, "/roles*/**")
+                .antMatchers (HttpMethod.DELETE, "/register-forms/*")
+                        .hasRole ("ADMIN")
+                
+                .antMatchers (HttpMethod.GET, "/users*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/users/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.DELETE, "/users/*")
+                        .hasRole ("ADMIN")
+                
+                .antMatchers (HttpMethod.POST, "/courses")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/courses")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PUT, "/courses/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.DELETE, "/courses/*")
+                        .hasRole ("ADMIN")
+                
+                .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
+                
+                .antMatchers (HttpMethod.GET, "/course-types")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/course-types/*/course-levels")
+                        .hasRole ("ADMIN")
                 .anyRequest ().denyAll ();
     }
 }

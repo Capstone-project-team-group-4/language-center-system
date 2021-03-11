@@ -1,4 +1,3 @@
-/* eslint prefer-promise-reject-errors: ["error", {"allowEmptyReject": true}] */
 // Import package members section:
 import { AxiosError } from "axios";
 import { ExceptionResponseBody } from "../../model/ExceptionResponseBody";
@@ -22,7 +21,7 @@ export class ErrorHandle {
                 this.exceptionResponseBody = (
                     apiError.response.data as ExceptionResponseBody
                 );
-                apiError.name = this.exceptionResponseBody.exceptionName;
+                apiError.name = this.exceptionResponseBody.exceptionTitle;
                 apiError.message = this.exceptionResponseBody.message;
                 return Promise.resolve<AxiosError<unknown>> (apiError);
             }
@@ -36,12 +35,13 @@ export class ErrorHandle {
             else {
                 // Something happened in setting up the request 
                 // that triggered an Error.
-                console.error (apiError.toJSON ());
-                return Promise.reject ();
+                return Promise.reject (apiError.toJSON ());
             }
         }
         else {
-            throw new Error ("This server response is not valid !");
+            return Promise.reject (
+                    new Error ("This server response is not valid !")
+            );
         }
     }
 }

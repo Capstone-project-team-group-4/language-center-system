@@ -106,24 +106,6 @@ export function EditStudentInfo (): ReactElement {
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Label>
-                                        Middle Name:
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        autoComplete="on"
-                                        autoFocus={true}
-                                        name="middleName"
-                                        id="middleName"
-                                        pattern="^[a-z0-9_-]{3,15}$"
-                                        value={user.middleName}
-                                        required={true}
-                                        spellCheck={false}
-                                        // value = {user.userName}
-                                        onChange={handleUserChange}
-                                    />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>
                                         Last Name:
                                     </Form.Label>
                                     <Form.Control

@@ -23,7 +23,13 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                     <Row>
                         <Col>
                             <Breadcrumb>
-                                <Breadcrumb.Item active>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/"}}
+                                >
+                                    Home
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item active = {true}>
                                     Admin Console
                                 </Breadcrumb.Item>
                             </Breadcrumb>
@@ -33,7 +39,7 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                         as = {Card.Header} 
                                         eventKey = "0"
                                     >
-                                        Student Management
+                                        User Management
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey = "0">
                                         <Card.Body>
@@ -43,26 +49,48 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                                 as = {Link}
                                                 to = {
                                                     "/admin-console" 
-// eslint-disable-next-line max-len
+                                            // eslint-disable-next-line max-len
                                                     + "/create-account-request-page"
                                                 }
                                             >
-                                                Waiting for approval 
-                                                create-account-requests
+                                                Accept create-account-requests
+                                            </Button>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console" 
+                                            // eslint-disable-next-line max-len
+                                                    + "/disable-or-delete-account-page"
+                                                }
+                                            >
+                                                Disable or delete user account
                                             </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
                                 <Card>
                                     <Accordion.Toggle 
-                                        as={Card.Header} 
-                                        eventKey="1"
+                                        as = {Card.Header} 
+                                        eventKey = "1"
                                     >
-                                        Click me!
+                                        Course
                                     </Accordion.Toggle>
-                                    <Accordion.Collapse eventKey="1">
+                                    <Accordion.Collapse eventKey = "1">
                                         <Card.Body>
-                                            Hello! I&apos;m another body
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console" 
+                                            // eslint-disable-next-line max-len
+                                                    + "/manage-course-page"
+                                                }
+                                            >
+                                                Manage course functions
+                                            </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>

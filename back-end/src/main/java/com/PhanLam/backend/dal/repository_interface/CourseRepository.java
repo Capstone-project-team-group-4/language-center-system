@@ -6,7 +6,7 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
-import com.PhanLam.backend.model.NewUser;
+import com.PhanLam.backend.model.Course;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,19 +16,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Phan Lam
  */
-public interface NewUserRepository extends JpaRepository<NewUser, Integer> {
+public interface CourseRepository extends JpaRepository<Course, Integer> {
     
     @Override
-    public NewUser save (NewUser newUser); 
+    public Page<Course> findAll (Pageable pagingInformation);
     
-    public boolean existsByUserName (String userName);
-    
-    @Override
-    public Page <NewUser> findAll (Pageable pagingInformation); 
+    public boolean existsByCourseName (String courseName);
     
     @Override
-    public Optional <NewUser> findById (Integer userID);
+    public Course save (Course course);
 
     @Override
-    public void delete (NewUser newUser);
+    public Optional<Course> findById (Integer courseID);
+
+    @Override
+    public void delete (Course course);
 }

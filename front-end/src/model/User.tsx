@@ -1,10 +1,10 @@
-export class User implements UserIndexSignature {
+export class User {
 
-	// Variables declaration:
-	public userID: number;
+    // Variables declaration:
+    public userID: number;
 	public userName: string;
-	public middleName: string;
 	public firstName: string;
+	public middleName: string;
 	public lastName: string;
 	public email: string;
 	public dob: Date;
@@ -17,13 +17,14 @@ export class User implements UserIndexSignature {
 	public accountStatus: string;
 	public dateCreated: Date;
 	public lastLogin: Date;
+	public lastModified: Date;
+	
+	public constructor ();
 
-	public constructor();
+	public constructor (user: User);
 
-	public constructor(user: User);
-
-	public constructor (user?: User) {
-		if (typeof user !== "undefined") {
+	public constructor (user?: User){
+		if (typeof user !== "undefined"){
 			this.userID = user.userID;
 			this.userName = user.userName;
 			this.firstName = user.firstName;
@@ -40,6 +41,7 @@ export class User implements UserIndexSignature {
 			this.accountStatus = user.accountStatus;
 			this.dateCreated = user.dateCreated;
 			this.lastLogin = user.lastLogin;
+			this.lastModified = user.lastModified;
 		}
 		else {
 			this.userID = 0;
@@ -50,32 +52,32 @@ export class User implements UserIndexSignature {
 			this.email = "";
 			this.phoneNumber = "";
 			this.password = "";
-			this.dob = new Date(0);
+			this.dob = new Date (0);
 			this.gender = "";
 			this.job = "";
 			this.photoURI = "";
 			this.selfDescription = "";
 			this.accountStatus = "";
-			this.dateCreated = new Date(0);
-			this.lastLogin = new Date(0);
+			this.dateCreated = new Date (0);
+			this.lastLogin = new Date (0);
+			this.lastModified = new Date (0);
 		}
 	}
 }
 
-type stringTypeKey
-	= "userName"
-	| "firstName"
-	| "middleName"
-	| "lastName"
-	| "email"
-	| "phoneNumber"
-	| "gender"
-	| "job"
-	| "photoURI"
-	| "selfDescription"
-	| "password"
+type stringTypeKey 
+    = "userName" 
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "phoneNumber"
+    | "gender"
+    | "job"
+    | "photoURI"
+    | "selfDescription"
+    | "password"
 	| "accountStatus";
-
+	
 export type UserIndexSignature = {
 	[key in stringTypeKey]?: string;
 }

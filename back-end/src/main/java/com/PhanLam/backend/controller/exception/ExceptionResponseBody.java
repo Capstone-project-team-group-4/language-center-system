@@ -15,25 +15,27 @@ import org.springframework.core.NestedExceptionUtils;
 public class ExceptionResponseBody {
     
     // Variables declaration:
-    private String exceptionName;
+    private String exceptionTitle;
     private String message; 
 
     public ExceptionResponseBody (Exception exception){
         Throwable exceptionOrRootCause;
-        Class exceptionClass;
         
+        exceptionTitle = "";
         exceptionOrRootCause = NestedExceptionUtils.getMostSpecificCause (
                 exception
         );
-        exceptionClass = exceptionOrRootCause.getClass (); 
-        exceptionName = exceptionClass.getSimpleName ();
         message = exceptionOrRootCause.getLocalizedMessage ();
     }
 
-    public String getExceptionName (){
-        return exceptionName;
+    public String getExceptionTitle (){
+        return exceptionTitle;
     }
 
+    public void setExceptionTitle (String exceptionTitle){
+        this.exceptionTitle = exceptionTitle;
+    }
+    
     public String getMessage (){
         return message;
     }

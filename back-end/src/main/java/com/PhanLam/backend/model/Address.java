@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,12 +41,39 @@ public class Address implements Serializable {
     @Basic(optional = false)
     @Column(name = "AddressID", nullable = false)
     private Integer addressID;
-    @Size(max = 500)
-    @Column(name = "City", length = 500)
-    private String city;
     @JoinColumn(name = "UserID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User userID;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "City", nullable = false, length = 500)
+    private String city;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "District", nullable = false, length = 500)
+    private String district;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Ward", nullable = false, length = 500)
+    private String ward;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Street", nullable = false, length = 500)
+    private String street;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "ApartmentNumber", nullable = false, length = 500)
+    private String apartmentNumber;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Country", nullable = false, length = 500)
+    private String country;
 
     public Address() {
     }
@@ -60,14 +88,6 @@ public class Address implements Serializable {
 
     public void setAddressID(Integer addressID) {
         this.addressID = addressID;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public User getUserID() {
@@ -101,6 +121,54 @@ public class Address implements Serializable {
     @Override
     public String toString() {
         return "com.PhanLam.backend.model.Address[ addressID=" + addressID + " ]";
+    }
+
+    public String getCity (){
+        return city;
+    }
+
+    public void setCity (String city){
+        this.city = city;
+    }
+
+    public String getDistrict (){
+        return district;
+    }
+
+    public void setDistrict (String district){
+        this.district = district;
+    }
+
+    public String getWard (){
+        return ward;
+    }
+
+    public void setWard (String ward){
+        this.ward = ward;
+    }
+
+    public String getStreet (){
+        return street;
+    }
+
+    public void setStreet (String street){
+        this.street = street;
+    }
+
+    public String getApartmentNumber (){
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber (String apartmentNumber){
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    public String getCountry (){
+        return country;
+    }
+
+    public void setCountry (String country){
+        this.country = country;
     }
     
 }

@@ -40,12 +40,15 @@ public class UserInformationGet implements UserDetailsService {
         Optional <com.PhanLam.backend.model.User> nullableUser; 
         com.PhanLam.backend.model.User user;
         ArrayList <SimpleGrantedAuthority> grantedAuthorityHolder;
-        User userInformationHolder;
+        UserDetails userDetail;
         ArrayList<Role> roleHolder;
         int i;
         Role role; 
         SimpleGrantedAuthority grantedAuthority;
         String roleName;
+        User.UserBuilder userBuilder; 
+        String accountStatus;
+        boolean accountIsDisabled;
         
         nullableUser = userRepository.findByUserName (userName);
         if (nullableUser.isPresent () == false){
@@ -63,12 +66,19 @@ public class UserInformationGet implements UserDetailsService {
                 grantedAuthority = new SimpleGrantedAuthority (roleName);
                 grantedAuthorityHolder.add (grantedAuthority);
             }
-            userInformationHolder = new User (
-                    userName
-                    , user.getPassword ()
-                    , grantedAuthorityHolder
-            );
+            accountStatus = user.getAccountStatus ();
+            accountIsDisabled = false;
+            if (accountStatus.equals ("Disabled")){
+                accountIsDisabled = true;
+            }
+            userBuilder = User.builder ();
+            userDetail = userBuilder
+                    .username (userName)
+                    .password (user.getPassword ())
+                    .authorities (grantedAuthorityHolder)
+                    .disabled (accountIsDisabled)
+                    .build ();
         }
-        return userInformationHolder;
+        return userDetail;
     }   
 }

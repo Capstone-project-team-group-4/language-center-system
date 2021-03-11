@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Phan Lam
  */
-@CrossOrigin ("*")
 @RestController
 public class UserController {
 
@@ -53,6 +52,49 @@ public class UserController {
         return listUsers;
     }
     
+    @GetMapping ("/users:excluding-logged-in-user")
+    @ResponseStatus (HttpStatus.OK)
+    public ArrayList<User> getAllUserExcludingCurrentLoggedInUser (
+            Principal principal
+            , @RequestParam int pageNumber
+            , @RequestParam int pageSize
+    ){
+        ArrayList<User> userHolder;
+        
+        userHolder = userService.getAllUserWithUserNameIsNot (
+                principal
+                , pageNumber
+                , pageSize
+        );
+        return userHolder;
+    }
+    
+    @PatchMapping ("/users/{userID}:disable")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void disableAnotherUser (
+            @PathVariable int userID
+            , Principal principal
+    ){
+        userService.disableUserByID (userID, principal);
+    }
+    
+    @PatchMapping ("/users/{userID}:enable")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void enableUser (
+            @PathVariable int userID
+    ){
+        userService.enableUserByID (userID);
+    }
+    
+    @DeleteMapping ("/users/{userID}")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void deleteAnotherUser (
+            @PathVariable int userID
+            , Principal principal
+    ){
+        userService.deleteUserByID (userID, principal);
+    }
+    
     @GetMapping ("/logged-in-user")
     @ResponseStatus (HttpStatus.OK)
     public LoggedInUser getCurrentLoggedInUser (Principal principal){
@@ -62,34 +104,6 @@ public class UserController {
         return loggedInUser;
     }
     
-    @PostMapping ("/users")
-    @ResponseStatus (HttpStatus.CREATED)
-    public void registerUser (@RequestBody User user){
-        int userID;
-        boolean userAlreadyExist;
-
-        userID = user.getUserID();
-        userAlreadyExist = userRepository.existsById(userID);
-        if (userAlreadyExist == true) {
-            return;
-        } else {
-            userRepository.save(user);
-        }
-    }
-    
-    @DeleteMapping ("/users/{userID}")
-    @ResponseStatus (HttpStatus.OK)
-    public void deleteUser (@PathVariable int userID){
-        boolean userAlreadyExist;
-
-        userAlreadyExist = userRepository.existsById(userID);
-        if (userAlreadyExist == true) {
-            userRepository.deleteById(userID);
-        } else {
-            return;
-        }
-    }
-
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(

@@ -42,17 +42,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery (name = "CourseLevel.findByLevelName", query = "SELECT c FROM CourseLevel c WHERE c.levelName = :levelName")})
 public class CourseLevel implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 400)
+    @Column(name = "LevelName", nullable = false, length = 400)
+    private String levelName;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Basic (optional = false)
     @Column (name = "LevelID", nullable = false)
     private Integer levelID;
-    @Basic (optional = false)
-    @NotNull
-    @Size (min = 1, max = 400)
-    @Column (name = "LevelName", nullable = false, length = 400)
-    private String levelName;
     
     @JsonIgnore
     @OneToMany (
@@ -91,13 +92,6 @@ public class CourseLevel implements Serializable {
         this.levelID = levelID;
     }
 
-    public String getLevelName (){
-        return levelName;
-    }
-
-    public void setLevelName (String levelName){
-        this.levelName = levelName;
-    }
 
     @XmlTransient
     public List<Course> getCourseList (){
@@ -139,6 +133,14 @@ public class CourseLevel implements Serializable {
     @Override
     public String toString (){
         return "com.PhanLam.backend.model.CourseLevel[ levelID=" + levelID + " ]";
+    }
+
+    public String getLevelName() {
+        return levelName;
+    }
+
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
     }
     
 }

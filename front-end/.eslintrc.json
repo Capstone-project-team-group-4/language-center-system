@@ -232,7 +232,7 @@
         "sort-keys": "off",
         "sort-vars": "error",
         "space-before-blocks": "off",
-        "space-before-function-paren": "error",
+        "space-before-function-paren": "off",
         "space-in-parens": "error",
         "space-infix-ops": "error",
         "space-unary-ops": "error",

@@ -243,6 +243,27 @@ export class UserAPI {
         }
     }
 
+    public async viewStudent(userID: number): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/users`
+            );
+            this.typeGuardian = new TypeGuard();
+            if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+                return this.serverResponse;
+            }
+            else {
+                throw new Error("This server response is not valid !");
+            }
+        }
+        catch (error) {
+            console.error(error.toJSON());
+            return Promise.reject<AxiosResponse>(error);
+        }
+    }
+
     public updateStudents(
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
@@ -255,7 +276,7 @@ export class UserAPI {
         }
     }
 
-    public async displayTeacher (userID: number): Promise<AxiosResponse> {
+    public async displayTeacher(userID: number): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
         try {
@@ -276,7 +297,7 @@ export class UserAPI {
         }
     }
 
-    public updateTeacher (
+    public updateTeacher(
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
         try {

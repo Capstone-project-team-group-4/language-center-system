@@ -9,6 +9,8 @@ import { UserAPI } from '../common/service/UserAPI';
 import { Link, useParams, useRouteMatch } from 'react-router-dom';
 import { User, UserIndexSignature } from '../model/User';
 import './ViewProfilePage.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
 function renderUserTable(
     user: User
     , index: number
@@ -62,16 +64,19 @@ function renderUserTable(
 }
 export function ViewProfilePage(): ReactElement {
 
+    let [user, getUser] = useState<User>(new User());
+    let userID: number;
+    let showUser: User | undefined;
     let userAPI: UserAPI | undefined;
+    let match = useRouteMatch();
     let param: any = useParams();
     let studentID: number;
     let [student, setStudent] = useState<User[]>([]);
 
     useEffect(() => {
         userAPI = new UserAPI();
-        userAPI.displayStudent(param.studentID).then(
+        userAPI.viewStudent(param.studentID).then(
             (res) => {
-
                 setStudent(res.data);
             }
         );
@@ -89,67 +94,67 @@ export function ViewProfilePage(): ReactElement {
             </Container>
             <main>
                 <Container id="PageBodyContainer">
-                    <Row className = "bg-white">
+                    <Row className="bg-white">
                         <Col>
-                        <Table responsive="md" hover={true}>
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                #
+                            <Table responsive="md" hover={true}>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            #
                                             </th>
-                                            <th>
-                                                First Name
+                                        <th>
+                                            First Name
                                             </th>
-                                            <th>
-                                                Middle Name
+                                        <th>
+                                            Middle Name
                                             </th>
-                                            <th>
-                                                Last Name
+                                        <th>
+                                            Last Name
                                             </th>
-                                            <th>
-                                                Phone Number
+                                        <th>
+                                            Phone Number
                                             </th>
-                                            <th>
-                                                Date of birth
+                                        <th>
+                                            Date of birth
                                             </th>
-                                            <th>
-                                                Email
+                                        <th>
+                                            Email
                                             </th>
-                                            <th>
-                                                Gender
+                                        <th>
+                                            Gender
                                             </th>
-                                            <th>
-                                                Job
+                                        <th>
+                                            Job
                                             </th>
-                                            <th>
-                                                Description
+                                        <th>
+                                            Description
                                             </th>
-                                            <th>
-                                                Status
+                                        <th>
+                                            Status
                                             </th>
-                                            <th>
-                                                Date Created
+                                        <th>
+                                            Date Created
                                             </th>
-                                            <th>
-                                                Last Login
+                                        <th>
+                                            Last Login
                                             </th>
-                                            <th>
-                                                Last Modifiled
+                                        <th>
+                                            Last Modifiled
                                             </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {student.map(
-                                            (
-                                                user
-                                                , index
-                                            ) => renderUserTable(
-                                                user
-                                                , index
-                                            )
-                                        )}
-                                    </tbody>
-                                </Table>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {student.map(
+                                        (
+                                            user
+                                            , index
+                                        ) => renderUserTable(
+                                            user
+                                            , index
+                                        )
+                                    )}
+                                </tbody>
+                            </Table>
                         </Col>
                     </Row>
                 </Container>

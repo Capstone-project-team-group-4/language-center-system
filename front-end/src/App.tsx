@@ -202,10 +202,10 @@ export function App(): ReactElement {
         <EditTeacherInfo />
       </Route>
 
-      <Route path = "/user_view">
+      <Route path="/user_view">
         <ViewProfilePage />
       </Route>
-      
+
       <ProtectedRoute
         path="/select-role-page"
         securityContext={selectRolePageSecurity}

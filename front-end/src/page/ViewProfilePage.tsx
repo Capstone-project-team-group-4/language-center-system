@@ -22,6 +22,9 @@ function renderUserTable(
                 {user.firstName}
             </td>
             <td>
+                {user.middleName}
+            </td>
+            <td>
                 {user.lastName}
             </td>
             <td>
@@ -50,6 +53,9 @@ function renderUserTable(
             </td>
             <td>
                 {user.lastLogin}
+            </td>
+            <td>
+                {user.lastModified}
             </td>
         </tr>
     );
@@ -95,6 +101,9 @@ export function ViewProfilePage(): ReactElement {
                                                 First Name
                                             </th>
                                             <th>
+                                                Middle Name
+                                            </th>
+                                            <th>
                                                 Last Name
                                             </th>
                                             <th>
@@ -123,6 +132,9 @@ export function ViewProfilePage(): ReactElement {
                                             </th>
                                             <th>
                                                 Last Login
+                                            </th>
+                                            <th>
+                                                Last Modifiled
                                             </th>
                                         </tr>
                                     </thead>

@@ -1,9 +1,11 @@
-import React, { ChangeEvent, FormEvent, MouseEvent,
-    ReactElement, useEffect, useState } from "react";
+import React, {
+    ChangeEvent, FormEvent, MouseEvent,
+    ReactElement, useEffect, useState
+} from "react";
 import { Breadcrumb, Button, Col, Container, Form, Modal, Row, Table }
     from "react-bootstrap";
-import { Lesson } from '../model/Lesson';
-import { LessonAPI } from '../common/service/LessonAPI';
+import { Lesson } from '../../model/Lesson';
+import { LessonAPI } from '../../common/service/LessonAPI';
 // import { Lesson } from '../model/Lesson';
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
@@ -11,7 +13,7 @@ import { DialogControl } from "../../common/component/ModalDialog";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { User } from "../../model/User";
 
-function renderLessonTable(
+function renderLessonTable (
     lesson: Lesson
     , index: number
     , openViewDetailsDialog: (
@@ -57,11 +59,7 @@ function renderLessonTable(
                     value={lesson.lessonID}
                     onClick={
                         (event) => {
-                            openEditLessonForm(event).catch(
-                                (error: unknown) => {
-                                    console.error(error);
-                                }
-                            );
+                            openEditLessonForm(event);
                         }
                     }
                 >
@@ -122,7 +120,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
     lessonAPI = new LessonAPI();
     typeGuardian = new TypeGuard();
 
-    function handleDeleteLesson(
+    function handleDeleteLesson (
         event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): void {
         button = event.target as HTMLButtonElement;
@@ -135,7 +133,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         props.dialogController.setShowDialog(true);
     }
 
-    async function executeLessonDeletion(): Promise<void> {
+    async function executeLessonDeletion (): Promise<void> {
         try {
             await lessonAPI.deleteLesson(pendingLessonID);
             loadLessonTable();
@@ -159,7 +157,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         }
     }
 
-    function openViewDetailDialog(
+    function openViewDetailDialog (
         event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): void {
         button = event.target as HTMLButtonElement;
@@ -183,20 +181,20 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         setShowViewDetailDialog(true);
     }
 
-    function closeViewDetailDialog(): void {
+    function closeViewDetailDialog (): void {
         setShowViewDetailDialog(false);
     }
 
-    function openCreateLessonForm(): void {
+    function openCreateLessonForm (): void {
         setLesson(new Lesson());
         setShowCreateLessonForm(true);
     }
 
-    function closeCreateLessonForm(): void {
+    function closeCreateLessonForm (): void {
         setShowCreateLessonForm(false);
     }
 
-    function openEditLessonForm(
+    function openEditLessonForm (
         event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): void {
         button = event.target as HTMLButtonElement;
@@ -211,11 +209,11 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         setShowEditLessonForm(true);
     }
 
-    function closeEditLessonForm(): void {
+    function closeEditLessonForm (): void {
         setShowEditLessonForm(false);
     }
 
-    function handleChange(
+    function handleChange (
         event: ChangeEvent<
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >
@@ -315,7 +313,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         }
     }
 
-    async function loadLessonTable(): Promise<void> {
+    async function loadLessonTable (): Promise<void> {
         try {
             lessonDataPage = await lessonAPI.getAllLesson(
                 pageIndex
@@ -343,26 +341,26 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
         }
     }
 
-    useEffect (
+    useEffect(
         (): void => {
-            loadLessonTable ().catch (
-                    (error: unknown) => {
-                        console.error (error);
-                    }
+            loadLessonTable().catch(
+                (error: unknown) => {
+                    console.error(error);
+                }
             );
         }
         , []
     );
 
-    useEffect (
+    useEffect(
         (): void => {
-            if (props.dialogController.dialogIsConfirmed === true){
-                executeLessonDeletion ().catch (
-                        (error: unknown) => {
-                            console.error (error);
-                        }
+            if (props.dialogController.dialogIsConfirmed === true) {
+                executeLessonDeletion().catch(
+                    (error: unknown) => {
+                        console.error(error);
+                    }
                 );
-                props.dialogController.setDialogIsConfirmed (false); 
+                props.dialogController.setDialogIsConfirmed(false);
             }
         }
         , [props.dialogController.dialogIsConfirmed]
@@ -370,486 +368,492 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
 
     // Modals
     return (
-        <Container fluid = {true}>
+        <Container fluid={true}>
             {props.modalDialog}
             <Modal
-                show = {showCreateLessonForm}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
+                show={showCreateLessonForm}
+                backdrop="static"
+                keyboard={false}
+                size="lg"
             >
                 <Modal.Header>
                     <Modal.Title>New Lesson Information</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form 
-                        id = "CreateLessonForm"
-                        className = "pt-2 pr-5 pl-5 pb-0"
-                        onSubmit = {
+                    <Form
+                        id="CreateLessonForm"
+                        className="pt-2 pr-5 pl-5 pb-0"
+                        onSubmit={
                             (event) => {
-                                createLesson (event).catch (
-                                        (error: unknown) => {
-                                            console.error (error);
-                                        }
+                                createLesson(event).catch(
+                                    (error: unknown) => {
+                                        console.error(error);
+                                    }
                                 );
                             }
                         }
                     >
-                        <Form.Group controlId = "LessonNameField">
+                        <Form.Group controlId="LessonNameField">
                             <Form.Label>
                                 Lesson Name:
                             </Form.Label>
                             <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "lessonNameField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Name for the new type ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {lesson.lessonName}
-                                onChange = {
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="lessonNameField"
+                                pattern="^[a-zA-Z0-9\+]*$"
+                                placeholder="Name for the new lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.lessonName}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: no special character !  
+                            <Form.Text className="text-muted">
+                                format: no special character !
                             </Form.Text>
                         </Form.Group>
 
-                        <Form.Group controlId = "LessonTypeField">
+                        <Form.Group controlId="LessonTypeField">
                             <Form.Label>
                                 Lesson Type:
                             </Form.Label>
                             <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "lessonTypeField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Name for the new type ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {lesson.lessonType}
-                                onChange = {
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="lessonTypeField"
+                                pattern="^[\p{L} .'-]+$"
+                                placeholder="Type for the new lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.lessonType}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: no special character !  
+                            <Form.Text className="text-muted">
+                                format: no special character !
                             </Form.Text>
                         </Form.Group>
 
-                        <Form.Group controlId = "DescriptionTextarea">
+                        <Form.Group controlId="DescriptionTextarea">
                             <Form.Label>
                                 Description:
                             </Form.Label>
                             <Form.Control
-                                as = "textarea"
-                                autoComplete = "off"
-                                autoFocus = {false}
-                                name = "descriptionTextarea"
-                                placeholder = "Description for the new lesson ?"
-                                required = {false}
-                                spellCheck = {true}
-                                rows = {5}
-                                value = {lesson.description}
-                                onChange = {
+                                as="textarea"
+                                autoComplete="off"
+                                autoFocus={false}
+                                name="descriptionTextarea"
+                                placeholder="Description for the new lesson ?"
+                                required={false}
+                                spellCheck={true}
+                                rows={5}
+                                value={lesson.description}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                        </Form.Group>          
+                        </Form.Group>
 
-                        <Form.Group controlId = "durationField">
+                        <Form.Group controlId="durationField">
                             <Form.Label>
-                                Duration &nbsp; (minutes) :
+                                Duration (minutes) :
                             </Form.Label>
                             <Form.Control
-                                type = "number"
-                                autoComplete = "on"
-                                autoFocus = {false}
-                                name = "durationField"
-                                placeholder = "Duration of the new lesson ?"
-                                required = {true}
-                                spellCheck = {false}
-                                min = {0}
-                                step = {500}
-                                value = {lesson.duration}
-                                onChange = {
+                                type="number"
+                                autoComplete="on"
+                                autoFocus={false}
+                                name="durationField"
+                                placeholder="Duration of the new lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                min={0}
+                                step={1}
+                                value={lesson.duration}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: numbers only !  
+                            <Form.Text className="text-muted">
+                                format: numbers only !
                             </Form.Text>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button 
-                        variant = "success" 
-                        type = "submit"
-                        form = "CreateLessonForm" 
+                    <Button
+                        variant="success"
+                        type="submit"
+                        form="CreateLessonForm"
                     >
                         Create
                     </Button>
-                    <Button 
-                        variant = "outline-secondary" 
-                        onClick = {closeCreateLessonForm}
+                    <Button
+                        variant="outline-secondary"
+                        onClick={closeCreateLessonForm}
                     >
                         Cancel
-                    </Button>   
+                    </Button>
                 </Modal.Footer>
             </Modal>
 
             <Modal
-                show = {showViewDetailDialog}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
+                show={showViewDetailDialog}
+                backdrop="static"
+                keyboard={false}
+                size="lg"
             >
                 <Modal.Header>
                     <Modal.Title>Lesson Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form
-                        className = "pt-2 pr-5 pl-5 pb-0"
+                        className="pt-2 pr-5 pl-5 pb-0"
                     >
                         <Form.Row>
-                            <Form.Group as = {Row} controlId = "LessonIDInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
+                            <Form.Group as={Row} controlId="LessonIDInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={5}
                                 >
                                     + Lesson ID:
                                 </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {lesson.lessonID}
+                                <Col md={7}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={lesson.lessonID}
                                     />
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as = {Row} controlId = "LessonNameInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
+                            <Form.Group as={Row} controlId="LessonNameInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={5}
                                 >
                                     + Lesson Name:
                                 </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {lesson.lessonName}
+                                <Col md={7}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={lesson.lessonName}
                                     />
                                 </Col>
                             </Form.Group>
                         </Form.Row>
-                        
-                        
+
+
                         <Form.Row>
-                            <Form.Group as = {Row} controlId = "LessonTypeInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
+                            <Form.Group as={Row} controlId="LessonTypeInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={5}
                                 >
                                     + Lesson Type:
                                 </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {lesson.lessonType}
+                                <Col md={7}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={lesson.lessonType}
                                     />
                                 </Col>
                             </Form.Group>
 
-                        <Form.Group as = {Row} controlId = "DurationInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Duration (minutes):
+                            <Form.Group as={Row} controlId="DurationInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={3}
+                                >
+                                    + Duration (minutes):
                             </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {
-                                        `${
-                                            lesson.duration.toLocaleString ()
-                                        } đ`
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
+                                <Col md={9}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={
+                                            `${lesson.duration.toLocaleString()
+                                            } đ`
+                                        }
+                                    />
+                                </Col>
+                            </Form.Group>
 
-                        <Form.Group as = {Row} controlId = "LastModifiedInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Last Modified:
+                            <Form.Group as={Row} controlId="LastModifiedInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={3}
+                                >
+                                    + Last Modified:
                             </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {formattedLastModified}
-                                />
-                            </Col>
-                        </Form.Group>
+                                <Col md={9}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={formattedLastModified}
+                                    />
+                                </Col>
+                            </Form.Group>
 
-                        <Form.Group as = {Row} controlId = "DateCreatedInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Date Created:
+                            <Form.Group as={Row} controlId="DateCreatedInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={3}
+                                >
+                                    + Date Created:
                             </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {formattedDateCreated}
-                                />
-                            </Col>
-                        </Form.Group>
+                                <Col md={9}>
+                                    <Form.Control
+                                        plaintext={true}
+                                        readOnly={true}
+                                        value={formattedDateCreated}
+                                    />
+                                </Col>
+                            </Form.Group>
+                        </Form.Row>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button 
-                        variant = "info" 
-                        onClick = {closeViewDetailDialog}
+                    <Button
+                        variant="info"
+                        onClick={closeViewDetailDialog}
                     >
                         Close
-                    </Button>   
+                    </Button>
                 </Modal.Footer>
             </Modal>
-            
+
             <Modal
-                show = {showEditLessonForm}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
+                show={showEditLessonForm}
+                backdrop="static"
+                keyboard={false}
+                size="lg"
             >
                 <Modal.Header>
                     <Modal.Title>Edit Lesson</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form 
-                        id = "EditLessonForm"
-                        className = "pt-2 pr-5 pl-5 pb-0"
-                        onSubmit = {
+                    <Form
+                        id="EditLessonForm"
+                        className="pt-2 pr-5 pl-5 pb-0"
+                        onSubmit={
                             (event) => {
-                                editLesson (event).catch (
-                                        (error: unknown) => {
-                                            console.error (error);
-                                        }
+                                editLesson(event).catch(
+                                    (error: unknown) => {
+                                        console.error(error);
+                                    }
                                 );
                             }
                         }
                     >
-                        <Form.Group controlId = "LessonNameField">
+                        <Form.Group controlId="LessonNameField">
                             <Form.Label>
                                 Lesson Name:
                             </Form.Label>
                             <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "lessonNameField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Name for the course ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {lesson.lessonName}
-                                onChange = {
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="lessonNameField"
+                                pattern="^[a-zA-Z0-9\+]*$"
+                                placeholder="Name for the lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.lessonName}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: characters only !  
+                            <Form.Text className="text-muted">
+                                format: no special character !
                             </Form.Text>
                         </Form.Group>
 
-                        <Form.Group controlId = "LessonTypeField">
+                        <Form.Group controlId="LessonTypeField">
                             <Form.Label>
                                 Lesson Type:
                             </Form.Label>
                             <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "lessonTypeField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Type for the lesson ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {lesson.lessonType}
-                                onChange = {
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="lessonTypeField"
+                                pattern="^[\p{L} .'-]+$"
+                                placeholder="Type for the lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.lessonType}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: characters only !  
+                            <Form.Text className="text-muted">
+                                format: no special character !
                             </Form.Text>
                         </Form.Group>
 
-                        <Form.Group controlId = "DescriptionTextarea">
+                        <Form.Group controlId="DescriptionTextarea">
                             <Form.Label>
                                 Description:
                             </Form.Label>
                             <Form.Control
-                                as = "textarea"
-                                autoComplete = "off"
-                                autoFocus = {false}
-                                name = "descriptionTextarea"
-                                placeholder = "Description for the lesson ?"
-                                required = {false}
-                                spellCheck = {true}
-                                rows = {5}
-                                value = {lesson.description}
-                                onChange = {
+                                as="textarea"
+                                autoComplete="off"
+                                autoFocus={false}
+                                name="descriptionTextarea"
+                                placeholder="Description for the lesson ?"
+                                required={false}
+                                spellCheck={true}
+                                rows={5}
+                                value={lesson.description}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                        </Form.Group>         
+                        </Form.Group>
 
-                        <Form.Group controlId = "DurationField">
+                        <Form.Group controlId="DurationField">
                             <Form.Label>
                                 Duration (minutes):
                             </Form.Label>
                             <Form.Control
-                                type = "number"
-                                autoComplete = "on"
-                                autoFocus = {false}
-                                name = "DurationField"
-                                placeholder = "Duration of the lesson ?"
-                                required = {true}
-                                spellCheck = {false}
-                                min = {0}
-                                step = {500}
-                                value = {lesson.duration}
-                                onChange = {
+                                type="number"
+                                autoComplete="on"
+                                autoFocus={false}
+                                name="DurationField"
+                                placeholder="Duration of the lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                min={0}
+                                step={500}
+                                value={lesson.duration}
+                                onChange={
                                     (event) => {
-                                        handleChange (event);
+                                        handleChange(event);
                                     }
                                 }
                             />
-                            <Form.Text className = "text-muted">
-                                format: numbers only !  
+                            <Form.Text className="text-muted">
+                                format: numbers only !
                             </Form.Text>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button 
-                        variant = "success" 
-                        type = "submit"
-                        form = "EditCourseForm" 
+                    <Button
+                        variant="success"
+                        type="submit"
+                        form="EditLessonForm"
                     >
                         Save
                     </Button>
-                    <Button 
-                        variant = "outline-secondary" 
-                        onClick = {closeEditLessonForm}
+                    <Button
+                        variant="outline-secondary"
+                        onClick={closeEditLessonForm}
                     >
                         Cancel
-                    </Button>   
+                    </Button>
                 </Modal.Footer>
             </Modal>
             <main>
-            <Container>
-            <Row className="bg-white">
-                <Col>
-                    <Breadcrumb>
-                        <Breadcrumb.Item
-                            linkAs={Link}
-                            linkProps={{ to: "/" }}
-                        >
-                            Home
+                <Container>
+                    <Row className="bg-white">
+                        <Col>
+                            <Breadcrumb>
+                                <Breadcrumb.Item
+                                    linkAs={Link}
+                                    linkProps={{ to: "/" }}
+                                >
+                                    Home
                                 </Breadcrumb.Item>
-                        <Breadcrumb.Item
-                            linkAs={Link}
-                            linkProps={{ to: "/admin-console" }}
-                        >
-                            Admin Console
+                                <Breadcrumb.Item
+                                    linkAs={Link}
+                                    linkProps={{
+                                        to:
+                                        "/admin-console/manage-course-function"
+                                    }}
+                                >
+                                    Admin Console
                                 </Breadcrumb.Item>
-                        <Breadcrumb.Item active>
-                            Manage course functions
+                                <Breadcrumb.Item active>
+                                    Manage course function
                                 </Breadcrumb.Item>
-                    </Breadcrumb>
-                    <h1 className="mb-3">
-                        <span className="mr-3">
-                            Manage Course
+                                <Breadcrumb.Item active>
+                                    Manage lesson function
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                            <h1 className="mb-3">
+                                <span className="mr-3">
+                                    Manage Lessons
                                 </span>
-                        <Button
-                            variant="success"
-                            type="button"
-                            onClick={openCreateLessonForm}
-                        >
-                            Create New
+                                <Button
+                                    variant="success"
+                                    type="button"
+                                    onClick={openCreateLessonForm}
+                                >
+                                    Create New
                                 </Button>
-                    </h1>
-                    <Form>
-                        <Table responsive="md" hover={true}>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        #
+                            </h1>
+                            <Form>
+                                <Table responsive="md" hover={true}>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
                                             </th>
-                                    <th>
-                                        Lesson Name
+                                            <th>
+                                                Lesson Name
                                             </th>
-                                    <th>
-                                        Lesson Type
+                                            <th>
+                                                Lesson Type
                                             </th>
-                                    <th>
-                                        Duration &nbsp; (minutes)
+                                            <th>
+                                                Duration (minutes)
                                             </th>
-                                    <th>
-                                        Actions
+                                            <th>
+                                                Actions
                                             </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {lessonHolder.map(
-                                    (
-                                        lesson
-                                        , index
-                                    ) => renderLessonTable(
-                                        lesson
-                                        , index
-                                        , openViewDetailDialog
-                                        , openEditLessonForm
-                                        , handleDeleteLesson
-                                    )
-                                )}
-                            </tbody>
-                        </Table>
-                    </Form>
-                </Col>
-            </Row>
-            </Container>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {lessonHolder.map(
+                                            (
+                                                lesson
+                                                , index
+                                            ) => renderLessonTable(
+                                                lesson
+                                                , index
+                                                , openViewDetailDialog
+                                                , openEditLessonForm
+                                                , handleDeleteLesson
+                                            )
+                                        )}
+                                    </tbody>
+                                </Table>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
             </main>
         </Container>
     );

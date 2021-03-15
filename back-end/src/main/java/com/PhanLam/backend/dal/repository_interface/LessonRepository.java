@@ -7,6 +7,7 @@ package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
 import com.PhanLam.backend.model.Lesson;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     public Page<Lesson> findAll (Pageable pagingInformation);
     
     public boolean existsByLessonName (String lessonName);
+    
+    public Page<Lesson> findByCourseID_CourseID(Integer courseID, Pageable pagingInformation);
     
     @Override
     public Lesson save (Lesson lesson);

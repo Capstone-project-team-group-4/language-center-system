@@ -76,7 +76,7 @@ public class LessonService {
                     , pageSize
                     , sortInformation
             );
-            lessonPage = lessonRepository.findAll (pagingInformation);
+            lessonPage = lessonRepository.findByCourseID_CourseID (16, pagingInformation);
             lessonHolder = new ArrayList<> (lessonPage.getContent ());
             lessonDataPage = new DataPage<> (
                     lessonPage.getTotalPages ()

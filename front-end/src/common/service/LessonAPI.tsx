@@ -2,7 +2,6 @@
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { DataPage } from "../../App";
 import { Lesson } from "../../model/Lesson";
-import { User } from "../../model/User";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
 import { TypeGuard } from "./TypeGuard";
@@ -31,7 +30,7 @@ export class LessonAPI {
             await this.axiosInstance.post<undefined> (
                     "/lessons"
                     , lesson
-            );
+            );            
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -85,7 +84,7 @@ export class LessonAPI {
     public async updateLesson (updatedLesson: Lesson): Promise<void> {
         try {
             await this.axiosInstance.put<undefined> (
-                    `/courses/${updatedLesson.courseID}`
+                    `/lessons/${updatedLesson.lessonID}`
                     , updatedLesson
             );
             return Promise.resolve<undefined> (undefined);
@@ -105,7 +104,7 @@ export class LessonAPI {
     public async deleteLesson (lessonID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
-                    `/courses/${lessonID}`
+                    `/lessons/${lessonID}`
             );
             return Promise.resolve<undefined> (undefined);
         }

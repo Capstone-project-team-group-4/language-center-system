@@ -88,7 +88,7 @@ public class Lesson implements Serializable {
     @OneToMany (mappedBy = "lessonID", fetch = FetchType.LAZY)
     private List<Document> documentList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course courseID;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "lessonID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;

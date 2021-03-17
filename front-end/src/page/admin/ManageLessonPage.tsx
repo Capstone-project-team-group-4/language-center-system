@@ -6,12 +6,10 @@ import { Breadcrumb, Button, Col, Container, Form, Modal, Row, Table }
     from "react-bootstrap";
 import { Lesson } from '../../model/Lesson';
 import { LessonAPI } from '../../common/service/LessonAPI';
-// import { Lesson } from '../model/Lesson';
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { User } from "../../model/User";
 
 function renderLessonTable (
     lesson: Lesson
@@ -220,6 +218,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
     ): void {
         updatedLesson = new Lesson(lesson);
         htmlElement = event.target;
+        console.log(htmlElement.name);
         switch (htmlElement.name) {
             default:
                 throw new Error("Unknown html element !");
@@ -520,6 +519,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                 </Modal.Header>
                 <Modal.Body>
                     <Form
+                        id="viewLessonForm"
                         className="pt-2 pr-5 pl-5 pb-0"
                     >
                         <Form.Row>
@@ -538,7 +538,9 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                     />
                                 </Col>
                             </Form.Group>
+                        </Form.Row>
 
+                        <Form.Row>
                             <Form.Group as={Row} controlId="LessonNameInfo">
                                 <Form.Label
                                     column={true}
@@ -556,7 +558,6 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                             </Form.Group>
                         </Form.Row>
 
-
                         <Form.Row>
                             <Form.Group as={Row} controlId="LessonTypeInfo">
                                 <Form.Label
@@ -573,34 +574,56 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                     />
                                 </Col>
                             </Form.Group>
+                        </Form.Row>
+
+                        <Form.Group controlId="DescriptionInfo">
+                            <Form.Label>
+                                + Description:
+                            </Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                readOnly={true}
+                                rows={5}
+                                value={lesson.description}
+                            />
+                        </Form.Group>
+
+                        <Form.Row>
 
                             <Form.Group as={Row} controlId="DurationInfo">
                                 <Form.Label
                                     column={true}
-                                    md={3}
+                                    md={6}
                                 >
                                     + Duration (minutes):
                             </Form.Label>
-                                <Col md={9}>
+                                <Col
+                                    md={4}
+                                >
                                     <Form.Control
                                         plaintext={true}
                                         readOnly={true}
                                         value={
                                             `${lesson.duration.toLocaleString()
-                                            } đ`
+                                            }`
                                         }
                                     />
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="LastModifiedInfo">
+                        </Form.Row>
+
+                        <Form.Row>
+
+                            <Form.Group as={Row}
+                                controlId="LastModifiedInfo">
                                 <Form.Label
                                     column={true}
-                                    md={3}
+                                    md={5}
                                 >
                                     + Last Modified:
                             </Form.Label>
-                                <Col md={9}>
+                                <Col md={7}>
                                     <Form.Control
                                         plaintext={true}
                                         readOnly={true}
@@ -609,14 +632,19 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="DateCreatedInfo">
+                        </Form.Row>
+
+                        <Form.Row>
+
+                            <Form.Group as={Row}
+                                controlId="DateCreatedInfo">
                                 <Form.Label
                                     column={true}
-                                    md={3}
+                                    md={5}
                                 >
                                     + Date Created:
                             </Form.Label>
-                                <Col md={9}>
+                                <Col md={7}>
                                     <Form.Control
                                         plaintext={true}
                                         readOnly={true}
@@ -624,7 +652,9 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                     />
                                 </Col>
                             </Form.Group>
+
                         </Form.Row>
+
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -740,12 +770,12 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 type="number"
                                 autoComplete="on"
                                 autoFocus={false}
-                                name="DurationField"
+                                name="durationField"
                                 placeholder="Duration of the lesson ?"
                                 required={true}
                                 spellCheck={false}
                                 min={0}
-                                step={500}
+                                step={1}
                                 value={lesson.duration}
                                 onChange={
                                     (event) => {

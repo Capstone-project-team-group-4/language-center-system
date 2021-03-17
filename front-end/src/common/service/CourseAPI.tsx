@@ -99,6 +99,58 @@ export class CourseAPI {
         }
     }
 
+    public async addAStudentToCourse (
+            userID: number
+            , courseID: number
+    ): Promise<void> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("userID", userID.toString ());
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/courses/${courseID}:add-a-student`
+                    , undefined
+                    , {params: this.requestParameterHolder}
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+    
+    public async removeAStudentFromCourse (
+            userID: number
+            , courseID: number
+    ): Promise<void> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("userID", userID.toString ());
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/courses/${courseID}:remove-a-student`
+                    , undefined
+                    , {params: this.requestParameterHolder}
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
     public async deleteCourse (courseID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (

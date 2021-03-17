@@ -28,9 +28,12 @@ import {
   DisableOrDeleteAccountPage 
 } from './page/admin/DisableOrDeleteAccountPage';
 import { ManageCoursePage } from './page/admin/ManageCoursePage';
+import { 
+  ManageStudentInCoursePage 
+} from './page/admin/ManageStudentInCoursePage';
 
 export interface DataPage<T> {
-  totalPageCount: number;
+  totalRowCount: number;
   pageDataHolder: T[];
 }
 
@@ -174,6 +177,21 @@ export function App (): ReactElement {
       >
         <AdminPageHeader logOut = {logOut}/>
         <DisableOrDeleteAccountPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = {
+          "/admin-console/manage-course-page"
+          + "/courses/:courseID/students"
+        }
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageStudentInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />

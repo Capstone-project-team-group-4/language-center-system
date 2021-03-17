@@ -36,14 +36,26 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Phan Lam
  */
 @Entity
-@Table (name = "Class", catalog = "LanguageCenterDB", schema = "dbo")
+@Table (name = "ClassSession", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
 @NamedQueries ({
-    @NamedQuery (name = "Class.findAll", query = "SELECT c FROM Class c"),
-    @NamedQuery (name = "Class.findByClassID", query = "SELECT c FROM Class c WHERE c.classID = :classID"),
-    @NamedQuery (name = "Class.findByStartTime", query = "SELECT c FROM Class c WHERE c.startTime = :startTime"),
-    @NamedQuery (name = "Class.findByStatus", query = "SELECT c FROM Class c WHERE c.status = :status")})
-public class Class implements Serializable {
+    @NamedQuery (
+            name = "ClassSession.findAll"
+            , query = "SELECT c FROM ClassSession c"
+    ),
+    @NamedQuery (
+            name = "ClassSession.findByClassID"
+            , query = "SELECT c FROM ClassSession c WHERE c.classID = :classID"
+    ),
+    @NamedQuery (
+            name = "ClassSession.findByStartTime"
+            , query = "SELECT c FROM ClassSession c WHERE c.startTime = :startTime"
+    ),
+    @NamedQuery (
+            name = "ClassSession.findByStatus"
+            , query = "SELECT c FROM ClassSession c WHERE c.status = :status"
+    )})
+public class ClassSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -75,14 +87,14 @@ public class Class implements Serializable {
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private User teacherID;
 
-    public Class (){
+    public ClassSession (){
     }
 
-    public Class (Integer classID){
+    public ClassSession (Integer classID){
         this.classID = classID;
     }
 
-    public Class (Integer classID, Date startTime, String status){
+    public ClassSession (Integer classID, Date startTime, String status){
         this.classID = classID;
         this.startTime = startTime;
         this.status = status;
@@ -156,10 +168,10 @@ public class Class implements Serializable {
     @Override
     public boolean equals (Object object){
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Class)){
+        if (!(object instanceof ClassSession)){
             return false;
         }
-        Class other = (Class) object;
+        ClassSession other = (ClassSession) object;
         if ((this.classID == null && other.classID != null) || (this.classID != null && !this.classID.equals (other.classID))){
             return false;
         }
@@ -168,7 +180,7 @@ public class Class implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.Class[ classID=" + classID + " ]";
+        return "com.PhanLam.backend.model.ClassSession[ classID=" + classID + " ]";
     }
     
 }

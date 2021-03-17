@@ -22,6 +22,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     public Page<Course> findAll (Pageable pagingInformation);
     
     public boolean existsByCourseName (String courseName);
+
+    @Override
+    public boolean existsById (Integer courseID);
     
     @Override
     public Course save (Course course);

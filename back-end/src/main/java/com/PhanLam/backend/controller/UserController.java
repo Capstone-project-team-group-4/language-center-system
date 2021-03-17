@@ -7,13 +7,14 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
+import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
+import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,19 +48,19 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> listUsers() {
-        List listUsers = new ArrayList<>();
+        List listUsers = new ArrayList<> ();
         listUsers = userService.getAll();
         return listUsers;
     }
     
     @GetMapping ("/users:excluding-logged-in-user")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<User> getAllUserExcludingCurrentLoggedInUser (
+    public List<User> getAllUserExcludingCurrentLoggedInUser (
             Principal principal
             , @RequestParam int pageNumber
             , @RequestParam int pageSize
     ){
-        ArrayList<User> userHolder;
+        List<User> userHolder;
         
         userHolder = userService.getAllUserWithUserNameIsNot (
                 principal
@@ -67,6 +68,40 @@ public class UserController {
                 , pageSize
         );
         return userHolder;
+    }
+    
+    @GetMapping ("/students:excluding-student-in-the-course")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllStudentExcludingStudentInTheCourse (
+            @RequestParam int courseID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<User> studentDataPage;
+        
+        studentDataPage = userService.getAllStudentWithCourseIDIsNot (
+                courseID
+                , pageIndex
+                , pageSize
+        );
+        return studentDataPage;
+    }
+    
+    @GetMapping ("/students:are-in-the-course")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllStudentAreInTheCourse (
+            @RequestParam int courseID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<User> studentDataPage;
+        
+        studentDataPage = userService.getAllStudentByCourseID (
+                courseID
+                , pageIndex
+                , pageSize
+        );
+        return studentDataPage;
     }
     
     @PatchMapping ("/users/{userID}:disable")

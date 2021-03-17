@@ -137,21 +137,9 @@ public class User implements Serializable {
     private Date lastModified;
     
     @JsonIgnore
-    @JoinTable (name = "UserCourse", joinColumns = {
-        @JoinColumn (
-                name = "UserID"
-                , referencedColumnName = "UserID"
-                , nullable = false
-        )
-    }, inverseJoinColumns = {
-        @JoinColumn (
-                name = "CourseID"
-                , referencedColumnName = "CourseID"
-                , nullable = false
-        )
-    })
     @ManyToMany (
-            cascade = {
+            mappedBy = "userList"
+            , cascade = {
                 CascadeType.PERSIST
                 , CascadeType.MERGE
                 , CascadeType.REFRESH
@@ -162,7 +150,7 @@ public class User implements Serializable {
     private List<Course> courseList;
     
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
-    private List<Class> classList;
+    private List<ClassSession> classList;
     
     @JsonIgnore
     @JoinTable (name = "UserRole", joinColumns = {
@@ -180,8 +168,7 @@ public class User implements Serializable {
     })
     @ManyToMany (
             cascade = {
-                CascadeType.PERSIST
-                , CascadeType.MERGE
+                CascadeType.MERGE
                 , CascadeType.REFRESH
                 , CascadeType.DETACH
             }
@@ -194,7 +181,7 @@ public class User implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<StudentScore> studentScoreList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
-    private List<Class> classList1;  
+    private List<ClassSession> classList1;  
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
@@ -371,11 +358,11 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public List<Class> getClassList (){
+    public List<ClassSession> getClassList (){
         return classList;
     }
 
-    public void setClassList (List<Class> classList){
+    public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
     
@@ -407,11 +394,11 @@ public class User implements Serializable {
     }
     
     @XmlTransient
-    public List<Class> getClassList1 (){
+    public List<ClassSession> getClassList1 (){
         return classList1;
     }
 
-    public void setClassList1 (List<Class> classList1){
+    public void setClassList1 (List<ClassSession> classList1){
         this.classList1 = classList1;
     }
     

@@ -1,5 +1,6 @@
 // Import package members section:
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import { DataPage } from "../../App";
 import { LoggedInUser } from "../../model/LoggedInUser";
 import { User } from "../../model/User";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
@@ -18,6 +19,7 @@ export class UserAPI {
     private errorHandler: ErrorHandle;
     private requestParameterHolder: URLSearchParams | undefined;
     private userHolder: User[] | undefined;
+    private userDataPage: DataPage<User> | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -45,6 +47,78 @@ export class UserAPI {
             if (this.typeGuardian.isUserArray (this.serverResponse.data)){
                 this.userHolder = this.serverResponse.data;
                 return Promise.resolve<User[]> (this.userHolder);
+            } 
+            else {
+                throw new Error ("This server response is not valid !");
+            }  
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getAllStudentExcludingStudentInTheCourse (
+            courseID: number
+            , pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<User>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("courseID", courseID.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/students:excluding-student-in-the-course"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<User> (
+                    this.serverResponse.data
+            )){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
+            } 
+            else {
+                throw new Error ("This server response is not valid !");
+            }  
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getAllStudentAreInTheCourse (
+            courseID: number
+            , pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<User>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("courseID", courseID.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/students:are-in-the-course"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<User> (
+                    this.serverResponse.data
+            )){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
             } 
             else {
                 throw new Error ("This server response is not valid !");

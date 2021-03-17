@@ -8,7 +8,6 @@ package com.PhanLam.backend.service;
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.CourseTypeRepository;
 import com.PhanLam.backend.model.CourseType;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,12 +29,10 @@ public class CourseTypeService {
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<CourseType> getAllCourseType (){
-        ArrayList<CourseType> courseTypeHolder;
-        List<CourseType> courseTypeList;
+    public List<CourseType> getAllCourseType (){
+        List<CourseType> courseTypeHolder;
         
-        courseTypeList = courseTypeRepository.findAll ();
-        courseTypeHolder = new ArrayList<> (courseTypeList);
+        courseTypeHolder = courseTypeRepository.findAll ();
         return courseTypeHolder;
     }
 }

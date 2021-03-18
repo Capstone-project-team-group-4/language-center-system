@@ -193,6 +193,18 @@ export function App(): ReactElement {
         />
       </ProtectedRoute>
 
+      <ProtectedRoute
+        path="/admin-console/manage-teacher-page"
+        securityContext={adminPageSecurity}
+        dialogController={dialogController}
+      >
+        <AdminPageHeader logOut={logOut} />
+        <ManageCoursePage
+          dialogController={dialogController}
+          modalDialog={modalDialog}
+        />
+      </ProtectedRoute>
+
       <Route path="/admin-console">
         <AdminPageHeader logOut={logOut} />
         <AdminConsolePage modalDialog={modalDialog} />

@@ -98,15 +98,28 @@ public class Course implements Serializable {
     private Date lastModified;
     
     @JsonIgnore
+    @JoinTable (name = "CourseUser", joinColumns = {
+        @JoinColumn (
+                name = "CourseID"
+                , referencedColumnName = "CourseID"
+                , nullable = false
+        )
+    }, inverseJoinColumns = {
+        @JoinColumn (
+                name = "UserID"
+                , referencedColumnName = "UserID"
+                , nullable = false
+        )
+    })
     @ManyToMany (
-            mappedBy = "courseList"
-            , cascade = {
+            cascade = {
                 CascadeType.PERSIST
                 , CascadeType.MERGE
                 , CascadeType.REFRESH
                 , CascadeType.DETACH
             }
-            , fetch = FetchType.LAZY)
+            , fetch = FetchType.LAZY
+    )
     private List<User> userList;
     
     @JsonIgnore
@@ -125,7 +138,7 @@ public class Course implements Serializable {
             , mappedBy = "courseID"
             , fetch = FetchType.LAZY
     )
-    private List<Class> classList;
+    private List<ClassSession> classList;
     
     @JsonIgnore
     @OneToMany (
@@ -237,11 +250,11 @@ public class Course implements Serializable {
         this.lessonList = lessonList;
     }
 
-    public List<Class> getClassList (){
+    public List<ClassSession> getClassList (){
         return classList;
     }
 
-    public void setClassList (List<Class> classList){
+    public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
 

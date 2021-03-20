@@ -9,6 +9,7 @@ package com.PhanLam.backend.service;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.Role;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -39,9 +40,9 @@ public class UserInformationGet implements UserDetailsService {
             throws UsernameNotFoundException {
         Optional <com.PhanLam.backend.model.User> nullableUser; 
         com.PhanLam.backend.model.User user;
-        ArrayList <SimpleGrantedAuthority> grantedAuthorityHolder;
+        List <SimpleGrantedAuthority> grantedAuthorityHolder;
         UserDetails userDetail;
-        ArrayList<Role> roleHolder;
+        List<Role> roleHolder;
         int i;
         Role role; 
         SimpleGrantedAuthority grantedAuthority;
@@ -58,7 +59,7 @@ public class UserInformationGet implements UserDetailsService {
         }
         else {
             user = nullableUser.get ();
-            roleHolder = new ArrayList<> (user.getRoleList ());
+            roleHolder = user.getRoleList ();
             grantedAuthorityHolder = new ArrayList<> ();
             for (i = 0; i < roleHolder.size (); i++){
                 role = roleHolder.get (i);

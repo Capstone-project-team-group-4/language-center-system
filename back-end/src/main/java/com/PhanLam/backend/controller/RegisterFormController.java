@@ -9,7 +9,7 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.model.RegisterForm;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.service.RegisterFormService;
-import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,11 +38,11 @@ public class RegisterFormController {
     
     @GetMapping ("/register-forms")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<RegisterForm> getAllCreateAccountRequest (
+    public List<RegisterForm> getAllCreateAccountRequest (
             @RequestParam int pageNumber
             , @RequestParam int pageSize
     ){
-        ArrayList<RegisterForm> registerFormHolder;
+        List<RegisterForm> registerFormHolder;
         
         registerFormHolder = registerFormService.getAllRegisterForm (
                 pageNumber
@@ -63,7 +63,7 @@ public class RegisterFormController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void acceptCreateAccountRequest (
             @PathVariable int formID
-            , @RequestBody ArrayList<Role> newAccountRoleList
+            , @RequestBody List<Role> newAccountRoleList
     ){
         registerFormService.useRegisterFormToCreateUser (
                 formID

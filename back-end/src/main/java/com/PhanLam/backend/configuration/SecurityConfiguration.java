@@ -141,6 +141,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PUT, "/courses/*")
                         .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/courses/*")
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*")
                         .hasRole ("ADMIN")
                 

@@ -24,11 +24,9 @@ import { CourseAPI } from "../../common/service/CourseAPI";
 import { CourseLevelAPI } from "../../common/service/CourseLevelAPI";
 import { CourseTypeAPI } from "../../common/service/CourseTypeAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { UserAPI } from "../../common/service/UserAPI";
 import { Course } from "../../model/Course";
 import { CourseLevel } from "../../model/CourseLevel";
 import { CourseType } from "../../model/CourseType";
-import { User } from "../../model/User";
 
 function renderCourseTypeDropdownList (courseType: CourseType): ReactElement {
     return (
@@ -125,6 +123,16 @@ function renderCourseTable (
                 >
                     Delete
                 </Button>
+                <Button 
+                    variant = "success"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-course-page"
+                        + `/courses/${course.courseID}/students`
+                    }
+                >
+                    Manage Student
+                </Button>
             </td>
         </tr>
     );
@@ -165,7 +173,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let i: number | undefined;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
-    let [totalPageCount, setTotalPageCount] = useState<number> (0);
+    let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseDataPage: DataPage<Course> | undefined;
     let [courseHolder, setCourseHolder] = useState<Course[]> ([]);
     let [showViewDetailDialog, setShowViewDetailDialog] 
@@ -493,7 +501,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                     pageIndex
                     , pageSize
             ); 
-            setTotalPageCount (courseDataPage.totalPageCount);
+            setTotalRowCount (courseDataPage.totalRowCount);
             setCourseHolder (courseDataPage.pageDataHolder);
             return Promise.resolve<undefined> (undefined);
         }
@@ -516,7 +524,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     }
 
     useEffect (
-        (): void => {
+        () => {
             loadCourseTable ().catch (
                     (error: unknown) => {
                         console.error (error);
@@ -527,7 +535,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     );
 
     useEffect (
-        (): void => {
+        () => {
             if (selectedCourseTypeID !== 0){
                 loadCourseLevelDropdownList ().catch (
                         (error: unknown) => {
@@ -540,7 +548,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     );
     
     useEffect (
-        (): void => {
+        () => {
             if (props.dialogController.dialogIsConfirmed === true){
                 executeCourseDeletion ().catch (
                         (error: unknown) => {
@@ -1070,7 +1078,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                     Admin Console
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage course functions
+                                    Manage Course Functions
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">

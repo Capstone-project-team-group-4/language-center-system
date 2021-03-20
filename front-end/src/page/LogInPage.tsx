@@ -104,6 +104,11 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                         case "ROLE_ADMIN":
                             loginSucceededLocation.pathname = "/admin-console";
                             break;
+
+                        case "ROLE_TEACHER":
+                            loginSucceededLocation.pathname 
+                                = "/teacher-dashboard";
+                            break;
                     }
                 }
                 else {

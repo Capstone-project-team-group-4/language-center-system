@@ -8,7 +8,7 @@ package com.PhanLam.backend.controller;
 // Import package members section:
 import com.PhanLam.backend.model.CourseType;
 import com.PhanLam.backend.service.CourseTypeService;
-import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,8 +30,8 @@ public class CourseTypeController {
     
     @GetMapping ("/course-types")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<CourseType> getAllCourseTypeInTheSystem (){
-        ArrayList<CourseType> courseTypeHolder;
+    public List<CourseType> getAllCourseTypeInTheSystem (){
+        List<CourseType> courseTypeHolder;
         
         courseTypeHolder = courseTypeService.getAllCourseType ();
         return courseTypeHolder;

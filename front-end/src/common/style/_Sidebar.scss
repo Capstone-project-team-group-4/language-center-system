@@ -1,0 +1,144 @@
+@import '../../../node_modules/bootstrap/scss/functions';
+@import '../../../node_modules/bootstrap/scss/variables';
+@import '../../../node_modules/bootstrap/scss/bootstrap';
+
+#SideBarButton {
+    position: fixed; 
+    width: 40px;
+    height: 40px;
+    top: 10%;
+    left: 1.5%;
+    padding-top: 9px;
+    padding-left: 4px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ffe400;
+    transition: 
+        left 1s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91);
+}
+
+#SideBarButton div {
+    margin-top: 4%;
+    margin-bottom: 10%;
+    width: 90%;
+    height: 4.5px;
+    background-color: #8a23aa;
+    border-radius: 5px;
+}
+
+#Top {
+    transition: 
+        opacity 0.5s
+        , background-color 0.25s
+        , -webkit-transform 0.5s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91);
+}
+
+#Middle {
+    transition: 
+        transform 0.5s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91)
+        , opacity 0.5s
+        , background-color 0.25s;
+}
+
+#Bottom {
+    transition: 
+        transform 0.5s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91)
+        , opacity 0.5s
+        , background-color 0.25s
+        , -webkit-transform 0.5s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91);
+}
+
+#SideBarButton.activated {
+    left: 25.5%;
+}
+
+#SideBarButton.activated div {
+    background-color: black;
+}
+
+#SideBarButton.activated #Top {
+    -webkit-transform:
+        translateX(0.8px) 
+        translateY(8px) 
+        rotate(-135deg);
+    transform: 
+        translateX(0.8px)
+        translateY(8px) 
+        rotate(-135deg);
+}
+
+#SideBarButton.activated #Middle {
+    opacity: 0;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}
+
+#SideBarButton.activated #Bottom {
+    -webkit-transform: 
+        translateX(0.8px)
+        translateY(-8px) 
+        rotate(-45deg);
+    transform: 
+        translateX(0.8px)
+        translateY(-8px) 
+        rotate(-45deg);
+}
+
+#SideBarButton, #SideBarButton * {
+  will-change: transform;
+}
+
+#SideBar {
+    position: fixed;
+    top: 0%;
+    left: -25%;
+    width: 25%;
+    height: 100%;
+    background-color: black;
+    transition: 
+        all 1s 
+        cubic-bezier(0.6, 0.05, 0.28, 0.91);
+    padding-top: 5%;
+}
+
+#SideBar.activated {
+    left: 0%;
+    opacity: 1;
+}
+
+@include media-breakpoint-down (md){
+    #SideBarButton {
+        padding-top: 1.9%;
+        padding-left: 1%;
+        top: 19%;
+    }
+
+    #SideBarButton div {
+        height: 14%;
+    }
+
+    #SideBarButton.activated {
+        left: 61.5%;
+    }
+
+    #SideBarButton.activated #Top {
+        -webkit-transform:
+            translateX(1px) 
+            translateY(9px) 
+            rotate(-135deg);
+        transform: 
+            translateX(1px)
+            translateY(9px) 
+            rotate(-135deg);
+    }
+
+    #SideBar {
+        width: 60%;
+        left: -60%;
+    }
+}

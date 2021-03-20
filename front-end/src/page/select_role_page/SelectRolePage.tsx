@@ -1,21 +1,11 @@
 // Import package members section:
-import React, { 
-    ChangeEvent
-    , Dispatch, FormEvent
-    , ReactElement
-    , SetStateAction, useState 
-} from 'react';
+import React, { ReactElement } from 'react';
 import { 
-    Button, Card, Container, Form, ListGroup, Row 
+    Card, Container, ListGroup, Row 
 } from 'react-bootstrap';
 import './SelectRolePage.css';
-import { TypeGuard } from '../common/service/TypeGuard';
-import { DialogControl } from '../common/component/ModalDialog';
-import { UserAPI } from '../common/service/UserAPI';
-import { LoggedInUser } from '../model/LoggedInUser';
-import { Location, History } from "../../node_modules/@types/history";
-import { useHistory, useLocation } from 'react-router-dom';
-import { LocationState } from '../common/component/ProtectedRoute';
+import { DialogControl } from '../../common/component/ModalDialog';
+import { Link } from 'react-router-dom';
 
 interface SelectRolePageProps {
     dialogController: DialogControl;
@@ -24,8 +14,6 @@ interface SelectRolePageProps {
 
 export function SelectRolePage (props: SelectRolePageProps): ReactElement {
 
-    // Variables declaration:
-    
     return (
         <Container 
             fluid = {true} 
@@ -49,14 +37,24 @@ export function SelectRolePage (props: SelectRolePageProps): ReactElement {
                     }>
                         <Card id = "SelectRoleCard">
                             <Card.Header className = "text-center">
-                                Choose a role
+                                <h5>Choose a role</h5> 
                             </Card.Header>
                             <ListGroup variant = "flush">
-                                <ListGroup.Item>
-                                    Cras justo odio
+                                <ListGroup.Item 
+                                    variant = "secondary" 
+                                    action = {true}
+                                    as = {Link}
+                                    to = {"/admin-console"}
+                                >
+                                    Admin
                                 </ListGroup.Item>
-                                <ListGroup.Item>
-                                    Dapibus ac facilisis in
+                                <ListGroup.Item 
+                                    variant = "secondary" 
+                                    action = {true}
+                                    as = {Link}
+                                    to = {"/teacher-dashboard"}
+                                >
+                                    Teacher
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     Vestibulum at eros

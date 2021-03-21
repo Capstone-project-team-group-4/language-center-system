@@ -40,7 +40,7 @@ import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 
 export interface DataPage<T> {
-  totalPageCount: number;
+  totalRowCount: number;
   pageDataHolder: T[];
 }
 

@@ -33,7 +33,7 @@ function renderLessonTable (
                 {lesson.lessonName}
             </td>
             <td>
-                {lesson.lessonType}
+                {lesson.type}
             </td>
             <td>
                 {lesson.duration}
@@ -228,7 +228,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                 break;
 
             case "lessonTypeField":
-                updatedLesson.lessonType = htmlElement.value;
+                updatedLesson.type = htmlElement.value;
                 break;
 
             case "descriptionTextarea":
@@ -430,7 +430,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 placeholder="Type for the new lesson ?"
                                 required={true}
                                 spellCheck={false}
-                                value={lesson.lessonType}
+                                value={lesson.type}
                                 onChange={
                                     (event) => {
                                         handleChange(event);
@@ -570,7 +570,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                     <Form.Control
                                         plaintext={true}
                                         readOnly={true}
-                                        value={lesson.lessonType}
+                                        value={lesson.type}
                                     />
                                 </Col>
                             </Form.Group>
@@ -728,7 +728,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 placeholder="Type for the lesson ?"
                                 required={true}
                                 spellCheck={false}
-                                value={lesson.lessonType}
+                                value={lesson.type}
                                 onChange={
                                     (event) => {
                                         handleChange(event);

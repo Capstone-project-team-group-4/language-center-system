@@ -29,6 +29,7 @@ import {
 } from './page/admin/DisableOrDeleteAccountPage';
 import { ManageCoursePage } from './page/admin/ManageCoursePage';
 import { ManageLessonPage } from './page/admin/ManageLessonPage';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
 
 export interface DataPage<T> {
   totalPageCount: number;
@@ -222,6 +223,12 @@ export function App (): ReactElement {
         <ManageLessonPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}/>
+      </Route>
+
+      <Route path = "/admin-console/manage-student-page"
+      >
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageStudentPage />
       </Route>
 
       <Route path = "/admin-console">

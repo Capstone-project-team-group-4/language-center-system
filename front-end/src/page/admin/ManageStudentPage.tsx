@@ -1,5 +1,6 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { UserAPI } from "../../common/service/UserAPI";
+import { User } from "../../model/User";
 
 export function ManageStudentPage (): ReactElement {
     let [user, setUser] = useState<[]>([]);

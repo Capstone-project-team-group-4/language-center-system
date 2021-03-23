@@ -86,7 +86,7 @@ export function EditStudentInfo (): ReactElement {
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group as={Col}>
                                     <Form.Label>
                                         First Name:
                                     </Form.Label>
@@ -104,7 +104,7 @@ export function EditStudentInfo (): ReactElement {
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group as={Col}>
                                     <Form.Label>
                                         Middle Name:
                                     </Form.Label>
@@ -122,7 +122,7 @@ export function EditStudentInfo (): ReactElement {
                                         onChange={handleUserChange}
                                     />
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group as={Col}>
                                     <Form.Label>
                                         Last Name:
                                     </Form.Label>

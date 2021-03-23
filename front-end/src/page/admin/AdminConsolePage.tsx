@@ -3,12 +3,13 @@ import React, { ReactElement } from "react";
 import { 
     Accordion
     , Breadcrumb
-    , Button, Card, Col
+    , Button
+    , Card
+    , Col
     , Container
     , Row 
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "./AdminConsolePage.css";
 
 interface AdminConsolePageProps {
     modalDialog: ReactElement;

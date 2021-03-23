@@ -6,7 +6,7 @@
 package com.PhanLam.backend.model;
 
 // Import package members section:
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,22 +16,22 @@ import java.util.ArrayList;
 public class DataPage<T> {
     
     // Variables declaration:
-    private int totalPageCount;
-    private ArrayList<T> pageDataHolder;
+    private long totalRowCount;
+    private List<T> pageDataHolder;
 
     public DataPage (){
     }
-    
-    public DataPage (int totalPageCount, ArrayList<T> pageDataHolder){
-        this.totalPageCount = totalPageCount;
+
+    public DataPage (long totalRowCount, List<T> pageDataHolder){
+        this.totalRowCount = totalRowCount;
         this.pageDataHolder = pageDataHolder;
     }
 
-    public int getTotalPageCount (){
-        return totalPageCount;
+    public long getTotalRowCount (){
+        return totalRowCount;
     }
 
-    public ArrayList<T> getPageDataHolder (){
+    public List<T> getPageDataHolder (){
         return pageDataHolder;
     }
 }

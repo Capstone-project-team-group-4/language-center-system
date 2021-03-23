@@ -64,11 +64,11 @@ public class HomeWork implements Serializable {
     private List<Document> documentList;
     @OneToMany(mappedBy = "solutionID", fetch = FetchType.LAZY)
     private List<Document> documentList1;
-    @JoinColumn(name = "ClassID", referencedColumnName = "ClassID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Class classID;
-    @JoinColumn(name = "LessonID", referencedColumnName = "LessonID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    private ClassSession classID;
+    @JoinColumn (name = "LessonID", referencedColumnName = "LessonID", nullable = false)
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private Lesson lessonID;
 
     public HomeWork() {
@@ -135,11 +135,11 @@ public class HomeWork implements Serializable {
         this.documentList1 = documentList1;
     }
 
-    public Class getClassID() {
+    public ClassSession getClassID (){
         return classID;
     }
 
-    public void setClassID(Class classID) {
+    public void setClassID (ClassSession classID){
         this.classID = classID;
     }
 

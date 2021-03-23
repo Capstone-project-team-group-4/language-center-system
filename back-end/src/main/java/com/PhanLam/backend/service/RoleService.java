@@ -8,7 +8,6 @@ package com.PhanLam.backend.service;
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.RoleRepository;
 import com.PhanLam.backend.model.Role;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,12 +29,10 @@ public class RoleService {
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<Role> getAllRole (){
-        ArrayList<Role> roleHolder;
-        List<Role> roleList;
+    public List<Role> getAllRole (){
+        List<Role> roleHolder;
         
-        roleList = roleRepository.findAll ();
-        roleHolder = new ArrayList<> (roleList);
+        roleHolder = roleRepository.findAll ();
         return roleHolder;
     }
 }

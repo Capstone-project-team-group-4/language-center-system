@@ -10,7 +10,6 @@ import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseTypeRepository;
 import com.PhanLam.backend.model.CourseLevel;
 import com.PhanLam.backend.model.CourseType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -33,11 +32,10 @@ public class CourseLevelService {
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<CourseLevel> getAllCourseLevelByTypeID (int typeID){
+    public List<CourseLevel> getAllCourseLevelByTypeID (int typeID){
         Optional <CourseType> nullableCourseType;
         CourseType courseType;
-        List<CourseLevel> courseLevelList;
-        ArrayList<CourseLevel> courseLevelHolder;  
+        List<CourseLevel> courseLevelHolder;  
         
         nullableCourseType = courseTypeRepository.findById (typeID);
         if (nullableCourseType.isPresent () == false){
@@ -45,8 +43,7 @@ public class CourseLevelService {
         }
         else {
             courseType = nullableCourseType.get ();
-            courseLevelList = courseType.getCourseLevelList ();
-            courseLevelHolder = new ArrayList<> (courseLevelList);
+            courseLevelHolder = courseType.getCourseLevelList ();
             return courseLevelHolder;
         }
     }

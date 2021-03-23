@@ -3,126 +3,84 @@ import React, {
     ReactElement, useEffect, useState
 } from 'react';
 import {
-    Col, Container, Row
+    Button, Col, Container, Form, FormControl, Nav, Navbar, Row, Table
 } from 'react-bootstrap';
 import { UserAPI } from '../common/service/UserAPI';
-import { useParams } from 'react-router-dom';
-import { User } from '../model/User';
-import { ColDef, DataGrid, ValueGetterParams } from '@material-ui/data-grid';
+import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { User, UserIndexSignature } from '../model/User';
+import './ViewProfilePage.css';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-const columns: ColDef[] = [
-    { 
-        field: 'userID'
-        , headerName: 'ID'
-        , width: 70 
-    },
-    { 
-        field: 'firstName'
-        , headerName: 'First name'
-        , width: 130 
-    },
-    { 
-        field: 'lastName'
-        , headerName: 'Last name'
-        , width: 130 
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (params: ValueGetterParams) =>
-            `${params.getValue('firstName') || ''} 
-            ${params.getValue('lastName') || ''}`,
-    },
-    { 
-        field: 'email'
-        , headerName: 'Email'
-        , width: 130 
-    },
-    { 
-        field: 'dbo'
-        , headerName: 'Date of Birth'
-        , type: 'Date'
-        , width: 90 
-    },
-    { 
-        field: 'phoneNumber'
-        , headerName: 'Phone'
-        , width: 70 
-    },
-    { 
-        field: 'gender'
-        , headerName: 'Gender'
-        , width: 30 
-    },
-    { 
-        field: 'job'
-        , headerName: 'Job'
-        , width: 70 
-    },
-    { 
-        field: 'photoURI'
-        , headerName: 'Photo URI'
-        , width: 130 
-    },
-    { 
-        field: 'selfDescription'
-        , headerName: 'Self Description'
-        , width: 200 
-    },
-    { 
-        field: 'password'
-        , headerName: 'Password'
-        , width: 70 
-    },
-    { 
-        field: 'accountStatus'
-        , headerName: 'Account Status'
-        , width: 70 
-    },
-    { 
-        field: 'dateCreated'
-        , headerName: 'Date Created'
-        , type: 'Date'
-        , width: 70 
-    },
-    { 
-        field: 'lastLogin'
-        , headerName: 'Last Login'
-        , type: 'Date'
-        , width: 70 
-    },
-    { 
-        field: 'roleList'
-        , headerName: 'Role'
-        , width: 70 
-    },
-    { 
-        field: 'addressList'
-        , headerName: 'Address'
-        , width: 130 
-    },
+function renderUserTable(
+    user: User
+    , index: number
+): ReactElement {
+    return (
+        <tr key={user.userID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {user.firstName}
+            </td>
+            <td>
+                {user.middleName}
+            </td>
+            <td>
+                {user.lastName}
+            </td>
+            <td>
+                {user.phoneNumber}
+            </td>
+            <td>
+                {user.dob}
+            </td>
+            <td>
+                {user.email}
+            </td>
+            <td>
+                {user.gender}
+            </td>
+            <td>
+                {user.job}
+            </td>
+            <td>
+                {user.selfDescription}
+            </td>
+            <td>
+                {user.accountStatus}
+            </td>
+            <td>
+                {user.dateCreated}
+            </td>
+            <td>
+                {user.lastLogin}
+            </td>
+            <td>
+                {user.lastModified}
+            </td>
+        </tr>
+    );
+}
+export function ViewProfilePage(): ReactElement {
 
-
-];
-
-export function ViewProfilePage (): ReactElement {
-
+    let [user, getUser] = useState<User>(new User());
+    let userID: number;
+    let showUser: User | undefined;
     let userAPI: UserAPI | undefined;
+    let match = useRouteMatch();
     let param: any = useParams();
-    let [student, setStudent] = useState<User>(new User());
+    let studentID: number;
+    let [student, setStudent] = useState<User[]>([]);
 
     useEffect(() => {
         userAPI = new UserAPI();
-        userAPI.displayStudent(param.studentID).then(
+        userAPI.viewStudent(param.studentID).then(
             (res) => {
                 setStudent(res.data);
-                console.log(student.userName);
             }
         );
-    });
+    }, []);
 
     console.log(param.studentID);
 
@@ -136,16 +94,67 @@ export function ViewProfilePage (): ReactElement {
             </Container>
             <main>
                 <Container id="PageBodyContainer">
-                    <Row>
+                    <Row className="bg-white">
                         <Col>
-                            {/* <div style={{ height: 400, width: '100%' }}>
-                                <DataGrid 
-                                    rows={useEffect} 
-                                    columns={columns} 
-                                    pageSize={5} 
-                                    checkboxSelection 
-                                />
-                            </div> */}
+                            <Table responsive="md" hover={true}>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            #
+                                            </th>
+                                        <th>
+                                            First Name
+                                            </th>
+                                        <th>
+                                            Middle Name
+                                            </th>
+                                        <th>
+                                            Last Name
+                                            </th>
+                                        <th>
+                                            Phone Number
+                                            </th>
+                                        <th>
+                                            Date of birth
+                                            </th>
+                                        <th>
+                                            Email
+                                            </th>
+                                        <th>
+                                            Gender
+                                            </th>
+                                        <th>
+                                            Job
+                                            </th>
+                                        <th>
+                                            Description
+                                            </th>
+                                        <th>
+                                            Status
+                                            </th>
+                                        <th>
+                                            Date Created
+                                            </th>
+                                        <th>
+                                            Last Login
+                                            </th>
+                                        <th>
+                                            Last Modifiled
+                                            </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {student.map(
+                                        (
+                                            user
+                                            , index
+                                        ) => renderUserTable(
+                                            user
+                                            , index
+                                        )
+                                    )}
+                                </tbody>
+                            </Table>
                         </Col>
                     </Row>
                 </Container>

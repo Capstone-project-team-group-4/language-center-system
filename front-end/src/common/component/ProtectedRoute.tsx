@@ -121,7 +121,9 @@ export function ProtectedRoute (
                             );
                             props.dialogController.setDialogType ("error");
                             props.dialogController.setShowDialog (true);
-                            return undefined;
+                            return (
+                                <Redirect to = "/select-role-page"/>
+                            );
                         }
                     }
                 }

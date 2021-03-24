@@ -25,7 +25,7 @@ export function ManageStudentPage (): ReactElement {
                 <hr />
             </div>
             <div className="row">
-                <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                {/* <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8"> */}
                     {/* <button type="button" className="btn btn-primary">
                         <span className=
                             "fa fa-plus mr-5">
@@ -45,6 +45,8 @@ export function ManageStudentPage (): ReactElement {
                                         <th className="text-center">
                                             Tên</th>
                                         <th className="text-center">
+                                            Tên đệm</th>
+                                        <th className="text-center">
                                             Họ</th>
                                         <th className="text-center">
                                             Email
@@ -53,13 +55,7 @@ export function ManageStudentPage (): ReactElement {
                                             Số điện thoại
                                                 </th>
                                         <th className="text-center">
-                                            Avatar
-                                                </th>
-                                        <th className="text-center">
                                             Trạng Thái
-                                                </th>
-                                        <th className="text-center">
-                                            Lần cuối đăng nhập
                                                 </th>
                                         <th className="text-center">
                                             Hành Động
@@ -111,22 +107,20 @@ export function ManageStudentPage (): ReactElement {
                                         <td>{item["userID"]}</td>
                                         <td>{item["userName"]}</td>
                                         <td>{item["firstName"]}</td>
+                                        <td>{item["middleName"]}</td>
                                         <td>{item["lastName"]}</td>
                                         <td>{item["email"]}</td>
                                         <td>{item["phoneNumber"]}</td>
-                                        <td>{item["photoURI"]}</td>
                                         <td className="text-center">
                                             <span
                                                 className="label label-success">
                                                 {item["accountStatus"]}
                                             </span>
                                         </td>
-                                        <td>{item["lastLogin"]}</td>
                                         <td className="text-center" id="action">
                                             <Link to="/admin-console/view-student-profile">
                                                 <button type="button"
                                                     className="btn btn-primary">
-
                                                     <span className=
                                                         "fa fa-pencil mr-5">
                                                     </span>Xem
@@ -151,6 +145,6 @@ export function ManageStudentPage (): ReactElement {
                     </div>
                 </div>
             </div>
-        </div>
+        // </div>
     );
 }

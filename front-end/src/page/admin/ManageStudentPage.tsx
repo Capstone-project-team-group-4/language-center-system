@@ -123,7 +123,8 @@ export function ManageStudentPage (): ReactElement {
                                                     className="btn btn-primary">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
-                                                    </span>Xem
+                                                            Xem
+                                                    </span>
                                                 </button>
                                             </Link>
                                         &nbsp;
@@ -132,7 +133,8 @@ export function ManageStudentPage (): ReactElement {
                                                     className="btn btn-warning">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
-                                                    </span>Sửa
+                                                            Sửa
+                                                    </span>
                                         </button>
                                             </Link>
                                         </td>

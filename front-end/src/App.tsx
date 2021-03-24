@@ -29,6 +29,8 @@ import {
 } from './page/admin/DisableOrDeleteAccountPage';
 import { ManageCoursePage } from './page/admin/ManageCoursePage';
 import { ManageLessonPage } from './page/admin/ManageLessonPage';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
+import { ViewProfilePage } from './page/ViewProfilePage';
 
 export interface DataPage<T> {
   totalPageCount: number;
@@ -132,12 +134,22 @@ export function App (): ReactElement {
 
   return (
     <Switch>
-      <Route exact path="/editStudentInfo/:studentID">
-        <EditStudentInfo />
-      </Route>
       <Route exact = {true} path="/">
         <PageHeader />
         <HomePage modalDialog = {modalDialog}/>
+      </Route>
+
+      <Route path = "/admin-console/manage-student-page">
+        <AdminPageHeader logOut = {logOut}/>
+        <ManageStudentPage />
+      </Route>
+
+      <Route exact path="/editStudentInfo/studentID">
+        <EditStudentInfo />
+      </Route>
+
+      <Route path="/admin-console/view-student-detail">
+        <ViewProfilePage />
       </Route>
 
       <Route path = "/sign-up-page">

@@ -1,4 +1,6 @@
+/* eslint-disable max-len */
 import React, { ReactElement, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 import './ManageStudentPage.css';
@@ -12,9 +14,9 @@ export function ManageStudentPage (): ReactElement {
                 setUser(res.data);
             }
         )
-        .catch((err) => {
-            console.log(err);
-        });
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
     return (
         <div className="container">
@@ -24,12 +26,12 @@ export function ManageStudentPage (): ReactElement {
             </div>
             <div className="row">
                 <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    <button type="button" className="btn btn-primary">
+                    {/* <button type="button" className="btn btn-primary">
                         <span className=
                             "fa fa-plus mr-5">
                         </span>
                                 Thêm học viên
-                </button>
+                </button> */}
                     <div className="row mt-15">
                         <div className=
                             "col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -58,14 +60,14 @@ export function ManageStudentPage (): ReactElement {
                                                 </th>
                                         <th className="text-center">
                                             Lần cuối đăng nhập
-                                                </th>      
+                                                </th>
                                         <th className="text-center">
                                             Hành Động
                                                 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {/* <tr>
                                         <td></td>
                                         <td>
                                             <input type="text"
@@ -104,7 +106,7 @@ export function ManageStudentPage (): ReactElement {
                                         </td>
                                         <td></td>
                                         <td></td>
-                                    </tr>
+                                    </tr> */}
                                     {user.map((item, index) => <tr key={index}>
                                         <td>{item["userID"]}</td>
                                         <td>{item["userName"]}</td>
@@ -117,31 +119,28 @@ export function ManageStudentPage (): ReactElement {
                                             <span
                                                 className="label label-success">
                                                 {item["accountStatus"]}
-                                                </span>
+                                            </span>
                                         </td>
                                         <td>{item["lastLogin"]}</td>
-                                        <td className="text-center">
-                                        <button type="button"
-                                            className="btn btn-info">
-                                                <span className=
-                                                    "fa fa-pencil mr-5">
-                                                </span>Xem
-                                        </button>
+                                        <td className="text-center" id="action">
+                                            <Link to="/admin-console/view-student-profile">
+                                                <button type="button"
+                                                    className="btn btn-primary">
+
+                                                    <span className=
+                                                        "fa fa-pencil mr-5">
+                                                    </span>Xem
+                                                </button>
+                                            </Link>
                                         &nbsp;
-                                        <button type="button"
-                                            className="btn btn-warning">
-                                                <span className=
-                                                    "fa fa-pencil mr-5">
-                                                </span>Sửa    
+                                        <Link to="/editStudentInfo/studentID">
+                                                <button type="button"
+                                                    className="btn btn-warning">
+                                                    <span className=
+                                                        "fa fa-pencil mr-5">
+                                                    </span>Sửa
                                         </button>
-                                        &nbsp;
-                                        <button type="button"
-                                                className="btn btn-danger">
-                                                <span className=
-                                                    "fa fa-trash mr-5">
-                                                </span>
-                                                Xóa
-                                        </button>
+                                            </Link>
                                         </td>
                                     </tr>
                                     )

@@ -19,7 +19,7 @@ export function ManageStudentPage (): ReactElement {
             });
     }, []);
     return (
-        <div className="container">
+        <div className="container" id="grid">
             <div className="text-center">
                 <h1>Quản Lý Học Viên</h1>
                 <hr />
@@ -32,7 +32,7 @@ export function ManageStudentPage (): ReactElement {
                         </span>
                                 Thêm học viên
                 </button> */}
-                    <div className="row mt-15">
+                    <div className="row mt-15" id="table-cover">
                         <div className=
                             "col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <table className=

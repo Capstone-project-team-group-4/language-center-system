@@ -2,6 +2,10 @@
     background-color: white;
 }
 
+.row {
+    margin: 0 auto;
+}
+
 /* #action {
     display: flex;
     align-items: center;

@@ -51,6 +51,7 @@ function renderLessonTable (
                 >
                     Details
             </Button>
+            &nbsp;
                 <Button
                     variant="success"
                     type="button"
@@ -63,6 +64,7 @@ function renderLessonTable (
                 >
                     Edit
             </Button>
+            &nbsp;
                 <Button
                     variant="danger"
                     type="button"
@@ -499,6 +501,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                     >
                         Create
                     </Button>
+                    &nbsp;
                     <Button
                         variant="outline-secondary"
                         onClick={closeCreateLessonForm}
@@ -797,6 +800,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                     >
                         Save
                     </Button>
+                    &nbsp;
                     <Button
                         variant="outline-secondary"
                         onClick={closeEditLessonForm}

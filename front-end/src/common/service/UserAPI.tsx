@@ -27,7 +27,7 @@ export class UserAPI {
     }
 
     public listUsers (): Promise<AxiosResponse> {
-        return axios.get("http://localhost:8080/users");
+        return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (

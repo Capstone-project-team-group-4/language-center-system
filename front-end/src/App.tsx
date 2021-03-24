@@ -30,6 +30,7 @@ import {
 import { ManageCoursePage } from './page/admin/ManageCoursePage';
 import { ManageLessonPage } from './page/admin/ManageLessonPage';
 import { ManageStudentPage } from './page/admin/ManageStudentPage';
+import { ViewProfilePage } from './page/ViewProfilePage';
 
 export interface DataPage<T> {
   totalPageCount: number;
@@ -246,6 +247,12 @@ export function App (): ReactElement {
           modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
+
+      <Route path = "/admin-console/view-student-profile">
+        <AdminPageHeader logOut = {logOut}/>
+        <ViewProfilePage />
+      </Route>
+
     </Switch>
   );
 }

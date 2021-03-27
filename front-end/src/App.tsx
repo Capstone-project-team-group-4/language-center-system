@@ -34,6 +34,7 @@ import {
   ManageStudentInCoursePage 
 } from './page/admin/ManageStudentInCoursePage';
 import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
+import { StudentDashboardPage } from './page/student/StudentDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
@@ -303,6 +304,11 @@ export function App(): ReactElement {
       <Route path = "/teacher-dashboard">
         <PageHeader logOut = {logOut}/>
         <TeacherDashboardPage modalDialog = {modalDialog}/>
+      </Route>
+      
+      <Route path = "/student-dashboard">
+        <PageHeader logOut = {logOut}/>
+        <StudentDashboardPage modalDialog = {modalDialog}/>
       </Route>
     </Switch>
   );

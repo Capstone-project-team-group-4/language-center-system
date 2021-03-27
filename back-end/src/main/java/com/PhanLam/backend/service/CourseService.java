@@ -273,4 +273,12 @@ public class CourseService {
             }
         }
     }
+    
+    public List<Course> getAllCourse(){
+        return courseRepository.findAll();
+    }
+    
+    public Course getCourseById(Integer courseID) {
+        return courseRepository.findCourseById(courseID);
+    }
 }

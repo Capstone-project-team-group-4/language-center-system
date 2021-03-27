@@ -130,23 +130,23 @@ public class UserController {
         userService.deleteUserByID (userID, principal);
     }
     
-//    @GetMapping ("/logged-in-user")
-//    @ResponseStatus (HttpStatus.OK)
-//    public LoggedInUser getCurrentLoggedInUser (Principal principal){
-//        LoggedInUser loggedInUser;
-//        
-//        loggedInUser = userService.getLoggedInUser (principal);
-//        return loggedInUser;
-//    }
-//    
-//    @PutMapping("/editInfo/{userID}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public User updateStudentInfo(
-//            @RequestBody User user
-//            , @PathVariable int userID
-//    ){
-//        return userService.updateStudent(user, userID);
-//    }
+    @GetMapping ("/logged-in-user")
+    @ResponseStatus (HttpStatus.OK)
+    public LoggedInUser getCurrentLoggedInUser (Principal principal){
+        LoggedInUser loggedInUser;
+        
+        loggedInUser = userService.getLoggedInUser (principal);
+        return loggedInUser;
+    }
+    
+    @PutMapping("/editInfo/{userID}")
+    @ResponseStatus(HttpStatus.OK)
+    public User updateStudentInfo(
+            @RequestBody User user
+            , @PathVariable int userID
+    ){
+        return userService.updateStudent(user, userID);
+    }
 
     @GetMapping("/getStudent/{userID}")
     @ResponseStatus(HttpStatus.OK)

@@ -32,6 +32,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -259,21 +260,21 @@ public class Course implements Serializable {
         this.classList = classList;
     }
 
-    public CourseLevel getLevelID() {
-        return levelID;
-    }
-
-    public void setLevelID(CourseLevel levelID) {
-        this.levelID = levelID;
-    }
-
-    public CourseType getTypeID() {
-        return typeID;
-    }
-
-    public void setTypeID(CourseType typeID) {
-        this.typeID = typeID;
-    }
+//    public CourseLevel getLevelID() {
+//        return levelID;
+//    }
+//
+//    public void setLevelID(CourseLevel levelID) {
+//        this.levelID = levelID;
+//    }
+//
+//    public CourseType getTypeID() {
+//        return typeID;
+//    }
+//
+//    public void setTypeID(CourseType typeID) {
+//        this.typeID = typeID;
+//    }
 
     @XmlTransient
     public List<Examination> getExaminationList() {

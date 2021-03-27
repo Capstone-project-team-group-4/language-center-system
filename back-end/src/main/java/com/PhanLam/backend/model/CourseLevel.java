@@ -78,9 +78,9 @@ public class CourseLevel implements Serializable {
         this.levelID = levelID;
     }
 
-    public CourseLevel (Integer levelID, String levelName){
-        this.levelID = levelID;
+    public CourseLevel (String levelName, CourseType courseType){
         this.levelName = levelName;
+        this.courseType = courseType;
     }
 
     public Integer getLevelID (){

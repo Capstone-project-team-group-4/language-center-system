@@ -73,7 +73,7 @@ public class UserService {
     @Transactional (readOnly = true)
     public List<User> getAllUserWithUserNameIsNot (
             Principal principal
-            ,int pageNumber
+            , int pageNumber
             , int pageSize
     ){
         String userName;
@@ -127,7 +127,7 @@ public class UserService {
         
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
-            throw new NotFoundException ("Course ID");
+            throw new NotFoundException ("Course");
         }
         else {
             if ((pageIndex >= 0) && (pageSize > 0)){
@@ -156,9 +156,9 @@ public class UserService {
             }
             else {
                 throw new InvalidRequestArgumentException (
-                        "The page number and page size number parameters "
+                        "The page index number and page size number parameters "
                         + "cannot be less than zero." + System.lineSeparator () 
-                        + "Parameter name: pageNumber, pageSize"
+                        + "Parameter name: pageIndex, pageSize"
                 );
             }
         }
@@ -181,7 +181,7 @@ public class UserService {
         
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
-            throw new NotFoundException ("Course ID");
+            throw new NotFoundException ("Course");
         }
         else {
             if ((pageIndex >= 0) && (pageSize > 0)){
@@ -210,9 +210,9 @@ public class UserService {
             }
             else {
                 throw new InvalidRequestArgumentException (
-                        "The page number and page size number parameters "
+                        "The page index number and page size number parameters "
                         + "cannot be less than zero." + System.lineSeparator () 
-                        + "Parameter name: pageNumber, pageSize"
+                        + "Parameter name: pageIndex, pageSize"
                 );
             }
         }
@@ -225,7 +225,7 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("User");
         }
         else {
             userName = principal.getName ();
@@ -247,7 +247,7 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("User");
         }
         else {
             user = nullableUser.get ();
@@ -262,7 +262,7 @@ public class UserService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("User");
         }
         else {
             userName = principal.getName ();

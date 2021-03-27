@@ -15,8 +15,8 @@ export function TeacherDashboardPage (
     return (
         <Container id = "TeacherDashboardPage">
             {props.modalDialog}
+            <TeacherSidebar />
             <main>
-                <TeacherSidebar />
                 <Container>
                     <Row>
                         <Col>
@@ -25,6 +25,8 @@ export function TeacherDashboardPage (
                     </Row>
                 </Container>
             </main>
+            <footer>
+            </footer>
         </Container>
     );
 }

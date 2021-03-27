@@ -9,20 +9,14 @@ package com.PhanLam.backend.dal.repository_interface;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.repository.query.Param;
 
 /**
  *
  * @author Phan Lam
  */
-public interface UserRepository 
-        extends JpaRepository <User, Integer>
-            , QuerydslPredicateExecutor<User> {
+public interface UserRepository extends JpaRepository <User, Integer> {
 
     @Override
     public User save (User user); 

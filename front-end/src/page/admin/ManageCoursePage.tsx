@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop */
 // Import package members section:
 import React, { 
-    ChangeEvent,
-    FormEvent,
-    MouseEvent
+    ChangeEvent
+    , FormEvent
+    , MouseEvent
     , ReactElement
     , useEffect
     , useState 
@@ -14,7 +14,8 @@ import {
     , Col
     , Container
     , Form
-    , Modal, Row
+    , Modal
+    , Row
     , Table 
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -52,92 +53,6 @@ function renderCourseLevelDropdownList (
     );
 }
 
-function renderCourseTable (
-        course: Course
-        , index: number 
-        , openViewDetailsDialog: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-        , openEditCourseForm: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void>
-        , handleDeleteCourse: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-): ReactElement {
-    return (
-        <tr key = {course.courseID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {course.courseName}
-            </td>
-            <td>
-                {course.courseType.typeName}
-            </td>
-            <td>
-                {course.courseLevel.levelName}
-            </td>
-            <td>
-                {course.tuitionFee}
-            </td>
-            <td>
-                <Button 
-                    variant = "primary"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openViewDetailsDialog (event);
-                        }
-                    }
-                >
-                    Details
-                </Button>
-                <Button 
-                    variant = "success"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openEditCourseForm (event).catch (
-                                    (error: unknown) => {
-                                        console.error (error);
-                                    }
-                            );
-                        }
-                    }
-                >
-                    Edit
-                </Button>
-                <Button 
-                    variant = "danger"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            handleDeleteCourse (event);
-                        }
-                    }
-                >
-                    Delete
-                </Button>
-                <Button 
-                    variant = "success"
-                    as = {Link}
-                    to = {
-                        "/admin-console/manage-course-page"
-                        + `/courses/${course.courseID}/students`
-                    }
-                >
-                    Manage Student
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
 interface ManageCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
@@ -148,7 +63,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     // Variables declaration:
     let [selectedCourseTypeID, setSelectedCourseTypeID] 
         = useState<number> (0); 
-    let [courseTypeHolder, setCourseTypeHolder] = useState<CourseType[]> ([]);
+    let [courseTypeHolder, setCourseTypeHolder] 
+        = useState<CourseType[]> (new Array<CourseType> ());
     let updatedCourseTypeHolder: CourseType[] | undefined;
     let courseTypeAPI: CourseTypeAPI;
     let defaultSelectedID: number | undefined;
@@ -158,7 +74,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [showCreateCourseForm, setShowCreateCourseForm] 
         = useState<boolean> (false);
     let [courseLevelHolder, setCourseLevelHolder] 
-        = useState<CourseLevel[]> ([]);
+        = useState<CourseLevel[]> (new Array<CourseLevel> ());
     let [selectedCourseLevelID, setSelectedCourseLevelID] 
         = useState<number> (0);
     let htmlElement: 
@@ -175,7 +91,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [pageSize] = useState<number> (10);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseDataPage: DataPage<Course> | undefined;
-    let [courseHolder, setCourseHolder] = useState<Course[]> ([]);
+    let [courseHolder, setCourseHolder] 
+        = useState<Course[]> (new Array<Course> ());
     let [showViewDetailDialog, setShowViewDetailDialog] 
         = useState<boolean> (false);
     let button: HTMLButtonElement | undefined;
@@ -210,7 +127,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
 
     async function executeCourseDeletion (): Promise<void> {
         try {
-            await courseAPI.deleteCourse (pendingCourseID);
+            await courseAPI.deleteCourseByID (pendingCourseID);
             loadCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
@@ -418,8 +335,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             closeCreateCourseForm ();
             props.dialogController.setDialogTitle ("Course Created !");
             props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been created successfully.`
+                    `The course [${course.courseName}] 
+                    has been created successfully.`
             );
             props.dialogController.setDialogType ("inform");
             props.dialogController.setShowDialog (true);
@@ -469,8 +386,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             closeEditCourseForm ();
             props.dialogController.setDialogTitle ("Course Saved !");
             props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been saved successfully.`
+                    `The course [${course.courseName}] 
+                    has been saved successfully.`
             );
             props.dialogController.setDialogType ("inform");
             props.dialogController.setShowDialog (true);
@@ -526,7 +443,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     useEffect (
         () => {
             loadCourseTable ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
@@ -538,7 +455,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
         () => {
             if (selectedCourseTypeID !== 0){
                 loadCourseLevelDropdownList ().catch (
-                        (error: unknown) => {
+                        (error) => {
                             console.error (error);
                         }
                 );
@@ -551,7 +468,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
         () => {
             if (props.dialogController.dialogIsConfirmed === true){
                 executeCourseDeletion ().catch (
-                        (error: unknown) => {
+                        (error) => {
                             console.error (error);
                         }
                 );
@@ -1140,5 +1057,91 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             <footer>
             </footer>
         </Container>
+    );
+}
+
+function renderCourseTable (
+        course: Course
+        , index: number 
+        , openViewDetailsDialog: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+        , openEditCourseForm: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => Promise<void>
+        , handleDeleteCourse: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+): ReactElement {
+    return (
+        <tr key = {course.courseID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {course.courseName}
+            </td>
+            <td>
+                {course.courseType.typeName}
+            </td>
+            <td>
+                {course.courseLevel.levelName}
+            </td>
+            <td>
+                {course.tuitionFee}
+            </td>
+            <td>
+                <Button 
+                    variant = "primary"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            openViewDetailsDialog (event);
+                        }
+                    }
+                >
+                    Details
+                </Button>
+                <Button 
+                    variant = "success"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            openEditCourseForm (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
+                >
+                    Edit
+                </Button>
+                <Button 
+                    variant = "danger"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            handleDeleteCourse (event);
+                        }
+                    }
+                >
+                    Delete
+                </Button>
+                <Button 
+                    variant = "success"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-course-page"
+                        + `/courses/${course.courseID}/students`
+                    }
+                >
+                    Manage Student
+                </Button>
+            </td>
+        </tr>
     );
 }

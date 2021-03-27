@@ -1,22 +1,22 @@
 // Import package members section:
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { DataPage } from "../../App";
-import { Course } from "../../model/Course";
+import { Quiz } from "../../model/Quiz";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
 import { TypeGuard } from "./TypeGuard";
 
-export class CourseAPI {
+export class QuizAPI {
 
     // Variables declaration:
     private axiosInstance: AxiosInstance;
     private axiosInstanceGetter: AxiosInstanceGet;
-    private errorHandler: ErrorHandle;
     private axiosError: AxiosError<unknown> | undefined;
+    private errorHandler: ErrorHandle;
     private requestParameterHolder: URLSearchParams | undefined;
     private serverResponse: AxiosResponse<unknown> | undefined;
     private typeGuardian: TypeGuard;
-    private courseDataPage: DataPage<Course> | undefined;
+    private quizDataPage: DataPage<Quiz> | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -25,11 +25,11 @@ export class CourseAPI {
         this.typeGuardian = new TypeGuard ();
     }
 
-    public async createNewCourse (course: Course): Promise<void> {
+    public async createNewQuiz (quiz: Quiz): Promise<void> {
         try {
             await this.axiosInstance.post<undefined> (
-                    "/courses"
-                    , course
+                    "/quizzes"
+                    , quiz
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -45,27 +45,27 @@ export class CourseAPI {
         }
     }
 
-    public async getAllCourse (
+    public async getAllQuizCreatedByCurrentLoggedInUser (
             pageIndex: number
             , pageSize: number
-    ): Promise<DataPage<Course>> {
+    ): Promise<DataPage<Quiz>> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/courses"
+                    "/quizzes:created-by-logged-in-user"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isDataPage<Course> (
+            if (this.typeGuardian.isDataPage<Quiz> (
                     this.serverResponse.data
             )){
-                this.courseDataPage = this.serverResponse.data;
-                return Promise.resolve<DataPage<Course>> (this.courseDataPage);
-            } 
+                this.quizDataPage = this.serverResponse.data; 
+                return Promise.resolve<DataPage<Quiz>> (this.quizDataPage);
+            }
             else {
                 throw new Error ("This server response is not valid !");
-            }  
+            }
         }
         catch (apiError: unknown){
             try {
@@ -79,11 +79,11 @@ export class CourseAPI {
         }
     }
 
-    public async updateCourse (updatedCourse: Course): Promise<void> {
+    public async updateQuiz (updatedQuiz: Quiz): Promise<void> {
         try {
             await this.axiosInstance.put<undefined> (
-                    `/courses/${updatedCourse.courseID}`
-                    , updatedCourse
+                    `/quizzes/${updatedQuiz.multipleChoiceQuestion.questionID}`
+                    , updatedQuiz
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -99,62 +99,10 @@ export class CourseAPI {
         }
     }
 
-    public async addAStudentToCourse (
-            userID: number
-            , courseID: number
-    ): Promise<void> {
-        this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("userID", userID.toString ());
-        try {
-            await this.axiosInstance.patch<undefined> (
-                    `/courses/${courseID}:add-a-student`
-                    , undefined
-                    , {params: this.requestParameterHolder}
-            );
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
-                return Promise.reject (this.axiosError);
-            }
-            catch (apiError2: unknown){
-                return Promise.reject (apiError2);
-            }
-        }
-    }
-    
-    public async removeAStudentFromCourse (
-            userID: number
-            , courseID: number
-    ): Promise<void> {
-        this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("userID", userID.toString ());
-        try {
-            await this.axiosInstance.patch<undefined> (
-                    `/courses/${courseID}:remove-a-student`
-                    , undefined
-                    , {params: this.requestParameterHolder}
-            );
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
-                return Promise.reject (this.axiosError);
-            }
-            catch (apiError2: unknown){
-                return Promise.reject (apiError2);
-            }
-        }
-    }
-
-    public async deleteCourseByID (courseID: number): Promise<void> {
+    public async deleteQuizByQuestionID (questionID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
-                    `/courses/${courseID}`
+                    `/quizzes/${questionID}`
             );
             return Promise.resolve<undefined> (undefined);
         }

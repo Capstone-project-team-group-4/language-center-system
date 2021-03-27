@@ -38,6 +38,7 @@ import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
+import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -59,7 +60,8 @@ export function App(): ReactElement {
   let dialogController: DialogControl | undefined;
   let acceptableRoleNameHolder: string[] | undefined;
   let adminPageSecurity: SecurityContext | undefined;
-  let selectRolePageSecurity: SecurityContext | undefined;  
+  let selectRolePageSecurity: SecurityContext | undefined;
+  let teacherPageSecurity: SecurityContext | undefined;  
   let logOutAPI: LogOutAPI;
   let typeGuardian: TypeGuard;
   let history: History<unknown>;
@@ -101,7 +103,13 @@ export function App(): ReactElement {
     , loggedInUser
     , acceptableRoleNameHolder
   );
-  acceptableRoleNameHolder = new Array(
+  acceptableRoleNameHolder = new Array ("ROLE_TEACHER");
+  teacherPageSecurity = new SecurityContext (
+    isAuthenticated
+    , loggedInUser
+    , acceptableRoleNameHolder
+  ); 
+  acceptableRoleNameHolder = new Array (
     "ROLE_ADMIN"
     , "ROLE_TEACHER"
     , "ROLE_STUDENT"
@@ -297,6 +305,18 @@ export function App(): ReactElement {
         <SelectRolePage
           dialogController={dialogController}
           modalDialog={modalDialog}
+        />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = "/teacher-dashboard/manage-exam-question-page"
+        securityContext = {teacherPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageExamQuestionPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
 

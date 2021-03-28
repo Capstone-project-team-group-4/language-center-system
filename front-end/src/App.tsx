@@ -36,7 +36,7 @@ import {
 import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
-import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
+// import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 

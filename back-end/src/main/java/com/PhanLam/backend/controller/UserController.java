@@ -138,7 +138,7 @@ public class UserController {
         loggedInUser = userService.getLoggedInUser (principal);
         return loggedInUser;
     }
-
+    
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(

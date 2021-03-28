@@ -129,7 +129,7 @@ public class RegisterFormService {
         if (newAccountRoleList.size () > 0){
             nullableRegisterForm = registerFormRepository.findById (formID);
             if (nullableRegisterForm.isPresent () == false){
-                throw new NotFoundException ("create-account-request");
+                throw new NotFoundException ("Create-Account-Request");
             }
             else {
                 registerForm = nullableRegisterForm.get ();
@@ -170,7 +170,7 @@ public class RegisterFormService {
         
         nullableRegisterForm = registerFormRepository.findById (formID);
         if (nullableRegisterForm.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("Create-Account-Request");
         }
         else {
             registerForm = nullableRegisterForm.get ();

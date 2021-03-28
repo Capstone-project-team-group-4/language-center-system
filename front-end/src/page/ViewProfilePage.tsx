@@ -11,7 +11,7 @@ import { User, UserIndexSignature } from '../model/User';
 import './ViewProfilePage.css';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-function renderUserTable(
+function renderUserTable (
     user: User
     , index: number
 ): ReactElement {
@@ -62,7 +62,7 @@ function renderUserTable(
         </tr>
     );
 }
-export function ViewProfilePage(): ReactElement {
+export function ViewProfilePage (): ReactElement {
 
     let [user, getUser] = useState<User>(new User());
     let userID: number;

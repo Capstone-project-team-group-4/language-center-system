@@ -38,56 +38,58 @@ import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
+import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
   pageDataHolder: T[];
 }
 
-export function App(): ReactElement {
+export function App (): ReactElement {
 
   // Variables declaration:
-  let [showDialog, setShowDialog] = useState<boolean>(false);
-  let [dialogTitle, setDialogTitle] = useState<string>("");
-  let [dialogBody, setDialogBody] = useState<string>("");
-  let [dialogType, setDialogType] = useState<string>("");
+  let [showDialog, setShowDialog] = useState<boolean> (false);
+  let [dialogTitle, setDialogTitle] = useState<string> ("");
+  let [dialogBody, setDialogBody] = useState<string> ("");
+  let [dialogType, setDialogType] = useState<string> ("");
   let modalDialog: ReactElement | undefined;
-  let [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  let [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(
-    new LoggedInUser()
+  let [isAuthenticated, setIsAuthenticated] = useState<boolean> (false);
+  let [loggedInUser, setLoggedInUser] = useState<LoggedInUser> (
+    new LoggedInUser ()
   );
   let dialogController: DialogControl | undefined;
   let acceptableRoleNameHolder: string[] | undefined;
   let adminPageSecurity: SecurityContext | undefined;
-  let selectRolePageSecurity: SecurityContext | undefined;  
+  let selectRolePageSecurity: SecurityContext | undefined;
+  let teacherPageSecurity: SecurityContext | undefined;  
   let logOutAPI: LogOutAPI;
   let typeGuardian: TypeGuard;
   let history: History<unknown>;
-  let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean>(false);
+  let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean> (false);
 
-  logOutAPI = new LogOutAPI();
-  typeGuardian = new TypeGuard();
-  history = useHistory();
+  logOutAPI = new LogOutAPI ();
+  typeGuardian = new TypeGuard ();
+  history = useHistory ();
 
-  function handleCloseDialog(): void {
-    setShowDialog(false);
+  function handleCloseDialog (): void {
+    setShowDialog (false);
   }
 
-  function handleConfirmDialog(): void {
-    setDialogIsConfirmed(true);
-    setShowDialog(false);
+  function handleConfirmDialog (): void {
+    setDialogIsConfirmed (true);
+    setShowDialog (false);
   }
 
   modalDialog =
     <ModalDialog
-      showDialog={showDialog}
-      dialogTitle={dialogTitle}
-      dialogBody={dialogBody}
-      dialogType={dialogType}
-      handleCloseDialog={handleCloseDialog}
-      handleConfirmDialog={handleConfirmDialog}
+      showDialog = {showDialog}
+      dialogTitle = {dialogTitle}
+      dialogBody = {dialogBody}
+      dialogType = {dialogType}
+      handleCloseDialog = {handleCloseDialog}
+      handleConfirmDialog = {handleConfirmDialog}
     />;
-  dialogController = new DialogControl(
+  dialogController = new DialogControl (
     setShowDialog
     , setDialogTitle
     , setDialogBody
@@ -101,134 +103,124 @@ export function App(): ReactElement {
     , loggedInUser
     , acceptableRoleNameHolder
   );
-  acceptableRoleNameHolder = new Array(
+  acceptableRoleNameHolder = new Array ("ROLE_TEACHER");
+  teacherPageSecurity = new SecurityContext (
+    isAuthenticated
+    , loggedInUser
+    , acceptableRoleNameHolder
+  ); 
+  acceptableRoleNameHolder = new Array (
     "ROLE_ADMIN"
     , "ROLE_TEACHER"
     , "ROLE_STUDENT"
   );
-  selectRolePageSecurity = new SecurityContext(
+  selectRolePageSecurity = new SecurityContext (
     isAuthenticated
     , loggedInUser
     , acceptableRoleNameHolder
   );
 
-  async function logOut(): Promise<void> {
+  async function logOut (): Promise<void> {
     try {
-      await logOutAPI.logOut();
-      history.push("/");
-      setIsAuthenticated(false);
-      setLoggedInUser(new LoggedInUser());
+      await logOutAPI.logOut ();
+      history.push ("/");
+      setIsAuthenticated (false);
+      setLoggedInUser (new LoggedInUser ());
     }
-    catch (apiError: unknown) {
-      if (typeGuardian.isAxiosError(apiError)) {
-        if (typeof apiError.code === "string") {
-          setDialogTitle(
+    catch (apiError: unknown){
+      if (typeGuardian.isAxiosError (apiError)){
+        if (typeof apiError.code === "string"){
+          setDialogTitle (
             `${apiError.code}: ${apiError.name}`
           );
         }
         else {
-          setDialogTitle(apiError.name);
+          setDialogTitle (apiError.name);
         }
-        setDialogBody(apiError.message);
-        setDialogType("error");
-        setShowDialog(true);
+        setDialogBody (apiError.message);
+        setDialogType ("error");
+        setShowDialog (true);
       }
       else {
-        throw new Error("This api error is not valid !");
+        throw new Error ("This api error is not valid !");
       }
     }
   }
 
   return (
     <Switch>
-      <Route exact path="/editStudentInfo/:studentID">
+      <Route exact path = "/editStudentInfo/:studentID">
         <EditStudentInfo />
       </Route>
-      <Route exact = {true} path="/">
+      <Route exact = {true} path = "/">
         <HomePageHeader />
         <HomePage modalDialog = {modalDialog}/>
       </Route>
 
-      <Route path="/sign-up-page">
+      <Route path = "/sign-up-page">
         <SignUpPage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
         />
       </Route>
 
-      <Route path="/log-in-page">
+      <Route path = "/log-in-page">
         <LogInPage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
-          setIsAuthenticated={setIsAuthenticated}
-          setLoggedInUser={setLoggedInUser}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          setIsAuthenticated = {setIsAuthenticated}
+          setLoggedInUser = {setLoggedInUser}
         />
       </Route>
 
       <ProtectedRoute
-        path="/admin-console/create-account-request-page"
-        securityContext={adminPageSecurity}
-        dialogController={dialogController}
+        path = "/admin-console/create-account-request-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
       >
-        <PageHeader logOut={logOut} />
+        <PageHeader logOut = {logOut} />
         <CreateAccountPage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
         />
       </ProtectedRoute>
 
       <ProtectedRoute
-        path="/admin-console/disable-or-delete-account-page"
-        securityContext={adminPageSecurity}
-        dialogController={dialogController}
+        path = "/admin-console/disable-or-delete-account-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
       >
-        <PageHeader logOut={logOut} />
+        <PageHeader logOut = {logOut} />
         <DisableOrDeleteAccountPage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
         />
       </ProtectedRoute>
 
       <ProtectedRoute
-        path="/admin-console/managa-teacher-page"
-        securityContext={adminPageSecurity}
-        dialogController={dialogController}
+        path = "/admin-console/managa-teacher-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
       >
-        <PageHeader logOut={logOut} />
+        <PageHeader logOut = {logOut} />
         <DisableOrDeleteAccountPage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
         />
       </ProtectedRoute>
 
-      <ProtectedRoute
-        path="/admin-console/manage-course-page"
-        securityContext={adminPageSecurity}
-        dialogController={dialogController}
-      >
-        <PageHeader logOut={logOut} />
-        <ManageCoursePage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
-        />
-      </ProtectedRoute>
-
-      <Route path="/admin-console">
-        <PageHeader logOut={logOut} />
-        <AdminConsolePage modalDialog={modalDialog} />
-      </Route>
-
-      <Route exact path="/editTeacherInfo/:teacherID">
+      <Route exact path = "/editTeacherInfo/:teacherID">
         <EditTeacherInfo />
       </Route>
 
-      <Route path="/user_view">
+      <Route path = "/user_view">
         <ViewProfilePage />
       </Route>
 
-      <Route path="/user_detail/:studentID">
+      <Route path = "/user_detail/:studentID">
         <DetailPage />
       </Route>
+      
       <ProtectedRoute 
         path = "/admin-console/create-account-request-page"
         securityContext = {adminPageSecurity}
@@ -290,13 +282,25 @@ export function App(): ReactElement {
       </ProtectedRoute>
 
       <ProtectedRoute
-        path="/select-role-page"
-        securityContext={selectRolePageSecurity}
-        dialogController={dialogController}
+        path = "/select-role-page"
+        securityContext = {selectRolePageSecurity}
+        dialogController = {dialogController}
       >
         <SelectRolePage
-          dialogController={dialogController}
-          modalDialog={modalDialog}
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+        />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = "/teacher-dashboard/manage-exam-question-page"
+        securityContext = {teacherPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageExamQuestionPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
 

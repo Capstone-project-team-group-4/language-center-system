@@ -185,7 +185,16 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
-
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "creator"
+            , fetch = FetchType.LAZY
+    )
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
+    
     public User (){
     }
 
@@ -411,6 +420,16 @@ public class User implements Serializable {
         this.addressList = addressList;
     }
 
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList (){
+        return multipleChoiceQuestionList;
+    }
+
+    public void setMultipleChoiceQuestionList (
+            List<MultipleChoiceQuestion> multipleChoiceQuestionList
+    ){
+        this.multipleChoiceQuestionList = multipleChoiceQuestionList;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

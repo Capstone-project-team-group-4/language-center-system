@@ -84,8 +84,8 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
             ); 
             props.dialogController.setDialogTitle ("Success !");
             props.dialogController.setDialogBody (
-                `Your create-account-request have been registered
-                , waiting for admin approval...`
+                    `Your create-account-request have been registered
+                    , waiting for admin approval...`
             );
             props.dialogController.setDialogType ("sign-up-succeeded");
             props.dialogController.setShowDialog (true);

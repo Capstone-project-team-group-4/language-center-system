@@ -139,45 +139,6 @@ public class UserController {
         return loggedInUser;
     }
 
-    /*Teacher manage - begin*/
-
-    @PostMapping ("/teachers")
-    @ResponseStatus (HttpStatus.CREATED)
-    public void createNewTeacher (
-            @Valid @RequestBody User teacher
-    ){
-        userService.createUser (teacher);
-    }
-
-    @GetMapping ("/teachers")
-    @ResponseStatus (HttpStatus.OK)
-    public DataPage<User> getAllTeacher (
-            @RequestParam int pageIndex
-            , @RequestParam int pageSize
-    ){
-        DataPage<User> userDataPage;
-        
-        userDataPage = userService.getAllUser (pageIndex, pageSize);
-        return userDataPage;
-    }
-
-   @PutMapping ("/teachers/{userID}") 
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void updateTeacher (
-            @PathVariable int userID
-            , @Valid @RequestBody User updateUser
-    ){
-        userService.updateUser (userID, updateUser);
-    }
-    
-    @DeleteMapping ("/teachers/{userID}")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteTeacher (@PathVariable int userID){
-        userService.deleteUserByID (userID);
-    }
-
-    /*Teacher manage - end*/
-
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(

@@ -1,1144 +1,238 @@
-/* eslint-disable no-await-in-loop */
-// Import package members section:
-import React, { 
-    ChangeEvent,
-    FormEvent,
-    MouseEvent
-    , ReactElement
-    , useEffect
-    , useState 
-} from "react";
-import { 
-    Breadcrumb
-    , Button
-    , Col
-    , Container
-    , Form
-    , Modal, Row
-    , Table 
-} from "react-bootstrap";
+/* eslint-disable max-len */
+import React, { ReactElement, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { DataPage } from "../../App";
-import { DialogControl } from "../../common/component/ModalDialog";
-import { CourseAPI } from "../../common/service/CourseAPI";
-import { CourseLevelAPI } from "../../common/service/CourseLevelAPI";
-import { CourseTypeAPI } from "../../common/service/CourseTypeAPI";
-import { TypeGuard } from "../../common/service/TypeGuard";
-import { Course } from "../../model/Course";
-import { CourseLevel } from "../../model/CourseLevel";
-import { CourseType } from "../../model/CourseType";
+import { UserAPI } from "../../common/service/UserAPI";
+import { User } from "../../model/User";
+import './ManageStudentPage.css';
 
-function renderCourseTypeDropdownList (courseType: CourseType): ReactElement {
+export function ManageTeacherPage(): ReactElement {
+    let [user, setUser] = useState<User[]>([]);
+    let userAPI: UserAPI = new UserAPI();
+    useEffect(() => {
+        userAPI.listUsers().then(
+            (res) => {
+                setUser(res.data);
+            }
+        )
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
     return (
-        <option 
-            key = {courseType.typeID} 
-            value = {courseType.typeID}
-        >
-            {courseType.typeName}
-        </option>
-    );
-}
+        <div className="container" id="grid">
+            <div className="text-center">
+                <h1>Manage Teacher Page</h1>
+                <hr />
+            </div>
+            <div className="row">
+                {/* <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8"> */}
+                {/* <button type="button" className="btn btn-primary">
+                        <span className=
+                            "fa fa-plus mr-5">
+                        </span>
+                                Create teacher
+                </button> */}
+                <div className="row mt-15" id="table-cover">
+                    <div className=
+                        "col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <table className=
+                            "table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">
+                                        ID</th>
+                                    <th className="text-center">
+                                        Username</th>
+                                    <th className="text-center">
+                                        First name</th>
+                                    <th className="text-center">
+                                        Middle name</th>
+                                    <th className="text-center">
+                                        Last name</th>
+                                    <th className="text-center">
+                                        Phone
+                                                </th>
+                                    <th className="text-center">
+                                        DoB
+                                                </th>
+                                    <th className="text-center">
+                                        Email
+                                                </th>
+                                    <th className="text-center">
+                                        Gender
+                                                </th>
+                                    <th className="text-center">
+                                        Job
+                                                </th>
+                                    <th className="text-center">
+                                        Description
+                                                </th>
+                                    <th className="text-center">
+                                        Account status
+                                                </th>
+                                    <th className="text-center">
+                                        Date created
+                                                </th>
+                                    <th className="text-center">
+                                        Last login
+                                                </th>
 
-function renderCourseLevelDropdownList (
-        courseLevel: CourseLevel
-): ReactElement {
-    return (
-        <option 
-            key = {courseLevel.levelID} 
-            value = {courseLevel.levelID}
-        >
-            {courseLevel.levelName}
-        </option>
-    );
-}
-
-function renderCourseTable (
-        course: Course
-        , index: number 
-        , openViewDetailsDialog: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-        , openEditCourseForm: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void>
-        , handleDeleteCourse: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-): ReactElement {
-    return (
-        <tr key = {course.courseID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {course.courseName}
-            </td>
-            <td>
-                {course.courseType.typeName}
-            </td>
-            <td>
-                {course.courseLevel.levelName}
-            </td>
-            <td>
-                {course.tuitionFee}
-            </td>
-            <td>
-                <Button 
-                    variant = "primary"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openViewDetailsDialog (event);
-                        }
-                    }
-                >
-                    Details
-                </Button>
-                <Button 
-                    variant = "success"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openEditCourseForm (event).catch (
-                                    (error: unknown) => {
-                                        console.error (error);
-                                    }
-                            );
-                        }
-                    }
-                >
-                    Edit
-                </Button>
-                <Button 
-                    variant = "danger"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            handleDeleteCourse (event);
-                        }
-                    }
-                >
-                    Delete
-                </Button>
-                <Button 
-                    variant = "success"
-                    as = {Link}
-                    to = {
-                        "/admin-console/manage-course-page"
-                        + `/courses/${course.courseID}/students`
-                    }
-                >
-                    Manage Student
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
-interface ManageCoursePageProps {
-    dialogController: DialogControl;
-    modalDialog: ReactElement;
-}
-
-export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
-
-    // Variables declaration:
-    let [selectedCourseTypeID, setSelectedCourseTypeID] 
-        = useState<number> (0); 
-    let [courseTypeHolder, setCourseTypeHolder] = useState<CourseType[]> ([]);
-    let updatedCourseTypeHolder: CourseType[] | undefined;
-    let courseTypeAPI: CourseTypeAPI;
-    let defaultSelectedID: number | undefined;
-    let typeGuardian: TypeGuard;
-    let updatedCourseLevelHolder: CourseLevel[] | undefined;
-    let courseLevelAPI: CourseLevelAPI;
-    let [showCreateCourseForm, setShowCreateCourseForm] 
-        = useState<boolean> (false);
-    let [courseLevelHolder, setCourseLevelHolder] 
-        = useState<CourseLevel[]> ([]);
-    let [selectedCourseLevelID, setSelectedCourseLevelID] 
-        = useState<number> (0);
-    let htmlElement: 
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
-    let [course, setCourse] = useState<Course> (new Course ());
-    let updatedCourse: Course | undefined;
-    let courseAPI: CourseAPI;
-    let courseType: CourseType | undefined;
-    let selectedCourseType: CourseType;
-    let courseLevel: CourseLevel | undefined;
-    let selectedCourseLevel: CourseLevel; 
-    let i: number | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
-    let [totalRowCount, setTotalRowCount] = useState<number> (0);
-    let courseDataPage: DataPage<Course> | undefined;
-    let [courseHolder, setCourseHolder] = useState<Course[]> ([]);
-    let [showViewDetailDialog, setShowViewDetailDialog] 
-        = useState<boolean> (false);
-    let button: HTMLButtonElement | undefined;
-    let courseID: number | undefined;
-    let courseSample: Course | undefined;
-    let [formattedLastModified, setFormattedLastModified] 
-        = useState<string> ("");
-    let rawDate: Date | undefined;
-    let [formattedDateCreated, setFormattedDateCreated] 
-        = useState<string> ("");
-    let [pendingCourseID, setPendingCourseID] = useState<number> (0);
-    let [showEditCourseForm, setShowEditCourseForm] 
-        = useState<boolean> (false);
-    
-    courseTypeAPI = new CourseTypeAPI ();
-    courseLevelAPI = new CourseLevelAPI ();
-    courseAPI = new CourseAPI ();
-    typeGuardian = new TypeGuard ();
-    
-    function handleDeleteCourse (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): void {
-        button = event.target as HTMLButtonElement;
-        setPendingCourseID (Number (button.value));
-        props.dialogController.setDialogTitle ("Confirm Delete Course");
-        props.dialogController.setDialogBody (
-                "Are you sure you want to delete this course ?"
-        );
-        props.dialogController.setDialogType ("confirm");
-        props.dialogController.setShowDialog (true);
-    }
-
-    async function executeCourseDeletion (): Promise<void> {
-        try {
-            await courseAPI.deleteCourse (pendingCourseID);
-            loadCourseTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                        `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    function openViewDetailDialog (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): void {
-        button = event.target as HTMLButtonElement;
-        courseID = Number (button.value);
-        for (i = 0; i < courseHolder.length; i++){
-            courseSample = courseHolder[i];
-            if (courseSample.courseID === courseID){
-                setCourse (courseSample);
-                rawDate = new Date (courseSample.lastModified); 
-                if (rawDate.toString () === new Date (0).toString ()){
-                    setFormattedLastModified ("Has not been modified yet !");
-                }
-                else {
-                    setFormattedLastModified (rawDate.toLocaleString ());
-                }
-                rawDate = new Date (courseSample.dateCreated);
-                setFormattedDateCreated (rawDate.toLocaleString ());
-                break;
-            }
-        }
-        setShowViewDetailDialog (true);
-    }
-
-    function closeViewDetailDialog (): void {
-        setShowViewDetailDialog (false);
-    }
-    
-    function openCreateCourseForm (): void {
-        setCourse (new Course ());
-        loadCourseTypeDropdownList ().catch (
-                (error: unknown) => {
-                    console.error (error);
-                }
-        );
-        setShowCreateCourseForm (true);
-    }
-
-    function closeCreateCourseForm (): void {
-        setShowCreateCourseForm (false);
-    }
-    
-    async function openEditCourseForm (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): Promise<void> {
-        button = event.target as HTMLButtonElement;
-        courseID = Number (button.value);
-        try {
-            for (i = 0; i < courseHolder.length; i++){
-                courseSample = courseHolder[i];
-                if (courseSample.courseID === courseID){
-                    setCourse (courseSample);
-                    await loadCourseTypeDropdownList ();
-                    setSelectedCourseTypeID (courseSample.courseType.typeID);
-                    break;
-                }
-            }
-            setShowEditCourseForm (true);
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (error: unknown){
-            return Promise.reject (error);
-        }
-    }
-
-    function closeEditCourseForm (): void {
-        setShowEditCourseForm (false);
-    }
-
-    function handleChange (
-        event: ChangeEvent<
-            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
-    ): void {
-        updatedCourse = new Course (course);
-        htmlElement = event.target;
-        switch (htmlElement.name){
-            default:
-                throw new Error ("Unknown html element !");
-
-            case "courseNameField":
-                updatedCourse.courseName = htmlElement.value;
-                break;
-
-            case "descriptionTextarea":
-                updatedCourse.description = htmlElement.value;
-                break;
-
-            case "courseTypeDropdownList":
-                setSelectedCourseTypeID (Number (htmlElement.value));
-                break;
-
-            case "courseLevelDropdownList":
-                setSelectedCourseLevelID (Number (htmlElement.value));
-                break;
-
-            case "tuitionFeeField":
-                updatedCourse.tuitionFee = parseFloat (htmlElement.value);
-                break;
-        }
-        setCourse (updatedCourse);
-    }
-
-    async function loadCourseTypeDropdownList (): Promise<void> {
-        try {
-            updatedCourseTypeHolder 
-                = await courseTypeAPI.getAllCourseTypeInTheSystem (); 
-            setCourseTypeHolder (updatedCourseTypeHolder);
-            defaultSelectedID = updatedCourseTypeHolder[0].typeID;
-            setSelectedCourseTypeID (defaultSelectedID);
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    async function loadCourseLevelDropdownList (): Promise<void> {
-        try {
-            updatedCourseLevelHolder
-                = await courseLevelAPI.getAllCourseLevelByTypeID (
-                        selectedCourseTypeID
-                ); 
-            setCourseLevelHolder (updatedCourseLevelHolder);
-            defaultSelectedID = updatedCourseLevelHolder[0].levelID;
-            setSelectedCourseLevelID (defaultSelectedID);
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (
-                            apiError.name
-                    );
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }  
-    }
-
-    async function createCourse (
-            event: FormEvent<HTMLFormElement>
-    ): Promise<void> {
-        event.preventDefault ();
-        for (i = 0; i < courseTypeHolder.length; i++){
-            courseType = courseTypeHolder[i];
-            if (courseType.typeID === selectedCourseTypeID){
-                selectedCourseType = courseType;
-                break;
-            }
-        }
-        for (i = 0; i < courseLevelHolder.length; i++){
-            courseLevel = courseLevelHolder[i];
-            if (courseLevel.levelID === selectedCourseLevelID){
-                selectedCourseLevel = courseLevel;
-                break;
-            }
-        }
-        course.courseType = selectedCourseType;
-        course.courseLevel = selectedCourseLevel; 
-        try {
-            await courseAPI.createNewCourse (course);
-            closeCreateCourseForm ();
-            props.dialogController.setDialogTitle ("Course Created !");
-            props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been created successfully.`
-            );
-            props.dialogController.setDialogType ("inform");
-            props.dialogController.setShowDialog (true);
-            loadCourseTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    async function editCourse (
-            event: FormEvent<HTMLFormElement>
-    ): Promise<void> {
-        event.preventDefault ();
-        for (i = 0; i < courseTypeHolder.length; i++){
-            courseType = courseTypeHolder[i];
-            if (courseType.typeID === selectedCourseTypeID){
-                selectedCourseType = courseType;
-                break;
-            }
-        }
-        for (i = 0; i < courseLevelHolder.length; i++){
-            courseLevel = courseLevelHolder[i];
-            if (courseLevel.levelID === selectedCourseLevelID){
-                selectedCourseLevel = courseLevel;
-                break;
-            }
-        }
-        course.courseType = selectedCourseType;
-        course.courseLevel = selectedCourseLevel; 
-        try {
-            await courseAPI.updateCourse (course);
-            closeEditCourseForm ();
-            props.dialogController.setDialogTitle ("Course Saved !");
-            props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been saved successfully.`
-            );
-            props.dialogController.setDialogType ("inform");
-            props.dialogController.setShowDialog (true);
-            loadCourseTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    async function loadCourseTable (): Promise<void> {
-        try {
-            courseDataPage = await courseAPI.getAllCourse (
-                    pageIndex
-                    , pageSize
-            ); 
-            setTotalRowCount (courseDataPage.totalRowCount);
-            setCourseHolder (courseDataPage.pageDataHolder);
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    useEffect (
-        () => {
-            loadCourseTable ().catch (
-                    (error: unknown) => {
-                        console.error (error);
-                    }
-            );
-        }
-        , []
-    );
-
-    useEffect (
-        () => {
-            if (selectedCourseTypeID !== 0){
-                loadCourseLevelDropdownList ().catch (
-                        (error: unknown) => {
-                            console.error (error);
-                        }
-                );
-            }
-        }
-        , [selectedCourseTypeID]
-    );
-    
-    useEffect (
-        () => {
-            if (props.dialogController.dialogIsConfirmed === true){
-                executeCourseDeletion ().catch (
-                        (error: unknown) => {
-                            console.error (error);
-                        }
-                );
-                props.dialogController.setDialogIsConfirmed (false); 
-            }
-        }
-        , [props.dialogController.dialogIsConfirmed]
-    );
-
-    return (
-        <Container fluid = {true}>
-            {props.modalDialog}
-            <Modal
-                show = {showCreateCourseForm}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
-            >
-                <Modal.Header>
-                    <Modal.Title>New Course Information</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form 
-                        id = "CreateCourseForm"
-                        className = "pt-2 pr-5 pl-5 pb-0"
-                        onSubmit = {
-                            (event) => {
-                                createCourse (event).catch (
-                                        (error: unknown) => {
-                                            console.error (error);
-                                        }
-                                );
-                            }
-                        }
-                    >
-                        <Form.Group controlId = "CourseNameField">
-                            <Form.Label>
-                                Course Name:
-                            </Form.Label>
-                            <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "courseNameField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Name for the new course ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {course.courseName}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                            <Form.Text className = "text-muted">
-                                format: characters only !  
-                            </Form.Text>
-                        </Form.Group>
-
-                        <Form.Group controlId = "DescriptionTextarea">
-                            <Form.Label>
-                                Description:
-                            </Form.Label>
-                            <Form.Control
-                                as = "textarea"
-                                autoComplete = "off"
-                                autoFocus = {false}
-                                name = "descriptionTextarea"
-                                placeholder = "Description for the new course ?"
-                                required = {false}
-                                spellCheck = {true}
-                                rows = {5}
-                                value = {course.description}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId = "CourseTypeDropdownList">
-                            <Form.Label>
-                                Course Type:
-                            </Form.Label>
-                            <Form.Control 
-                                as = "select" 
-                                name = "courseTypeDropdownList"
-                                autoFocus = {false}
-                                required = {true}
-                                value = {selectedCourseTypeID}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (
-                                            event
-                                        );
-                                    } 
-                                }
-                            >
-                                {courseTypeHolder.map (
+                                    <th className="text-center">
+                                        Last modified
+                                                </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                className="form-control" />
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <select
+                                                className="form-control">
+                                                <option value="-1">
+                                                    Tất Cả
+                                                        </option>
+                                                <option value="0">
+                                                    Ẩn
+                                                        </option>
+                                                <option value="1">
+                                                    Kích Hoạt
+                                                        </option>
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> */}
+                                {user.map(
                                     (
-                                            courseType
-                                    ) => renderCourseTypeDropdownList (
-                                            courseType
-                                    )  
-                                )}
-                            </Form.Control>
-                        </Form.Group>
+                                        item
+                                        , index
+                                    ) => <tr key={index}>
 
-                        <Form.Group controlId = "CourseLevelDropdownList">
-                            <Form.Label>
-                                Course Level:
-                            </Form.Label>
-                            <Form.Control 
-                                as = "select" 
-                                name = "courseLevelDropdownList"
-                                autoFocus = {false}
-                                required = {true}
-                                value = {selectedCourseLevelID}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (
-                                            event
-                                        );
-                                    } 
-                                }
-                            >
-                                {courseLevelHolder.map (
-                                    (
-                                            courseLevel
-                                    ) => renderCourseLevelDropdownList (
-                                            courseLevel
-                                    )  
-                                )}
-                            </Form.Control>
-                        </Form.Group>
+                                            <td>
+                                                {item["userID"]}
+                                            </td>
 
-                        <Form.Group controlId = "TuitionFeeField">
-                            <Form.Label>
-                                Tuition Fee (VND):
-                            </Form.Label>
-                            <Form.Control
-                                type = "number"
-                                autoComplete = "on"
-                                autoFocus = {false}
-                                name = "tuitionFeeField"
-                                placeholder = "Price of the new course ?"
-                                required = {true}
-                                spellCheck = {false}
-                                min = {0}
-                                step = {500}
-                                value = {course.tuitionFee}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                            <Form.Text className = "text-muted">
-                                format: numbers only !  
-                            </Form.Text>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button 
-                        variant = "success" 
-                        type = "submit"
-                        form = "CreateCourseForm" 
-                    >
-                        Create Course
-                    </Button>
-                    <Button 
-                        variant = "outline-secondary" 
-                        onClick = {closeCreateCourseForm}
-                    >
-                        Cancel
-                    </Button>   
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show = {showViewDetailDialog}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
-            >
-                <Modal.Header>
-                    <Modal.Title>Course Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form
-                        className = "pt-2 pr-5 pl-5 pb-0"
-                    >
-                        <Form.Row>
-                            <Form.Group as = {Row} controlId = "CourseIDInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
-                                >
-                                    + Course ID:
-                                </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {course.courseID}
-                                    />
-                                </Col>
-                            </Form.Group>
+                                            <td>
+                                                {item["userName"]}
+                                            </td>
 
-                            <Form.Group as = {Row} controlId = "CourseNameInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
-                                >
-                                    + Course Name:
-                                </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {course.courseName}
-                                    />
-                                </Col>
-                            </Form.Group>
-                        </Form.Row>
-                        
-                        <Form.Group controlId = "DescriptionInfo">
-                            <Form.Label>
-                                + Description:
-                            </Form.Label>
-                            <Form.Control
-                                as = "textarea"
-                                readOnly = {true}
-                                rows = {5}
-                                value = {course.description}
-                            />
-                        </Form.Group>
-                        
-                        <Form.Row>
-                            <Form.Group as = {Row} controlId = "CourseTypeInfo">
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
-                                >
-                                    + Course Type:
-                                </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {course.courseType.typeName}
-                                    />
-                                </Col>
-                            </Form.Group>
+                                            <td>
+                                                {item["firstName"]}
+                                            </td>
 
-                            <Form.Group 
-                                as = {Row} 
-                                controlId = "CourseLevelInfo"
-                            >
-                                <Form.Label 
-                                    column = {true}
-                                    md = {5}
-                                >
-                                    + Course Level:
-                                </Form.Label>
-                                <Col md = {7}>
-                                    <Form.Control 
-                                        plaintext = {true} 
-                                        readOnly = {true} 
-                                        value = {course.courseLevel.levelName}
-                                    />
-                                </Col>
-                            </Form.Group>
-                        </Form.Row>
+                                            <td>
+                                                {item["middleName"]}
+                                            </td>
 
-                        <Form.Group as = {Row} controlId = "TuitionFeeInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Tuition Fee (VND):
-                            </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {
-                                        `${
-                                            course.tuitionFee.toLocaleString ()
-                                        } đ`
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
+                                            <td>
+                                                {item["lastName"]}
+                                            </td>
 
-                        <Form.Group as = {Row} controlId = "LastModifiedInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Last Modified:
-                            </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {formattedLastModified}
-                                />
-                            </Col>
-                        </Form.Group>
+                                            <td>
+                                                {item["phoneNumber"]}
+                                            </td>
 
-                        <Form.Group as = {Row} controlId = "DateCreatedInfo">
-                            <Form.Label
-                                column = {true}
-                                md = {3}
-                            >
-                                + Date Created:
-                            </Form.Label>
-                            <Col md = {9}>
-                                <Form.Control
-                                    plaintext = {true} 
-                                    readOnly = {true}
-                                    value = {formattedDateCreated}
-                                />
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button 
-                        variant = "info" 
-                        onClick = {closeViewDetailDialog}
-                    >
-                        Close
-                    </Button>   
-                </Modal.Footer>
-            </Modal>
-            <Modal
-                show = {showEditCourseForm}
-                backdrop = "static"
-                keyboard = {false}
-                size = "lg"
-            >
-                <Modal.Header>
-                    <Modal.Title>Edit Course</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form 
-                        id = "EditCourseForm"
-                        className = "pt-2 pr-5 pl-5 pb-0"
-                        onSubmit = {
-                            (event) => {
-                                editCourse (event).catch (
-                                        (error: unknown) => {
-                                            console.error (error);
-                                        }
-                                );
-                            }
-                        }
-                    >
-                        <Form.Group controlId = "CourseNameField">
-                            <Form.Label>
-                                Course Name:
-                            </Form.Label>
-                            <Form.Control
-                                type = "text"
-                                autoComplete = "on"
-                                autoFocus = {true}
-                                name = "courseNameField"
-                                pattern = "^[\p{L} .'-]+$"
-                                placeholder = "Name for the course ?"
-                                required = {true}
-                                spellCheck = {false}
-                                value = {course.courseName}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                            <Form.Text className = "text-muted">
-                                format: characters only !  
-                            </Form.Text>
-                        </Form.Group>
+                                            <td>
+                                                {item["dob"]}
+                                            </td>
 
-                        <Form.Group controlId = "DescriptionTextarea">
-                            <Form.Label>
-                                Description:
-                            </Form.Label>
-                            <Form.Control
-                                as = "textarea"
-                                autoComplete = "off"
-                                autoFocus = {false}
-                                name = "descriptionTextarea"
-                                placeholder = "Description for the course ?"
-                                required = {false}
-                                spellCheck = {true}
-                                rows = {5}
-                                value = {course.description}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                        </Form.Group>
+                                            <td>
+                                                {item["email"]}
+                                            </td>
 
-                        <Form.Group controlId = "CourseTypeDropdownList">
-                            <Form.Label>
-                                Course Type:
-                            </Form.Label>
-                            <Form.Control 
-                                as = "select" 
-                                name = "courseTypeDropdownList"
-                                autoFocus = {false}
-                                required = {true}
-                                value = {selectedCourseTypeID}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (
-                                            event
-                                        );
-                                    } 
-                                }
-                            >
-                                {courseTypeHolder.map (
-                                    (
-                                            courseType
-                                    ) => renderCourseTypeDropdownList (
-                                            courseType
-                                    )  
-                                )}
-                            </Form.Control>
-                        </Form.Group>
+                                            <td>
+                                                {item["gender"]}
+                                            </td>
 
-                        <Form.Group controlId = "CourseLevelDropdownList">
-                            <Form.Label>
-                                Course Level:
-                            </Form.Label>
-                            <Form.Control 
-                                as = "select" 
-                                name = "courseLevelDropdownList"
-                                autoFocus = {false}
-                                required = {true}
-                                value = {selectedCourseLevelID}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (
-                                            event
-                                        );
-                                    } 
-                                }
-                            >
-                                {courseLevelHolder.map (
-                                    (
-                                            courseLevel
-                                    ) => renderCourseLevelDropdownList (
-                                            courseLevel
-                                    )  
-                                )}
-                            </Form.Control>
-                        </Form.Group>
+                                            <td>
+                                                {item["job"]}
+                                            </td>
 
-                        <Form.Group controlId = "TuitionFeeField">
-                            <Form.Label>
-                                Tuition Fee (VND):
-                            </Form.Label>
-                            <Form.Control
-                                type = "number"
-                                autoComplete = "on"
-                                autoFocus = {false}
-                                name = "tuitionFeeField"
-                                placeholder = "Price of the course ?"
-                                required = {true}
-                                spellCheck = {false}
-                                min = {0}
-                                step = {500}
-                                value = {course.tuitionFee}
-                                onChange = {
-                                    (event) => {
-                                        handleChange (event);
-                                    }
-                                }
-                            />
-                            <Form.Text className = "text-muted">
-                                format: numbers only !  
-                            </Form.Text>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button 
-                        variant = "success" 
-                        type = "submit"
-                        form = "EditCourseForm" 
-                    >
-                        Save
-                    </Button>
-                    <Button 
-                        variant = "outline-secondary" 
-                        onClick = {closeEditCourseForm}
-                    >
-                        Cancel
-                    </Button>   
-                </Modal.Footer>
-            </Modal>
-            <main>
-                <Container>
-                    <Row className = "bg-white">
-                        <Col>
-                            <Breadcrumb>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/"}}
-                                >
-                                    Home
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/admin-console"}}
-                                >
-                                    Admin Console
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item active>
-                                    Manage Course Functions
-                                </Breadcrumb.Item>
-                            </Breadcrumb>
-                            <h1 className = "mb-3">
-                                <span className = "mr-3">
-                                    Manage Course
-                                </span>
-                                <Button 
-                                    variant = "success"
-                                    type = "button"
-                                    onClick = {openCreateCourseForm}
-                                >
-                                    Create New
-                                </Button>
-                            </h1>
-                            <Form>
-                                <Table responsive = "md" hover = {true}>
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                #
-                                            </th>
-                                            <th>
-                                                Course Name
-                                            </th>
-                                            <th>
-                                                Course Type
-                                            </th>
-                                            <th>
-                                                Course Level
-                                            </th>
-                                            <th>
-                                                Tuition Fee
-                                            </th>
-                                            <th>
-                                                Actions
-                                            </th>
+                                            <td>
+                                                {item["selfDescription"]}
+                                            </td>
+
+                                            <td className="text-center">
+                                                <span
+                                                    className="label label-success">
+                                                    {item["accountStatus"]}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                {item["dateCreated"]}
+                                            </td>
+
+                                            <td>
+                                                {item["lastLogin"]}
+                                            </td>
+
+                                            <td>
+                                                {item["lastModified"]}
+                                            </td>
+
+                                            <td className="text-center" id="action">
+                                                <Link to="/user_detail/studentID">
+                                                    <button type="button"
+                                                        className="btn btn-primary">
+                                                        <span className=
+                                                            "fa fa-pencil mr-5">
+                                                            View Detail
+                                                    </span>
+                                                    </button>
+                                                </Link>
+                                                &nbsp;
+                                                <Link to="/editStudentInfo/studentID">
+                                                    <button type="button"
+                                                        className="btn btn-warning">
+                                                        <span className=
+                                                            "fa fa-pencil mr-5">
+                                                            Edit
+                                                    </span>
+                                                    </button>
+                                                </Link>
+                                                &nbsp;
+                                                <Link to="/editStudentInfo/studentID">
+                                                    <button type="button"
+                                                        className="btn btn-warning">
+                                                        <span className=
+                                                            "fa fa-pencil mr-5">
+                                                            Delete
+                                                    </span>
+                                                    </button>
+                                                </Link>
+                                            </td>
+
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {courseHolder.map (
-                                            (
-                                                    course
-                                                    , index
-                                            ) => renderCourseTable (
-                                                    course
-                                                    , index
-                                                    , openViewDetailDialog
-                                                    , openEditCourseForm
-                                                    , handleDeleteCourse
-                                            )
-                                        )}
-                                    </tbody>
-                                </Table>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Container>
-            </main>
-            <footer>
-            </footer>
-        </Container>
+                                )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        // </div>
     );
 }

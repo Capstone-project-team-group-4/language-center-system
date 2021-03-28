@@ -18,6 +18,7 @@ export class User {
 	public dateCreated: Date;
 	public lastLogin: Date;
 	public lastModified: Date;
+    courseID: any;
 	
 	public constructor ();
 

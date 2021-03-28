@@ -83,46 +83,6 @@ export function ManageTeacherPage(): ReactElement {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* <tr>
-                                        <td></td>
-                                        <td>
-                                            <input type="text"
-                                                className="form-control" />
-                                        </td>
-                                        <td>
-                                            <input type="text"
-                                                className="form-control" />
-                                        </td>
-                                        <td>
-                                            <input type="text"
-                                                className="form-control" />
-                                        </td>
-                                        <td>
-                                            <input type="text"
-                                                className="form-control" />
-                                        </td>
-                                        <td>
-                                            <input type="text"
-                                                className="form-control" />
-                                        </td>
-                                        <td></td>
-                                        <td>
-                                            <select
-                                                className="form-control">
-                                                <option value="-1">
-                                                    Tất Cả
-                                                        </option>
-                                                <option value="0">
-                                                    Ẩn
-                                                        </option>
-                                                <option value="1">
-                                                    Kích Hoạt
-                                                        </option>
-                                            </select>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr> */}
                                 {user.map(
                                     (
                                         item

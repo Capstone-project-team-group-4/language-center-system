@@ -39,6 +39,7 @@ import { ViewProfilePage } from './page/ViewProfilePage';
 // import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
+import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -157,6 +158,11 @@ export function App (): ReactElement {
         <HomePage modalDialog = {modalDialog}/>
       </Route>
 
+      <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route>
+
       <Route path = "/sign-up-page">
         <SignUpPage
           dialogController = {dialogController}
@@ -198,7 +204,7 @@ export function App (): ReactElement {
       </ProtectedRoute>
 
       <ProtectedRoute
-        path = "/admin-console/managa-teacher-page"
+        path = "/admin-console/manage-teacher-page"
         securityContext = {adminPageSecurity}
         dialogController = {dialogController}
       >

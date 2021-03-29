@@ -1,0 +1,14 @@
+#grid {
+    background-color: white;
+}
+
+#table-cover {
+    margin: 0 auto;
+}
+
+#action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+

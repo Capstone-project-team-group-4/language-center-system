@@ -32,7 +32,7 @@ export function ManageTeacherPage(): ReactElement {
     console.log();
 
     return (
-        <div className="container" id="grid">
+        <div className="max-width" id="grid">
             <div className="text-center">
                 <h1>Manage teacher</h1>
                 <hr />
@@ -40,79 +40,76 @@ export function ManageTeacherPage(): ReactElement {
             <div className="row">
                 <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                     <button type="button" className="btn btn-primary">
-                        <span className=
-                            "fa fa-plus mr-5">
+                        <span className="fa fa-plus mr-5 ">
                         </span>
                                 Add teacher
                 </button>
-                    <div className="row mt-15" id="table-cover">
-                        <div className=
-                            "col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <table className="table table-bordered table-hover">
-                                <thead>
+                    <div className="row mt-15 row-eq-height" id="table-cover">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <table className="table table-fit table-light table-striped table-sm table-bordered table-hover table-responsive{-sm|-md|-lg|-xl|-xxl}">
+                                <thead className="thead-dark">
                                     <tr>
-
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             ID
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             User name
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             First name
                                         </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Middle name
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Last name
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Phone
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             DoB
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Email
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Gender
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Job
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Self description
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Account status
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Date created
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Last login
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Last modified
                                     </th>
 
-                                        <th className="text-center">
+                                        <th className="text-center text-nowrap">
                                             Action
                                     </th>
 
@@ -123,7 +120,7 @@ export function ManageTeacherPage(): ReactElement {
                                         (
                                             item
                                             , index
-                                        ) => <tr key={index}>
+                                        ) => <tr key={index} className="text-center text-nowrap">
 
                                                 <td>
                                                     {item["userID"]}
@@ -157,7 +154,6 @@ export function ManageTeacherPage(): ReactElement {
                                                     item["email"]}
                                                 </td>
 
-
                                                 <td>
                                                     {item["gender"]}
                                                 </td>
@@ -188,25 +184,25 @@ export function ManageTeacherPage(): ReactElement {
                                                     {item["lastModified"]}
                                                 </td>
 
-                                                <td className="text-center" id="action">
-                                                    <Link to="/user_detail/:studentID">
-                                                        <button type="button" className="btn btn-primary">
+                                                <td className="text-center text-nowrap" id="action">
+                                                <Link to={"/user_detail/" + item.userID}>
+                                                        <button type="button" className="btn btn-outline-info">
                                                             <span className="fa fa-pencil mr-5">
-                                                                View detail
+                                                                Detail
                                                     </span>
                                                         </button>
                                                     </Link>
-                                        &nbsp;
-                                        <Link to="/editStudentInfo/:studentID">
-                                                        <button type="button" className="btn btn-warning">
+                                                    &nbsp;
+                                                    <Link to={"/editStudentInfo/" + item.userID}>
+                                                        <button type="button" className="btn btn-outline-primary">
                                                             <span className="fa fa-pencil mr-5">
                                                                 Edit
-                                                    </span>
+                                                            </span>
                                                         </button>
                                                     </Link>
+                                                    &nbsp;
                                                     <Link to="/editTeacherInfo/:teacherID">
-                                                        <button type="button"
-                                                            className="btn btn-warning">
+                                                        <button type="button" className="btn btn-outline-danger">
                                                             <span className=
                                                                 "fa fa-pencil mr-5">
                                                                 Delete

@@ -37,9 +37,17 @@ export function TeacherSidebar (): ReactElement {
                 id = "SideBar" 
                 className = {`Side_Bar_Z_Index ${sideBarActivated}`}
             >
-                <ListGroup variant = "flush">
-                    <ListGroup.Item variant = "light" action = {true}>
-                        Cras justo odio
+                <ListGroup variant = "flush" onClick = {toggleSideBar}>
+                    <h5 className = "text-white ml-3">
+                        Examination
+                    </h5>
+                    <ListGroup.Item 
+                        variant = "light" 
+                        action = {true}
+                        as = {Link}
+                        to = {"/teacher-dashboard/manage-exam-question-page"}
+                    >
+                        Manage Multiple Choice Question
                     </ListGroup.Item>
                     <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
                     <ListGroup.Item>Morbi leo risus</ListGroup.Item>

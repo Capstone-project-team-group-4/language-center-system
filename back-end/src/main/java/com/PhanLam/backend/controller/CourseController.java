@@ -86,7 +86,7 @@ public class CourseController {
     
     @DeleteMapping ("/courses/{courseID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCourse (@PathVariable int courseID){
+    public void deleteCourseByID (@PathVariable int courseID){
         courseService.deleteCourseByID (courseID);
     }
     

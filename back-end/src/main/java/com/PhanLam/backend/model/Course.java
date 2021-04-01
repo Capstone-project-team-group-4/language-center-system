@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -150,8 +151,11 @@ public class Course implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Examination> examinationList;
-
-    public Course() {
+   
+    public Course (){
+        lessonList = new ArrayList<> ();
+        classList = new ArrayList<> ();
+        examinationList = new ArrayList<> ();
     }
 
     public Course(Integer courseID) {
@@ -161,12 +165,16 @@ public class Course implements Serializable {
     public Course (
             String courseName
             , String description
+            , CourseType courseType
+            , CourseLevel courseLevel
             , BigDecimal tuitionFee
             , Date dateCreated
             , Date lastModified
     ){
         this.courseName = courseName;
         this.description = description;
+        this.courseType = courseType;
+        this.courseLevel = courseLevel;
         this.tuitionFee = tuitionFee;
         this.dateCreated = dateCreated;
         this.lastModified = lastModified;

@@ -51,9 +51,14 @@ public class QuestionOption implements Serializable {
     @NotNull
     @Column(name = "IsCorrectAnswer", nullable = false)
     private boolean isCorrectAnswer;
-    @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private MultipleChoiceQuestion questionID;
+    
+    @JoinColumn (
+            name = "QuestionID"
+            , referencedColumnName = "QuestionID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    private MultipleChoiceQuestion multipleChoiceQuestion;
 
     public QuestionOption() {
     }
@@ -62,10 +67,14 @@ public class QuestionOption implements Serializable {
         this.optionID = optionID;
     }
 
-    public QuestionOption(Integer optionID, String content, boolean isCorrectAnswer) {
-        this.optionID = optionID;
+    public QuestionOption (
+            String content
+            , boolean isCorrectAnswer
+            , MultipleChoiceQuestion multipleChoiceQuestion
+    ){
         this.content = content;
         this.isCorrectAnswer = isCorrectAnswer;
+        this.multipleChoiceQuestion = multipleChoiceQuestion;
     }
 
     public Integer getOptionID() {
@@ -92,12 +101,12 @@ public class QuestionOption implements Serializable {
         this.isCorrectAnswer = isCorrectAnswer;
     }
 
-    public MultipleChoiceQuestion getQuestionID() {
-        return questionID;
+    public MultipleChoiceQuestion getMultipleChoiceQuestion (){
+        return multipleChoiceQuestion;
     }
 
-    public void setQuestionID(MultipleChoiceQuestion questionID) {
-        this.questionID = questionID;
+    public void setMultipleChoiceQuestion (MultipleChoiceQuestion multipleChoiceQuestion){
+        this.multipleChoiceQuestion = multipleChoiceQuestion;
     }
 
     @Override

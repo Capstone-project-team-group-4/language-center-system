@@ -151,7 +151,7 @@ export class CourseAPI {
         }
     }
 
-    public async deleteCourse (courseID: number): Promise<void> {
+    public async deleteCourseByID (courseID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
                     `/courses/${courseID}`

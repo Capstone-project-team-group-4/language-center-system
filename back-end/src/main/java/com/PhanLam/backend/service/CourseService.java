@@ -94,31 +94,25 @@ public class CourseService {
         }
         else {
             throw new InvalidRequestArgumentException (
-                    "The page number and page size number parameters "
+                    "The page index number and page size number parameters "
                     + "cannot be less than zero." + System.lineSeparator () 
-                    + "Parameter name: pageNumber, pageSize"
+                    + "Parameter name: pageIndex, pageSize"
             );
         }
     }
     
     public void updateCourse (int courseID, Course updatedCourse){
-        Optional <Course> nullableCourse;
-        Course course;
+        boolean courseExists;
         Date lastModified;
         
-        nullableCourse = courseRepository.findById (courseID);
-        if (nullableCourse.isPresent () == false){
-            throw new NotFoundException ("Course ID");
+        courseExists = courseRepository.existsById (courseID);
+        if (courseExists == false){
+            throw new NotFoundException ("Course");
         }
         else {
-            course = nullableCourse.get ();
-            course.setCourseName (updatedCourse.getCourseName ());
-            course.setDescription (updatedCourse.getDescription ());
-            course.setCourseType (updatedCourse.getCourseType ());
-            course.setCourseLevel (updatedCourse.getCourseLevel ());
-            course.setTuitionFee (updatedCourse.getTuitionFee ());
             lastModified = new Date ();
-            course.setLastModified (lastModified);
+            updatedCourse.setLastModified (lastModified);
+            courseRepository.save (updatedCourse);
         }
     }
     
@@ -128,7 +122,7 @@ public class CourseService {
         
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
-            throw new NotFoundException ("Course ID");
+            throw new NotFoundException ("Course");
         }
         else {
             course = nullableCourse.get ();
@@ -151,7 +145,7 @@ public class CourseService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("Student");
         }
         else {
             user = nullableUser.get ();
@@ -173,7 +167,7 @@ public class CourseService {
             else {
                 nullableCourse = courseRepository.findById (courseID);
                 if (nullableCourse.isPresent () == false){
-                    throw new NotFoundException ("Course ID");
+                    throw new NotFoundException ("Course");
                 }
                 else {
                     course = nullableCourse.get ();
@@ -220,7 +214,7 @@ public class CourseService {
         
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("Student");
         }
         else {
             user = nullableUser.get ();
@@ -242,7 +236,7 @@ public class CourseService {
             else {
                 nullableCourse = courseRepository.findById (courseID);
                 if (nullableCourse.isPresent () == false){
-                    throw new NotFoundException ("Course ID");
+                    throw new NotFoundException ("Course");
                 }
                 else {
                     course = nullableCourse.get ();

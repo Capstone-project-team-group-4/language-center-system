@@ -66,7 +66,7 @@ export function StudentDashboardPage(
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                 {courseList.map((course) => {
                                     return (
-                                        <Card style={{width: 250, marginRight: 20 }}>
+                                        <Card style={{width: 400, marginRight: 50 }}>
                                             <Card.Body>
                                                 <Card.Title>
                                                     {course.courseName}
@@ -76,8 +76,9 @@ export function StudentDashboardPage(
                                                     {course.description}
                                                     {/* {i.age} */}
                                                 </Card.Text>
-                                                <Button variant="primary" href="" style={{alignItems: 'stretch'}}>
-                                                    Detail</Button>
+                                                <Button variant="primary" href={"/student-dashboard-course/" + course.courseID} style={{alignItems: 'stretch'}}>
+                                                    Detail
+                                                </Button>
                                             </Card.Body>
                                         </Card>
                                     )

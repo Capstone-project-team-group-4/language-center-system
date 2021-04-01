@@ -41,11 +41,15 @@ export function StudentSidebar (): ReactElement {
                     <ListGroup.Item variant = "light" action = {true} href="\student-dashboard">
                         Dashboard
                     </ListGroup.Item>
-                    <ListGroup.Item>
+                    <ListGroup.Item variant = "light" action = {true} href="/student-dashboard-course/:courseID">
                         Course
                     </ListGroup.Item>
-                    <ListGroup.Item>Morbi leo risus</ListGroup.Item>
-                    <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
+                    <ListGroup.Item>
+                        Info
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                        Test
+                    </ListGroup.Item>
                 </ListGroup> 
             </nav>
         </div>

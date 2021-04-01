@@ -39,6 +39,7 @@ import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
+import { CourseDetailPage } from './page/student/CourseDetailPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -309,6 +310,10 @@ export function App(): ReactElement {
       <Route path = "/student-dashboard">
         <PageHeader logOut = {logOut}/>
         <StudentDashboardPage modalDialog = {modalDialog}/>
+      </Route>
+      <Route path = "/student-dashboard-course/:courseID">
+        <PageHeader logOut = {logOut}/>
+        <CourseDetailPage modalDialog = {modalDialog}/>
       </Route>
     </Switch>
   );

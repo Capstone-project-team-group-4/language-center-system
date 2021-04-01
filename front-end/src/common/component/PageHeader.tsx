@@ -20,13 +20,13 @@ export function PageHeader (props: PageHeaderProps): ReactElement {
                         Language Center
                     </Navbar.Brand>
                     <Nav className = "ml-auto mr-3">
-                        <Button 
+                        {/* <Button 
                             variant = "primary"
                             as = {Link}
                             to = {"/select-role-page"}
                         >
                             Switch role
-                        </Button>
+                        </Button> */}
                         <Button 
                             variant = "danger"
                             onClick = {props.logOut}

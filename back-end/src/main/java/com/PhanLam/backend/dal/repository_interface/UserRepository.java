@@ -6,6 +6,8 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.NotFoundException;
+import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +37,8 @@ public interface UserRepository extends JpaRepository <User, Integer> {
             String userName
             , Pageable pagingInformation
     ); 
+    
+    public boolean checkRoleTeacher(int userID);
     
     @Override
     public void delete (User user);

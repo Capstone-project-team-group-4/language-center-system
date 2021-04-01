@@ -6,9 +6,12 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
+import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
+import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.List;
@@ -34,13 +37,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     // Variables declaration:
-    private UserService userService; 
+    private UserService userService;
     private UserRepository userRepository;
 
-    public UserController (
-            UserService userService
-            , UserRepository userRepository
-    ){
+    public UserController(
+            UserService userService,
+            UserRepository userRepository
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -48,103 +51,103 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> listUsers() {
-        List listUsers = new ArrayList<> ();
+        List listUsers = new ArrayList<>();
         listUsers = userService.getAll();
         return listUsers;
     }
-    
-    @GetMapping ("/users:excluding-logged-in-user")
-    @ResponseStatus (HttpStatus.OK)
-    public List<User> getAllUserExcludingCurrentLoggedInUser (
-            Principal principal
-            , @RequestParam int pageNumber
-            , @RequestParam int pageSize
-    ){
+
+    @GetMapping("/users:excluding-logged-in-user")
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getAllUserExcludingCurrentLoggedInUser(
+            Principal principal,
+            @RequestParam int pageNumber,
+            @RequestParam int pageSize
+    ) {
         List<User> userHolder;
-        
-        userHolder = userService.getAllUserWithUserNameIsNot (
-                principal
-                , pageNumber
-                , pageSize
+
+        userHolder = userService.getAllUserWithUserNameIsNot(
+                principal,
+                pageNumber,
+                pageSize
         );
         return userHolder;
     }
-    
-    @GetMapping ("/students:excluding-student-in-the-course")
-    @ResponseStatus (HttpStatus.OK)
-    public DataPage<User> getAllStudentExcludingStudentInTheCourse (
-            @RequestParam int courseID
-            , @RequestParam int pageIndex
-            , @RequestParam int pageSize
-    ){
+
+    @GetMapping("/students:excluding-student-in-the-course")
+    @ResponseStatus(HttpStatus.OK)
+    public DataPage<User> getAllStudentExcludingStudentInTheCourse(
+            @RequestParam int courseID,
+            @RequestParam int pageIndex,
+            @RequestParam int pageSize
+    ) {
         DataPage<User> studentDataPage;
-        
-        studentDataPage = userService.getAllStudentWithCourseIDIsNot (
-                courseID
-                , pageIndex
-                , pageSize
+
+        studentDataPage = userService.getAllStudentWithCourseIDIsNot(
+                courseID,
+                pageIndex,
+                pageSize
         );
         return studentDataPage;
     }
-    
-    @GetMapping ("/students:are-in-the-course")
-    @ResponseStatus (HttpStatus.OK)
-    public DataPage<User> getAllStudentAreInTheCourse (
-            @RequestParam int courseID
-            , @RequestParam int pageIndex
-            , @RequestParam int pageSize
-    ){
+
+    @GetMapping("/students:are-in-the-course")
+    @ResponseStatus(HttpStatus.OK)
+    public DataPage<User> getAllStudentAreInTheCourse(
+            @RequestParam int courseID,
+            @RequestParam int pageIndex,
+            @RequestParam int pageSize
+    ) {
         DataPage<User> studentDataPage;
-        
-        studentDataPage = userService.getAllStudentByCourseID (
-                courseID
-                , pageIndex
-                , pageSize
+
+        studentDataPage = userService.getAllStudentByCourseID(
+                courseID,
+                pageIndex,
+                pageSize
         );
         return studentDataPage;
     }
-    
-    @PatchMapping ("/users/{userID}:disable")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void disableAnotherUser (
-            @PathVariable int userID
-            , Principal principal
-    ){
-        userService.disableUserByID (userID, principal);
+
+    @PatchMapping("/users/{userID}:disable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disableAnotherUser(
+            @PathVariable int userID,
+            Principal principal
+    ) {
+        userService.disableUserByID(userID, principal);
     }
-    
-    @PatchMapping ("/users/{userID}:enable")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void enableUser (
+
+    @PatchMapping("/users/{userID}:enable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enableUser(
             @PathVariable int userID
-    ){
-        userService.enableUserByID (userID);
+    ) {
+        userService.enableUserByID(userID);
     }
-    
-    @DeleteMapping ("/users/{userID}")
-    @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteAnotherUser (
-            @PathVariable int userID
-            , Principal principal
-    ){
-        userService.deleteUserByID (userID, principal);
+
+    @DeleteMapping("/users/{userID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAnotherUser(
+            @PathVariable int userID,
+            Principal principal
+    ) {
+        userService.deleteUserByID(userID, principal);
     }
-    
-    @GetMapping ("/logged-in-user")
-    @ResponseStatus (HttpStatus.OK)
-    public LoggedInUser getCurrentLoggedInUser (Principal principal){
+
+    @GetMapping("/logged-in-user")
+    @ResponseStatus(HttpStatus.OK)
+    public LoggedInUser getCurrentLoggedInUser(Principal principal) {
         LoggedInUser loggedInUser;
-        
-        loggedInUser = userService.getLoggedInUser (principal);
+
+        loggedInUser = userService.getLoggedInUser(principal);
         return loggedInUser;
     }
-    
+
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(
-            @RequestBody User user
-            , @PathVariable int userID
-    ){
+            @RequestBody User user,
+            @PathVariable int userID
+    ) {
         return userService.updateStudent(user, userID);
     }
 
@@ -153,12 +156,89 @@ public class UserController {
         User user = userService.getById(userID);
         return user;
     }
-    
+
+//    public boolean checkRoleTeacher(int userID) {
+//        Optional<User> nullableUser;
+//        User user;
+//        List<Role> roleHolder;
+//        int i;
+//        Role role;
+//        boolean thisUserIsStudent;
+//        nullableUser = userRepository.findById(userID);
+//        if (nullableUser.isPresent() == false) {
+//            throw new NotFoundException("Teacher");
+//        } else {
+//            user = nullableUser.get();
+//            roleHolder = user.getRoleList();
+//            thisUserIsStudent = false;
+//            for (i = 0; i < roleHolder.size(); i++) {
+//                role = roleHolder.get(i);
+//                if (role.getRoleName().equals("ROLE_TEACHER")) {
+//                    thisUserIsStudent = true;
+//                    break;
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//    @GetMapping("/getTeacher")
+//    public List<User> listTeacher() {
+//        Optional<User> nullableUser;
+//        List listUsers = new ArrayList<>();
+//        User user;
+//        List<Role> roleHolder;
+//        int i;
+//        Role role;
+//        boolean thisUserIsStudent;
+//        nullableUser = userRepository.findById(user.getUserID());
+//        if (nullableUser.isPresent() == false) {
+//            throw new NotFoundException("Teacher");
+//        } else {
+//            user = nullableUser.get();
+//            roleHolder = user.getRoleList();
+//            thisUserIsStudent = false;
+//            for (i = 0; i < roleHolder.size(); i++) {
+//                role = roleHolder.get(i);
+//                if (role.getRoleName().equals("ROLE_TEACHER")) {
+//                    thisUserIsStudent = true;
+//                    break;
+//                }
+//            }
+//            if (thisUserIsStudent == false) {
+//                throw new InvalidRequestArgumentException(
+//                        "This user is not a student." + System.lineSeparator()
+//                        + "Parameter name: userID"
+//                );
+//            } else {
+//                listUsers = userService.getAll();
+//            }
+//
+//            return listUsers;
+//        }
+//    }
+
+//    @GetMapping("/getTeacher/{userID}")
+//    public User getTeacherById(@PathVariable int userID) {
+////        User user;
+////        if (checkRoleTeacher(userID) == true) {
+////            user = userService.getById(userID);
+////            break;
+////        } 
+////        
+////        return user;
+//        User user;
+//        if (userRepository.checkRoleTeacher(userID) == true) {
+//            user = userService.getById(userID);
+//        }
+//
+//        return userID;
+//    }
+
     @GetMapping("/getUsers/{userID}")
     public Optional showAllUserByID(
-            @RequestBody User user
-            , @PathVariable int userID
-    ){
+            @RequestBody User user,
+            @PathVariable int userID
+    ) {
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
     }

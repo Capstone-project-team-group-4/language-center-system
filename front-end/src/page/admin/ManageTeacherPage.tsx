@@ -10,6 +10,17 @@ import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.scss';
+import './ManageTeacherPage.css';
+import { 
+    Breadcrumb
+    , Button
+    , Col
+    , Container
+    , Form
+    , Modal
+    , Row
+    , Table 
+} from "react-bootstrap";
 
 
 export function ManageTeacherPage(): ReactElement {
@@ -32,14 +43,14 @@ export function ManageTeacherPage(): ReactElement {
 
     console.log();
 
-    function deleteTeacher(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userID: number) {
-        event.preventDefault();
-        userAPI = new UserAPI();
-        userAPI.deleteAnotherUser(userID);
-        console.log(userID);
-    }
+    // function deleteTeacher(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userID: number) {
+    //     event.buttons;
+    //     userAPI = new UserAPI();
+    //     userAPI.deleteAnotherUser(userID);
+    //     console.log(userID);
+    // }
 
-    console.log(param.userID);
+    // console.log(param.userID);
     return (
         <div className="max-width" id="grid">
             <div className="text-center">
@@ -47,15 +58,17 @@ export function ManageTeacherPage(): ReactElement {
                 <hr />
             </div>
             <div className="row">
-                <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    <button type="button" className="btn btn-primary">
+                <div>
+                    {/* <button type="button" className="btn btn-primary">
                         <span className="fa fa-plus mr-5 ">
                         </span>
                                 Add teacher
-                </button>
-                    <div className="row mt-15 row-eq-height" id="table-cover">
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <table className="table table-fit table-light table-striped table-sm table-bordered table-hover table-responsive{-sm|-md|-lg|-xl|-xxl}">
+                </button> */}
+                    <div className="row mt-15" id="table-cover">
+
+                        <div className=
+                            "col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <table className="table table-responsive table-fit table-light table-striped table-bordered table-hover">
                                 <thead className="thead-dark">
                                     <tr>
                                         <th className="text-center text-nowrap">
@@ -83,39 +96,7 @@ export function ManageTeacherPage(): ReactElement {
                                     </th>
 
                                         <th className="text-center text-nowrap">
-                                            DoB
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Email
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Gender
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Job
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Self description
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
                                             Account status
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Date created
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Last login
-                                    </th>
-
-                                        <th className="text-center text-nowrap">
-                                            Last modified
                                     </th>
 
                                         <th className="text-center text-nowrap">
@@ -155,42 +136,10 @@ export function ManageTeacherPage(): ReactElement {
                                                     {item["phoneNumber"]}
                                                 </td>
 
-                                                <td>
-                                                    {item["dob"]}
-                                                </td>
-
-                                                <td>{
-                                                    item["email"]}
-                                                </td>
-
-                                                <td>
-                                                    {item["gender"]}
-                                                </td>
-
-                                                <td>
-                                                    {item["job"]}
-                                                </td>
-
-                                                <td>
-                                                    {item["selfDescription"]}
-                                                </td>
-
                                                 <td className="text-center">
                                                     <span className="label label-success">
                                                         {item["accountStatus"]}
                                                     </span>
-                                                </td>
-
-                                                <td>
-                                                    {item["dateCreated"]}
-                                                </td>
-
-                                                <td>
-                                                    {item["lastLogin"]}
-                                                </td>
-
-                                                <td>
-                                                    {item["lastModified"]}
                                                 </td>
 
                                                 <td className="text-center text-nowrap" id="action">
@@ -218,7 +167,7 @@ export function ManageTeacherPage(): ReactElement {
                                                     </span>
                                                         </button>
                                                     </Link> */}
-                                                    <button type="button" className="btn btn-outline-danger"
+                                                    {/* <button type="button" className="btn btn-outline-danger"
                                                         onClick={(event) => {
                                                             deleteTeacher(event, param.userID);
                                                         }}>
@@ -226,7 +175,7 @@ export function ManageTeacherPage(): ReactElement {
                                                             "fa fa-pencil mr-5">
                                                             Delete
                                                     </span>
-                                                    </button>
+                                                    </button> */}
                                                 </td>
 
                                             </tr>

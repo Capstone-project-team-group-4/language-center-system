@@ -44,10 +44,10 @@ export function StudentSidebar (): ReactElement {
                     <ListGroup.Item variant = "light" action = {true} href="/student-dashboard-course/:courseID">
                         Course
                     </ListGroup.Item>
-                    <ListGroup.Item>
+                    <ListGroup.Item variant = "light" action = {true}>
                         Info
                     </ListGroup.Item>
-                    <ListGroup.Item>
+                    <ListGroup.Item variant = "light" action = {true}>
                         Test
                     </ListGroup.Item>
                 </ListGroup> 

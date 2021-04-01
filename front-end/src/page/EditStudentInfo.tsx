@@ -173,12 +173,12 @@ export function EditStudentInfo(): ReactElement {
                                                     DOB:
                                             </Form.Label>
                                                 <Form.Control
-                                                    type="text"
+                                                    type="date"
                                                     autoComplete="on"
                                                     autoFocus={false}
                                                     name="dob"
                                                     id="dob"
-                                                    placeholder={user.dob.toString()}
+                                        
                                                     required={false}
                                                     spellCheck={false}
                                                     onChange={handleUserChange}

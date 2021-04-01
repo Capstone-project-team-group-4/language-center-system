@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -199,6 +200,7 @@ public class User implements Serializable {
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
     
     public User (){
+        multipleChoiceQuestionList = new ArrayList<>();
     }
 
     public User (

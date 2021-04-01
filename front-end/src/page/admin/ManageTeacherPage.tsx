@@ -5,7 +5,7 @@ import React, {
     , useEffect
     , useState
 } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,6 +16,7 @@ export function ManageTeacherPage(): ReactElement {
 
     let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI | undefined;
+    let param: any = useParams();
 
     useEffect(() => {
         userAPI = new UserAPI();
@@ -31,6 +32,14 @@ export function ManageTeacherPage(): ReactElement {
 
     console.log();
 
+    function deleteTeacher(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, userID: number) {
+        event.preventDefault();
+        userAPI = new UserAPI();
+        userAPI.deleteAnotherUser(userID);
+        console.log(userID);
+    }
+
+    console.log(param.userID);
     return (
         <div className="max-width" id="grid">
             <div className="text-center">
@@ -185,7 +194,7 @@ export function ManageTeacherPage(): ReactElement {
                                                 </td>
 
                                                 <td className="text-center text-nowrap" id="action">
-                                                <Link to={"/user_detail/" + item.userID}>
+                                                    <Link to={"/user_detail/" + item.userID}>
                                                         <button type="button" className="btn btn-outline-info">
                                                             <span className="fa fa-pencil mr-5">
                                                                 Detail
@@ -201,14 +210,23 @@ export function ManageTeacherPage(): ReactElement {
                                                         </button>
                                                     </Link>
                                                     &nbsp;
-                                                    <Link to="/editTeacherInfo/:teacherID">
+                                                    {/* <Link to="/editTeacherInfo/:teacherID">
                                                         <button type="button" className="btn btn-outline-danger">
                                                             <span className=
                                                                 "fa fa-pencil mr-5">
                                                                 Delete
                                                     </span>
                                                         </button>
-                                                    </Link>
+                                                    </Link> */}
+                                                    <button type="button" className="btn btn-outline-danger"
+                                                        onClick={(event) => {
+                                                            deleteTeacher(event, param.userID);
+                                                        }}>
+                                                        <span className=
+                                                            "fa fa-pencil mr-5">
+                                                            Delete
+                                                    </span>
+                                                    </button>
                                                 </td>
 
                                             </tr>

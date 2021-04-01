@@ -32,10 +32,16 @@ export function CourseDetailPage(
         <Container id="CourseDetailPage">
             {props.modalDialog}
             <main>
-                <StudentSidebar />
+                <StudentSidebar/>
                 <Container>
                     <Row>
                         <Col>
+                            <ListGroup horizontal>
+                                <ListGroup.Item>This</ListGroup.Item>
+                                <ListGroup.Item>ListGroup</ListGroup.Item>
+                                <ListGroup.Item>renders</ListGroup.Item>
+                                <ListGroup.Item>horizontally!</ListGroup.Item>
+                            </ListGroup>
                         </Col>
                     </Row>
                 </Container>

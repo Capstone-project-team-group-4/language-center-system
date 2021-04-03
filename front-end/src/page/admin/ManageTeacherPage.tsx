@@ -11,7 +11,7 @@ import { User } from "../../model/User";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.scss';
 import './ManageTeacherPage.css';
-import { 
+import {
     Breadcrumb
     , Button
     , Col
@@ -19,7 +19,7 @@ import {
     , Form
     , Modal
     , Row
-    , Table 
+    , Table
 } from "react-bootstrap";
 
 
@@ -31,7 +31,7 @@ export function ManageTeacherPage(): ReactElement {
 
     useEffect(() => {
         userAPI = new UserAPI();
-        userAPI.viewUser().then(
+        userAPI.viewTeacher().then(
             (res) => {
                 setUser(res.data);
             }
@@ -64,7 +64,9 @@ export function ManageTeacherPage(): ReactElement {
                         </span>
                                 Add teacher
                 </button> */}
-                    <div className="row mt-15" id="table-cover">
+                    <div className="row mt-15" id="table-cover" style={{
+                        marginLeft: '300px'
+                    }}>
 
                         <div className=
                             "col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -158,7 +160,7 @@ export function ManageTeacherPage(): ReactElement {
                                                             </span>
                                                         </button>
                                                     </Link>
-                                                    &nbsp;
+                                                    {/* &nbsp; */}
                                                     {/* <Link to="/editTeacherInfo/:teacherID">
                                                         <button type="button" className="btn btn-outline-danger">
                                                             <span className=

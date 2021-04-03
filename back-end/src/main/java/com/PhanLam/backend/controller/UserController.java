@@ -18,7 +18,11 @@ import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
 import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,9 +38,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Phan Lam
  */
 @RestController
+@Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserController {
 
     // Variables declaration:
+    @Autowired
     private UserService userService;
     private UserRepository userRepository;
 
@@ -152,7 +158,7 @@ public class UserController {
     }
 
     @GetMapping("/getStudent/{userID}")
-    public User getStudentById(@PathVariable int userID) {
+    public User getStudentById(@PathVariable Integer userID) {
         User user = userService.getById(userID);
         return user;
     }
@@ -181,32 +187,47 @@ public class UserController {
 //        }
 //        return true;
 //    }
-//    @GetMapping("/getTeacher")
-//    public List<User> listTeacher() {
+    
+    @GetMapping("/getTeacher")
+    public List<User> listTeacher() {
+        Role teacherRole = new Role(3, "ROLE_TEACHER");
+        List<User> teacherUserList = new ArrayList<>();
+        List<User> userList = userRepository.findAll();
+        for (User user : userList) {
+            List<Role> roleList = user.getRoleList();
+            if (roleList.contains(teacherRole)) {
+                teacherUserList.add(user);
+            }
+        }
+        return teacherUserList;
+        
+        
 //        Optional<User> nullableUser;
 //        List listUsers = new ArrayList<>();
-//        User user;
+//        User user = new User();
+//        int userID;
+//        userID = user.getUserID();
 //        List<Role> roleHolder;
 //        int i;
 //        Role role;
-//        boolean thisUserIsStudent;
-//        nullableUser = userRepository.findById(user.getUserID());
+//        boolean thisUserIsTeacher;
+//        nullableUser = userRepository.findUserById(userID);
 //        if (nullableUser.isPresent() == false) {
 //            throw new NotFoundException("Teacher");
 //        } else {
 //            user = nullableUser.get();
 //            roleHolder = user.getRoleList();
-//            thisUserIsStudent = false;
+//            thisUserIsTeacher = false;
 //            for (i = 0; i < roleHolder.size(); i++) {
 //                role = roleHolder.get(i);
 //                if (role.getRoleName().equals("ROLE_TEACHER")) {
-//                    thisUserIsStudent = true;
+//                    thisUserIsTeacher = true;
 //                    break;
 //                }
 //            }
-//            if (thisUserIsStudent == false) {
+//            if (thisUserIsTeacher == false) {
 //                throw new InvalidRequestArgumentException(
-//                        "This user is not a student." + System.lineSeparator()
+//                        "This user is not a teacher." + System.lineSeparator()
 //                        + "Parameter name: userID"
 //                );
 //            } else {
@@ -215,24 +236,8 @@ public class UserController {
 //
 //            return listUsers;
 //        }
-//    }
-
-//    @GetMapping("/getTeacher/{userID}")
-//    public User getTeacherById(@PathVariable int userID) {
-////        User user;
-////        if (checkRoleTeacher(userID) == true) {
-////            user = userService.getById(userID);
-////            break;
-////        } 
-////        
-////        return user;
-//        User user;
-//        if (userRepository.checkRoleTeacher(userID) == true) {
-//            user = userService.getById(userID);
-//        }
-//
-//        return userID;
-//    }
+    }
+    
 
     @GetMapping("/getUsers/{userID}")
     public Optional showAllUserByID(

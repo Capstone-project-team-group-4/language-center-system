@@ -358,6 +358,28 @@ export class UserAPI {
             return Promise.reject<AxiosResponse>(error);
         }
     }
+
+    public async viewTeacher (): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getTeacher`
+            );
+            this.typeGuardian = new TypeGuard();
+            if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+                return this.serverResponse;
+            }
+            else {
+                throw new Error("This server response is not valid !");
+            }
+        }
+        catch (error) {
+            console.error(error.toJSON());
+            return Promise.reject<AxiosResponse>(error);
+        }
+    }
+
     public async viewUser (): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance();

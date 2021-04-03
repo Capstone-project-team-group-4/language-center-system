@@ -301,7 +301,7 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
     
-    public User getById(int userID){
+    public User getById(Integer userID){
         return userRepository.findById(userID).orElseThrow();
     }
     

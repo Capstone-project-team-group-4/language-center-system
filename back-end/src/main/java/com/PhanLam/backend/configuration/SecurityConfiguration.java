@@ -132,13 +132,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
                 
+                .antMatchers (HttpMethod.GET, "/getTeacher/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/getTeacher")
+                        .permitAll()
+                .antMatchers (HttpMethod.GET, "/getTeacher*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/getTeacher/*")
+                        .hasRole ("ADMIN")
+                
                 .antMatchers (HttpMethod.GET, "/students*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/students*")
                         .hasRole ("ADMIN")
                 
                 .antMatchers (HttpMethod.GET, "/getStudent/*")
-                        .hasRole ("ADMIN")
+//                        .hasRole ("ADMIN")
+                .permitAll()
                 
                 .antMatchers (HttpMethod.POST, "/courses")
                         .hasRole ("ADMIN")

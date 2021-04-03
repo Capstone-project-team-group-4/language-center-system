@@ -5,6 +5,7 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -50,6 +51,7 @@ public class SpareTimeRegister implements Serializable {
     private Date spareTime;
     @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @JsonIgnore
     private User userID;
 
     public SpareTimeRegister (){

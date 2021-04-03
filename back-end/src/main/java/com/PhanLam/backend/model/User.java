@@ -150,6 +150,7 @@ public class User implements Serializable {
     private List<Course> courseList;
     
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ClassSession> classList;
     
     @JsonIgnore
@@ -176,11 +177,13 @@ public class User implements Serializable {
     )
     private List<Role> roleList;
     
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.EAGER)
     private List<SpareTimeRegister> spareTimeRegisterList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<StudentScore> studentScoreList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ClassSession> classList1;  
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)

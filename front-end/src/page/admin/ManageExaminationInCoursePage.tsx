@@ -18,11 +18,9 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { CourseAPI } from "../../common/service/CourseAPI";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeConvert } from "../../common/service/TypeConvert";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { Course } from "../../model/Course";
 import { Examination } from "../../model/Examination";
 
 interface ManageExaminationInCoursePageUrlParameter {

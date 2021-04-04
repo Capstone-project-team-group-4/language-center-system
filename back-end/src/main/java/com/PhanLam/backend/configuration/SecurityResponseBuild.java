@@ -9,7 +9,6 @@ package com.PhanLam.backend.configuration;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www
@@ -27,10 +26,10 @@ public class SecurityResponseBuild extends BasicAuthenticationEntryPoint {
     // Variables declaration:
     private HandlerExceptionResolver exceptionResolver;
     
-    @Autowired
-    @Qualifier ("handlerExceptionResolver")
-    public void setExceptionResolver (
-            HandlerExceptionResolver exceptionResolver
+    public SecurityResponseBuild (
+            @Qualifier (
+                    "handlerExceptionResolver"
+            ) HandlerExceptionResolver exceptionResolver
     ){
         this.exceptionResolver = exceptionResolver;
     }

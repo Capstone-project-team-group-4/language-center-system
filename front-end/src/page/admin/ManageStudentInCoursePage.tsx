@@ -77,58 +77,7 @@ function renderStudentTable (
     );
 }
 
-function renderStudentInTheCourseTable (
-    user: User
-    , index: number
-    , handleRemoveAStudentFromCourse: (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ) => void 
-): ReactElement {
-    return (
-        <tr key = {user.userID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {user.userID}
-            </td>
-            <td>
-                {`${
-                    user.firstName
-                } ${
-                    user.middleName
-                } ${
-                    user.lastName
-                }`}
-            </td>
-            <td>
-                {user.phoneNumber}
-            </td>
-            <td>
-                {user.email}
-            </td>
-            <td>
-                {user.userName}
-            </td>
-            <td>
-                <Button 
-                    variant = "danger"
-                    type = "button"
-                    value = {user.userID}
-                    onClick = {
-                        (event) => {
-                            handleRemoveAStudentFromCourse (event);
-                        }
-                    }
-                >
-                    Remove
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
-interface UrlParameter {
+interface ManageStudentInCoursePageUrlParameter {
     courseID: string;
 }
 
@@ -151,7 +100,7 @@ export function ManageStudentInCoursePage (
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
-    let courseID = useParams<UrlParameter> ().courseID;
+    let courseID = useParams<ManageStudentInCoursePageUrlParameter> ().courseID;
     let button: HTMLButtonElement | undefined;
     let courseAPI: CourseAPI;
     let [studentInTheCourseHolder, setStudentInTheCourseHolder] 
@@ -420,14 +369,14 @@ export function ManageStudentInCoursePage (
                                     linkProps = {
                                         {
                                             to: "/admin-console"
-                                            + "/manage-course-page"
+                                            + "/manage-things-in-course-page"
                                         }
                                     }
                                 >
-                                    Manage Course Functions
+                                    Manage Things In Course
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage Student In Course Functions
+                                    Manage Student In Course
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">
@@ -488,5 +437,56 @@ export function ManageStudentInCoursePage (
             <footer>
             </footer>
         </Container>
+    );
+}
+
+function renderStudentInTheCourseTable (
+        user: User
+        , index: number
+        , handleRemoveAStudentFromCourse: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+): ReactElement {
+    return (
+        <tr key = {user.userID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {user.userID}
+            </td>
+            <td>
+                {`${
+                    user.firstName
+                } ${
+                    user.middleName
+                } ${
+                    user.lastName
+                }`}
+            </td>
+            <td>
+                {user.phoneNumber}
+            </td>
+            <td>
+                {user.email}
+            </td>
+            <td>
+                {user.userName}
+            </td>
+            <td>
+                <Button 
+                    variant = "danger"
+                    type = "button"
+                    value = {user.userID}
+                    onClick = {
+                        (event) => {
+                            handleRemoveAStudentFromCourse (event);
+                        }
+                    }
+                >
+                    Remove
+                </Button>
+            </td>
+        </tr>
     );
 }

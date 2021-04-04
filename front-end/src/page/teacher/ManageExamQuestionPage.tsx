@@ -253,7 +253,7 @@ export function ManageExamQuestionPage (
                 );
                 props.dialogController.setDialogType ("inform");
                 props.dialogController.setShowDialog (true);
-                loadQuizTable ();
+                await loadQuizTable ();
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
@@ -301,7 +301,7 @@ export function ManageExamQuestionPage (
                 );
                 props.dialogController.setDialogType ("inform");
                 props.dialogController.setShowDialog (true);
-                loadQuizTable ();
+                await loadQuizTable ();
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
@@ -339,7 +339,7 @@ export function ManageExamQuestionPage (
     async function executeQuizDeletion (): Promise<void> {
         try {
             await quizAPI.deleteQuizByQuestionID (pendingQuestionID);
-            loadQuizTable ();
+            await loadQuizTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){

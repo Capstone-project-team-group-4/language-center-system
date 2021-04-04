@@ -150,7 +150,7 @@ export function DisableOrDeleteAccountPage (
         button = event.target as HTMLButtonElement;
         try {
             await userAPI.enableUser (Number (button.value));
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -176,7 +176,7 @@ export function DisableOrDeleteAccountPage (
             await userAPI.disableAnotherUser (
                     pendingUserID
             );
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -214,7 +214,7 @@ export function DisableOrDeleteAccountPage (
     async function executeUserDeletion (): Promise<void> {
         try {
             await userAPI.deleteAnotherUser (pendingUserID);
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){

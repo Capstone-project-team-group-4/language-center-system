@@ -35,7 +35,7 @@ export class Course {
             this.description = "";
             this.courseType = new CourseType ();
             this.courseLevel = new CourseLevel ();
-            this.tuitionFee = 0;
+            this.tuitionFee = NaN;
             this.dateCreated = new Date (0);
             this.lastModified = new Date (0);
         }

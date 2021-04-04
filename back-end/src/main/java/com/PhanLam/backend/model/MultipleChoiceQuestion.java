@@ -74,7 +74,18 @@ public class MultipleChoiceQuestion implements Serializable {
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
-    @ManyToMany (mappedBy = "multipleChoiceQuestionList", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @ManyToMany (
+            mappedBy = "multipleChoiceQuestionList"
+            , cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY
+    )
     private List<Examination> examinationList;
     
     @JsonIgnore

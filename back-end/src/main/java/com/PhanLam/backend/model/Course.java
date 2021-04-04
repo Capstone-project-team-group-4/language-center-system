@@ -146,7 +146,7 @@ public class Course implements Serializable {
     @OneToMany (
             cascade = CascadeType.ALL
             , orphanRemoval = true
-            , mappedBy = "courseID"
+            , mappedBy = "course"
             , fetch = FetchType.LAZY
     )
     private List<Examination> examinationList;

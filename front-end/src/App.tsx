@@ -39,6 +39,12 @@ import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
+import { 
+  ManageThingsInCoursePage 
+} from './page/admin/ManageThingsInCoursePage';
+import { 
+  ManageExaminationInCoursePage 
+} from './page/admin/ManageExaminationInCoursePage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -226,7 +232,7 @@ export function App (): ReactElement {
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
+        <PageHeader logOut = {logOut} />
         <CreateAccountPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
@@ -238,7 +244,7 @@ export function App (): ReactElement {
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
+        <PageHeader logOut = {logOut} />
         <DisableOrDeleteAccountPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
@@ -247,13 +253,13 @@ export function App (): ReactElement {
 
       <ProtectedRoute 
         path = {
-          "/admin-console/manage-course-page"
+          "/admin-console/manage-things-in-course-page"
           + "/courses/:courseID/students"
         }
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
+        <PageHeader logOut = {logOut} />
         <ManageStudentInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
@@ -261,24 +267,51 @@ export function App (): ReactElement {
       </ProtectedRoute>
       
       <ProtectedRoute 
+        path = {
+          "/admin-console/manage-things-in-course-page"
+          + "/courses/:courseID/examinations"
+        }
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <ManageExaminationInCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/admin-console/manage-things-in-course-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <ManageThingsInCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
         path = "/admin-console/manage-course-page"
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
+        <PageHeader logOut = {logOut} />
         <ManageCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
-      
+
       <ProtectedRoute 
         path = "/admin-console"
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
-        <AdminConsolePage modalDialog = {modalDialog}/>
+        <PageHeader logOut = {logOut} />
+        <AdminConsolePage modalDialog = {modalDialog} />
       </ProtectedRoute>
 
       <ProtectedRoute
@@ -297,17 +330,21 @@ export function App (): ReactElement {
         securityContext = {teacherPageSecurity}
         dialogController = {dialogController} 
       >
-        <PageHeader logOut = {logOut}/>
+        <PageHeader logOut = {logOut} />
         <ManageExamQuestionPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
-
-      <Route path = "/teacher-dashboard">
-        <PageHeader logOut = {logOut}/>
-        <TeacherDashboardPage modalDialog = {modalDialog}/>
-      </Route>
+      
+      <ProtectedRoute 
+        path = "/teacher-dashboard"
+        securityContext = {teacherPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <TeacherDashboardPage modalDialog = {modalDialog} />
+      </ProtectedRoute>
     </Switch>
   );
 }

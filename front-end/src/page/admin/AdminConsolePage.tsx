@@ -68,18 +68,6 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                             >
                                                 Disable or delete user account
                                             </Button>
-                                            <Button 
-                                                variant = "success"
-                                                block = {true}
-                                                as = {Link}
-                                                to = {
-                                                    "/admin-console" 
-// eslint-disable-next-line max-len
-                                                    + "/editStudentInfo/4"
-                                                }
-                                            >
-                                                edit
-                                            </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>

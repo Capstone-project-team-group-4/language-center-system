@@ -9,6 +9,7 @@ import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.LessonRepository;
 import com.PhanLam.backend.model.Lesson;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,10 +18,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LessonService {
+    @Autowired
     private LessonRepository lessonRepository;
+    @Autowired
     private CourseRepository courseRepository;
     
-    public List<Lesson> getAllLessonByCourseID(){
-        return lessonRepository.findAll();
+    public List<Lesson> getAllLessonByCourseID(Integer courseID){
+        return lessonRepository.findAllByCourseID(courseID);
+    }
+    
+    public Lesson getOne(Integer lessonID){
+        return lessonRepository.findByID(lessonID);
     }
 }

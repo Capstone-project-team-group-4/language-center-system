@@ -10,6 +10,7 @@ import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.service.CourseService;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -98,7 +99,7 @@ public class CourseController {
     
     @GetMapping("/courses/{courseID}")
     @ResponseStatus(HttpStatus.OK)
-    public Course getCourseById(@PathVariable("courseID") Integer courseID){
+    public Optional<Course> getCourseById(@PathVariable("courseID") Integer courseID){
         return courseService.getCourseById(courseID);
     }
 }

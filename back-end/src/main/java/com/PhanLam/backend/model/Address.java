@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author roboc
+ * @author Phan Lam
  */
 @Entity
 @Table(name = "Address", catalog = "LanguageCenterDB", schema = "dbo")
@@ -32,12 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a"),
     @NamedQuery(name = "Address.findByAddressID", query = "SELECT a FROM Address a WHERE a.addressID = :addressID"),
-    @NamedQuery(name = "Address.findByCity", query = "SELECT a FROM Address a WHERE a.city = :city"),
-    @NamedQuery(name = "Address.findByDistrict", query = "SELECT a FROM Address a WHERE a.district = :district"),
-    @NamedQuery(name = "Address.findByWard", query = "SELECT a FROM Address a WHERE a.ward = :ward"),
-    @NamedQuery(name = "Address.findByStreet", query = "SELECT a FROM Address a WHERE a.street = :street"),
-    @NamedQuery(name = "Address.findByApartmentNumber", query = "SELECT a FROM Address a WHERE a.apartmentNumber = :apartmentNumber"),
-    @NamedQuery(name = "Address.findByCountry", query = "SELECT a FROM Address a WHERE a.country = :country")})
+    @NamedQuery(name = "Address.findByCity", query = "SELECT a FROM Address a WHERE a.city = :city")})
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -85,16 +80,6 @@ public class Address implements Serializable {
 
     public Address(Integer addressID) {
         this.addressID = addressID;
-    }
-
-    public Address(Integer addressID, String city, String district, String ward, String street, String apartmentNumber, String country) {
-        this.addressID = addressID;
-        this.city = city;
-        this.district = district;
-        this.ward = ward;
-        this.street = street;
-        this.apartmentNumber = apartmentNumber;
-        this.country = country;
     }
 
     public Integer getAddressID() {

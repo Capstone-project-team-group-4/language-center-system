@@ -37,9 +37,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Override
     public void delete (Course course);
     
-    @Query("select c from Course c")
+    @Override
     public List<Course> findAll();
     
-    @Query("select c from Course c where c.courseID = ?1")
-    public Course findCourseById(Integer courseID);
 }

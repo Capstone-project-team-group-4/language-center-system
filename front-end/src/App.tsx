@@ -40,6 +40,7 @@ import { ViewProfilePage } from './page/ViewProfilePage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
+import { LessonDetailPage } from './page/student/LessonDetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 
 export interface DataPage<T> {
@@ -318,6 +319,10 @@ export function App (): ReactElement {
       <Route path = "/student-dashboard-course/:courseID">
         <PageHeader logOut = {logOut}/>
         <CourseDetailPage modalDialog = {modalDialog}/>
+      </Route>
+      <Route path = "/student-dashboard-lesson/:lessonID">
+        <PageHeader logOut = {logOut}/>
+        <LessonDetailPage modalDialog = {modalDialog}/>
       </Route>
     </Switch>
   );

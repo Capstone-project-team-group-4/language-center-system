@@ -33,7 +33,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -54,7 +53,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery (name = "Course.findByDateCreated", query = "SELECT c FROM Course c WHERE c.dateCreated = :dateCreated"),
     @NamedQuery (name = "Course.findByLastModified", query = "SELECT c FROM Course c WHERE c.lastModified = :lastModified")})
 public class Course implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -219,16 +218,16 @@ public class Course implements Serializable {
     public void setCourseLevel (CourseLevel courseLevel){
         this.courseLevel = courseLevel;
     }
-    
-    public BigDecimal getTuitionFee (){
+
+    public BigDecimal getTuitionFee() {
         return tuitionFee;
     }
 
     public void setTuitionFee(BigDecimal tuitionFee) {
         this.tuitionFee = tuitionFee;
     }
-    
-    public Date getDateCreated (){
+
+    public Date getDateCreated() {
         return dateCreated;
     }
 
@@ -268,23 +267,6 @@ public class Course implements Serializable {
         this.classList = classList;
     }
 
-//    public CourseLevel getLevelID() {
-//        return levelID;
-//    }
-//
-//    public void setLevelID(CourseLevel levelID) {
-//        this.levelID = levelID;
-//    }
-//
-//    public CourseType getTypeID() {
-//        return typeID;
-//    }
-//
-//    public void setTypeID(CourseType typeID) {
-//        this.typeID = typeID;
-//    }
-
-    @XmlTransient
     public List<Examination> getExaminationList() {
         return examinationList;
     }

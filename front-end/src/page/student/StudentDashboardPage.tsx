@@ -17,7 +17,7 @@ interface StudentDashboardPageProps {
 export function StudentDashboardPage(
     props: StudentDashboardPageProps
 ): ReactElement {
-    let a: number[] = [14, 16, 17]
+    let a: number[] = [17, 16, 22]
     let [course, setCourse] = useState<Course>(new Course());
     let [courseList, setCourseList] = useState<Course[]>([]);
     let courseAPI = new CourseAPI();
@@ -36,7 +36,7 @@ export function StudentDashboardPage(
                 )
             )
         })
-        courseAPI.getOneCourse(14).then(
+        courseAPI.getOneCourse(17).then(
             (res) => {
                 setCourse(res.data);
                 // console.log(student.userName);

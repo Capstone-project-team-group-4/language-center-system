@@ -272,7 +272,7 @@ public class CourseService {
         return courseRepository.findAll();
     }
     
-    public Course getCourseById(Integer courseID) {
-        return courseRepository.findCourseById(courseID);
+    public Optional<Course> getCourseById(Integer courseID) {
+        return courseRepository.findById(courseID);
     }
 }

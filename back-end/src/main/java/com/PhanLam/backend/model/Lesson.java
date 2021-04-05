@@ -5,11 +5,10 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,7 +26,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -46,7 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lesson.findByContentURI", query = "SELECT l FROM Lesson l WHERE l.contentURI = :contentURI"),
     @NamedQuery(name = "Lesson.findByType", query = "SELECT l FROM Lesson l WHERE l.type = :type"),
     @NamedQuery(name = "Lesson.findByDuration", query = "SELECT l FROM Lesson l WHERE l.duration = :duration"),
-    @NamedQuery(name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated")})
+    @NamedQuery(name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated"),
+    @NamedQuery(name = "Lesson.findByLastModified", query = "SELECT l FROM Lesson l WHERE l.lastModified = :lastModified")})
 public class Lesson implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -82,14 +80,14 @@ public class Lesson implements Serializable {
     @Column(name = "DateCreated", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(mappedBy = "lessonID", fetch = FetchType.LAZY)
-    private List<Document> documentList;
+    @Column(name = "LastModified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
     @JoinColumn(name = "CourseID", referencedColumnName = "CourseID", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Course courseID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lessonID", fetch = FetchType.LAZY)
-    private List<HomeWork> homeWorkList;
-
+    
     public Lesson() {
     }
 
@@ -105,6 +103,20 @@ public class Lesson implements Serializable {
         this.duration = duration;
         this.dateCreated = dateCreated;
     }
+
+    public Lesson(Integer lessonID, String lessonName, String description, String contentURI, String type, int duration, Date dateCreated, Date lastModified, Course courseID) {
+        this.lessonID = lessonID;
+        this.lessonName = lessonName;
+        this.description = description;
+        this.contentURI = contentURI;
+        this.type = type;
+        this.duration = duration;
+        this.dateCreated = dateCreated;
+        this.lastModified = lastModified;
+        this.courseID = courseID;
+    }
+    
+    
 
     public Integer getLessonID() {
         return lessonID;
@@ -162,13 +174,12 @@ public class Lesson implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    @XmlTransient
-    public List<Document> getDocumentList() {
-        return documentList;
+    public Date getLastModified() {
+        return lastModified;
     }
 
-    public void setDocumentList(List<Document> documentList) {
-        this.documentList = documentList;
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     public Course getCourseID() {
@@ -177,15 +188,6 @@ public class Lesson implements Serializable {
 
     public void setCourseID(Course courseID) {
         this.courseID = courseID;
-    }
-
-    @XmlTransient
-    public List<HomeWork> getHomeWorkList() {
-        return homeWorkList;
-    }
-
-    public void setHomeWorkList(List<HomeWork> homeWorkList) {
-        this.homeWorkList = homeWorkList;
     }
 
     @Override

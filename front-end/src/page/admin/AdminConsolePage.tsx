@@ -40,7 +40,7 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                         as = {Card.Header} 
                                         eventKey = "0"
                                     >
-                                        User Management
+                                        User Account Management
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey = "0">
                                         <Card.Body>

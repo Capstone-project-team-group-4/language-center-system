@@ -140,7 +140,10 @@ public class UserService {
                             .leftJoin (student.courseList, course)
                         .where (
                                 role.roleName.eq ("ROLE_STUDENT")
-                                .and (course.courseID.ne (courseID))
+                                .and (
+                                        course.courseID.ne (courseID)
+                                        .or (course.courseID.isNull ())
+                                )
                         )
                         .orderBy (
                                 student.firstName.asc ()

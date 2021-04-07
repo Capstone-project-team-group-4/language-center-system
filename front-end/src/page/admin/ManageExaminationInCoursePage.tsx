@@ -30,6 +30,8 @@ interface ManageExaminationInCoursePageUrlParameter {
 interface ManageExaminationInCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
+    typeConverter: TypeConvert;  
 }
 
 export function ManageExaminationInCoursePage (
@@ -46,11 +48,8 @@ export function ManageExaminationInCoursePage (
     let [formattedMinStartTime, setFormattedMinStartTime] 
         = useState<string> ("");
     let [formattedStartTime, setFormattedStartTime] = useState<string> ("");
-    let typeConverter: TypeConvert;
     let courseID 
         = useParams<ManageExaminationInCoursePageUrlParameter> ().courseID;
-    let examAPI: ExaminationAPI;
-    let typeGuardian: TypeGuard;
     let examDataPage: DataPage<Examination> | undefined;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
@@ -72,9 +71,7 @@ export function ManageExaminationInCoursePage (
     let newExam: Examination | undefined;
     let [pendingExamID, setPendingExamID] = useState<number> (0);
 
-    typeConverter = new TypeConvert ();
-    examAPI = new ExaminationAPI ();
-    typeGuardian = new TypeGuard ();
+    let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
 
     useEffect (
         () => {
@@ -86,7 +83,7 @@ export function ManageExaminationInCoursePage (
             minStartTime = new Date ();
             minStartTime.setDate (minStartTime.getDate () + 7);
             setFormattedMinStartTime (
-                    typeConverter.convertDateTimeToString (minStartTime)
+                    props.typeConverter.convertDateTimeToString (minStartTime)
             );
         }
         , []
@@ -96,7 +93,7 @@ export function ManageExaminationInCoursePage (
         newExam = new Examination ();  
         setExam (newExam);
         setFormattedStartTime (
-                typeConverter.convertDateTimeToString (
+                props.typeConverter.convertDateTimeToString (
                         newExam.startTime
                 )
         );
@@ -148,7 +145,7 @@ export function ManageExaminationInCoursePage (
                 setExam (examSample);
                 rawDate = new Date (examSample.startTime);
                 setFormattedStartTime (
-                        typeConverter.convertDateTimeToString (
+                        props.typeConverter.convertDateTimeToString (
                                 rawDate
                         )
                 );
@@ -180,7 +177,7 @@ export function ManageExaminationInCoursePage (
             case "startTimePicker":
                 updatedExam.startTime = new Date (htmlElement.value);
                 setFormattedStartTime (
-                        typeConverter.convertDateTimeToString (
+                        props.typeConverter.convertDateTimeToString (
                                 updatedExam.startTime
                         )
                 );
@@ -214,7 +211,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -248,7 +245,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -287,7 +284,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -316,7 +313,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`

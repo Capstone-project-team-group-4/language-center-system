@@ -20,11 +20,11 @@ import { TypeGuard } from './common/service/TypeGuard';
 import { LoggedInUser } from './model/LoggedInUser';
 import { AdminConsolePage } from './page/admin/AdminConsolePage';
 import { CreateAccountPage } from './page/admin/CreateAccountPage';
-import { HomePage } from './page/HomePage';
+import { HomePage } from './page/home_page/HomePage';
 import { EditStudentInfo } from './page/EditStudentInfo';
-import { LogInPage } from './page/LogInPage';
+import { LogInPage } from './page/log_in_page/LogInPage';
 import { SelectRolePage } from './page/select_role_page/SelectRolePage';
-import { SignUpPage } from './page/SignUpPage';
+import { SignUpPage } from './page/sign_up_page/SignUpPage';
 import { History } from '../node_modules/@types/history';
 import {
   DisableOrDeleteAccountPage
@@ -36,7 +36,6 @@ import {
 import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
-import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { DetailPage } from './page/DetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 import { 
@@ -45,6 +44,7 @@ import {
 import { 
   ManageExaminationInCoursePage 
 } from './page/admin/ManageExaminationInCoursePage';
+import { TypeConvert } from './common/service/TypeConvert';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -68,13 +68,12 @@ export function App (): ReactElement {
   let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;
   let teacherPageSecurity: SecurityContext | undefined;  
-  let logOutAPI: LogOutAPI;
-  let typeGuardian: TypeGuard;
   let history: History<unknown>;
   let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean> (false);
+  let [typeGuardian] = useState<TypeGuard> (new TypeGuard ());
+  let [typeConverter] = useState<TypeConvert> (new TypeConvert ());
 
-  logOutAPI = new LogOutAPI ();
-  typeGuardian = new TypeGuard ();
+  let [logOutAPI] = useState<LogOutAPI> (new LogOutAPI ());
   history = useHistory ();
 
   function handleCloseDialog (): void {
@@ -167,6 +166,7 @@ export function App (): ReactElement {
         <SignUpPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
         />
       </Route>
 
@@ -176,32 +176,9 @@ export function App (): ReactElement {
           modalDialog = {modalDialog}
           setIsAuthenticated = {setIsAuthenticated}
           setLoggedInUser = {setLoggedInUser}
+          typeGuardian = {typeGuardian}
         />
       </Route>
-
-      <ProtectedRoute
-        path = "/admin-console/create-account-request-page"
-        securityContext = {adminPageSecurity}
-        dialogController = {dialogController}
-      >
-        <PageHeader logOut = {logOut} />
-        <CreateAccountPage
-          dialogController = {dialogController}
-          modalDialog = {modalDialog}
-        />
-      </ProtectedRoute>
-
-      <ProtectedRoute
-        path = "/admin-console/disable-or-delete-account-page"
-        securityContext = {adminPageSecurity}
-        dialogController = {dialogController}
-      >
-        <PageHeader logOut = {logOut} />
-        <DisableOrDeleteAccountPage
-          dialogController = {dialogController}
-          modalDialog = {modalDialog}
-        />
-      </ProtectedRoute>
 
       <ProtectedRoute
         path = "/admin-console/managa-teacher-page"
@@ -212,6 +189,7 @@ export function App (): ReactElement {
         <DisableOrDeleteAccountPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -236,6 +214,7 @@ export function App (): ReactElement {
         <CreateAccountPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -248,6 +227,7 @@ export function App (): ReactElement {
         <DisableOrDeleteAccountPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -263,6 +243,7 @@ export function App (): ReactElement {
         <ManageStudentInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
       
@@ -278,6 +259,8 @@ export function App (): ReactElement {
         <ManageExaminationInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
+          typeConverter = {typeConverter}
         />
       </ProtectedRoute>
 
@@ -290,6 +273,7 @@ export function App (): ReactElement {
         <ManageThingsInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -302,6 +286,7 @@ export function App (): ReactElement {
         <ManageCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -333,7 +318,8 @@ export function App (): ReactElement {
         <PageHeader logOut = {logOut} />
         <ManageExamQuestionPage 
           dialogController = {dialogController}
-          modalDialog = {modalDialog} 
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian} 
         />
       </ProtectedRoute>
       

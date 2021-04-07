@@ -18,6 +18,7 @@ import { Course } from "../../model/Course";
 interface ManageThingsInCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function ManageThingsInCoursePage (
@@ -28,14 +29,11 @@ export function ManageThingsInCoursePage (
     let [courseHolder, setCourseHolder] 
         = useState<Course[]> (new Array<Course> ());
     let courseDataPage: DataPage<Course> | undefined;
-    let courseAPI: CourseAPI;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
-    let typeGuardian: TypeGuard;
     
-    courseAPI = new CourseAPI ();
-    typeGuardian = new TypeGuard ();
+    let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
     async function loadCourseTable (): Promise<void> {
         try {
@@ -48,7 +46,7 @@ export function ManageThingsInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -111,6 +109,9 @@ export function ManageThingsInCoursePage (
                                                 #
                                             </th>
                                             <th>
+                                                Course ID
+                                            </th>
+                                            <th>
                                                 Course Name
                                             </th>
                                             <th>
@@ -118,9 +119,6 @@ export function ManageThingsInCoursePage (
                                             </th>
                                             <th>
                                                 Course Level
-                                            </th>
-                                            <th>
-                                                Tuition Fee
                                             </th>
                                             <th>
                                                 Actions
@@ -160,6 +158,9 @@ function renderCourseTable (
                 {index + 1}
             </td>
             <td>
+                {course.courseID}
+            </td>
+            <td>
                 {course.courseName}
             </td>
             <td>
@@ -167,9 +168,6 @@ function renderCourseTable (
             </td>
             <td>
                 {course.courseLevel.levelName}
-            </td>
-            <td>
-                {course.tuitionFee}
             </td>
             <td>
                 <Button 

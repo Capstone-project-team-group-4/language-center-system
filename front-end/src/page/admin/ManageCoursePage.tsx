@@ -56,6 +56,7 @@ function renderCourseLevelDropdownList (
 interface ManageCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
@@ -66,11 +67,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [courseTypeHolder, setCourseTypeHolder] 
         = useState<CourseType[]> (new Array<CourseType> ());
     let updatedCourseTypeHolder: CourseType[] | undefined;
-    let courseTypeAPI: CourseTypeAPI;
     let defaultSelectedID: number | undefined;
-    let typeGuardian: TypeGuard;
     let updatedCourseLevelHolder: CourseLevel[] | undefined;
-    let courseLevelAPI: CourseLevelAPI;
     let [showCreateCourseForm, setShowCreateCourseForm] 
         = useState<boolean> (false);
     let [courseLevelHolder, setCourseLevelHolder] 
@@ -81,7 +79,6 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let [course, setCourse] = useState<Course> (new Course ());
     let updatedCourse: Course | undefined;
-    let courseAPI: CourseAPI;
     let courseType: CourseType | undefined;
     let selectedCourseType: CourseType;
     let courseLevel: CourseLevel | undefined;
@@ -107,10 +104,9 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [showEditCourseForm, setShowEditCourseForm] 
         = useState<boolean> (false);
     
-    courseTypeAPI = new CourseTypeAPI ();
-    courseLevelAPI = new CourseLevelAPI ();
-    courseAPI = new CourseAPI ();
-    typeGuardian = new TypeGuard ();
+    let [courseTypeAPI] = useState<CourseTypeAPI> (new CourseTypeAPI ());
+    let [courseLevelAPI] = useState<CourseLevelAPI> (new CourseLevelAPI ());
+    let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
     function handleDeleteCourse (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
@@ -132,7 +128,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -262,7 +258,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -291,7 +287,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -344,7 +340,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -395,7 +391,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -423,7 +419,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`

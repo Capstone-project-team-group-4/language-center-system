@@ -33,8 +33,8 @@ export class UserAPI {
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (
-        pageNumber: number
-        , pageSize: number
+            pageNumber: number
+            , pageSize: number
     ): Promise<User[]> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
@@ -178,9 +178,7 @@ export class UserAPI {
         }
     }
 
-    public async deleteAnotherUser (
-            userID: number
-    ): Promise<void> {
+    public async deleteAnotherUser (userID: number): Promise<void> {
         try {
             await this.axiosInstance.delete<undefined> (
                     `/users/${userID}`

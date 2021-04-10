@@ -5,10 +5,12 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -65,16 +67,54 @@ public class Examination implements Serializable {
     @NotNull
     @Column(name = "Duration", nullable = false)
     private int duration;
-    @JoinTable(name = "ExaminationQuestion", joinColumns = {
-        @JoinColumn(name = "ExamID", referencedColumnName = "ExamID", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID", nullable = false)})
-    @ManyToMany(fetch = FetchType.LAZY)
+    @Basic (optional = false)
+    @NotNull
+    @Column (name = "MaxNumberOfAttempt", nullable = false)
+    private int maxNumberOfAttempt;
+    @Basic (optional = false)
+    @NotNull
+    @Column (name = "DateCreated", nullable = false)
+    @Temporal (TemporalType.TIMESTAMP)
+    private Date dateCreated;
+    @Column (name = "LastModified")
+    @Temporal (TemporalType.TIMESTAMP)
+    private Date lastModified;
+    
+    @JsonIgnore
+    @JoinTable (name = "ExaminationQuestion", joinColumns = {
+        @JoinColumn (
+                name = "ExamID"
+                , referencedColumnName = "ExamID"
+                , nullable = false
+        )
+    }, inverseJoinColumns = {
+        @JoinColumn (
+                name = "QuestionID"
+                , referencedColumnName = "QuestionID"
+                , nullable = false
+        )
+    })
+    @ManyToMany (
+            cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY
+    )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-    @OneToMany(mappedBy = "examID", fetch = FetchType.LAZY)
+    
+    @OneToMany (mappedBy = "examID", fetch = FetchType.LAZY)
     private List<StudentScore> studentScoreList;
-    @JoinColumn(name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Course courseID;
+    
+    @JoinColumn (
+            name = "CourseID"
+            , referencedColumnName = "CourseID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    private Course course;
 
     public Examination() {
     }
@@ -83,14 +123,23 @@ public class Examination implements Serializable {
         this.examID = examID;
     }
 
-    public Examination(Integer examID, Date startTime, String type, int duration) {
-        this.examID = examID;
+    public Examination (
+            Date startTime
+            , String type
+            , int duration
+            , int maxNumberOfAttempt
+            , Date dateCreated
+            , Course course
+    ){
         this.startTime = startTime;
         this.type = type;
         this.duration = duration;
+        this.maxNumberOfAttempt = maxNumberOfAttempt;
+        this.dateCreated = dateCreated;
+        this.course = course;
     }
-
-    public Integer getExamID() {
+    
+    public Integer getExamID (){
         return examID;
     }
 
@@ -122,6 +171,30 @@ public class Examination implements Serializable {
         this.duration = duration;
     }
 
+    public int getMaxNumberOfAttempt (){
+        return maxNumberOfAttempt;
+    }
+
+    public void setMaxNumberOfAttempt (int maxNumberOfAttempt){
+        this.maxNumberOfAttempt = maxNumberOfAttempt;
+    }
+    
+    public Date getDateCreated (){
+        return dateCreated;
+    }
+
+    public void setDateCreated (Date dateCreated){
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getLastModified (){
+        return lastModified;
+    }
+
+    public void setLastModified (Date lastModified){
+        this.lastModified = lastModified;
+    }
+    
     @XmlTransient
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList() {
         return multipleChoiceQuestionList;
@@ -140,12 +213,12 @@ public class Examination implements Serializable {
         this.studentScoreList = studentScoreList;
     }
 
-    public Course getCourseID() {
-        return courseID;
+    public Course getCourse (){
+        return course;
     }
 
-    public void setCourseID(Course courseID) {
-        this.courseID = courseID;
+    public void setCourse (Course course){
+        this.course = course;
     }
 
     @Override

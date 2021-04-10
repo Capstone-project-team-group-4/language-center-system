@@ -109,6 +109,11 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             loginSucceededLocation.pathname 
                                 = "/teacher-dashboard";
                             break;
+
+                        case "ROLE_STUDENT":
+                            loginSucceededLocation.pathname 
+                                = "/student-dashboard";
+                            break;
                     }
                 }
                 else {

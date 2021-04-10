@@ -168,11 +168,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/quizzes/*")
                         .hasRole ("TEACHER")
                 
-                .antMatchers (HttpMethod.GET, "/lesson*")
-                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/courses/*")
+                        .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/id*")
-                        .hasRole ("ADMIN")
-                
+                        .hasRole ("STUDENT")
+                .antMatchers (HttpMethod.GET, "/lesson*")
+                        .hasRole ("STUDENT")
                 .anyRequest ().denyAll ();
     }
 }

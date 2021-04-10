@@ -38,7 +38,7 @@ export function LessonDetailPage(
         lessonAPI.getOne(param.lessonID).then(
             (res) => {
                 setLesson(res.data);
-                // console.log(student.userName);
+                console.log(res);
             }
         ).catch((err) => {
             console.log(err);

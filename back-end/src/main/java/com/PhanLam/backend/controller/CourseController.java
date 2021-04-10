@@ -102,4 +102,9 @@ public class CourseController {
     public Optional<Course> getCourseById(@PathVariable("courseID") Integer courseID){
         return courseService.getCourseById(courseID);
     }
+    
+    @GetMapping("/courses")
+    public List<Course> getAllCourseCurrentsLogin(Integer userID){
+        return courseService.getCoursesByCurrentUserID(userID);
+    }
 }

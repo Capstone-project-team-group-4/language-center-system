@@ -9,6 +9,7 @@ package com.PhanLam.backend.configuration;
 import com.PhanLam.backend.controller.exception.ExceptionResponseBody;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
+import com.PhanLam.backend.controller.exception.ForbiddenActionException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -81,6 +82,16 @@ public class ControllerAdvice {
         responseBody.setExceptionTitle (
                 "Your Account Has Been Blocked !"
         );
+        return responseBody;
+    }
+    
+    @ExceptionHandler (ForbiddenActionException.class)
+    @ResponseStatus (HttpStatus.FORBIDDEN)
+    public ExceptionResponseBody handleForbiddenActionException (
+            ForbiddenActionException exception
+    ){
+        responseBody = new ExceptionResponseBody (exception);
+        responseBody.setExceptionTitle ("Your Action Is Forbidden !");
         return responseBody;
     }
 }

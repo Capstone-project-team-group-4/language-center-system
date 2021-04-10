@@ -26,7 +26,7 @@ function renderUserTable (
         , handleDisableUser: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
         ) => void 
-        , handleEnableUser: (
+        , enableUser: (
                 event: MouseEvent<HTMLElement, globalThis.MouseEvent>
         ) => Promise<void>
         , handleDeleteUser: (
@@ -37,6 +37,9 @@ function renderUserTable (
         <tr key = {user.userID}>
             <td>
                 {index + 1}
+            </td>
+            <td>
+                {user.userID}
             </td>
             <td>
                 {`${
@@ -78,7 +81,7 @@ function renderUserTable (
                     value = {user.userID}
                     onClick = {
                         (event) => {
-                            handleEnableUser (event).catch (
+                            enableUser (event).catch (
                                     (error: unknown) => {
                                         console.error (error);
                                     }
@@ -141,13 +144,13 @@ export function DisableOrDeleteAccountPage (
         props.dialogController.setShowDialog (true);
     }
 
-    async function handleEnableUser (
+    async function enableUser (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): Promise<void> {
         button = event.target as HTMLButtonElement;
         try {
             await userAPI.enableUser (Number (button.value));
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -173,7 +176,7 @@ export function DisableOrDeleteAccountPage (
             await userAPI.disableAnotherUser (
                     pendingUserID
             );
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -211,7 +214,7 @@ export function DisableOrDeleteAccountPage (
     async function executeUserDeletion (): Promise<void> {
         try {
             await userAPI.deleteAnotherUser (pendingUserID);
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -329,6 +332,9 @@ export function DisableOrDeleteAccountPage (
                                                 #
                                             </th>
                                             <th>
+                                                User ID
+                                            </th>
+                                            <th>
                                                 Full Name
                                             </th>
                                             <th>
@@ -357,7 +363,7 @@ export function DisableOrDeleteAccountPage (
                                                     user
                                                     , index
                                                     , handleDisableUser
-                                                    , handleEnableUser
+                                                    , enableUser
                                                     , handleDeleteUser
                                             )
                                         )}

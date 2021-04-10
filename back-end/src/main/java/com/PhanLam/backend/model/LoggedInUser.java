@@ -5,7 +5,8 @@
  */
 package com.PhanLam.backend.model;
 
-import java.util.ArrayList;
+// Import package members section:
+import java.util.List;
 
 /**
  *
@@ -15,21 +16,21 @@ public class LoggedInUser {
     
     // Variables declaration:
     private String userName;
-    private ArrayList<Role> roleHolder; 
+    private List<Role> roleHolder; 
 
     public LoggedInUser (){
     }
 
-    public LoggedInUser (String userName, ArrayList<Role> roleHolder){
+    public LoggedInUser (String userName, List<Role> roleHolder){
         this.userName = userName;
         this.roleHolder = roleHolder;
     }
 
-    public String getUserName() {
+    public String getUserName (){
         return userName;
     }
 
-    public ArrayList<Role> getRoleHolder() {
+    public List<Role> getRoleHolder (){
         return roleHolder;
     }
 }

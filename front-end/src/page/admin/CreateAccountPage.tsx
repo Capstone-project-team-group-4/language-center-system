@@ -153,7 +153,7 @@ export function CreateAccountPage (
                         Number (button.value)
                         , newAccountRoleList
                 );
-                loadRegisterFormTable ();
+                await loadRegisterFormTable ();
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
@@ -204,7 +204,7 @@ export function CreateAccountPage (
             await registerFormAPI.rejectCreateAccountRequest (
                     userID
             );
-            loadRegisterFormTable ();
+            await loadRegisterFormTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){

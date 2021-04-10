@@ -320,7 +320,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                 pageIndex
                 , pageSize
             );
-            setTotalPageCount(lessonDataPage.totalPageCount);
+            setTotalPageCount(lessonDataPage.totalRowCount);
             setLessonHolder(lessonDataPage.pageDataHolder);
             return Promise.resolve<undefined>(undefined);
         }

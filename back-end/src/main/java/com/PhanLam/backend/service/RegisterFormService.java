@@ -12,7 +12,6 @@ import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.PhanLam.backend.dal.repository_interface.RegisterFormRepository;
 import com.PhanLam.backend.model.RegisterForm;
+import java.util.List;
 
 /**
  *
@@ -72,11 +72,11 @@ public class RegisterFormService {
     }
     
     @Transactional (readOnly = true)
-    public ArrayList<RegisterForm> getAllRegisterForm (
+    public List<RegisterForm> getAllRegisterForm (
             int pageNumber
             , int pageSize
     ){
-        ArrayList<RegisterForm> registerFormHolder;
+        List<RegisterForm> registerFormHolder;
         PageRequest pagingInformation;
         Page<RegisterForm> registerFormPage;
         TypedSort<RegisterForm> registerFormSortInformation;
@@ -98,9 +98,7 @@ public class RegisterFormService {
             registerFormPage = registerFormRepository.findAll (
                     pagingInformation
             );
-            registerFormHolder = new ArrayList<> (
-                    registerFormPage.getContent ()
-            );
+            registerFormHolder = registerFormPage.getContent ();
             return registerFormHolder;
         }
         else {
@@ -114,7 +112,7 @@ public class RegisterFormService {
     
     public void useRegisterFormToCreateUser (
             int formID
-            , ArrayList<Role> newAccountRoleList
+            , List<Role> newAccountRoleList
     ){
         Optional <RegisterForm> nullableRegisterForm;
         RegisterForm registerForm;
@@ -131,7 +129,7 @@ public class RegisterFormService {
         if (newAccountRoleList.size () > 0){
             nullableRegisterForm = registerFormRepository.findById (formID);
             if (nullableRegisterForm.isPresent () == false){
-                throw new NotFoundException ("create-account-request");
+                throw new NotFoundException ("Create-Account-Request");
             }
             else {
                 registerForm = nullableRegisterForm.get ();
@@ -172,7 +170,7 @@ public class RegisterFormService {
         
         nullableRegisterForm = registerFormRepository.findById (formID);
         if (nullableRegisterForm.isPresent () == false){
-            throw new NotFoundException ("User ID");
+            throw new NotFoundException ("Create-Account-Request");
         }
         else {
             registerForm = nullableRegisterForm.get ();

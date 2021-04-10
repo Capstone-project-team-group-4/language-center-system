@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,9 +65,27 @@ public class CourseController {
         courseService.updateCourse (courseID, updatedCourse);
     }
     
+    @PatchMapping ("/courses/{courseID}:add-a-student")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void addAStudentToCourse (
+            @RequestParam int userID
+            , @PathVariable int courseID
+    ){
+        courseService.addStudentToCourse (userID, courseID);
+    }
+    
+    @PatchMapping ("/courses/{courseID}:remove-a-student")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void removeAStudentFromCourse (
+            @RequestParam int userID
+            , @PathVariable int courseID
+    ){
+        courseService.removeStudentFromCourse (userID, courseID);
+    }
+    
     @DeleteMapping ("/courses/{courseID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
-    public void deleteCourse (@PathVariable int courseID){
+    public void deleteCourseByID (@PathVariable int courseID){
         courseService.deleteCourseByID (courseID);
     }
 }

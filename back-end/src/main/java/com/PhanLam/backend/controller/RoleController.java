@@ -8,7 +8,7 @@ package com.PhanLam.backend.controller;
 // Import package members section:
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.service.RoleService;
-import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,8 +30,8 @@ public class RoleController {
     
     @GetMapping ("/roles")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<Role> getAllRole (){
-        ArrayList<Role> roleHolder;
+    public List<Role> getAllRole (){
+        List<Role> roleHolder;
         
         roleHolder = roleService.getAllRole ();
         return roleHolder;

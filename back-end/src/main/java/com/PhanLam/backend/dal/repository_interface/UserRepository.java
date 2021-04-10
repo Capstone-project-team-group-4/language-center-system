@@ -10,7 +10,6 @@ import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -32,11 +31,11 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     
     public Optional<User> findByUserName (String userName);
     
-    public List<User> findAllByUserNameNot (
+    public List<User> findAllByUserNameIsNot (
             String userName
             , Pageable pagingInformation
     ); 
-
+    
     @Override
     public void delete (User user);
 }

@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop */
 // Import package members section:
 import React, { 
-    ChangeEvent,
-    FormEvent,
-    MouseEvent
+    ChangeEvent
+    , FormEvent
+    , MouseEvent
     , ReactElement
     , useEffect
     , useState 
@@ -14,7 +14,8 @@ import {
     , Col
     , Container
     , Form
-    , Modal, Row
+    , Modal
+    , Row
     , Table 
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -24,11 +25,9 @@ import { CourseAPI } from "../../common/service/CourseAPI";
 import { CourseLevelAPI } from "../../common/service/CourseLevelAPI";
 import { CourseTypeAPI } from "../../common/service/CourseTypeAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { UserAPI } from "../../common/service/UserAPI";
 import { Course } from "../../model/Course";
 import { CourseLevel } from "../../model/CourseLevel";
 import { CourseType } from "../../model/CourseType";
-import { User } from "../../model/User";
 
 function renderCourseTypeDropdownList (courseType: CourseType): ReactElement {
     return (
@@ -54,82 +53,6 @@ function renderCourseLevelDropdownList (
     );
 }
 
-function renderCourseTable (
-        course: Course
-        , index: number 
-        , openViewDetailsDialog: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-        , openEditCourseForm: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void>
-        , handleDeleteCourse: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-): ReactElement {
-    return (
-        <tr key = {course.courseID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {course.courseName}
-            </td>
-            <td>
-                {course.courseType.typeName}
-            </td>
-            <td>
-                {course.courseLevel.levelName}
-            </td>
-            <td>
-                {course.tuitionFee}
-            </td>
-            <td>
-                <Button 
-                    variant = "primary"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openViewDetailsDialog (event);
-                        }
-                    }
-                >
-                    Details
-                </Button>
-                <Button 
-                    variant = "success"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            openEditCourseForm (event).catch (
-                                    (error: unknown) => {
-                                        console.error (error);
-                                    }
-                            );
-                        }
-                    }
-                >
-                    Edit
-                </Button>
-                <Button 
-                    variant = "danger"
-                    type = "button"
-                    value = {course.courseID}
-                    onClick = {
-                        (event) => {
-                            handleDeleteCourse (event);
-                        }
-                    }
-                >
-                    Delete
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
 interface ManageCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
@@ -140,7 +63,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     // Variables declaration:
     let [selectedCourseTypeID, setSelectedCourseTypeID] 
         = useState<number> (0); 
-    let [courseTypeHolder, setCourseTypeHolder] = useState<CourseType[]> ([]);
+    let [courseTypeHolder, setCourseTypeHolder] 
+        = useState<CourseType[]> (new Array<CourseType> ());
     let updatedCourseTypeHolder: CourseType[] | undefined;
     let courseTypeAPI: CourseTypeAPI;
     let defaultSelectedID: number | undefined;
@@ -150,7 +74,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [showCreateCourseForm, setShowCreateCourseForm] 
         = useState<boolean> (false);
     let [courseLevelHolder, setCourseLevelHolder] 
-        = useState<CourseLevel[]> ([]);
+        = useState<CourseLevel[]> (new Array<CourseLevel> ());
     let [selectedCourseLevelID, setSelectedCourseLevelID] 
         = useState<number> (0);
     let htmlElement: 
@@ -165,9 +89,10 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let i: number | undefined;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
-    let [totalPageCount, setTotalPageCount] = useState<number> (0);
+    let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseDataPage: DataPage<Course> | undefined;
-    let [courseHolder, setCourseHolder] = useState<Course[]> ([]);
+    let [courseHolder, setCourseHolder] 
+        = useState<Course[]> (new Array<Course> ());
     let [showViewDetailDialog, setShowViewDetailDialog] 
         = useState<boolean> (false);
     let button: HTMLButtonElement | undefined;
@@ -202,8 +127,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
 
     async function executeCourseDeletion (): Promise<void> {
         try {
-            await courseAPI.deleteCourse (pendingCourseID);
-            loadCourseTable ();
+            await courseAPI.deleteCourseByID (pendingCourseID);
+            await loadCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -238,10 +163,10 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                     setFormattedLastModified ("Has not been modified yet !");
                 }
                 else {
-                    setFormattedLastModified (rawDate.toLocaleString ());
+                    setFormattedLastModified (rawDate.toLocaleString ("vi-VN"));
                 }
                 rawDate = new Date (courseSample.dateCreated);
-                setFormattedDateCreated (rawDate.toLocaleString ());
+                setFormattedDateCreated (rawDate.toLocaleString ("vi-VN"));
                 break;
             }
         }
@@ -410,12 +335,12 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             closeCreateCourseForm ();
             props.dialogController.setDialogTitle ("Course Created !");
             props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been created successfully.`
+                    `The course [${course.courseName}] 
+                    has been created successfully.`
             );
             props.dialogController.setDialogType ("inform");
             props.dialogController.setShowDialog (true);
-            loadCourseTable ();
+            await loadCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -461,12 +386,12 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             closeEditCourseForm ();
             props.dialogController.setDialogTitle ("Course Saved !");
             props.dialogController.setDialogBody (
-                `The course [${course.courseName}] 
-                has been saved successfully.`
+                    `The course [${course.courseName}] 
+                    has been saved successfully.`
             );
             props.dialogController.setDialogType ("inform");
             props.dialogController.setShowDialog (true);
-            loadCourseTable ();
+            await loadCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -493,7 +418,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                     pageIndex
                     , pageSize
             ); 
-            setTotalPageCount (courseDataPage.totalPageCount);
+            setTotalRowCount (courseDataPage.totalRowCount);
             setCourseHolder (courseDataPage.pageDataHolder);
             return Promise.resolve<undefined> (undefined);
         }
@@ -516,9 +441,9 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     }
 
     useEffect (
-        (): void => {
+        () => {
             loadCourseTable ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
@@ -527,10 +452,10 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     );
 
     useEffect (
-        (): void => {
+        () => {
             if (selectedCourseTypeID !== 0){
                 loadCourseLevelDropdownList ().catch (
-                        (error: unknown) => {
+                        (error) => {
                             console.error (error);
                         }
                 );
@@ -540,10 +465,10 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     );
     
     useEffect (
-        (): void => {
+        () => {
             if (props.dialogController.dialogIsConfirmed === true){
                 executeCourseDeletion ().catch (
-                        (error: unknown) => {
+                        (error) => {
                             console.error (error);
                         }
                 );
@@ -704,7 +629,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                 }
                             />
                             <Form.Text className = "text-muted">
-                                format: numbers only !  
+                                format: numbers only and 
+                                the minimum value is 0 !  
                             </Form.Text>
                         </Form.Group>
                     </Form>
@@ -1070,7 +996,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                     Admin Console
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage course functions
+                                    Manage Course 
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">
@@ -1132,5 +1058,81 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
             <footer>
             </footer>
         </Container>
+    );
+}
+
+function renderCourseTable (
+        course: Course
+        , index: number 
+        , openViewDetailsDialog: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+        , openEditCourseForm: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => Promise<void>
+        , handleDeleteCourse: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+): ReactElement {
+    return (
+        <tr key = {course.courseID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {course.courseName}
+            </td>
+            <td>
+                {course.courseType.typeName}
+            </td>
+            <td>
+                {course.courseLevel.levelName}
+            </td>
+            <td>
+                {course.tuitionFee}
+            </td>
+            <td>
+                <Button 
+                    variant = "primary"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            openViewDetailsDialog (event);
+                        }
+                    }
+                >
+                    Details
+                </Button>
+                <Button 
+                    variant = "success"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            openEditCourseForm (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
+                >
+                    Edit
+                </Button>
+                <Button 
+                    variant = "danger"
+                    type = "button"
+                    value = {course.courseID}
+                    onClick = {
+                        (event) => {
+                            handleDeleteCourse (event);
+                        }
+                    }
+                >
+                    Delete
+                </Button>
+            </td>
+        </tr>
     );
 }

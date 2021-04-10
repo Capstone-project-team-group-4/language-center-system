@@ -63,7 +63,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     currentLocation = useLocation ();
     history = useHistory ();
 
-    function handleFieldChange (
+    function handleChange (
             event: ChangeEvent<
                 HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
             >
@@ -103,6 +103,11 @@ export function LogInPage (props: LogInPageProps): ReactElement {
 
                         case "ROLE_ADMIN":
                             loginSucceededLocation.pathname = "/admin-console";
+                            break;
+
+                        case "ROLE_TEACHER":
+                            loginSucceededLocation.pathname 
+                                = "/teacher-dashboard";
                             break;
                     }
                 }
@@ -181,7 +186,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     value = {userName}
                                     onChange = {
                                         (event) => {
-                                            handleFieldChange (event);
+                                            handleChange (event);
                                         }
                                     }
                                 />
@@ -203,7 +208,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     value = {password}
                                     onChange = {
                                         (event) => {
-                                            handleFieldChange (event);
+                                            handleChange (event);
                                         }
                                     }
                                 />

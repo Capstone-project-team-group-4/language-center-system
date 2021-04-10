@@ -8,7 +8,7 @@ package com.PhanLam.backend.controller;
 // Import package members section:
 import com.PhanLam.backend.model.CourseLevel;
 import com.PhanLam.backend.service.CourseLevelService;
-import java.util.ArrayList;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +31,8 @@ public class CourseLevelController {
     
     @GetMapping ("/course-types/{typeID}/course-levels")
     @ResponseStatus (HttpStatus.OK)
-    public ArrayList<CourseLevel> getAllCourseLevelByTypeID (@PathVariable int typeID){
-        ArrayList<CourseLevel> courseLevelHolder;
+    public List<CourseLevel> getAllCourseLevelByTypeID (@PathVariable int typeID){
+        List<CourseLevel> courseLevelHolder;
         
         courseLevelHolder 
             = courseLevelService.getAllCourseLevelByTypeID (typeID);

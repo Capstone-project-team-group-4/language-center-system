@@ -5,7 +5,9 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -16,7 +18,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,27 +57,64 @@ public class MultipleChoiceQuestion implements Serializable {
     @Size (min = 1, max = 1000)
     @Column (name = "Content", nullable = false, length = 1000)
     private String content;
+    
+    @JoinColumn (
+            name = "CreatorID"
+            , referencedColumnName = "UserID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    private User creator;
+    
     @Basic (optional = false)
     @NotNull
     @Column (name = "DateCreated", nullable = false)
     @Temporal (TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @ManyToMany (mappedBy = "multipleChoiceQuestionList", fetch = FetchType.LAZY)
+    @Column (name = "LastModified")
+    @Temporal (TemporalType.TIMESTAMP)
+    private Date lastModified;
+    
+    @JsonIgnore
+    @ManyToMany (
+            mappedBy = "multipleChoiceQuestionList"
+            , cascade = {
+                CascadeType.PERSIST
+                , CascadeType.MERGE
+                , CascadeType.REFRESH
+                , CascadeType.DETACH
+            }
+            , fetch = FetchType.LAZY
+    )
     private List<Examination> examinationList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "questionID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "multipleChoiceQuestion"
+            , fetch = FetchType.LAZY
+    )
     private List<QuestionOption> questionOptionList;
 
     public MultipleChoiceQuestion (){
+        questionOptionList = new ArrayList<> ();
     }
 
     public MultipleChoiceQuestion (Integer questionID){
         this.questionID = questionID;
     }
 
-    public MultipleChoiceQuestion (Integer questionID, String content, Date dateCreated){
-        this.questionID = questionID;
+    public MultipleChoiceQuestion (
+            String content
+            , User creator
+            , Date dateCreated
+            , Date lastModified
+    ){
         this.content = content;
+        this.creator = creator;
         this.dateCreated = dateCreated;
+        this.lastModified = lastModified;
     }
 
     public Integer getQuestionID (){
@@ -92,6 +133,14 @@ public class MultipleChoiceQuestion implements Serializable {
         this.content = content;
     }
 
+    public User getCreator (){
+        return creator;
+    }
+
+    public void setCreator (User creator){
+        this.creator = creator;
+    }
+    
     public Date getDateCreated (){
         return dateCreated;
     }
@@ -100,6 +149,14 @@ public class MultipleChoiceQuestion implements Serializable {
         this.dateCreated = dateCreated;
     }
 
+    public Date getLastModified (){
+        return lastModified;
+    }
+
+    public void setLastModified (Date lastModified){
+        this.lastModified = lastModified;
+    }
+    
     @XmlTransient
     public List<Examination> getExaminationList (){
         return examinationList;

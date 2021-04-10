@@ -9930,6 +9930,23 @@ h3 {
 }
 #root {
   background-color: teal;
+  z-index: 1;
+}
+
+#PageHeader {
+  z-index: 2;
+}
+
+#TeacherDashboardPage {
+  z-index: 2;
+}
+
+#SideBarButton {
+  z-index: 3;
+}
+
+#SideBar {
+  z-index: 3;
 }
 
 /*# sourceMappingURL=App.css.map */

@@ -1,12 +1,12 @@
 // Import package members section:
-import React, { 
+import React, {
     ChangeEvent
     , Dispatch, FormEvent
     , ReactElement
-    , SetStateAction, useState 
+    , SetStateAction, useState
 } from 'react';
-import { 
-    Button, Container, Form, Row 
+import {
+    Button, Container, Form, Row
 } from 'react-bootstrap';
 import './LogInPage.css';
 import { TypeGuard } from '../common/service/TypeGuard';
@@ -14,9 +14,10 @@ import { DialogControl } from '../common/component/ModalDialog';
 import { UserAPI } from '../common/service/UserAPI';
 import { LoggedInUser } from '../model/LoggedInUser';
 import { Location, History } from "history";
-import { useHistory, useLocation } from 'react-router-dom';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import { LocationState } from '../common/component/ProtectedRoute';
 import { Role } from '../model/Role';
+import { StudentDashboardPage } from './student/StudentDashboardPage';
 
 class LoginSucceededLocation implements Location<unknown> {
     public pathname: string;
@@ -25,10 +26,11 @@ class LoginSucceededLocation implements Location<unknown> {
     public hash: string;
     public key?: string | undefined;
 
-    public constructor (){
+    public constructor() {
         this.pathname = "";
         this.search = "";
         this.hash = "";
+        this.state = {};
     }
 }
 
@@ -36,15 +38,15 @@ interface LogInPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
     setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-    setLoggedInUser: Dispatch<SetStateAction<LoggedInUser>>; 
+    setLoggedInUser: Dispatch<SetStateAction<LoggedInUser>>;
 }
 
-export function LogInPage (props: LogInPageProps): ReactElement {
+export function LogInPage(props: LogInPageProps): ReactElement {
 
     // Variables declaration:
-    let [userName, setUserName] = useState<string> ("");
-    let [password, setPassword] = useState<string> ("");
-    let inputField: 
+    let [userName, setUserName] = useState<string>("");
+    let [password, setPassword] = useState<string>("");
+    let inputField:
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI;
     let typeGuardian: TypeGuard;
@@ -54,123 +56,130 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let loginSucceededLocation: LoginSucceededLocation | undefined;
     let history: History<unknown>;
     let roleHolder: Role[] | undefined;
-    let role: Role | undefined; 
+    let role: Role | undefined;
     let roleName: string | undefined;
     let loggedInUser: LoggedInUser | undefined;
 
-    userAPI = new UserAPI ();
-    typeGuardian = new TypeGuard ();
-    currentLocation = useLocation ();
-    history = useHistory ();
+    userAPI = new UserAPI();
+    typeGuardian = new TypeGuard();
+    currentLocation = useLocation();
+    history = useHistory();
 
-    function handleChange (
-            event: ChangeEvent<
-                HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-            >
+    function handleChange(
+        event: ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >
     ): void {
         inputField = event.target;
-        if (inputField.name === "userNameField"){
-            setUserName (inputField.value);
+        if (inputField.name === "userNameField") {
+            setUserName(inputField.value);
         }
-        else if (inputField.name === "passwordField"){
-            setPassword (inputField.value);
+        else if (inputField.name === "passwordField") {
+            setPassword(inputField.value);
         }
     }
 
-    async function logIn (event: FormEvent<HTMLFormElement>): Promise<void> {
-        event.preventDefault ();
+    async function logIn(event: FormEvent<HTMLFormElement>): Promise<void> {
+        event.preventDefault();
         try {
-            loggedInUser = await userAPI.getCurrentLoggedInUser (
-                    userName
-                    , password
+            loggedInUser = await userAPI.getCurrentLoggedInUser(
+                userName
+                , password
             );
-            props.setIsAuthenticated (true); 
-            props.setLoggedInUser (loggedInUser);      
-            if (currentLocation.state instanceof LocationState){
+            props.setIsAuthenticated(true);
+            props.setLoggedInUser(loggedInUser);
+            if (currentLocation.state instanceof LocationState) {
                 locationState = currentLocation.state;
                 previousLocation = locationState.from;
-                history.replace (previousLocation);
-            } 
+                history.replace(previousLocation);
+            }
             else {
                 roleHolder = loggedInUser.roleHolder;
-                loginSucceededLocation = new LoginSucceededLocation ();
-                if (roleHolder.length === 1){
+                loginSucceededLocation = new LoginSucceededLocation();
+                if (roleHolder.length === 1) {
                     role = roleHolder[0];
                     roleName = role.roleName;
-                    switch (roleName){
+                    switch (roleName) {
                         default:
-                            throw new Error ("Unknown role name !");
+                            throw new Error("Unknown role name !");
 
                         case "ROLE_ADMIN":
                             loginSucceededLocation.pathname = "/admin-console";
                             break;
 
                         case "ROLE_TEACHER":
-                            loginSucceededLocation.pathname 
+                            loginSucceededLocation.pathname
                                 = "/teacher-dashboard";
                             break;
 
                         case "ROLE_STUDENT":
-                            loginSucceededLocation.pathname 
+                            // <Route path="/student-dashboard" render={(props) => <StudentDashboardPage LoginUser="Hello, " {...props} />} />
+                            loginSucceededLocation.pathname
                                 = "/student-dashboard";
+                                const account = {
+                                    userName: loggedInUser.userName
+
+                                }
+                            localStorage.clear();
+                            localStorage.setItem('account', JSON.stringify(account));
                             break;
                     }
                 }
                 else {
                     loginSucceededLocation.pathname = "/select-role-page";
                 }
-                history.replace (loginSucceededLocation);
+                history.replace(loginSucceededLocation);
             }
-            return Promise.resolve<undefined> (undefined);
+            return Promise.resolve<undefined>(undefined);
         }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
+        catch (apiError: unknown) {
+            if (typeGuardian.isAxiosError(apiError)) {
+                if (typeof apiError.code === "string") {
+                    props.dialogController.setDialogTitle(
+                        `${apiError.code}: ${apiError.name}`
                     );
-                    props.dialogController.setDialogBody (apiError.message);
+                    props.dialogController.setDialogBody(apiError.message);
                 }
                 else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                    props.dialogController.setDialogBody (apiError.message);
+                    props.dialogController.setDialogTitle(apiError.name);
+                    props.dialogController.setDialogBody(apiError.message);
                 }
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
+                props.dialogController.setDialogType("error");
+                props.dialogController.setShowDialog(true);
             }
-            return Promise.reject (apiError);
+            return Promise.reject(apiError);
         }
     }
-    
+
     return (
-        <Container 
-            fluid = {true} 
-            className = "vh-100"
-        >   
+        <Container
+            fluid={true}
+            className="vh-100"
+        >
             {props.modalDialog}
             <header>
             </header>
             <nav>
             </nav>
-            <main className = "h-100">
-                <Container 
-                    fluid = {true} 
-                    className = "h-100"
+            <main className="h-100">
+                <Container
+                    fluid={true}
+                    className="h-100"
                 >
-                    <Row className = {
+                    <Row className={
                         `h-100 
                         justify-content-center 
                         align-items-center`
                     }>
                         <Form
-                            id = "LogInForm"
-                            className = "bg-white p-5 h-auto"
-                            onSubmit = {
+                            id="LogInForm"
+                            className="bg-white p-5 h-auto"
+                            onSubmit={
                                 (event) => {
-                                    logIn (event).catch (
-                                            (error: unknown) => {
-                                                console.error (error);
-                                            }
+                                    logIn(event).catch(
+                                        (error: unknown) => {
+                                            console.error(error);
+                                        }
                                     );
                                 }
                             }
@@ -180,18 +189,18 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     User Name:
                                 </Form.Label>
                                 <Form.Control
-                                    type = "text"
-                                    autoComplete = "off"
-                                    autoFocus = {true}
-                                    name = "userNameField"
-                                    id = "UserNameField"
-                                    placeholder = "Your user name"
-                                    required = {true}
-                                    spellCheck = {false}
-                                    value = {userName}
-                                    onChange = {
+                                    type="text"
+                                    autoComplete="off"
+                                    autoFocus={true}
+                                    name="userNameField"
+                                    id="UserNameField"
+                                    placeholder="Your user name"
+                                    required={true}
+                                    spellCheck={false}
+                                    value={userName}
+                                    onChange={
                                         (event) => {
-                                            handleChange (event);
+                                            handleChange(event);
                                         }
                                     }
                                 />
@@ -202,27 +211,27 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     Password:
                                 </Form.Label>
                                 <Form.Control
-                                    type = "password"
-                                    autoComplete = "off"
-                                    autoFocus = {false}
-                                    name = "passwordField"
-                                    id = "PasswordField"
-                                    placeholder = "Your password"
-                                    required = {true}
-                                    spellCheck = {false}
-                                    value = {password}
-                                    onChange = {
+                                    type="password"
+                                    autoComplete="off"
+                                    autoFocus={false}
+                                    name="passwordField"
+                                    id="PasswordField"
+                                    placeholder="Your password"
+                                    required={true}
+                                    spellCheck={false}
+                                    value={password}
+                                    onChange={
                                         (event) => {
-                                            handleChange (event);
+                                            handleChange(event);
                                         }
                                     }
                                 />
                             </Form.Group>
 
-                            <Button 
-                                variant = "success"
-                                type = "submit"
-                                block = {true}
+                            <Button
+                                variant="success"
+                                type="submit"
+                                block={true}
                             >
                                 Log in
                             </Button>

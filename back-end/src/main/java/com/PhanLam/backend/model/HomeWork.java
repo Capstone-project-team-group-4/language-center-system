@@ -36,10 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "HomeWork", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "HomeWork.findAll", query = "SELECT h FROM HomeWork h"),
-    @NamedQuery(name = "HomeWork.findByHomeWorkID", query = "SELECT h FROM HomeWork h WHERE h.homeWorkID = :homeWorkID"),
-    @NamedQuery(name = "HomeWork.findByRequirement", query = "SELECT h FROM HomeWork h WHERE h.requirement = :requirement"),
-    @NamedQuery(name = "HomeWork.findByDeadline", query = "SELECT h FROM HomeWork h WHERE h.deadline = :deadline")})
+    @NamedQuery (name = "HomeWork.findAll", query = "SELECT h FROM HomeWork h"),
+    @NamedQuery (name = "HomeWork.findByHomeWorkID", query = "SELECT h FROM HomeWork h WHERE h.homeWorkID = :homeWorkID"),
+    @NamedQuery (name = "HomeWork.findByRequirement", query = "SELECT h FROM HomeWork h WHERE h.requirement = :requirement"),
+    @NamedQuery (name = "HomeWork.findByDeadline", query = "SELECT h FROM HomeWork h WHERE h.deadline = :deadline")})
 public class HomeWork implements Serializable {
 
     private static final long serialVersionUID = 1L;

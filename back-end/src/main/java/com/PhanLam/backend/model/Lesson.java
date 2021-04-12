@@ -36,15 +36,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @UniqueConstraint(columnNames = {"LessonName"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
-    @NamedQuery(name = "Lesson.findByLessonID", query = "SELECT l FROM Lesson l WHERE l.lessonID = :lessonID"),
-    @NamedQuery(name = "Lesson.findByLessonName", query = "SELECT l FROM Lesson l WHERE l.lessonName = :lessonName"),
-    @NamedQuery(name = "Lesson.findByDescription", query = "SELECT l FROM Lesson l WHERE l.description = :description"),
-    @NamedQuery(name = "Lesson.findByContentURI", query = "SELECT l FROM Lesson l WHERE l.contentURI = :contentURI"),
-    @NamedQuery(name = "Lesson.findByType", query = "SELECT l FROM Lesson l WHERE l.type = :type"),
-    @NamedQuery(name = "Lesson.findByDuration", query = "SELECT l FROM Lesson l WHERE l.duration = :duration"),
-    @NamedQuery(name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated"),
-    @NamedQuery(name = "Lesson.findByLastModified", query = "SELECT l FROM Lesson l WHERE l.lastModified = :lastModified")})
+    @NamedQuery (name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
+    @NamedQuery (name = "Lesson.findByLessonID", query = "SELECT l FROM Lesson l WHERE l.lessonID = :lessonID"),
+    @NamedQuery (name = "Lesson.findByLessonName", query = "SELECT l FROM Lesson l WHERE l.lessonName = :lessonName"),
+    @NamedQuery (name = "Lesson.findByDescription", query = "SELECT l FROM Lesson l WHERE l.description = :description"),
+    @NamedQuery (name = "Lesson.findByContentURI", query = "SELECT l FROM Lesson l WHERE l.contentURI = :contentURI"),
+    @NamedQuery (name = "Lesson.findByType", query = "SELECT l FROM Lesson l WHERE l.type = :type"),
+    @NamedQuery (name = "Lesson.findByDuration", query = "SELECT l FROM Lesson l WHERE l.duration = :duration"),
+    @NamedQuery (name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated")})
 public class Lesson implements Serializable {
 
     private static final long serialVersionUID = 1L;

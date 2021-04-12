@@ -30,10 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "StudentScore", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "StudentScore.findAll", query = "SELECT s FROM StudentScore s"),
-    @NamedQuery(name = "StudentScore.findByScoreID", query = "SELECT s FROM StudentScore s WHERE s.scoreID = :scoreID"),
-    @NamedQuery(name = "StudentScore.findByScore", query = "SELECT s FROM StudentScore s WHERE s.score = :score"),
-    @NamedQuery(name = "StudentScore.findByStatus", query = "SELECT s FROM StudentScore s WHERE s.status = :status")})
+    @NamedQuery (name = "StudentScore.findAll", query = "SELECT s FROM StudentScore s"),
+    @NamedQuery (name = "StudentScore.findByScoreID", query = "SELECT s FROM StudentScore s WHERE s.scoreID = :scoreID"),
+    @NamedQuery (name = "StudentScore.findByScore", query = "SELECT s FROM StudentScore s WHERE s.score = :score"),
+    @NamedQuery (name = "StudentScore.findByStatus", query = "SELECT s FROM StudentScore s WHERE s.status = :status")})
 public class StudentScore implements Serializable {
 
     private static final long serialVersionUID = 1L;

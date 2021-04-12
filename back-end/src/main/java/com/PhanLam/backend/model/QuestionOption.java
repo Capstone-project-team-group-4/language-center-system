@@ -30,10 +30,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "QuestionOption", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "QuestionOption.findAll", query = "SELECT q FROM QuestionOption q"),
-    @NamedQuery(name = "QuestionOption.findByOptionID", query = "SELECT q FROM QuestionOption q WHERE q.optionID = :optionID"),
-    @NamedQuery(name = "QuestionOption.findByContent", query = "SELECT q FROM QuestionOption q WHERE q.content = :content"),
-    @NamedQuery(name = "QuestionOption.findByIsCorrectAnswer", query = "SELECT q FROM QuestionOption q WHERE q.isCorrectAnswer = :isCorrectAnswer")})
+    @NamedQuery (name = "QuestionOption.findAll", query = "SELECT q FROM QuestionOption q"),
+    @NamedQuery (name = "QuestionOption.findByOptionID", query = "SELECT q FROM QuestionOption q WHERE q.optionID = :optionID"),
+    @NamedQuery (name = "QuestionOption.findByContent", query = "SELECT q FROM QuestionOption q WHERE q.content = :content"),
+    @NamedQuery (name = "QuestionOption.findByIsCorrectAnswer", query = "SELECT q FROM QuestionOption q WHERE q.isCorrectAnswer = :isCorrectAnswer")})
 public class QuestionOption implements Serializable {
 
     private static final long serialVersionUID = 1L;

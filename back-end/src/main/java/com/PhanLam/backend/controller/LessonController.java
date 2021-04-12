@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LessonController {
     @Autowired
     private LessonService lessonService;
-    
-    @Autowired
-    private LessonRepository lessonRepository;
-    
+      
     @GetMapping("/lesson")
     @ResponseStatus(HttpStatus.OK)
     public List<Lesson> getLessonByCourseID(@RequestParam("courseID") Integer courseID){
@@ -38,7 +35,7 @@ public class LessonController {
     @GetMapping("/lessons")
     @ResponseStatus(HttpStatus.OK)
     public List<Lesson> getAllLesson(){
-        return lessonRepository.findAll();
+        return lessonService.getAllLesson();
     }
     
     @GetMapping("/id")

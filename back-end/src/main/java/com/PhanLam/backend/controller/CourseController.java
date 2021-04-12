@@ -99,12 +99,12 @@ public class CourseController {
     
     @GetMapping("/courses/{courseID}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Course> getCourseById(@PathVariable("courseID") Integer courseID){
+    public Course getCourseById(@PathVariable("courseID") Integer courseID){
         return courseService.getCourseById(courseID);
     }
     
-    @GetMapping("/courses")
-    public List<Course> getAllCourseCurrentsLogin(Integer userID){
-        return courseService.getCoursesByCurrentUserID(userID);
+    @GetMapping("/myCourses")
+    public List<Course> getAllCourseCurrentsLogin(@RequestParam(value = "userName") String userName){
+        return courseService.getCoursesByCurrentUserName(userName);
     }
 }

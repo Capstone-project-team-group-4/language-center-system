@@ -32,9 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "SpareTimeRegister", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SpareTimeRegister.findAll", query = "SELECT s FROM SpareTimeRegister s"),
-    @NamedQuery(name = "SpareTimeRegister.findBySpareTimeID", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTimeID = :spareTimeID"),
-    @NamedQuery(name = "SpareTimeRegister.findBySpareTime", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTime = :spareTime")})
+    @NamedQuery (name = "SpareTimeRegister.findAll", query = "SELECT s FROM SpareTimeRegister s"),
+    @NamedQuery (name = "SpareTimeRegister.findBySpareTimeID", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTimeID = :spareTimeID"),
+    @NamedQuery (name = "SpareTimeRegister.findBySpareTime", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTime = :spareTime")})
 public class SpareTimeRegister implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -118,6 +118,7 @@ public class User implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "SelfDescription", length = 2147483647)
     private String selfDescription;
+    @JsonIgnore
     @Basic(optional = false)
     @NotNull
     @Size (min = 1, max = 1000)

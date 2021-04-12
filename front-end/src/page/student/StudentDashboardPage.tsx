@@ -4,7 +4,7 @@ import { Col, Container, Row, Card, Button, Breadcrumb } from "react-bootstrap";
 import {
     StudentSidebar
 } from "../../common/component/student_sidebar/StudentSidebar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Course } from "../../model/Course";
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { values } from "lodash";
@@ -12,36 +12,30 @@ import { values } from "lodash";
 
 interface StudentDashboardPageProps {
     modalDialog: ReactElement;
+    // LoginUser: any;
 }
 
 export function StudentDashboardPage(
-    props: StudentDashboardPageProps
+    props: any 
 ): ReactElement {
-    let a: number[] = [17, 16, 22]
     let [course, setCourse] = useState<Course>(new Course());
     let [courseList, setCourseList] = useState<Course[]>([]);
+    let [myCourseList, setMyCourseList] = useState<Course[]>([]);
     let courseAPI = new CourseAPI();
     let param: any = useParams();
 
     useEffect(() => {
-        // courseAPI = new CourseAPI();
-        a.map((id) => {
-            return (
-                courseAPI.getOneCourse(id).then(
-                    (res) => {
-                        courseList.push(res.data);
-                        setCourseList(courseList);
-                        // console.log(student.userName);
-                    }
-                )
-            )
-        })
-        courseAPI.getOneCourse(17).then(
+        
+        const account:any = localStorage.getItem('account');
+        const js = JSON.parse(account).userName;
+        console.log("asasasa", js);
+        // console.log("asasasa", localStorage.getItem('sonDoHoi'));
+        courseAPI.getAllCoursesByCurrentUser("a").then(
             (res) => {
-                setCourse(res.data);
-                // console.log(student.userName);
+                setMyCourseList(res.data);
+                console.log("12345", localStorage.getItem('sonDoHoi'));
             }
-        );
+        )
     }, []);
 
     return (
@@ -64,7 +58,7 @@ export function StudentDashboardPage(
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                {courseList.map((course) => {
+                                {myCourseList.map((course) => {
                                     return (
                                         <Card style={{width: 400, marginRight: 50 }}>
                                             <Card.Body>
@@ -76,8 +70,11 @@ export function StudentDashboardPage(
                                                     {course.description}
                                                     {/* {i.age} */}
                                                 </Card.Text>
-                                                <Button variant="primary" href={"/student-dashboard-course/" + course.courseID} style={{alignItems: 'stretch'}}>
+                                                <Button variant="primary" style={{alignItems: 'stretch'}}>
                                                     Detail
+                                                </Button>
+                                                <Button variant="primary" href={"/student-dashboard-course/" + course.courseID} style={{alignItems: 'stretch'}}>
+                                                    Learn
                                                 </Button>
                                             </Card.Body>
                                         </Card>

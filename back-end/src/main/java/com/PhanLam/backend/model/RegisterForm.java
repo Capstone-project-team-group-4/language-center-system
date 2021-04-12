@@ -29,15 +29,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     @UniqueConstraint(columnNames = {"UserName"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "RegisterForm.findAll", query = "SELECT r FROM RegisterForm r"),
-    @NamedQuery(name = "RegisterForm.findByFormID", query = "SELECT r FROM RegisterForm r WHERE r.formID = :formID"),
-    @NamedQuery(name = "RegisterForm.findByUserName", query = "SELECT r FROM RegisterForm r WHERE r.userName = :userName"),
-    @NamedQuery(name = "RegisterForm.findByMiddleName", query = "SELECT r FROM RegisterForm r WHERE r.middleName = :middleName"),
-    @NamedQuery(name = "RegisterForm.findByFirstName", query = "SELECT r FROM RegisterForm r WHERE r.firstName = :firstName"),
-    @NamedQuery(name = "RegisterForm.findByLastName", query = "SELECT r FROM RegisterForm r WHERE r.lastName = :lastName"),
-    @NamedQuery(name = "RegisterForm.findByPhoneNumber", query = "SELECT r FROM RegisterForm r WHERE r.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "RegisterForm.findByEmail", query = "SELECT r FROM RegisterForm r WHERE r.email = :email"),
-    @NamedQuery(name = "RegisterForm.findByPassword", query = "SELECT r FROM RegisterForm r WHERE r.password = :password")})
+    @NamedQuery (name = "RegisterForm.findAll", query = "SELECT r FROM RegisterForm r"),
+    @NamedQuery (name = "RegisterForm.findByFormID", query = "SELECT r FROM RegisterForm r WHERE r.formID = :formID"),
+    @NamedQuery (name = "RegisterForm.findByUserName", query = "SELECT r FROM RegisterForm r WHERE r.userName = :userName"),
+    @NamedQuery (name = "RegisterForm.findByMiddleName", query = "SELECT r FROM RegisterForm r WHERE r.middleName = :middleName"),
+    @NamedQuery (name = "RegisterForm.findByFirstName", query = "SELECT r FROM RegisterForm r WHERE r.firstName = :firstName"),
+    @NamedQuery (name = "RegisterForm.findByLastName", query = "SELECT r FROM RegisterForm r WHERE r.lastName = :lastName"),
+    @NamedQuery (name = "RegisterForm.findByPhoneNumber", query = "SELECT r FROM RegisterForm r WHERE r.phoneNumber = :phoneNumber"),
+    @NamedQuery (name = "RegisterForm.findByEmail", query = "SELECT r FROM RegisterForm r WHERE r.email = :email"),
+    @NamedQuery (name = "RegisterForm.findByPassword", query = "SELECT r FROM RegisterForm r WHERE r.password = :password")})
 public class RegisterForm implements Serializable {
 
     private static final long serialVersionUID = 1L;

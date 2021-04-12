@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 public class LessonService {
     @Autowired
     private LessonRepository lessonRepository;
-    @Autowired
-    private CourseRepository courseRepository;
     
     public List<Lesson> getAllLessonByCourseID(Integer courseID){
         return lessonRepository.findAllByCourseID(courseID);
@@ -29,5 +27,9 @@ public class LessonService {
     
     public Lesson getOne(Integer lessonID){
         return lessonRepository.findByID(lessonID);
+    }
+    
+    public List<Lesson> getAllLesson(){
+        return lessonRepository.findAll();
     }
 }

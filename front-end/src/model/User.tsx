@@ -1,4 +1,5 @@
 export class User {
+    [x: string]: any;
 
     // Variables declaration:
     public userID: number;

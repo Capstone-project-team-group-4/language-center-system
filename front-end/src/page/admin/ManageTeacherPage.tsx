@@ -4,6 +4,7 @@ import React, {
     ReactElement
     , useEffect
     , useState
+    , Component
 } from "react";
 import { Link, useParams } from "react-router-dom";
 import { UserAPI } from "../../common/service/UserAPI";
@@ -18,16 +19,28 @@ import {
     , Container
     , Form
     , Modal
-    , Row
+    , Pagination, Row
     , Table
 } from "react-bootstrap";
-
+import { render } from "@testing-library/react";
+import ReactDOM from "react-dom";
+import { usePagination } from "react-pagination-hook";
 
 export function ManageTeacherPage(): ReactElement {
 
     let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI | undefined;
     let param: any = useParams();
+
+    let active = 1;
+    let items = [];
+    for (let number = 1; number <= 5; number++) {
+        items.push(
+            <Pagination.Item key={number} active={number === active}>
+                {number}
+            </Pagination.Item>,
+        );
+    }
 
     useEffect(() => {
         userAPI = new UserAPI();
@@ -107,7 +120,8 @@ export function ManageTeacherPage(): ReactElement {
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody >
+
                                     {user.map(
                                         (
                                             item
@@ -185,6 +199,15 @@ export function ManageTeacherPage(): ReactElement {
                                     }
                                 </tbody>
                             </table>
+                            <div>
+                                <Pagination>
+                                    <Pagination.First />
+                                    <Pagination.Prev />
+                                    <Pagination></Pagination>
+                                    <Pagination.Next />
+                                    <Pagination.Last />
+                                </Pagination>
+                            </div>
                         </div>
                     </div>
                 </div>

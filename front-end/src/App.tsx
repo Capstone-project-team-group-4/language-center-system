@@ -40,6 +40,7 @@ import { ViewProfilePage } from './page/ViewProfilePage';
 import { DetailPage } from './page/DetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
+import { DetailPages } from './page/DetailPages';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -225,6 +226,10 @@ export function App (): ReactElement {
 
       <Route path = "/user_detail/:studentID">
         <DetailPage />
+      </Route>
+
+      <Route path = "/user_details/:studentID">
+        <DetailPages />
       </Route>
       
       <ProtectedRoute 

@@ -287,6 +287,7 @@ public class UserService {
         updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setMiddleName(user.getMiddleName());
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setDob(user.getDob());
@@ -295,9 +296,9 @@ public class UserService {
         updatedUser.setJob(user.getJob());
         updatedUser.setPhotoURI(user.getPhotoURI());
         updatedUser.setSelfDescription(user.getSelfDescription());
-        updatedUser.setPassword(user.getPassword());
         updatedUser.setAccountStatus(user.getAccountStatus());
         updatedUser.setDateCreated(user.getDateCreated());
+        updatedUser.setPassword(user.getPassword());
         return userRepository.save(updatedUser);
     }
     

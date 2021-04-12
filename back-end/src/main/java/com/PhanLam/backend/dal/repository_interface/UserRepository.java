@@ -27,14 +27,7 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     public User save (User user); 
 
     @Override
-    public Optional<User> findById (Integer userID);
-    
-    @Query("select u from User u where u.userID = ?1")
-    public User findUserById(Integer userID);
-    
-    @Query("select u from User u where u.userName = ?1 and u.userName = ?2")
-    public User findUserByIdAndUsername(Integer userID, String userName);
-//    .findUserById(14);
+    public Optional<User> findById (Integer userID);  
     
     @Override
     public List<User> findAll();

@@ -20,7 +20,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Phan Lam
  */
 @RestController
-@Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
+@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserController {
 
     // Variables declaration:
@@ -151,9 +150,9 @@ public class UserController {
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(
-            @RequestBody User user,
-            @PathVariable int userID
-    ) {
+            @RequestBody User user
+            , @PathVariable int userID
+    ){
         return userService.updateStudent(user, userID);
     }
 
@@ -187,7 +186,6 @@ public class UserController {
 //        }
 //        return true;
 //    }
-    
     @GetMapping("/getTeacher")
     public List<User> listTeacher() {
         Role teacherRole = new Role(3, "ROLE_TEACHER");
@@ -200,9 +198,23 @@ public class UserController {
             }
         }
         return teacherUserList;
-        
-        
-//        Optional<User> nullableUser;
+    }
+    
+//    @GetMapping("/getTeacherSize")
+//    public int listTeacherSize() {
+//        Role teacherRole = new Role(3, "ROLE_TEACHER");
+//        List<User> teacherUserList = new ArrayList<>();
+//        List<User> userList = userRepository.findAll();
+//        for (User user : userList) {
+//            List<Role> roleList = user.getRoleList();
+//            if (roleList.contains(teacherRole)) {
+//                teacherUserList.add(user);
+//            }
+//        }
+//        return teacherUserList.size();
+//    }
+
+    //        Optional<User> nullableUser;
 //        List listUsers = new ArrayList<>();
 //        User user = new User();
 //        int userID;
@@ -236,9 +248,7 @@ public class UserController {
 //
 //            return listUsers;
 //        }
-    }
-    
-
+//    }
     @GetMapping("/getUsers/{userID}")
     public Optional showAllUserByID(
             @RequestBody User user,

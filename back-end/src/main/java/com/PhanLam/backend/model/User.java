@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -59,26 +60,20 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin")})
 public class User implements Serializable {
     
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "UserID", nullable = false)
-    private Integer userID;
-    @Basic (optional = false)
     @NotNull
-    @Size (min = 1, max = 400)
-    @Column (name = "UserName", nullable = false, length = 400)
+    @Size(min = 1, max = 400)
+    @Column(name = "UserName", nullable = false, length = 400)
     private String userName;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 1000)
     @Column(name = "FirstName", nullable = false, length = 1000)
     private String firstName;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 1000)
-    @Column(name = "MiddleName", nullable = false, length = 1000)
+    @Size (min = 1, max = 1000)
+    @Column (name = "MiddleName", nullable = false, length = 1000)
     private String middleName;
     @Basic(optional = false)
     @NotNull
@@ -91,18 +86,16 @@ public class User implements Serializable {
     @Size(min = 1, max = 1000)
     @Column(name = "Email", nullable = false, length = 1000)
     private String email;
-    @Column(name = "DOB")
-    @Temporal(TemporalType.DATE)
-    private Date dob;
     @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 100)
-    @Column (name = "PhoneNumber", nullable = false, length = 100)
+    @Size(min = 1, max = 100)
+    @Column(name = "PhoneNumber", nullable = false, length = 100)
     private String phoneNumber;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size (min = 0, max = 100)
-    @Column (name = "Gender", nullable = false, length = 100)
+    @Size(min = 1, max = 100)
+    @Column(name = "Gender", nullable = false, length = 100)
     private String gender;
     @Size(max = 500)
     @Column(name = "Job", length = 500)
@@ -113,22 +106,30 @@ public class User implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "SelfDescription", length = 2147483647)
     private String selfDescription;
-    @JsonIgnore
     @Basic(optional = false)
-    @NotNull
-    @Size (min = 1, max = 1000)
-    @Column (name = "Password", nullable = false, length = 1000)
+    @NotNull()
+    @Size(min = 1, max = 1000)
+    @Column(name = "Password", nullable = false, length = 1000)
     private String password;
     @Basic(optional = false)
-    @NotNull
-    @Size (min = 1, max = 100)
-    @Column (name = "AccountStatus", nullable = false, length = 100)
+    @NotNull()
+    @Size(min = 1, max = 100)
+    @Column(name = "AccountStatus", nullable = false, length = 100)
     private String accountStatus;
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Column(name = "DateCreated", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "UserID", nullable = false)
+    private Integer userID;
+    @Column(name = "DOB")
+    @Temporal(TemporalType.DATE)
+    private Date dob;
     @Column(name = "LastLogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
@@ -196,7 +197,7 @@ public class User implements Serializable {
             , mappedBy = "creator"
             , fetch = FetchType.LAZY
     )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList = new ArrayList<MultipleChoiceQuestion>();
     
     public User (){
     }
@@ -232,45 +233,6 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
-    public String getUserName (){
-        return userName;
-    }
-
-    public void setUserName (String userName){
-        this.userName = userName;
-    }
-
-    public String getFirstName (){
-        return firstName;
-    }
-
-    public void setFirstName (String firstName){
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName (){
-        return middleName;
-    }
-
-    public void setMiddleName (String middleName){
-        this.middleName = middleName;
-    }
-
-    public String getLastName (){
-        return lastName;
-    }
-
-    public void setLastName (String lastName){
-        this.lastName = lastName;
-    }
-
-    public String getEmail (){
-        return email;
-    }
-
-    public void setEmail (String email){
-        this.email = email;
-    }
     
     public Date getDob() {
         return dob;
@@ -280,69 +242,6 @@ public class User implements Serializable {
         this.dob = dob;
     }
     
-    public String getPhoneNumber (){
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber (String phoneNumber){
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getGender (){
-        return gender;
-    }
-
-    public void setGender (String gender){
-        this.gender = gender;
-    }
-
-    public String getJob (){
-        return job;
-    }
-
-    public void setJob (String job){
-        this.job = job;
-    }
-
-    public String getPhotoURI (){
-        return photoURI;
-    }
-
-    public void setPhotoURI (String photoURI){
-        this.photoURI = photoURI;
-    }
-
-    public String getSelfDescription (){
-        return selfDescription;
-    }
-
-    public void setSelfDescription (String selfDescription){
-        this.selfDescription = selfDescription;
-    }
-
-    public String getPassword (){
-        return password;
-    }
-
-    public void setPassword (String password){
-        this.password = password;
-    }
-
-    public String getAccountStatus (){
-        return accountStatus;
-    }
-
-    public void setAccountStatus (String accountStatus){
-        this.accountStatus = accountStatus;
-    }
-
-    public Date getDateCreated (){
-        return dateCreated;
-    }
-
-    public void setDateCreated (Date dateCreated){
-        this.dateCreated = dateCreated;
-    }
     
     public Date getLastLogin() {
         return lastLogin;
@@ -457,4 +356,108 @@ public class User implements Serializable {
     public String toString() {
         return "com.PhanLam.backend.model.User[ userID=" + userID + " ]";
     }    
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getPhotoURI() {
+        return photoURI;
+    }
+
+    public void setPhotoURI(String photoURI) {
+        this.photoURI = photoURI;
+    }
+
+    public String getSelfDescription() {
+        return selfDescription;
+    }
+
+    public void setSelfDescription(String selfDescription) {
+        this.selfDescription = selfDescription;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(String accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 }

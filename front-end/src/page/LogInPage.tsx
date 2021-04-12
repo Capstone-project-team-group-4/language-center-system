@@ -116,12 +116,7 @@ export function LogInPage(props: LogInPageProps): ReactElement {
                             // <Route path="/student-dashboard" render={(props) => <StudentDashboardPage LoginUser="Hello, " {...props} />} />
                             loginSucceededLocation.pathname
                                 = "/student-dashboard";
-                                const account = {
-                                    userName: loggedInUser.userName
-
-                                }
-                            localStorage.clear();
-                            localStorage.setItem('account', JSON.stringify(account));
+                            localStorage.setItem('account', JSON.stringify(loggedInUser));
                             break;
                     }
                 }

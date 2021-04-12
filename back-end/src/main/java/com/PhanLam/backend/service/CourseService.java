@@ -281,4 +281,8 @@ public class CourseService {
         User user = userRepository.findByUserName(userName).orElseThrow();
         return user.getCourseList();
     }
+
+    public Course getCourseByName(String courseName) {
+        return courseRepository.findByCourseName(courseName);
+    }
 }

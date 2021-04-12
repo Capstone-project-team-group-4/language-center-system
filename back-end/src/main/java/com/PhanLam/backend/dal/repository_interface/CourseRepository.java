@@ -39,5 +39,8 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     
     @Override
     public List<Course> findAll();
+
+    @Query("select c from Course c where c.courseName = ?1")
+    public Course findByCourseName(String courseName);
     
 }

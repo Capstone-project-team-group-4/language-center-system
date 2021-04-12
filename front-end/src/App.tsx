@@ -364,7 +364,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <CourseDetailPage modalDialog={modalDialog} />
       </Route>
-      <Route path="/student-dashboard-lesson/:lessonID">
+      <Route path="/student-dashboard-lesson/:courseName/:lessonID">
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
       </Route>

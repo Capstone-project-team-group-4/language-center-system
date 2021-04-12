@@ -8,6 +8,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { Course } from "../../model/Course";
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { values } from "lodash";
+import { LocalStorageService } from "../../common/service/LocalStorageService";
 
 
 interface StudentDashboardPageProps {
@@ -23,17 +24,13 @@ export function StudentDashboardPage(
     let [myCourseList, setMyCourseList] = useState<Course[]>([]);
     let courseAPI = new CourseAPI();
     let param: any = useParams();
+    let localStorageService = new LocalStorageService();
 
     useEffect(() => {
-        
-        const account:any = localStorage.getItem('account');
-        const js = JSON.parse(account).userName;
-        console.log("asasasa", js);
-        // console.log("asasasa", localStorage.getItem('sonDoHoi'));
-        courseAPI.getAllCoursesByCurrentUser("a").then(
+        const name = localStorageService.getLoggedUserName();
+        courseAPI.getAllCoursesByCurrentUser(name).then(
             (res) => {
                 setMyCourseList(res.data);
-                console.log("12345", localStorage.getItem('sonDoHoi'));
             }
         )
     }, []);

@@ -5,6 +5,7 @@ import './StudentSidebar.css';
 import { Link } from "react-router-dom";
 import { CourseAPI } from "../../service/CourseAPI";
 import { Course } from "../../../model/Course";
+import { LocalStorageService } from "../../service/LocalStorageService";
 
 export function StudentSidebar(): ReactElement {
 
@@ -15,20 +16,29 @@ export function StudentSidebar(): ReactElement {
     let [course, setCourse] = useState<Course>(new Course());
     let [sideBarActivated, setSideBarActivated]
         = useState<string>("");
+    let localStorageService = new LocalStorageService();
+    let [myCourseList, setMyCourseList] = useState<Course[]>([]);
+
 
     useEffect(() => {
         // courseAPI = new CourseAPI();
-        a.map((id) => {
-            return (
-                courseAPI.getOneCourse(id).then(
-                    (res) => {
-                        courseList.push(res.data);
-                        setCourseList(courseList);
-                        // console.log(student.userName);
-                    }
-                )
-            )
-        })
+        // a.map((id) => {
+        //     return (
+        //         courseAPI.getOneCourse(id).then(
+        //             (res) => {
+        //                 courseList.push(res.data);
+        //                 setCourseList(courseList);
+        //                 // console.log(student.userName);
+        //             }
+        //         )
+        //     )
+        // })
+        const name = localStorageService.getLoggedUserName();
+        courseAPI.getAllCoursesByCurrentUser(name).then(
+            (res) => {
+                setMyCourseList(res.data);
+            }
+        )
     }, []);
 
 
@@ -68,13 +78,13 @@ export function StudentSidebar(): ReactElement {
                             <Accordion.Toggle as={Card.Header} eventKey="0">
                                 Course
                             </Accordion.Toggle>
-                            {courseList.map((course) => {
+                            {myCourseList.map((course) => {
                                 return (
-                            <Accordion.Collapse eventKey="0">
-                                <Card.Body><a href={"/student-dashboard-course/" + course.courseID}>{course.courseName}</a></Card.Body>
-                            </Accordion.Collapse>
-                            )
-                        })}
+                                    <Accordion.Collapse eventKey="0">
+                                        <Card.Body><a href={"/student-dashboard-course/" + course.courseID}>{course.courseName}</a></Card.Body>
+                                    </Accordion.Collapse>
+                                )
+                            })}
                         </Card>
                     </Accordion>
                     <ListGroup.Item variant="light" action={true}>

@@ -103,6 +103,12 @@ public class CourseController {
         return courseService.getCourseById(courseID);
     }
     
+    @GetMapping("/getCourseByName")
+    @ResponseStatus(HttpStatus.OK)
+    public Course getCourseByName(@RequestParam("courseName") String courseName){
+        return courseService.getCourseByName(courseName);
+    }
+    
     @GetMapping("/myCourses")
     public List<Course> getAllCourseCurrentsLogin(@RequestParam(value = "userName") String userName){
         return courseService.getCoursesByCurrentUserName(userName);

@@ -44,8 +44,9 @@ export function LessonDetailPage(
             console.log(err);
         });
 
-        courseAPI.getOneCourse(param.courseID).then(
+        courseAPI.getCourseByName(param.courseName).then(
             (res) => {
+                console.log("data: ", res.data);
                 setCourse(res.data);
             }
         ).catch((err) => {
@@ -77,7 +78,7 @@ export function LessonDetailPage(
                                 <Breadcrumb.Item
                                     linkAs={Link}
                                     linkProps={{ to: "/student-dashboard-course/" + course.courseID }}>
-                                    Course
+                                    {course.courseName}
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active={true}>
                                     {lesson.lessonName}

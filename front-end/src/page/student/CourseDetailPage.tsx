@@ -34,6 +34,8 @@ export function CourseDetailPage(
         });
         courseAPI.getOneCourse(param.courseID).then(
             (res) => {
+                console.log("course", res.data);
+                
                 setCourse(res.data);
             }
         ).catch((err) => {
@@ -71,7 +73,7 @@ export function CourseDetailPage(
                                 return (
 
                                         <ListGroup className="my-2">
-                                            <ListGroup.Item action href={"/student-dashboard-lesson/" + lesson.lessonID}>
+                                            <ListGroup.Item action href={"/student-dashboard-lesson/" + course.courseName + "/" + lesson.lessonID}>
                                                 {lesson.lessonName}
                                             </ListGroup.Item>
                                         </ListGroup>

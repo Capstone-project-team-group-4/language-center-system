@@ -49,12 +49,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery (name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated")})
 public class Lesson implements Serializable {
 
-    @Basic(optional = false)
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Basic (optional = false)
+    @Column (name = "LessonID", nullable = false)
+    private Integer lessonID;
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "LessonName", nullable = false, length = 400)
+    @Size (min = 1, max = 400)
+    @Column (name = "LessonName", nullable = false, length = 400)
     private String lessonName;
-    @Size(max = 1000)
+    @Size (max = 1000)
     @Column (name = "Description", length = 1000)
     private String description;
     @Basic (optional = false)
@@ -63,9 +69,9 @@ public class Lesson implements Serializable {
     @Column (name = "ContentURI", nullable = false, length = 1000)
     private String contentURI;
     @Basic (optional = false)
-    @NotNull ()
-    @Size(min = 1, max = 500)
-    @Column(name = "Type", nullable = false, length = 500)
+    @NotNull
+    @Size (min = 1, max = 500)
+    @Column (name = "Type", nullable = false, length = 500)
     private String type;
     @Basic (optional = false)
     @NotNull
@@ -77,14 +83,8 @@ public class Lesson implements Serializable {
     @Temporal (TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Column (name = "LastModified")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Basic (optional = false)
-    @Column (name = "LessonID", nullable = false)
-    private Integer lessonID;
     @OneToMany (mappedBy = "lessonID", fetch = FetchType.LAZY)
     private List<Document> documentList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
@@ -100,13 +100,22 @@ public class Lesson implements Serializable {
         this.lessonID = lessonID;
     }
 
-    public Lesson (Integer lessonID, String lessonName, String contentURI, String type, int duration, Date dateCreated){
+    public Lesson (
+            Integer lessonID
+            , String lessonName
+            , String contentURI
+            , String type
+            , int duration
+            , Date dateCreated
+            , Date lastModified
+    ){
         this.lessonID = lessonID;
         this.lessonName = lessonName;
         this.contentURI = contentURI;
         this.type = type;
         this.duration = duration;
         this.dateCreated = dateCreated;
+        this.lastModified = lastModified;
     }
 
     public Integer getLessonID (){
@@ -117,6 +126,61 @@ public class Lesson implements Serializable {
         this.lessonID = lessonID;
     }
 
+    public String getLessonName (){
+        return lessonName;
+    }
+
+    public void setLessonName (String lessonName){
+        this.lessonName = lessonName;
+    }
+
+    public String getDescription (){
+        return description;
+    }
+
+    public void setDescription (String description){
+        this.description = description;
+    }
+
+    public String getContentURI (){
+        return contentURI;
+    }
+
+    public void setContentURI (String contentURI){
+        this.contentURI = contentURI;
+    }
+
+    public String getType (){
+        return type;
+    }
+
+    public void setType (String type){
+        this.type = type;
+    }
+
+    public int getDuration (){
+        return duration;
+    }
+
+    public void setDuration (int duration){
+        this.duration = duration;
+    }
+
+    public Date getDateCreated (){
+        return dateCreated;
+    }
+
+    public void setDateCreated (Date dateCreated){
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
 
     @XmlTransient
     public List<Document> getDocumentList (){
@@ -167,62 +231,6 @@ public class Lesson implements Serializable {
     @Override
     public String toString (){
         return "com.PhanLam.backend.model.Lesson[ lessonID=" + lessonID + " ]";
-    }
-
-    public String getLessonName() {
-        return lessonName;
-    }
-
-    public void setLessonName(String lessonName) {
-        this.lessonName = lessonName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getContentURI() {
-        return contentURI;
-    }
-
-    public void setContentURI(String contentURI) {
-        this.contentURI = contentURI;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
     }
     
 }

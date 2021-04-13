@@ -62,11 +62,11 @@ public class Course implements Serializable {
     private Integer courseID;
     @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "CourseName", nullable = false, length = 400)
+    @Size (min = 1, max = 400)
+    @Column (name = "CourseName", nullable = false, length = 400)
     private String courseName;
-    @Size(max = 1000)
-    @Column(name = "Description", length = 1000)
+    @Size (max = 1000)
+    @Column (name = "Description", length = 1000)
     private String description;
     
     @JoinColumn (
@@ -86,14 +86,14 @@ public class Course implements Serializable {
     private CourseLevel courseLevel;
     
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Column(name = "TuitionFee", nullable = false, precision = 19, scale = 4)
+    @Column (name = "TuitionFee", nullable = false, precision = 19, scale = 4)
     private BigDecimal tuitionFee;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Column(name = "DateCreated", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column (name = "DateCreated", nullable = false)
+    @Temporal (TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
@@ -223,24 +223,24 @@ public class Course implements Serializable {
         return tuitionFee;
     }
 
+    public void setTuitionFee (BigDecimal tuitionFee){
+        this.tuitionFee = tuitionFee;
+    }
+    
     public Date getDateCreated (){
         return dateCreated;
     }
 
-    public void setTuitionFee(BigDecimal tuitionFee) {
-        this.tuitionFee = tuitionFee;
-    }
-
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated (Date dateCreated){
         this.dateCreated = dateCreated;
-    }
-
-    public void setLastModified (Date lastModified){
-        this.lastModified = lastModified;
     }
     
     public Date getLastModified (){
         return lastModified;
+    }
+
+    public void setLastModified (Date lastModified){
+        this.lastModified = lastModified;
     }
 
     public List<User> getUserList (){

@@ -32,6 +32,40 @@ export class UserAPI {
         return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
+    public async listStudents (
+            pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<User>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/students"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<User> (
+                    this.serverResponse.data
+            )){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
+            } 
+            else {
+                throw new Error ("This server response is not valid !");
+            }  
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
     public async getAllUserExcludingCurrentLoggedInUser (
             pageNumber: number
             , pageSize: number

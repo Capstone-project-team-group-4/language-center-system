@@ -70,6 +70,17 @@ public class UserController {
         return userHolder;
     }
     
+    @GetMapping ("/students")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> listStudents (
+            @RequestParam int pageIndex
+            , @RequestParam int pageSize){
+        DataPage<User> studentDataPage;
+        
+        studentDataPage = userService.getAllStudents(pageIndex, pageSize);
+        return studentDataPage;
+    }
+    
     @GetMapping ("/students:excluding-student-in-the-course")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentExcludingStudentInTheCourse (

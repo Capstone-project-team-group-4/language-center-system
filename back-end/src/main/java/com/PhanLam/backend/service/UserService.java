@@ -165,6 +165,48 @@ public class UserService {
     }
     
     @Transactional (readOnly = true)
+    public DataPage<User> getAllStudents (         
+            int pageIndex
+            , int pageSize
+    ){
+        List<User> studentHolder;
+        QUser student;
+        QRole role;
+        QueryResults<User> studentPage;
+        DataPage<User> studentDataPage;
+        long totalRowCount;
+        
+        if ((pageIndex >= 0) && (pageSize > 0)){
+                student = new QUser ("student");
+                role = QRole.role;
+                studentPage = queryFactory
+                        .selectFrom (student)
+                            .leftJoin (student.roleList, role)                          
+                        .where (
+                                role.roleName.eq ("ROLE_STUDENT")                            
+                        )
+                        .orderBy (
+                                student.firstName.asc ()
+                                , student.lastName.asc ()
+                        )
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = studentPage.getTotal ();
+                studentHolder = studentPage.getResults ();
+                studentDataPage = new DataPage<> (totalRowCount, studentHolder);
+                return studentDataPage;
+            }
+            else {
+                throw new InvalidRequestArgumentException (
+                        "The page index number and page size number parameters "
+                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "Parameter name: pageIndex, pageSize"
+                );
+            }
+    }
+    
+    @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID
             , int pageIndex

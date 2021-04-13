@@ -165,13 +165,17 @@ export function App (): ReactElement {
         <HomePage modalDialog = {modalDialog}/>
       </Route>
 
-      <Route path = "/admin-console/manage-student-page">
+      <ProtectedRoute
+        path = "/admin-console/manage-student-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut = {logOut}/>
         <ManageStudentPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
         />
-      </Route>
+      </ProtectedRoute>
 
       <Route exact path="/editStudentInfo/studentID">
         <EditStudentInfo />

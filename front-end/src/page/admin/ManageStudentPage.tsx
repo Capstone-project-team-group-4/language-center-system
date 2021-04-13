@@ -183,7 +183,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                         &nbsp;
                                         <Link to="/editStudentInfo/studentID">
                                                 <button type="button"
-                                                    className="btn btn-warning">
+                                                    className="btn btn-success">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
                                                             Sửa

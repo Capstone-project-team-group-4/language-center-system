@@ -166,7 +166,10 @@ export function App (): ReactElement {
 
       <Route path = "/admin-console/manage-student-page">
         <PageHeader logOut = {logOut}/>
-        <ManageStudentPage />
+        <ManageStudentPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+        />
       </Route>
 
       <Route exact path="/editStudentInfo/studentID">

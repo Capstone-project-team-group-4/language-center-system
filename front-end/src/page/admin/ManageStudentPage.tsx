@@ -1,23 +1,76 @@
 /* eslint-disable max-len */
 import React, { ReactElement, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { DataPage } from "../../App";
+import { DialogControl } from "../../common/component/ModalDialog";
+import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 import './ManageStudentPage.css';
 
-export function ManageStudentPage (): ReactElement {
+interface ManageStudentPageProps {
+    dialogController: DialogControl;
+    modalDialog: ReactElement;
+}
+
+export function ManageStudentPage (props: ManageStudentPageProps): ReactElement {
     let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI = new UserAPI();
-    useEffect(() => {
-        userAPI.listUsers().then(
-            (res) => {
-                setUser(res.data);
+    let typeGuardian: TypeGuard;
+    let studentDataPage: DataPage<User> | undefined;
+    let [totalPageCount, setTotalPageCount] = useState<number>(0);
+    let [studentHolder, setStudentHolder] = useState<User[]>([]);
+    let [pageIndex] = useState<number>(0);
+    let [pageSize] = useState<number>(10);
+    // useEffect(() => {
+    //     userAPI.listUsers().then(
+    //         (res) => {
+    //             setUser(res.data);
+    //         }
+    //     )
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
+
+    useEffect(
+        (): void => {
+            loadStudentTable().catch(
+                (error: unknown) => {
+                    console.error(error);
+                }
+            );
+        }
+        , []
+    );
+
+    async function loadStudentTable (): Promise<void> {
+        try {
+            studentDataPage = await userAPI.listStudents(
+                pageIndex
+                , pageSize
+            );
+            setTotalPageCount(studentDataPage.totalRowCount);
+            setStudentHolder(studentDataPage.pageDataHolder);
+            return Promise.resolve<undefined>(undefined);
+        }
+        catch (apiError: unknown) {
+            if (typeGuardian.isAxiosError(apiError)) {
+                if (typeof apiError.code === "string") {
+                    props.dialogController.setDialogTitle(
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle(apiError.name);
+                }
+                props.dialogController.setDialogBody(apiError.message);
+                props.dialogController.setDialogType("error");
+                props.dialogController.setShowDialog(true);
             }
-        )
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+            return Promise.reject(apiError);
+        }
+    }
     return (
         <div className="container" id="grid">
             <div className="text-center">
@@ -103,7 +156,7 @@ export function ManageStudentPage (): ReactElement {
                                         <td></td>
                                         <td></td>
                                     </tr> */}
-                                    {user.map((item, index) => <tr key={index}>
+                                    {studentHolder.map((item, index) => <tr key={index}>
                                         <td>{item["userID"]}</td>
                                         <td>{item["userName"]}</td>
                                         <td>{item["firstName"]}</td>

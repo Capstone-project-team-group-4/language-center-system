@@ -46,6 +46,7 @@ import {
 import { 
   ManageExaminationInCoursePage 
 } from './page/admin/ManageExaminationInCoursePage';
+import { ManageLessonPage } from './page/admin/ManageLessonPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -317,6 +318,17 @@ export function App (): ReactElement {
       >
         <PageHeader logOut = {logOut} />
         <ManageCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/admin-console/manage-lesson-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <ManageLessonPage
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
         />

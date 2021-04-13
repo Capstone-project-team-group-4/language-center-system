@@ -58,7 +58,7 @@ public class LessonController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateLesson (
             @PathVariable int lessonID
-            , @Valid @RequestBody Lesson updatedLesson
+                , @Valid @RequestBody Lesson updatedLesson
     ){
         lessonService.updateLesson(lessonID, updatedLesson);
     }

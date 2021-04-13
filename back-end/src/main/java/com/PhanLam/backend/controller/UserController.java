@@ -72,7 +72,7 @@ public class UserController {
     
     @GetMapping ("/students")
     @ResponseStatus (HttpStatus.OK)
-    public DataPage<User> listStudents (
+    public DataPage<User> getAllStudents (
             @RequestParam int pageIndex
             , @RequestParam int pageSize){
         DataPage<User> studentDataPage;

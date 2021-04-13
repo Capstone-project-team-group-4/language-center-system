@@ -14,7 +14,6 @@ interface ManageStudentPageProps {
 }
 
 export function ManageStudentPage (props: ManageStudentPageProps): ReactElement {
-    let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI = new UserAPI();
     let typeGuardian: TypeGuard;
     let studentDataPage: DataPage<User> | undefined;
@@ -33,20 +32,9 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
     //         });
     // }, []);
 
-    useEffect(
-        (): void => {
-            loadStudentTable().catch(
-                (error: unknown) => {
-                    console.error(error);
-                }
-            );
-        }
-        , []
-    );
-
     async function loadStudentTable (): Promise<void> {
         try {
-            studentDataPage = await userAPI.listStudents(
+            studentDataPage = await userAPI.getAllStudents(
                 pageIndex
                 , pageSize
             );
@@ -71,6 +59,18 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
             return Promise.reject(apiError);
         }
     }
+
+    useEffect(
+        (): void => {
+            loadStudentTable().catch(
+                (error: unknown) => {
+                    console.error(error);
+                }
+            );
+        }
+        , []
+    );
+
     return (
         <div className="container" id="grid">
             <div className="text-center">

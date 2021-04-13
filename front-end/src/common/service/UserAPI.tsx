@@ -32,7 +32,7 @@ export class UserAPI {
         return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
-    public async listStudents (
+    public async getAllStudents (
             pageIndex: number
             , pageSize: number
     ): Promise<DataPage<User>> {

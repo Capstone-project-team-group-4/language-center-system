@@ -6,6 +6,11 @@
     margin: 0 auto;
 }
 
+#btn_details, #btn_edit {
+    width: 75px;
+    text-align: center;
+}
+
 /* #action {
     display: flex;
     align-items: center;

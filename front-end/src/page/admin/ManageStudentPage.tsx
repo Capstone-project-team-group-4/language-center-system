@@ -74,7 +74,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
     return (
         <div className="container" id="grid">
             <div className="text-center">
-                <h1>Quản Lý Học Viên</h1>
+                <h1>Manage All Students</h1>
                 <hr />
             </div>
             <div className="row">
@@ -94,24 +94,24 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                     <tr>
                                         <th className="text-center">ID</th>
                                         <th className="text-center">
-                                            Tên đăng nhập</th>
+                                            User Name</th>
                                         <th className="text-center">
-                                            Tên</th>
+                                            First Name</th>
                                         <th className="text-center">
-                                            Tên đệm</th>
+                                            Middle Name</th>
                                         <th className="text-center">
-                                            Họ</th>
+                                            Last Name</th>
                                         <th className="text-center">
                                             Email
                                                 </th>
                                         <th className="text-center">
-                                            Số điện thoại
+                                            Phone
                                                 </th>
                                         <th className="text-center">
-                                            Trạng Thái
+                                            Status
                                                 </th>
                                         <th className="text-center">
-                                            Hành Động
+                                            Actions
                                                 </th>
                                     </tr>
                                 </thead>
@@ -173,20 +173,20 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                         <td className="text-center" id="action">
                                             <Link to="/admin-console/view-student-profile">
                                                 <button type="button"
-                                                    className="btn btn-primary">
+                                                    className="btn btn-primary" id="btn_details">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
-                                                            Xem
+                                                            Details
                                                     </span>
                                                 </button>
                                             </Link>
                                         &nbsp;
                                         <Link to="/editStudentInfo/studentID">
                                                 <button type="button"
-                                                    className="btn btn-success">
+                                                    className="btn btn-success" id="btn_edit">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
-                                                            Sửa
+                                                            Edit
                                                     </span>
                                         </button>
                                             </Link>

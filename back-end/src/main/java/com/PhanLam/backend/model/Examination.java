@@ -113,7 +113,7 @@ public class Examination implements Serializable {
             , referencedColumnName = "CourseID"
             , nullable = false
     )
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course course;
 
     public Examination (){

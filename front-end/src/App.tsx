@@ -45,6 +45,12 @@ import {
   ManageExaminationInCoursePage 
 } from './page/admin/ManageExaminationInCoursePage';
 import { TypeConvert } from './common/service/TypeConvert';
+import { 
+  ManageThingsInExaminationPage 
+} from './page/admin/ManageThingsInExaminationPage';
+import { 
+  ManageExamQuestionInExaminationPage 
+} from './page/admin/ManageExamQuestionInExaminationPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -271,6 +277,35 @@ export function App (): ReactElement {
       >
         <PageHeader logOut = {logOut} />
         <ManageThingsInCoursePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = {
+          "/admin-console/manage-things-in-examination-page"
+          + "/examinations/:examID/exam-questions"
+        }
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <ManageExamQuestionInExaminationPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = "/admin-console/manage-things-in-examination-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <ManageThingsInExaminationPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
           typeGuardian = {typeGuardian}

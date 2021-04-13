@@ -47,6 +47,42 @@ export class ExaminationAPI {
         }
     }
 
+    public async getAllExam (
+            pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<Examination>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examinations"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<Examination> (
+                    this.serverResponse.data
+            )){
+                this.examDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<Examination>> (
+                        this.examDataPage
+                );
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
     public async getAllExamByCourseID (
             courseID: number
             , pageIndex: number
@@ -92,6 +128,58 @@ export class ExaminationAPI {
             await this.axiosInstance.put<undefined> (
                     `/courses/${courseID}/examinations/${updatedExam.examID}`
                     , updatedExam
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async addAQuizToExam (
+            questionID: number
+            , examID: number
+    ): Promise<void> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("questionID", questionID.toString ());
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/examinations/${examID}:add-a-quiz`
+                    , undefined
+                    , {params: this.requestParameterHolder}
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async removeAQuizFromExam (
+            questionID: number
+            , examID: number
+    ): Promise<void> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("questionID", questionID.toString ());
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    `/examinations/${examID}:remove-a-quiz`
+                    , undefined
+                    , {params: this.requestParameterHolder}
             );
             return Promise.resolve<undefined> (undefined);
         }

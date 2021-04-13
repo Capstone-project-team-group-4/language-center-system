@@ -57,7 +57,7 @@ export function ManageStudentInCoursePage (
     let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
     function openAddStudentDialog (): void {
-        loadStudentTable ().catch (
+        loadStudentExcludingStudentInTheCourseTable ().catch (
                 (error: unknown) => {
                     console.error (error);
                 }
@@ -90,7 +90,7 @@ export function ManageStudentInCoursePage (
                     pendingUserID
                     , Number (courseID)
             );
-            loadStudentInTheCourseTable ();
+            await loadStudentInTheCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -112,7 +112,7 @@ export function ManageStudentInCoursePage (
     }
 
     async function addAStudentToCourse (
-        event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): Promise<void> {
         button = event.target as HTMLButtonElement;
         try {
@@ -120,8 +120,8 @@ export function ManageStudentInCoursePage (
                     Number (button.value)
                     , Number (courseID)
             );
-            loadStudentTable ();
-            loadStudentInTheCourseTable ();
+            await loadStudentExcludingStudentInTheCourseTable ();
+            await loadStudentInTheCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -142,7 +142,8 @@ export function ManageStudentInCoursePage (
         }
     }
 
-    async function loadStudentTable (): Promise<void> {
+    async function loadStudentExcludingStudentInTheCourseTable (    
+    ): Promise<void> {
         try {
             studentDataPage 
                 = await userAPI.getAllStudentExcludingStudentInTheCourse (

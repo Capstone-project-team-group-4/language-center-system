@@ -132,7 +132,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
                 
-                .antMatchers (HttpMethod.GET, "/students*")
+                .antMatchers (
+                        HttpMethod.GET
+                        , "/students:excluding-student-in-the-course"
+                )
                         .hasRole ("ADMIN")
                 
                 .antMatchers (HttpMethod.POST, "/courses")
@@ -146,6 +149,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/courses/*")
                         .hasRole ("ADMIN")
                 
+                .antMatchers (HttpMethod.GET, "/courses/*/students")
+                        .hasRole ("ADMIN")
+                
                 .antMatchers (HttpMethod.POST, "/courses/*/examinations")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses/*/examinations")
@@ -153,6 +159,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.PUT, "/courses/*/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*/examinations/*")
+                        .hasRole ("ADMIN")               
+                .antMatchers (HttpMethod.GET, "/examinations")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/examinations/*")
                         .hasRole ("ADMIN")
                 
                 .antMatchers (HttpMethod.GET, "/roles")
@@ -166,11 +176,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.POST, "/quizzes")
                         .hasRole ("TEACHER")
                 .antMatchers (HttpMethod.GET, "/quizzes*")
-                        .hasRole ("TEACHER")
+                        .hasAnyRole ("TEACHER", "ADMIN")
                 .antMatchers (HttpMethod.PUT, "/quizzes/*")
                         .hasRole ("TEACHER")
                 .antMatchers (HttpMethod.DELETE, "/quizzes/*")
                         .hasRole ("TEACHER")
+                .antMatchers (HttpMethod.GET, "/examinations/*/quizzes")
+                        .hasRole ("ADMIN")
                 
                 .anyRequest ().denyAll ();
     }

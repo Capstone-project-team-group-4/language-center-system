@@ -15,7 +15,6 @@ export function EditStudentInfo(): ReactElement {
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI | undefined;
     let param: any = useParams();
-    let [student, setStudent] = useState<User>(new User());
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);

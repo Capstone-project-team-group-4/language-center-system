@@ -4,7 +4,6 @@ import React, {
     ReactElement
     , useEffect
     , useState
-    , Component
 } from "react";
 import { Link, useParams } from "react-router-dom";
 import { UserAPI } from "../../common/service/UserAPI";
@@ -13,24 +12,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.scss';
 import './ManageTeacherPage.css';
 import {
-    Breadcrumb
-    , Button
-    , Col
-    , Container
-    , Form
-    , Modal
-    , Pagination, Row
-    , Table
+    Pagination
 } from "react-bootstrap";
-import { render } from "@testing-library/react";
-import ReactDOM from "react-dom";
-import { usePagination } from "react-pagination-hook";
+import { EditStudentInfo } from "../EditStudentInfo";
 
 export function ManageTeacherPage(): ReactElement {
 
     let [user, setUser] = useState<User[]>([]);
     let userAPI: UserAPI | undefined;
-    let param: any = useParams();
 
     let active = 1;
     let items = [];
@@ -168,11 +157,11 @@ export function ManageTeacherPage(): ReactElement {
                                                     </Link>
                                                     &nbsp;
                                                     <Link to={"/editStudentInfo/" + item.userID}>
-                                                        <button type="button" className="btn btn-outline-primary">
-                                                            <span className="fa fa-pencil mr-5">
-                                                                Edit
+                                                    <button type="button" className="btn btn-outline-primary">
+                                                        <span className="fa fa-pencil mr-5">
+                                                            Edit
                                                             </span>
-                                                        </button>
+                                                    </button>
                                                     </Link>
                                                     {/* &nbsp; */}
                                                     {/* <Link to="/editTeacherInfo/:teacherID">

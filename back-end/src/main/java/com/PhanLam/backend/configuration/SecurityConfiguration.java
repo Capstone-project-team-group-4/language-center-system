@@ -142,7 +142,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 
                 .antMatchers (HttpMethod.PUT, "/editInfo/*")
-                        .permitAll()
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/getStudent/*")
                         .permitAll()
 //                .permitAll()

@@ -202,6 +202,7 @@ export function App (): ReactElement {
         <DisableOrDeleteAccountPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 

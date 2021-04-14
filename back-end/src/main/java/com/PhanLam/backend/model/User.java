@@ -197,7 +197,7 @@ public class User implements Serializable {
             , mappedBy = "creator"
             , fetch = FetchType.LAZY
     )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList = new ArrayList<MultipleChoiceQuestion>();
     
     public User (){
     }

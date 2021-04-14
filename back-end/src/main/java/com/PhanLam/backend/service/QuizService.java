@@ -10,20 +10,26 @@ import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.ForbiddenActionException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
+import com.PhanLam.backend.dal.repository_interface.ExaminationRepository;
 import com.PhanLam.backend.dal.repository_interface.MultipleChoiceQuestionRepository;
 import com.PhanLam.backend.dal.repository_interface.QuestionOptionRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.MultipleChoiceQuestion;
+import com.PhanLam.backend.model.QExamination;
+import com.PhanLam.backend.model.QMultipleChoiceQuestion;
 import com.PhanLam.backend.model.QuestionOption;
 import com.PhanLam.backend.model.Quiz;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.common.InputValidate;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -44,18 +50,24 @@ public class QuizService {
     private MultipleChoiceQuestionRepository questionRepository;
     private UserRepository userRepository;
     private QuestionOptionRepository questionOptionRepository;
-    private InputValidate inputValidator;  
+    private InputValidate inputValidator;
+    private ExaminationRepository examinationRepository;
+    private JPAQueryFactory queryFactory;
 
     public QuizService (
             MultipleChoiceQuestionRepository questionRepository
             , UserRepository userRepository
             , QuestionOptionRepository questionOptionRepository
             , InputValidate inputValidator
+            , ExaminationRepository examinationRepository
+            , EntityManager entityManager
     ){
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.questionOptionRepository = questionOptionRepository;
         this.inputValidator = inputValidator;
+        this.examinationRepository = examinationRepository;
+        queryFactory = new JPAQueryFactory (entityManager);
     }
 
     public void createQuiz (Quiz quiz, Principal principal){
@@ -145,6 +157,119 @@ public class QuizService {
                     + "cannot be less than zero." + System.lineSeparator () 
                     + "Parameter name: pageIndex, pageSize"
             );
+        }
+    }
+    
+    @Transactional (readOnly = true)
+    public DataPage<Quiz> getAllQuizByExamID (
+            int examID
+            , int pageIndex
+            , int pageSize
+    ){
+        boolean examExists;
+        QMultipleChoiceQuestion question;
+        QExamination exam;
+        QueryResults<MultipleChoiceQuestion> questionPage;
+        long totalRowCount;
+        List<MultipleChoiceQuestion> questionHolder;
+        List<Quiz> quizHolder;
+        List<QuestionOption> questionOptionHolder;
+        Quiz quiz;
+        DataPage<Quiz> quizDataPage;
+        
+        examExists = examinationRepository.existsById (examID);
+        if (examExists == false){
+            throw new NotFoundException ("Exam");
+        }
+        else {
+            if ((pageIndex >= 0) && (pageSize > 0)){
+                question = new QMultipleChoiceQuestion ("question");
+                exam = new QExamination ("exam");
+                questionPage = queryFactory
+                        .selectFrom (question)
+                            .leftJoin (question.examinationList, exam)
+                        .where (exam.examID.eq (examID))
+                        .orderBy (question.content.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = questionPage.getTotal ();
+                questionHolder = questionPage.getResults ();
+                quizHolder = new ArrayList<> ();
+                for (MultipleChoiceQuestion questionData : questionHolder){
+                    questionOptionHolder = questionData
+                            .getQuestionOptionList ();
+                    quiz = new Quiz (questionData, questionOptionHolder);
+                    quizHolder.add (quiz);
+                }
+                quizDataPage = new DataPage<> (totalRowCount, quizHolder);
+                return quizDataPage;
+            }
+            else {
+                throw new InvalidRequestArgumentException (
+                        "The page index number and page size number parameters "
+                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "Parameter name: pageIndex, pageSize"
+                );
+            }
+        }
+    }
+    
+    @Transactional (readOnly = true)
+    public DataPage<Quiz> getAllQuizWithExamIDIsNot (
+            int examID
+            , int pageIndex
+            , int pageSize
+    ){
+        boolean examExists;
+        QMultipleChoiceQuestion question;
+        QExamination exam;
+        QueryResults<MultipleChoiceQuestion> questionPage;
+        long totalRowCount;
+        List<MultipleChoiceQuestion> questionHolder;
+        List<Quiz> quizHolder;
+        List<QuestionOption> questionOptionHolder;
+        Quiz quiz;
+        DataPage<Quiz> quizDataPage;
+        
+        examExists = examinationRepository.existsById (examID);
+        if (examExists == false){
+            throw new NotFoundException ("Exam");
+        }
+        else {
+            if ((pageIndex >= 0) && (pageSize > 0)){
+                question = new QMultipleChoiceQuestion ("question");
+                exam = new QExamination ("exam");
+                questionPage = queryFactory
+                        .selectFrom (question)
+                            .leftJoin (question.examinationList, exam)
+                        .where (
+                                exam.examID.ne (examID)
+                                .or (exam.examID.isNull ())
+                        )
+                        .orderBy (question.content.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = questionPage.getTotal ();
+                questionHolder = questionPage.getResults ();
+                quizHolder = new ArrayList<> ();
+                for (MultipleChoiceQuestion questionData : questionHolder){
+                    questionOptionHolder = questionData
+                            .getQuestionOptionList ();
+                    quiz = new Quiz (questionData, questionOptionHolder);
+                    quizHolder.add (quiz);
+                }
+                quizDataPage = new DataPage<> (totalRowCount, quizHolder);
+                return quizDataPage;
+            }
+            else {
+                throw new InvalidRequestArgumentException (
+                        "The page index number and page size number parameters "
+                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "Parameter name: pageIndex, pageSize"
+                );
+            }
         }
     }
     

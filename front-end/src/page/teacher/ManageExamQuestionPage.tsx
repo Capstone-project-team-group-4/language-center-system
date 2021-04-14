@@ -33,6 +33,7 @@ import { InputValidate } from "../../common/service/InputValidate";
 interface ManageExamQuestionPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function ManageExamQuestionPage (
@@ -56,9 +57,7 @@ export function ManageExamQuestionPage (
     let htmlElement: 
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let questionOptionHolder: QuestionOption[] | undefined;
-    let quizAPI: QuizAPI;
     let quiz: Quiz | undefined;
-    let typeGuardian: TypeGuard;
     let quizDataPage: DataPage<Quiz> | undefined; 
     let [quizHolder, setQuizHolder] = useState<Quiz[]> (new Array<Quiz> ());
     let [pageIndex] = useState<number> (0);
@@ -81,8 +80,7 @@ export function ManageExamQuestionPage (
     let inputValidator: InputValidate;
     let [pendingQuestionID, setPendingQuestionID] = useState<number> (0); 
 
-    quizAPI = new QuizAPI ();
-    typeGuardian = new TypeGuard ();
+    let [quizAPI] = useState<QuizAPI> (new QuizAPI ());
     inputValidator = new InputValidate (props.dialogController);
 
     function openCreateQuizForm (): void {
@@ -253,11 +251,11 @@ export function ManageExamQuestionPage (
                 );
                 props.dialogController.setDialogType ("inform");
                 props.dialogController.setShowDialog (true);
-                loadQuizTable ();
+                await loadQuizTable ();
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
-                if (typeGuardian.isAxiosError (apiError)){
+                if (props.typeGuardian.isAxiosError (apiError)){
                     if (typeof apiError.code === "string"){
                         props.dialogController.setDialogTitle (
                                 `${apiError.code}: ${apiError.name}`
@@ -301,11 +299,11 @@ export function ManageExamQuestionPage (
                 );
                 props.dialogController.setDialogType ("inform");
                 props.dialogController.setShowDialog (true);
-                loadQuizTable ();
+                await loadQuizTable ();
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
-                if (typeGuardian.isAxiosError (apiError)){
+                if (props.typeGuardian.isAxiosError (apiError)){
                     if (typeof apiError.code === "string"){
                         props.dialogController.setDialogTitle (
                                 `${apiError.code}: ${apiError.name}`
@@ -339,11 +337,11 @@ export function ManageExamQuestionPage (
     async function executeQuizDeletion (): Promise<void> {
         try {
             await quizAPI.deleteQuizByQuestionID (pendingQuestionID);
-            loadQuizTable ();
+            await loadQuizTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -372,7 +370,7 @@ export function ManageExamQuestionPage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`

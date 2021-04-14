@@ -94,14 +94,14 @@ public class UserController {
         );
         return studentDataPage;
     }
-
-    @GetMapping("/students:are-in-the-course")
-    @ResponseStatus(HttpStatus.OK)
-    public DataPage<User> getAllStudentAreInTheCourse(
-            @RequestParam int courseID,
-            @RequestParam int pageIndex,
-            @RequestParam int pageSize
-    ) {
+    
+    @GetMapping ("/courses/{courseID}/students")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllStudentAreInTheCourse (
+            @PathVariable int courseID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
         DataPage<User> studentDataPage;
 
         studentDataPage = userService.getAllStudentByCourseID(

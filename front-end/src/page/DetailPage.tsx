@@ -1,3 +1,5 @@
+/* eslint-disable prefer-template */
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
     ReactElement, useEffect, useState
@@ -11,7 +13,7 @@ import { User, UserIndexSignature } from '../model/User';
 import './ViewProfilePage.css';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-function renderUserTable(
+function renderUserTable (
     user: User
     // , index: number
 ): ReactElement {
@@ -64,8 +66,7 @@ function renderUserTable(
         </table>
     );
 }
-
-export function DetailPage(): ReactElement {
+export function DetailPage (): ReactElement {
 
     let [user, getUser] = useState<User>(new User());
     let userID: number;

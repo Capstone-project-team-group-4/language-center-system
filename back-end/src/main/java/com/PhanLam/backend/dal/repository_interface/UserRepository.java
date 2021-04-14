@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
  *
  * @author Phan Lam
  */
-@Repository
 public interface UserRepository extends JpaRepository <User, Integer> {
 
     @Override

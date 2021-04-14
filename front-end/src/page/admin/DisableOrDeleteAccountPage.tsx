@@ -20,97 +20,10 @@ import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 
-function renderUserTable (
-        user: User
-        , index: number
-        , handleDisableUser: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-        , enableUser: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void>
-        , handleDeleteUser: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => void 
-): ReactElement {
-    return (
-        <tr key = {user.userID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {user.userID}
-            </td>
-            <td>
-                {`${
-                    user.firstName
-                } ${
-                    user.middleName
-                } ${
-                    user.lastName
-                }`}
-            </td>
-            <td>
-                {user.phoneNumber}
-            </td>
-            <td>
-                {user.email}
-            </td>
-            <td>
-                {user.userName}
-            </td>
-            <td>
-                {user.accountStatus}
-            </td>
-            <td>
-                <Button 
-                    variant = "warning"
-                    type = "button"
-                    value = {user.userID}
-                    onClick = {
-                        (event) => {
-                            handleDisableUser (event);
-                        }
-                    }
-                >
-                    Disable
-                </Button>
-                <Button 
-                    variant = "success"
-                    type = "button"
-                    value = {user.userID}
-                    onClick = {
-                        (event) => {
-                            enableUser (event).catch (
-                                    (error: unknown) => {
-                                        console.error (error);
-                                    }
-                            );
-                        }
-                    }
-                >
-                    Enable
-                </Button>
-                <Button 
-                    variant = "danger"
-                    type = "button"
-                    value = {user.userID}
-                    onClick = {
-                        (event) => {
-                            handleDeleteUser (event);
-                        }
-                    }
-                >
-                    Delete
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
 interface DisableOrDeleteAccountPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function DisableOrDeleteAccountPage (
@@ -119,16 +32,13 @@ export function DisableOrDeleteAccountPage (
 
     // Variables declaration:
     let [userHolder, setUserHolder] = useState<User[]> ([]);
-    let userAPI: UserAPI;
-    let typeGuardian: TypeGuard;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let button: HTMLButtonElement | undefined;
     let [pendingUserID, setPendingUserID] = useState<number> (0);
     let [pendingAction, setPendingAction] = useState<string> ("");
 
-    userAPI = new UserAPI ();
-    typeGuardian = new TypeGuard ();
+    let [userAPI] = useState<UserAPI> (new UserAPI ());
     
     function handleDisableUser (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
@@ -150,11 +60,11 @@ export function DisableOrDeleteAccountPage (
         button = event.target as HTMLButtonElement;
         try {
             await userAPI.enableUser (Number (button.value));
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -176,11 +86,11 @@ export function DisableOrDeleteAccountPage (
             await userAPI.disableAnotherUser (
                     pendingUserID
             );
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -214,11 +124,11 @@ export function DisableOrDeleteAccountPage (
     async function executeUserDeletion (): Promise<void> {
         try {
             await userAPI.deleteAnotherUser (pendingUserID);
-            loadUserTable ();
+            await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -246,7 +156,7 @@ export function DisableOrDeleteAccountPage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -377,5 +287,93 @@ export function DisableOrDeleteAccountPage (
             <footer>
             </footer>
         </Container>
+    );
+}
+
+function renderUserTable (
+        user: User
+        , index: number
+        , handleDisableUser: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+        , enableUser: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => Promise<void>
+        , handleDeleteUser: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void 
+): ReactElement {
+    return (
+        <tr key = {user.userID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {user.userID}
+            </td>
+            <td>
+                {`${
+                    user.firstName
+                } ${
+                    user.middleName
+                } ${
+                    user.lastName
+                }`}
+            </td>
+            <td>
+                {user.phoneNumber}
+            </td>
+            <td>
+                {user.email}
+            </td>
+            <td>
+                {user.userName}
+            </td>
+            <td>
+                {user.accountStatus}
+            </td>
+            <td>
+                <Button 
+                    variant = "warning"
+                    type = "button"
+                    value = {user.userID}
+                    onClick = {
+                        (event) => {
+                            handleDisableUser (event);
+                        }
+                    }
+                >
+                    Disable
+                </Button>
+                <Button 
+                    variant = "success"
+                    type = "button"
+                    value = {user.userID}
+                    onClick = {
+                        (event) => {
+                            enableUser (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
+                >
+                    Enable
+                </Button>
+                <Button 
+                    variant = "danger"
+                    type = "button"
+                    value = {user.userID}
+                    onClick = {
+                        (event) => {
+                            handleDeleteUser (event);
+                        }
+                    }
+                >
+                    Delete
+                </Button>
+            </td>
+        </tr>
     );
 }

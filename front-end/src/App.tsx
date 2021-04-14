@@ -216,10 +216,6 @@ export function App (): ReactElement {
       <Route path = "/user_detail/:studentID">
         <DetailPage />
       </Route>
-
-      <Route path = "/user_details/:studentID">
-        <DetailPages />
-      </Route>
       
       <ProtectedRoute 
         path = "/admin-console/create-account-request-page"
@@ -243,6 +239,7 @@ export function App (): ReactElement {
         <DisableOrDeleteAccountPage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
@@ -258,6 +255,7 @@ export function App (): ReactElement {
         <ManageStudentInCoursePage 
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
       

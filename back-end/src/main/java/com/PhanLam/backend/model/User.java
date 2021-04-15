@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -45,6 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByUserID", query = "SELECT u FROM User u WHERE u.userID = :userID"),
     @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
     @NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
+    @NamedQuery(name = "User.findByMiddleName", query = "SELECT u FROM User u WHERE u.middleName = :middleName"),
     @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
@@ -56,7 +58,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByAccountStatus", query = "SELECT u FROM User u WHERE u.accountStatus = :accountStatus"),
     @NamedQuery(name = "User.findByDateCreated", query = "SELECT u FROM User u WHERE u.dateCreated = :dateCreated"),
-    @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin")})
+    @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin"),
+    @NamedQuery(name = "User.findByLastModified", query = "SELECT u FROM User u WHERE u.lastModified = :lastModified")})
 public class User implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -91,7 +94,9 @@ public class User implements Serializable {
     @Size(min = 1, max = 1000)
     @Column(name = "Email", nullable = false, length = 1000)
     private String email;
-    @Column(name = "DOB")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DOB", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dob;
     @Basic(optional = false)
@@ -196,6 +201,7 @@ public class User implements Serializable {
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
     
     public User (){
+        multipleChoiceQuestionList = new ArrayList<>();
     }
 
     public User (
@@ -220,7 +226,7 @@ public class User implements Serializable {
         this.accountStatus = "Active";
         this.dateCreated = dateCreated;
     }
-    
+
     public Integer getUserID() {
         return userID;
     }

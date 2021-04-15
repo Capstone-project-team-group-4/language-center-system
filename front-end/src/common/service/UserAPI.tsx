@@ -29,7 +29,7 @@ export class UserAPI {
     }
 
     public listUsers (): Promise<AxiosResponse> {
-        return axios.get ("http://localhost:8080/users");
+        return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (
@@ -297,8 +297,8 @@ export class UserAPI {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
-            this.serverResponse = await this.axiosInstance.get (
-                    `/getUsers/${userID}`
+            this.serverResponse = await this.axiosInstance.get(
+                `/getStudent/${userID}`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){

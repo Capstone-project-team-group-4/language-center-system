@@ -5,11 +5,10 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +19,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,17 +26,16 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Phan Lam
+ * @author roboc
  */
 @Entity
-@Table (name = "Lesson", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint (columnNames = {"LessonName"})})
+@Table(name = "Lesson", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"LessonName"})})
 @XmlRootElement
-@NamedQueries ({
+@NamedQueries({
     @NamedQuery (name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
     @NamedQuery (name = "Lesson.findByLessonID", query = "SELECT l FROM Lesson l WHERE l.lessonID = :lessonID"),
     @NamedQuery (name = "Lesson.findByLessonName", query = "SELECT l FROM Lesson l WHERE l.lessonName = :lessonName"),
@@ -51,53 +48,53 @@ public class Lesson implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Basic (optional = false)
-    @Column (name = "LessonID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "LessonID", nullable = false)
     private Integer lessonID;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 400)
-    @Column (name = "LessonName", nullable = false, length = 400)
+    @Size(min = 1, max = 400)
+    @Column(name = "LessonName", nullable = false, length = 400)
     private String lessonName;
-    @Size (max = 1000)
-    @Column (name = "Description", length = 1000)
+    @Size(max = 1000)
+    @Column(name = "Description", length = 1000)
     private String description;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 1000)
-    @Column (name = "ContentURI", nullable = false, length = 1000)
+    @Size(min = 1, max = 1000)
+    @Column(name = "ContentURI", nullable = false, length = 1000)
     private String contentURI;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 500)
-    @Column (name = "Type", nullable = false, length = 500)
+    @Size(min = 1, max = 500)
+    @Column(name = "Type", nullable = false, length = 500)
     private String type;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Column (name = "Duration", nullable = false)
+    @Column(name = "Duration", nullable = false)
     private int duration;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Column (name = "DateCreated", nullable = false)
-    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "DateCreated", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany (mappedBy = "lessonID", fetch = FetchType.LAZY)
-    private List<Document> documentList;
-    @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @Column(name = "LastModified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
+    @JoinColumn(name = "CourseID", referencedColumnName = "CourseID", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Course courseID;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "lessonID", fetch = FetchType.LAZY)
-    private List<HomeWork> homeWorkList;
-
-    public Lesson (){
+    
+    public Lesson() {
     }
 
-    public Lesson (Integer lessonID){
+    public Lesson(Integer lessonID) {
         this.lessonID = lessonID;
     }
 
-    public Lesson (Integer lessonID, String lessonName, String contentURI, String type, int duration, Date dateCreated){
+    public Lesson(Integer lessonID, String lessonName, String contentURI, String type, int duration, Date dateCreated) {
         this.lessonID = lessonID;
         this.lessonName = lessonName;
         this.contentURI = contentURI;
@@ -106,110 +103,114 @@ public class Lesson implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getLessonID (){
+    public Lesson(Integer lessonID, String lessonName, String description, String contentURI, String type, int duration, Date dateCreated, Date lastModified, Course courseID) {
+        this.lessonID = lessonID;
+        this.lessonName = lessonName;
+        this.description = description;
+        this.contentURI = contentURI;
+        this.type = type;
+        this.duration = duration;
+        this.dateCreated = dateCreated;
+        this.lastModified = lastModified;
+        this.courseID = courseID;
+    }
+    
+    
+
+    public Integer getLessonID() {
         return lessonID;
     }
 
-    public void setLessonID (Integer lessonID){
+    public void setLessonID(Integer lessonID) {
         this.lessonID = lessonID;
     }
 
-    public String getLessonName (){
+    public String getLessonName() {
         return lessonName;
     }
 
-    public void setLessonName (String lessonName){
+    public void setLessonName(String lessonName) {
         this.lessonName = lessonName;
     }
 
-    public String getDescription (){
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription (String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getContentURI (){
+    public String getContentURI() {
         return contentURI;
     }
 
-    public void setContentURI (String contentURI){
+    public void setContentURI(String contentURI) {
         this.contentURI = contentURI;
     }
 
-    public String getType (){
+    public String getType() {
         return type;
     }
 
-    public void setType (String type){
+    public void setType(String type) {
         this.type = type;
     }
 
-    public int getDuration (){
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration (int duration){
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    public Date getDateCreated (){
+    public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated (Date dateCreated){
+    public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    @XmlTransient
-    public List<Document> getDocumentList (){
-        return documentList;
+    public Date getLastModified() {
+        return lastModified;
     }
 
-    public void setDocumentList (List<Document> documentList){
-        this.documentList = documentList;
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
-    public Course getCourseID (){
+    public Course getCourseID() {
         return courseID;
     }
 
-    public void setCourseID (Course courseID){
+    public void setCourseID(Course courseID) {
         this.courseID = courseID;
     }
 
-    @XmlTransient
-    public List<HomeWork> getHomeWorkList (){
-        return homeWorkList;
-    }
-
-    public void setHomeWorkList (List<HomeWork> homeWorkList){
-        this.homeWorkList = homeWorkList;
-    }
-
     @Override
-    public int hashCode (){
+    public int hashCode() {
         int hash = 0;
-        hash += (lessonID != null ? lessonID.hashCode () : 0);
+        hash += (lessonID != null ? lessonID.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
+    public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Lesson)){
+        if (!(object instanceof Lesson)) {
             return false;
         }
         Lesson other = (Lesson) object;
-        if ((this.lessonID == null && other.lessonID != null) || (this.lessonID != null && !this.lessonID.equals (other.lessonID))){
+        if ((this.lessonID == null && other.lessonID != null) || (this.lessonID != null && !this.lessonID.equals(other.lessonID))) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return "com.PhanLam.backend.model.Lesson[ lessonID=" + lessonID + " ]";
     }
     

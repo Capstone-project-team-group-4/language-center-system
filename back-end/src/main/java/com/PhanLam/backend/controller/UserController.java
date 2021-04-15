@@ -7,6 +7,7 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
+import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
@@ -149,17 +150,18 @@ public class UserController {
     }
 
     @GetMapping("/getStudent/{userID}")
+    @ResponseStatus(HttpStatus.OK)
     public User getStudentById(@PathVariable int userID) {
         User user = userService.getById(userID);
         return user;
     }
     
     @GetMapping("/getUsers/{userID}")
-    public Optional showAllUserByID(
+    public User showAllUserByID(
             @RequestBody User user
             , @PathVariable int userID
     ){
-        Optional showUser = userService.showInfo(user, userID);
+        User showUser = userService.showInfo(user, userID);
         return showUser;
-    }
+    } 
 }

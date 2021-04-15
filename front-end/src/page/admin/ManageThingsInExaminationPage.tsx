@@ -12,37 +12,39 @@ import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { CourseAPI } from "../../common/service/CourseAPI";
+import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Course } from "../../model/Course";
+import { Examination } from "../../model/Examination";
 
-interface ManageThingsInCoursePageProps {
+interface ManageThingsInExaminationPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
     typeGuardian: TypeGuard;
 }
 
-export function ManageThingsInCoursePage (
-        props: ManageThingsInCoursePageProps
+export function ManageThingsInExaminationPage (
+        props: ManageThingsInExaminationPageProps
 ): ReactElement {
 
     // Variables declaration:
-    let [courseHolder, setCourseHolder] 
-        = useState<Course[]> (new Array<Course> ());
-    let courseDataPage: DataPage<Course> | undefined;
+    let [examHolder, setExamHolder] 
+        = useState<Examination[]> (new Array<Examination> ());
+    let examDataPage: DataPage<Examination> | undefined;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
+        
+    let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
     
-    let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
-    
-    async function loadCourseTable (): Promise<void> {
+    async function loadExamTable (): Promise<void> {
         try {
-            courseDataPage = await courseAPI.getAllCourse (
+            examDataPage = await examAPI.getAllExam (
                     pageIndex
                     , pageSize
-            ); 
-            setTotalRowCount (courseDataPage.totalRowCount);
-            setCourseHolder (courseDataPage.pageDataHolder);
+            );
+            setTotalRowCount (examDataPage.totalRowCount);
+            setExamHolder (examDataPage.pageDataHolder);
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -65,7 +67,7 @@ export function ManageThingsInCoursePage (
 
     useEffect (
         () => {
-            loadCourseTable ().catch (
+            loadExamTable ().catch (
                     (error) => {
                         console.error (error);
                     }
@@ -73,7 +75,7 @@ export function ManageThingsInCoursePage (
         }
         , []
     );
-    
+
     return (
         <Container fluid = {true}>
             {props.modalDialog}
@@ -95,11 +97,11 @@ export function ManageThingsInCoursePage (
                                     Admin Console
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage Things In Course
+                                    Manage Things In Examination
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">
-                                Manage Things In Course
+                                Manage Things In Examination
                             </h1>
                             <Form>
                                 <Table responsive = "md" hover = {true}>
@@ -109,16 +111,16 @@ export function ManageThingsInCoursePage (
                                                 #
                                             </th>
                                             <th>
-                                                Course ID
+                                                Exam ID
+                                            </th>
+                                            <th>
+                                                Exam Type
                                             </th>
                                             <th>
                                                 Course Name
                                             </th>
                                             <th>
-                                                Course Type
-                                            </th>
-                                            <th>
-                                                Course Level
+                                                Duration (in minutes)
                                             </th>
                                             <th>
                                                 Actions
@@ -126,11 +128,11 @@ export function ManageThingsInCoursePage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {courseHolder.map (
+                                        {examHolder.map (
                                             (
                                                     course
                                                     , index
-                                            ) => renderCourseTable (
+                                            ) => renderExamTable (
                                                     course
                                                     , index
                                             )
@@ -148,47 +150,37 @@ export function ManageThingsInCoursePage (
     );
 }
 
-function renderCourseTable (
-        course: Course
+function renderExamTable (
+        exam: Examination
         , index: number
 ): ReactElement {
     return (
-        <tr key = {course.courseID}>
+        <tr key = {exam.examID}>
             <td>
                 {index + 1}
             </td>
             <td>
-                {course.courseID}
+                {exam.examID}
             </td>
             <td>
-                {course.courseName}
+                {exam.type}
             </td>
             <td>
-                {course.courseType.typeName}
+                {exam.course.courseName}
             </td>
             <td>
-                {course.courseLevel.levelName}
+                {exam.duration}
             </td>
             <td>
                 <Button 
                     variant = "outline-primary"
                     as = {Link}
                     to = {
-                        "/admin-console/manage-things-in-course-page"
-                        + `/courses/${course.courseID}/students`
+                        "/admin-console/manage-things-in-examination-page"
+                        + `/examinations/${exam.examID}/exam-questions`
                     }
                 >
-                    Manage Student
-                </Button>
-                <Button 
-                    variant = "outline-primary"
-                    as = {Link}
-                    to = {
-                        "/admin-console/manage-things-in-course-page"
-                        + `/courses/${course.courseID}/examinations`
-                    }
-                >
-                    Manage Examination
+                    Manage Exam Question
                 </Button>
             </td>
         </tr>

@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,6 +45,18 @@ public class ExaminationController {
         examinationService.createExamInCourse (courseID, exam);
     }
     
+    @GetMapping ("/examinations")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<Examination> getAllExam (
+            @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<Examination> examDataPage;
+        
+        examDataPage = examinationService.getAllExam (pageIndex, pageSize);
+        return examDataPage;
+    }
+    
     @GetMapping ("/courses/{courseID}/examinations")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Examination> getAllExamByCourseID (
@@ -69,6 +82,24 @@ public class ExaminationController {
             , @Valid @RequestBody Examination updatedExam 
     ){
         examinationService.updateExamInCourse (courseID, examID, updatedExam);
+    }
+    
+    @PatchMapping ("/examinations/{examID}:add-a-quiz")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void addAQuizToExam (
+            @RequestParam int questionID
+            , @PathVariable int examID
+    ){
+        examinationService.addQuizToExam (questionID, examID);
+    }
+    
+    @PatchMapping ("/examinations/{examID}:remove-a-quiz")
+    @ResponseStatus (HttpStatus.NO_CONTENT)
+    public void removeAQuizFromExam (
+            @RequestParam int questionID
+            , @PathVariable int examID
+    ){
+        examinationService.removeQuizFromExam (questionID, examID);
     }
     
     @DeleteMapping ("/courses/{courseID}/examinations/{examID}")

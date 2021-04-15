@@ -111,6 +111,7 @@ function renderRegisterFormTable (
 interface CreateAccountPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function CreateAccountPage (
@@ -120,12 +121,9 @@ export function CreateAccountPage (
     // Variables declaration:
     let [registerFormHolder, setRegisterFormHolder] 
         = useState<RegisterForm[]> ([]);
-    let registerFormAPI: RegisterFormAPI;
-    let typeGuardian: TypeGuard;
     let [pageNumber, setPageNumber] = useState<number> (0);
     let [pageSize, setPageSize] = useState<number> (10);
     let [roleHolder, setRoleHolder] = useState<Role[]> ([]);
-    let roleAPI: RoleAPI;
     let [selectedRoleName, setSelectedRoleName] = useState<string> ("");
     let [newAccountRoleList, setNewAccountRoleList] = useState<Role[]> ([]);
     let i: number | undefined; 
@@ -139,9 +137,8 @@ export function CreateAccountPage (
     let [userID, setUserID] = useState<number> (0);
     let roleNameWithoutPrefix: string | undefined;
 
-    registerFormAPI = new RegisterFormAPI ();
-    typeGuardian = new TypeGuard ();
-    roleAPI = new RoleAPI ();
+    let [registerFormAPI] = useState<RegisterFormAPI> (new RegisterFormAPI ());
+    let [roleAPI] = useState<RoleAPI> (new RoleAPI ());
     
     async function handleAcceptRequest (
             event: MouseEvent<HTMLElement, globalThis.MouseEvent>
@@ -157,7 +154,7 @@ export function CreateAccountPage (
                 return Promise.resolve<undefined> (undefined);
             }
             catch (apiError: unknown){
-                if (typeGuardian.isAxiosError (apiError)){
+                if (props.typeGuardian.isAxiosError (apiError)){
                     if (typeof apiError.code === "string"){
                         props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -208,7 +205,7 @@ export function CreateAccountPage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -275,7 +272,7 @@ export function CreateAccountPage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -303,7 +300,7 @@ export function CreateAccountPage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`

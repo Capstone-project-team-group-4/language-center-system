@@ -88,10 +88,10 @@ public class UserController {
         return studentDataPage;
     }
     
-    @GetMapping ("/students:are-in-the-course")
+    @GetMapping ("/courses/{courseID}/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentAreInTheCourse (
-            @RequestParam int courseID
+            @PathVariable int courseID
             , @RequestParam int pageIndex
             , @RequestParam int pageSize
     ){
@@ -163,6 +163,5 @@ public class UserController {
     ){
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
-    }
-    
+    } 
 }

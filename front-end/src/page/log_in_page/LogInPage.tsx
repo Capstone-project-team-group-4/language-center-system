@@ -9,15 +9,14 @@ import {
     Button, Container, Form, Row
 } from 'react-bootstrap';
 import './LogInPage.css';
-import { TypeGuard } from '../common/service/TypeGuard';
-import { DialogControl } from '../common/component/ModalDialog';
-import { UserAPI } from '../common/service/UserAPI';
-import { LoggedInUser } from '../model/LoggedInUser';
+import { TypeGuard } from '../../common/service/TypeGuard';
+import { DialogControl } from '../../common/component/ModalDialog';
+import { UserAPI } from '../../common/service/UserAPI';
+import { LoggedInUser } from '../../model/LoggedInUser';
 import { Location, History } from "history";
-import { Route, useHistory, useLocation } from 'react-router-dom';
-import { LocationState } from '../common/component/ProtectedRoute';
-import { Role } from '../model/Role';
-import { StudentDashboardPage } from './student/StudentDashboardPage';
+import { useHistory, useLocation } from 'react-router-dom';
+import { LocationState } from '../../common/component/ProtectedRoute';
+import { Role } from '../../model/Role';
 
 class LoginSucceededLocation implements Location<unknown> {
     public pathname: string;
@@ -38,7 +37,8 @@ interface LogInPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
     setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-    setLoggedInUser: Dispatch<SetStateAction<LoggedInUser>>;
+    setLoggedInUser: Dispatch<SetStateAction<LoggedInUser>>; 
+    typeGuardian: TypeGuard;
 }
 
 export function LogInPage(props: LogInPageProps): ReactElement {
@@ -48,8 +48,6 @@ export function LogInPage(props: LogInPageProps): ReactElement {
     let [password, setPassword] = useState<string>("");
     let inputField:
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
-    let userAPI: UserAPI;
-    let typeGuardian: TypeGuard;
     let currentLocation: Location<unknown>;
     let locationState: LocationState | undefined;
     let previousLocation: Location<unknown> | undefined;
@@ -60,10 +58,9 @@ export function LogInPage(props: LogInPageProps): ReactElement {
     let roleName: string | undefined;
     let loggedInUser: LoggedInUser | undefined;
 
-    userAPI = new UserAPI();
-    typeGuardian = new TypeGuard();
-    currentLocation = useLocation();
-    history = useHistory();
+    let [userAPI] = useState<UserAPI> (new UserAPI ());
+    currentLocation = useLocation ();
+    history = useHistory ();
 
     function handleChange(
         event: ChangeEvent<
@@ -127,11 +124,11 @@ export function LogInPage(props: LogInPageProps): ReactElement {
             }
             return Promise.resolve<undefined>(undefined);
         }
-        catch (apiError: unknown) {
-            if (typeGuardian.isAxiosError(apiError)) {
-                if (typeof apiError.code === "string") {
-                    props.dialogController.setDialogTitle(
-                        `${apiError.code}: ${apiError.name}`
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
                     );
                     props.dialogController.setDialogBody(apiError.message);
                 }

@@ -24,12 +24,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author roboc
+ * @author Phan Lam
  */
 @Entity
-@Table(name = "QuestionOption", catalog = "LanguageCenterDB", schema = "dbo")
+@Table (name = "QuestionOption", catalog = "LanguageCenterDB", schema = "dbo")
 @XmlRootElement
-@NamedQueries({
+@NamedQueries ({
     @NamedQuery (name = "QuestionOption.findAll", query = "SELECT q FROM QuestionOption q"),
     @NamedQuery (name = "QuestionOption.findByOptionID", query = "SELECT q FROM QuestionOption q WHERE q.optionID = :optionID"),
     @NamedQuery (name = "QuestionOption.findByContent", query = "SELECT q FROM QuestionOption q WHERE q.content = :content"),
@@ -38,18 +38,18 @@ public class QuestionOption implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "OptionID", nullable = false)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Basic (optional = false)
+    @Column (name = "OptionID", nullable = false)
     private Integer optionID;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 1000)
-    @Column(name = "Content", nullable = false, length = 1000)
+    @Size (min = 1, max = 1000)
+    @Column (name = "Content", nullable = false, length = 1000)
     private String content;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Column(name = "IsCorrectAnswer", nullable = false)
+    @Column (name = "IsCorrectAnswer", nullable = false)
     private boolean isCorrectAnswer;
     
     @JoinColumn (
@@ -60,10 +60,10 @@ public class QuestionOption implements Serializable {
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
-    public QuestionOption() {
+    public QuestionOption (){
     }
 
-    public QuestionOption(Integer optionID) {
+    public QuestionOption (Integer optionID){
         this.optionID = optionID;
     }
 
@@ -77,27 +77,27 @@ public class QuestionOption implements Serializable {
         this.multipleChoiceQuestion = multipleChoiceQuestion;
     }
 
-    public Integer getOptionID() {
+    public Integer getOptionID (){
         return optionID;
     }
 
-    public void setOptionID(Integer optionID) {
+    public void setOptionID (Integer optionID){
         this.optionID = optionID;
     }
 
-    public String getContent() {
+    public String getContent (){
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent (String content){
         this.content = content;
     }
 
-    public boolean getIsCorrectAnswer() {
+    public boolean getIsCorrectAnswer (){
         return isCorrectAnswer;
     }
 
-    public void setIsCorrectAnswer(boolean isCorrectAnswer) {
+    public void setIsCorrectAnswer (boolean isCorrectAnswer){
         this.isCorrectAnswer = isCorrectAnswer;
     }
 
@@ -110,27 +110,27 @@ public class QuestionOption implements Serializable {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode (){
         int hash = 0;
-        hash += (optionID != null ? optionID.hashCode() : 0);
+        hash += (optionID != null ? optionID.hashCode () : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals (Object object){
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof QuestionOption)) {
+        if (!(object instanceof QuestionOption)){
             return false;
         }
         QuestionOption other = (QuestionOption) object;
-        if ((this.optionID == null && other.optionID != null) || (this.optionID != null && !this.optionID.equals(other.optionID))) {
+        if ((this.optionID == null && other.optionID != null) || (this.optionID != null && !this.optionID.equals (other.optionID))){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
+    public String toString (){
         return "com.PhanLam.backend.model.QuestionOption[ optionID=" + optionID + " ]";
     }
     

@@ -33,14 +33,15 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author roboc
+ * @author Phan Lam
  */
 @Entity
-@Table(name = "Course", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"CourseName"})})
+@Table (name = "Course", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
+    @UniqueConstraint (columnNames = {"CourseName"})})
 @XmlRootElement
 @NamedQueries ({
     @NamedQuery (name = "Course.findAll", query = "SELECT c FROM Course c"),
@@ -53,20 +54,20 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery (name = "Course.findByDateCreated", query = "SELECT c FROM Course c WHERE c.dateCreated = :dateCreated"),
     @NamedQuery (name = "Course.findByLastModified", query = "SELECT c FROM Course c WHERE c.lastModified = :lastModified")})
 public class Course implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "CourseID", nullable = false)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Basic (optional = false)
+    @Column (name = "CourseID", nullable = false)
     private Integer courseID;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "CourseName", nullable = false, length = 400)
+    @Size (min = 1, max = 400)
+    @Column (name = "CourseName", nullable = false, length = 400)
     private String courseName;
-    @Size(max = 1000)
-    @Column(name = "Description", length = 1000)
+    @Size (max = 1000)
+    @Column (name = "Description", length = 1000)
     private String description;
     
     @JoinColumn (
@@ -86,14 +87,14 @@ public class Course implements Serializable {
     private CourseLevel courseLevel;
     
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Column(name = "TuitionFee", nullable = false, precision = 19, scale = 4)
+    @Column (name = "TuitionFee", nullable = false, precision = 19, scale = 4)
     private BigDecimal tuitionFee;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Column(name = "DateCreated", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column (name = "DateCreated", nullable = false)
+    @Temporal (TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
@@ -150,14 +151,14 @@ public class Course implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Examination> examinationList;
-   
+
     public Course (){
         lessonList = new ArrayList<> ();
         classList = new ArrayList<> ();
         examinationList = new ArrayList<> ();
     }
 
-    public Course(Integer courseID) {
+    public Course (Integer courseID){
         this.courseID = courseID;
     }
 
@@ -183,23 +184,23 @@ public class Course implements Serializable {
         return courseID;
     }
 
-    public void setCourseID(Integer courseID) {
+    public void setCourseID (Integer courseID){
         this.courseID = courseID;
     }
 
-    public String getCourseName() {
+    public String getCourseName (){
         return courseName;
     }
 
-    public void setCourseName(String courseName) {
+    public void setCourseName (String courseName){
         this.courseName = courseName;
     }
 
-    public String getDescription() {
+    public String getDescription (){
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription (String description){
         this.description = description;
     }
     
@@ -218,20 +219,20 @@ public class Course implements Serializable {
     public void setCourseLevel (CourseLevel courseLevel){
         this.courseLevel = courseLevel;
     }
-
-    public BigDecimal getTuitionFee() {
+    
+    public BigDecimal getTuitionFee (){
         return tuitionFee;
     }
 
-    public void setTuitionFee(BigDecimal tuitionFee) {
+    public void setTuitionFee (BigDecimal tuitionFee){
         this.tuitionFee = tuitionFee;
     }
-
-    public Date getDateCreated() {
+    
+    public Date getDateCreated (){
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated (Date dateCreated){
         this.dateCreated = dateCreated;
     }
     
@@ -247,7 +248,7 @@ public class Course implements Serializable {
         return userList;
     }
 
-    public void setUserList(List<User> userList) {
+    public void setUserList (List<User> userList){
         this.userList = userList;
     }
 
@@ -255,7 +256,7 @@ public class Course implements Serializable {
         return lessonList;
     }
 
-    public void setLessonList(List<Lesson> lessonList) {
+    public void setLessonList (List<Lesson> lessonList){
         this.lessonList = lessonList;
     }
 
@@ -266,37 +267,38 @@ public class Course implements Serializable {
     public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
-
-    public List<Examination> getExaminationList() {
+    
+    @XmlTransient
+    public List<Examination> getExaminationList (){
         return examinationList;
     }
 
-    public void setExaminationList(List<Examination> examinationList) {
+    public void setExaminationList (List<Examination> examinationList){
         this.examinationList = examinationList;
     }
     
     @Override
-    public int hashCode() {
+    public int hashCode (){
         int hash = 0;
-        hash += (courseID != null ? courseID.hashCode() : 0);
+        hash += (courseID != null ? courseID.hashCode () : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals (Object object){
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Course)) {
+        if (!(object instanceof Course)){
             return false;
         }
         Course other = (Course) object;
-        if ((this.courseID == null && other.courseID != null) || (this.courseID != null && !this.courseID.equals(other.courseID))) {
+        if ((this.courseID == null && other.courseID != null) || (this.courseID != null && !this.courseID.equals (other.courseID))){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
+    public String toString (){
         return "com.PhanLam.backend.model.Course[ courseID=" + courseID + " ]";
     }  
 }

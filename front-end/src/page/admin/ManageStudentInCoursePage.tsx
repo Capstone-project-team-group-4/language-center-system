@@ -22,61 +22,6 @@ import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
 
-function renderStudentTable (
-        user: User
-        , index: number
-        , addAStudentToCourse: (
-                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-        ) => Promise<void>
-): ReactElement {
-    return (
-        <tr key = {user.userID}>
-            <td>
-                {index + 1}
-            </td>
-            <td>
-                {user.userID}
-            </td>
-            <td>
-                {`${
-                    user.firstName
-                } ${
-                    user.middleName
-                } ${
-                    user.lastName
-                }`}
-            </td>
-            <td>
-                {user.phoneNumber}
-            </td>
-            <td>
-                {user.email}
-            </td>
-            <td>
-                {user.userName}
-            </td>
-            <td>
-                <Button 
-                    variant = "success"
-                    type = "button"
-                    value = {user.userID}
-                    onClick = {
-                        (event) => {
-                            addAStudentToCourse (event).catch (
-                                    (error: unknown) => {
-                                        console.error (error);
-                                    }
-                            );
-                        }
-                    }
-                >
-                    Add
-                </Button>
-            </td>
-        </tr>
-    );
-}
-
 interface ManageStudentInCoursePageUrlParameter {
     courseID: string;
 }
@@ -84,6 +29,7 @@ interface ManageStudentInCoursePageUrlParameter {
 interface ManageStudentInCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function ManageStudentInCoursePage (
@@ -95,14 +41,11 @@ export function ManageStudentInCoursePage (
         = useState<boolean> (false);
     let studentDataPage: DataPage<User> | undefined;
     let [studentHolder, setStudentHolder] = useState<User[]> ([]);
-    let userAPI: UserAPI;
-    let typeGuardian: TypeGuard;
     let [pageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (10);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseID = useParams<ManageStudentInCoursePageUrlParameter> ().courseID;
     let button: HTMLButtonElement | undefined;
-    let courseAPI: CourseAPI;
     let [studentInTheCourseHolder, setStudentInTheCourseHolder] 
         = useState<User[]> ([]);
     let [pageIndex2] = useState<number> (0);
@@ -110,12 +53,11 @@ export function ManageStudentInCoursePage (
     let [totalRowCount2, setTotalRowCount2] = useState<number> (0);
     let [pendingUserID, setPendingUserID] = useState<number> (0);
 
-    userAPI = new UserAPI ();
-    courseAPI = new CourseAPI ();
-    typeGuardian = new TypeGuard ();
+    let [userAPI] = useState<UserAPI> (new UserAPI ());
+    let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
     function openAddStudentDialog (): void {
-        loadStudentTable ().catch (
+        loadStudentExcludingStudentInTheCourseTable ().catch (
                 (error: unknown) => {
                     console.error (error);
                 }
@@ -148,11 +90,11 @@ export function ManageStudentInCoursePage (
                     pendingUserID
                     , Number (courseID)
             );
-            loadStudentInTheCourseTable ();
+            await loadStudentInTheCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -170,7 +112,7 @@ export function ManageStudentInCoursePage (
     }
 
     async function addAStudentToCourse (
-        event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
     ): Promise<void> {
         button = event.target as HTMLButtonElement;
         try {
@@ -178,12 +120,12 @@ export function ManageStudentInCoursePage (
                     Number (button.value)
                     , Number (courseID)
             );
-            loadStudentTable ();
-            loadStudentInTheCourseTable ();
+            await loadStudentExcludingStudentInTheCourseTable ();
+            await loadStudentInTheCourseTable ();
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -200,7 +142,8 @@ export function ManageStudentInCoursePage (
         }
     }
 
-    async function loadStudentTable (): Promise<void> {
+    async function loadStudentExcludingStudentInTheCourseTable (    
+    ): Promise<void> {
         try {
             studentDataPage 
                 = await userAPI.getAllStudentExcludingStudentInTheCourse (
@@ -213,7 +156,7 @@ export function ManageStudentInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -243,7 +186,7 @@ export function ManageStudentInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -437,6 +380,61 @@ export function ManageStudentInCoursePage (
             <footer>
             </footer>
         </Container>
+    );
+}
+
+function renderStudentTable (
+        user: User
+        , index: number
+        , addAStudentToCourse: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => Promise<void>
+): ReactElement {
+    return (
+        <tr key = {user.userID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {user.userID}
+            </td>
+            <td>
+                {`${
+                    user.firstName
+                } ${
+                    user.middleName
+                } ${
+                    user.lastName
+                }`}
+            </td>
+            <td>
+                {user.phoneNumber}
+            </td>
+            <td>
+                {user.email}
+            </td>
+            <td>
+                {user.userName}
+            </td>
+            <td>
+                <Button 
+                    variant = "success"
+                    type = "button"
+                    value = {user.userID}
+                    onClick = {
+                        (event) => {
+                            addAStudentToCourse (event).catch (
+                                    (error: unknown) => {
+                                        console.error (error);
+                                    }
+                            );
+                        }
+                    }
+                >
+                    Add
+                </Button>
+            </td>
+        </tr>
     );
 }
 

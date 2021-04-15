@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author roboc
+ * @author Phan Lam
  */
 @Entity
 @Table(name = "User", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {

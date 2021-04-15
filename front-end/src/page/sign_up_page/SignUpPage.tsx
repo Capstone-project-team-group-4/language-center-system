@@ -5,18 +5,19 @@ import React, {
     , ReactElement
     , useState 
 } from 'react';
-import { RegisterFormAPI } from '../common/service/RegisterFormAPI';
+import { RegisterFormAPI } from '../../common/service/RegisterFormAPI';
 import { 
     Button, Col, Container, Form, Row 
 } from 'react-bootstrap';
 import './SignUpPage.css';
-import { RegisterForm } from '../model/RegisterForm';
-import { TypeGuard } from '../common/service/TypeGuard';
-import { DialogControl } from '../common/component/ModalDialog';
+import { RegisterForm } from '../../model/RegisterForm';
+import { TypeGuard } from '../../common/service/TypeGuard';
+import { DialogControl } from '../../common/component/ModalDialog';
 
 interface SignUpPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function SignUpPage (props: SignUpPageProps): ReactElement {
@@ -28,11 +29,8 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
     let updatedRegisterForm: RegisterForm | undefined;
     let htmlElement: 
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
-    let registerFormAPI: RegisterFormAPI;
-    let typeGuardian: TypeGuard;
 
-    registerFormAPI = new RegisterFormAPI ();
-    typeGuardian = new TypeGuard ();
+    let [registerFormAPI] = useState<RegisterFormAPI> (new RegisterFormAPI ());
 
     function handleChange (
             event: ChangeEvent<
@@ -92,7 +90,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`

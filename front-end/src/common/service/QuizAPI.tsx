@@ -79,6 +79,77 @@ export class QuizAPI {
         }
     }
 
+    public async getAllQuizAreInTheExam (
+            examID: number
+            , pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<Quiz>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    `/examinations/${examID}/quizzes`
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<Quiz> (
+                    this.serverResponse.data
+            )){
+                this.quizDataPage = this.serverResponse.data; 
+                return Promise.resolve<DataPage<Quiz>> (this.quizDataPage);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getAllQuizExcludingQuizInTheExam (
+            examID: number
+            , pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<Quiz>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("examID", examID.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/quizzes:excluding-quiz-in-the-exam"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<Quiz> (
+                    this.serverResponse.data
+            )){
+                this.quizDataPage = this.serverResponse.data; 
+                return Promise.resolve<DataPage<Quiz>> (this.quizDataPage);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
     public async updateQuiz (updatedQuiz: Quiz): Promise<void> {
         try {
             await this.axiosInstance.put<undefined> (

@@ -40,18 +40,17 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery (name = "CourseType.findByTypeName", query = "SELECT c FROM CourseType c WHERE c.typeName = :typeName")})
 public class CourseType implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "TypeName", nullable = false, length = 400)
-    private String typeName;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Basic (optional = false)
     @Column (name = "TypeID", nullable = false)
     private Integer typeID;
+    @Basic (optional = false)
+    @NotNull
+    @Size (min = 1, max = 400)
+    @Column (name = "TypeName", nullable = false, length = 400)
+    private String typeName;
     
     @JsonIgnore
     @OneToMany (
@@ -91,6 +90,13 @@ public class CourseType implements Serializable {
         this.typeID = typeID;
     }
 
+    public String getTypeName (){
+        return typeName;
+    }
+
+    public void setTypeName (String typeName){
+        this.typeName = typeName;
+    }
 
     @XmlTransient
     public List<Course> getCourseList (){
@@ -133,14 +139,6 @@ public class CourseType implements Serializable {
     @Override
     public String toString (){
         return "com.PhanLam.backend.model.CourseType[ typeID=" + typeID + " ]";
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
     }
     
 }

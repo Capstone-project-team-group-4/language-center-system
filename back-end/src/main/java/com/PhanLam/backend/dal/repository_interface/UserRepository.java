@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 /**
  *
@@ -39,7 +38,4 @@ public interface UserRepository extends JpaRepository <User, Integer> {
     
     @Override
     public void delete (User user);
-    
-//    @Query("Select u.userID from User u where u.userName=?1")
-//    public User findUserIDByUserName(String userName);
 }

@@ -106,12 +106,11 @@ export class UserAPI {
             , pageSize: number
     ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("courseID", courseID.toString ());
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/students:are-in-the-course"
+                    `/courses/${courseID}/students`
                     , {params: this.requestParameterHolder}
             );
             if (this.typeGuardian.isDataPage<User> (

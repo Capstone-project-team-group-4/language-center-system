@@ -63,7 +63,7 @@ public class MultipleChoiceQuestion implements Serializable {
             , referencedColumnName = "UserID"
             , nullable = false
     )
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private User creator;
     
     @Basic (optional = false)

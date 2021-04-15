@@ -3,8 +3,8 @@ export class User {
     // Variables declaration:
     public userID: number;
 	public userName: string;
-	public middleName: string;
 	public firstName: string;
+	public middleName: string;
 	public lastName: string;
 	public email: string;
 	public dob: Date;

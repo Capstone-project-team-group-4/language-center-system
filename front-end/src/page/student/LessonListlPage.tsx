@@ -1,26 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { ReactElement } from "react";
-import { Breadcrumb, Col, Container, Image, Row, Table } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Breadcrumb, Col, Container, ListGroup, Row, Tab } from "react-bootstrap";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { StudentSidebar } from "../../common/component/student_sidebar/StudentSidebar";
 import { CourseAPI } from "../../common/service/CourseAPI";
+import { LessonAPI } from "../../common/service/LessonAPI";
 import { Course } from "../../model/Course";
-
+import { Lesson } from "../../model/Lesson";
 interface StudentDashboardPageProps {
     modalDialog: ReactElement;
 }
 
-export function CourseDetailPage(
+export function LessonListPage(
     props: StudentDashboardPageProps
 ): ReactElement {
-    let courseAPI: CourseAPI | undefined;
     let param: any = useParams();
     let [course, setCourse] = useState<Course>(new Course());
+    let [lessonList, setLessonList] = useState<Lesson[]>([]);
+    let lessonAPI: LessonAPI | undefined;
+    let courseAPI: CourseAPI | undefined;
 
     useEffect(() => {
+        lessonAPI = new LessonAPI();
         courseAPI = new CourseAPI();
+        lessonAPI.getAllLessonByCourse(param.courseID).then(
+            (res) => {
+                setLessonList(res.data);
+                // console.log(student.userName);
+            }
+        ).catch((err) => {
+            console.log(err);
+        });
         courseAPI.getOneCourse(param.courseID).then(
             (res) => {
+                console.log("course", res.data);
+                
                 setCourse(res.data);
             }
         ).catch((err) => {
@@ -35,7 +50,7 @@ export function CourseDetailPage(
                 <StudentSidebar />
                 <Container>
                     <Row>
-                        <Col style={{backgroundColor: 'white'}}>
+                        <Col>
                             <Breadcrumb>
                                 <Breadcrumb.Item
                                     linkAs={Link}
@@ -49,40 +64,22 @@ export function CourseDetailPage(
                                 >
                                     Student Dashboard
                                 </Breadcrumb.Item>
-                                <Breadcrumb.Item
-                                    active={true}
-                                >
+                                <Breadcrumb.Item active={true}>
                                     {course.courseName}
                                 </Breadcrumb.Item>
                             </Breadcrumb>
-                            <Table striped bordered hover>
-                                <thead>
-                                    <tr>
-                                        <th>Course Name:</th>
-                                        <th>{course.courseName}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Description:</td>
-                                        <td>{course.description}</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>Course Type:</td>
-                                        <td>{course.courseType.typeName}</td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td>Course Level:</td>
-                                        <td>{course.courseLevel.levelName}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tuition Fee:</td>
-                                        <td>{course.tuitionFee}</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
+                            <Tab.Container id="list-group-tabs-example">
+                            {lessonList.map((lesson) => {
+                                return (
+
+                                        <ListGroup className="my-2">
+                                            <ListGroup.Item action href={"/student-dashboardz/" + course.courseName + "/" + lesson.lessonID}>
+                                                {lesson.lessonName}
+                                            </ListGroup.Item>
+                                        </ListGroup>
+                                )
+                                })}                      
+                            </Tab.Container>
                         </Col>
                     </Row>
                 </Container>

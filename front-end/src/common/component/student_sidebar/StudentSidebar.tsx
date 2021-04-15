@@ -81,7 +81,7 @@ export function StudentSidebar(): ReactElement {
                             {myCourseList.map((course) => {
                                 return (
                                     <Accordion.Collapse eventKey="0">
-                                        <Card.Body><a href={"/student-dashboard-course/" + course.courseID}>{course.courseName}</a></Card.Body>
+                                        <Card.Body><a href={"/student-dashboards/" + course.courseID}>{course.courseName}</a></Card.Body>
                                     </Accordion.Collapse>
                                 )
                             })}

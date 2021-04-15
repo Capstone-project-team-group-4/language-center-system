@@ -38,11 +38,9 @@ import { StudentDashboardPage } from './page/student/StudentDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { DetailPage } from './page/DetailPage';
-import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { LessonDetailPage } from './page/student/LessonDetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
 import { ManageStudentPage } from './page/admin/ManageStudentPage';
-import { InfoPage } from './page/student/InfoPage';
 import { 
   ManageThingsInCoursePage 
 } from './page/admin/ManageThingsInCoursePage';
@@ -56,6 +54,9 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
+import { LessonListPage } from './page/student/LessonListlPage';
+import { CourseDetailPage } from './page/student/CourseDetailPage';
+import { ProfilePage } from './page/student/ProfilePage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -381,17 +382,21 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <StudentDashboardPage modalDialog={modalDialog} />
       </Route>
-      <Route path="/student-dashboard-course/:courseID">
+      <Route path="/student-dashboards/:courseID">
         <PageHeader logOut={logOut} />
-        <CourseDetailPage modalDialog={modalDialog} />
+        <LessonListPage modalDialog={modalDialog} />
       </Route>
-      <Route path="/student-dashboard-lesson/:courseName/:lessonID">
+      <Route path="/student-dashboardz/:courseName/:lessonID">
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
       </Route>
       <Route path="/student">
         <PageHeader logOut={logOut} />
-        <InfoPage modalDialog={modalDialog}/>
+        <ProfilePage modalDialog={modalDialog}/>
+      </Route>
+      <Route path="/course-detail/:courseID">
+        <PageHeader logOut={logOut} />
+        <CourseDetailPage modalDialog={modalDialog}/>
       </Route>
     </Switch>
   );

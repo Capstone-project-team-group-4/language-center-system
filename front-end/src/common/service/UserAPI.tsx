@@ -401,5 +401,25 @@ export class UserAPI {
         }
     }
 
+    public async displayProfile (userID: number): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet ();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getProfile/${userID}`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
 
 }

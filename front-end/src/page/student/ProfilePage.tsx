@@ -1,41 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ReactElement } from "react";
 import { Breadcrumb, Col, Container, Image, Row, Table } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { StudentSidebar } from "../../common/component/student_sidebar/StudentSidebar";
-import { CourseAPI } from "../../common/service/CourseAPI";
-import { Course } from "../../model/Course";
 
 interface StudentDashboardPageProps {
     modalDialog: ReactElement;
 }
 
-export function CourseDetailPage(
+export function ProfilePage(
     props: StudentDashboardPageProps
 ): ReactElement {
-    let courseAPI: CourseAPI | undefined;
-    let param: any = useParams();
-    let [course, setCourse] = useState<Course>(new Course());
 
-    useEffect(() => {
-        courseAPI = new CourseAPI();
-        courseAPI.getOneCourse(param.courseID).then(
-            (res) => {
-                setCourse(res.data);
-            }
-        ).catch((err) => {
-            console.log(err);
-        });
-    }, []);
+    // useEffect(() => {
+    //     courseAPI = new CourseAPI();
+    //     courseAPI.getOneCourse(param.courseID).then(
+    //         (res) => {
+    //             setCourse(res.data);
+    //         }
+    //     ).catch((err) => {
+    //         console.log(err);
+    //     });
+    // }, []);
 
     return (
-        <Container id="CourseDetailPage">
+        <Container id="ProfilePage">
             {props.modalDialog}
             <main>
                 <StudentSidebar />
                 <Container>
                     <Row>
-                        <Col style={{backgroundColor: 'white'}}>
+                        <Col>
                             <Breadcrumb>
                                 <Breadcrumb.Item
                                     linkAs={Link}
@@ -49,40 +44,40 @@ export function CourseDetailPage(
                                 >
                                     Student Dashboard
                                 </Breadcrumb.Item>
-                                <Breadcrumb.Item
-                                    active={true}
-                                >
-                                    {course.courseName}
-                                </Breadcrumb.Item>
                             </Breadcrumb>
-                            <Table striped bordered hover>
+                            <Row>
+                                <Col xs={6} md={4}>
+                                    <Image src="holder.js/171x180" thumbnail />
+                                </Col>
+                                <Table striped bordered hover>
                                 <thead>
                                     <tr>
                                         <th>Course Name:</th>
-                                        <th>{course.courseName}</th>
+                                        <th>ygfgf</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Description:</td>
-                                        <td>{course.description}</td>
+                                        <td>tdfdf</td>
                                         
                                     </tr>
                                     <tr>
                                         <td>Course Type:</td>
-                                        <td>{course.courseType.typeName}</td>
+                                        <td>fdfd</td>
                                         
                                     </tr>
                                     <tr>
                                         <td>Course Level:</td>
-                                        <td>{course.courseLevel.levelName}</td>
+                                        <td>fdfdf</td>
                                     </tr>
                                     <tr>
                                         <td>Tuition Fee:</td>
-                                        <td>{course.tuitionFee}</td>
+                                        <td>fdfdf</td>
                                     </tr>
                                 </tbody>
                             </Table>
+                            </Row>
                         </Col>
                     </Row>
                 </Container>

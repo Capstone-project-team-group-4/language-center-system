@@ -17,13 +17,10 @@ interface StudentDashboardPageProps {
 }
 
 export function StudentDashboardPage(
-    props: any 
+    props: any
 ): ReactElement {
-    let [course, setCourse] = useState<Course>(new Course());
-    let [courseList, setCourseList] = useState<Course[]>([]);
     let [myCourseList, setMyCourseList] = useState<Course[]>([]);
     let courseAPI = new CourseAPI();
-    let param: any = useParams();
     let localStorageService = new LocalStorageService();
 
     useEffect(() => {
@@ -54,30 +51,38 @@ export function StudentDashboardPage(
                                     Student Dashboard
                                 </Breadcrumb.Item>
                             </Breadcrumb>
-                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Row>
                                 {myCourseList.map((course) => {
                                     return (
-                                        <Card style={{width: 400, marginRight: 50 }}>
-                                            <Card.Body>
-                                                <Card.Title>
-                                                    {course.courseName}
-                                                    {/* {i.name} */}
-                                                </Card.Title>
-                                                <Card.Text>
-                                                    {course.description}
-                                                    {/* {i.age} */}
-                                                </Card.Text>
-                                                <Button variant="primary" style={{alignItems: 'stretch'}}>
-                                                    Detail
-                                                </Button>
-                                                <Button variant="primary" href={"/student-dashboard-course/" + course.courseID} style={{alignItems: 'stretch'}}>
-                                                    Learn
-                                                </Button>
-                                            </Card.Body>
-                                        </Card>
+                                        <Col md={3}>
+                                            <Card className="mb-3">
+                                                <Card.Body>
+                                                    <Card.Title>
+                                                        {course.courseName}
+                                                        {/* {i.name} */}
+                                                    </Card.Title>
+                                                    <Card.Text>
+                                                        {course.description}
+                                                        {/* {i.age} */}
+                                                    </Card.Text>
+                                                    <Row>
+                                                        <Col>
+                                                            <Button variant="secondary" href={"/course-detail/" + course.courseID} style={{ alignItems: 'stretch' }} size="sm" block>
+                                                                Detail
+                                                        </Button>
+                                                        </Col>
+                                                        <Col>
+                                                            <Button variant="primary" href={"/student-dashboards/" + course.courseID} style={{ alignItems: 'stretch' }} size="sm" block>
+                                                                Learn
+                                                        </Button>
+                                                        </Col>
+                                                    </Row>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
                                     )
                                 })}
-                            </div>
+                            </Row>
                         </Col>
                     </Row>
                 </Container>

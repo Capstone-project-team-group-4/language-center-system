@@ -61,9 +61,9 @@ public class HomeWork implements Serializable {
     @OneToMany (mappedBy = "homeWorkID", fetch = FetchType.LAZY)
     private List<StudentScore> studentScoreList;
     @OneToMany (mappedBy = "requirementID", fetch = FetchType.LAZY)
-    private List<Document> documentList;
+    private List<Document> requirementList;
     @OneToMany (mappedBy = "solutionID", fetch = FetchType.LAZY)
-    private List<Document> documentList1;
+    private List<Document> solutionList;
     @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private ClassSession classID;
@@ -118,21 +118,21 @@ public class HomeWork implements Serializable {
     }
 
     @XmlTransient
-    public List<Document> getDocumentList (){
-        return documentList;
+    public List<Document> getRequirementList (){
+        return requirementList;
     }
 
-    public void setDocumentList (List<Document> documentList){
-        this.documentList = documentList;
+    public void setRequirementList (List<Document> requirementList){
+        this.requirementList = requirementList;
     }
 
     @XmlTransient
-    public List<Document> getDocumentList1 (){
-        return documentList1;
+    public List<Document> getSolutionList (){
+        return solutionList;
     }
 
-    public void setDocumentList1 (List<Document> documentList1){
-        this.documentList1 = documentList1;
+    public void setSolutionList (List<Document> solutionList){
+        this.solutionList = solutionList;
     }
 
     public ClassSession getClassID (){

@@ -14,15 +14,6 @@ interface StudentDashboardPageProps {
     modalDialog: ReactElement;
 }
 
-var bgColors = { "Default": "#81b71a",
-                    "Blue": "#00B1E1",
-                    "Cyan": "#37BC9B",
-                    "Green": "#8CC152",
-                    "Red": "#E9573F",
-                    "Yellow": "#F6BB42",
-                    "White": "#FFFFFF",
-};
-
 export function LessonDetailPage(
     props: StudentDashboardPageProps
 ): ReactElement {
@@ -77,14 +68,14 @@ export function LessonDetailPage(
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item
                                     linkAs={Link}
-                                    linkProps={{ to: "/student-dashboard-course/" + course.courseID }}>
+                                    linkProps={{ to: "/student-dashboard/" + course.courseID }}>
                                     {course.courseName}
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active={true}>
                                     {lesson.lessonName}
                                 </Breadcrumb.Item>
                             </Breadcrumb>
-                            <Row style={{backgroundColor: bgColors.White, borderRadius:10 + 'px'}}>
+                            <Row style={{backgroundColor: 'white', borderRadius:10 + 'px'}}>
                                 <Col sm={9}>
                                     <ReactPlayer
                                         controls

@@ -200,6 +200,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/lesson*")
                         .hasRole ("STUDENT")
+                .antMatchers (HttpMethod.GET, "/getProfile/*")
+                        .hasRole ("STUDENT")
                 .anyRequest ().denyAll ();
     }
 }

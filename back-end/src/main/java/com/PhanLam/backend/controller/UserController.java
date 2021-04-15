@@ -163,5 +163,12 @@ public class UserController {
     ){
         User showUser = userService.showInfo(user, userID);
         return showUser;
-    } 
+    }
+    
+    @GetMapping("/getProfile/{userID}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getProfileById(@PathVariable int userID) {
+        User user = userService.getById(userID);
+        return user;
+    }
 }

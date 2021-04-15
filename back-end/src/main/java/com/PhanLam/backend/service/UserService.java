@@ -309,7 +309,7 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow();
     }
     
-    public Optional<User> showInfo(User user, int userID) {
+    public User showInfo(User user, int userID) {
         User showUser = new User();
         showUser.getUserID();
         showUser.getUserName();
@@ -324,6 +324,6 @@ public class UserService {
         showUser.getSelfDescription();
         showUser.getPassword();
         showUser.getAccountStatus();
-        return userRepository.findById(userID);
+        return userRepository.findById(userID).orElseThrow();
     }
 }

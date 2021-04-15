@@ -157,11 +157,11 @@ public class UserController {
     }
     
     @GetMapping("/getUsers/{userID}")
-    public Optional showAllUserByID(
+    public User showAllUserByID(
             @RequestBody User user
             , @PathVariable int userID
     ){
-        Optional showUser = userService.showInfo(user, userID);
+        User showUser = userService.showInfo(user, userID);
         return showUser;
     } 
 }

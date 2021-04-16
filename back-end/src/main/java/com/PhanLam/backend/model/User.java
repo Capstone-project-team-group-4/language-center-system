@@ -6,31 +6,15 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -58,7 +42,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByDateCreated", query = "SELECT u FROM User u WHERE u.dateCreated = :dateCreated"),
     @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin")})
 public class User implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -135,7 +119,7 @@ public class User implements Serializable {
     @Column(name = "LastModified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-    
+
     @JsonIgnore
     @ManyToMany (
             mappedBy = "userList"
@@ -148,10 +132,10 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-    
+
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     private List<ClassSession> classList;
-    
+
     @JsonIgnore
     @JoinTable (name = "UserRole", joinColumns = {
         @JoinColumn (
@@ -175,17 +159,20 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Role> roleList;
-    
+
+    @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<StudentScore> studentScoreList;
+
+    @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
-    private List<ClassSession> classList1;  
+    private List<ClassSession> classList1;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -194,7 +181,7 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-    
+
     public User (){
     }
 
@@ -220,7 +207,7 @@ public class User implements Serializable {
         this.accountStatus = "Active";
         this.dateCreated = dateCreated;
     }
-    
+
     public Integer getUserID() {
         return userID;
     }
@@ -268,7 +255,7 @@ public class User implements Serializable {
     public void setEmail (String email){
         this.email = email;
     }
-    
+
     public Date getDob() {
         return dob;
     }
@@ -276,7 +263,7 @@ public class User implements Serializable {
     public void setDob(Date dob) {
         this.dob = dob;
     }
-    
+
     public String getPhoneNumber (){
         return phoneNumber;
     }
@@ -340,7 +327,7 @@ public class User implements Serializable {
     public void setDateCreated (Date dateCreated){
         this.dateCreated = dateCreated;
     }
-    
+
     public Date getLastLogin() {
         return lastLogin;
     }
@@ -356,7 +343,7 @@ public class User implements Serializable {
     public void setLastModified (Date lastModified){
         this.lastModified = lastModified;
     }
-    
+
     @XmlTransient
     public List<Course> getCourseList (){
         return courseList;
@@ -374,7 +361,7 @@ public class User implements Serializable {
     public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
-    
+
     @XmlTransient
     public List<Role> getRoleList (){
         return roleList;
@@ -401,7 +388,7 @@ public class User implements Serializable {
     public void setStudentScoreList (List<StudentScore> studentScoreList){
         this.studentScoreList = studentScoreList;
     }
-    
+
     @XmlTransient
     public List<ClassSession> getClassList1 (){
         return classList1;
@@ -410,7 +397,7 @@ public class User implements Serializable {
     public void setClassList1 (List<ClassSession> classList1){
         this.classList1 = classList1;
     }
-    
+
     @XmlTransient
     public List<Address> getAddressList() {
         return addressList;
@@ -429,7 +416,7 @@ public class User implements Serializable {
     ){
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -453,5 +440,5 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.PhanLam.backend.model.User[ userID=" + userID + " ]";
-    }    
+    }
 }

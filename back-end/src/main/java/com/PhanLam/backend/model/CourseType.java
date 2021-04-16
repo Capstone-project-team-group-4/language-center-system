@@ -8,19 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,7 +39,7 @@ public class CourseType implements Serializable {
     @Size (min = 1, max = 400)
     @Column (name = "TypeName", nullable = false, length = 400)
     private String typeName;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -60,7 +48,7 @@ public class CourseType implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -69,6 +57,19 @@ public class CourseType implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<CourseLevel> courseLevelList;
+
+    @JsonIgnore
+    @ManyToMany (
+            mappedBy = "courseTypeList"
+            , cascade = {
+            CascadeType.PERSIST
+            , CascadeType.MERGE
+            , CascadeType.REFRESH
+            , CascadeType.DETACH
+    }
+            , fetch = FetchType.LAZY
+    )
+    private List<SpareTimeRegister> spareTimeRegisterList;
 
     public CourseType (){
     }
@@ -116,6 +117,15 @@ public class CourseType implements Serializable {
         this.courseLevelList = courseLevelList;
     }
 
+    @XmlTransient
+    public List<SpareTimeRegister> getSpareTimeRegisterList() {
+        return spareTimeRegisterList;
+    }
+
+    public void setSpareTimeRegisterList(List<SpareTimeRegister> spareTimeRegisterList) {
+        this.spareTimeRegisterList = spareTimeRegisterList;
+    }
+
     @Override
     public int hashCode (){
         int hash = 0;
@@ -140,5 +150,5 @@ public class CourseType implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.CourseType[ typeID=" + typeID + " ]";
     }
-    
+
 }

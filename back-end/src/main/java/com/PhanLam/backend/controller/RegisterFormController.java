@@ -6,6 +6,7 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
+import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.RegisterForm;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.service.RegisterFormService;
@@ -38,17 +39,17 @@ public class RegisterFormController {
     
     @GetMapping ("/register-forms")
     @ResponseStatus (HttpStatus.OK)
-    public List<RegisterForm> getAllCreateAccountRequest (
-            @RequestParam int pageNumber
+    public DataPage<RegisterForm> getAllCreateAccountRequest (
+            @RequestParam int pageIndex
             , @RequestParam int pageSize
     ){
-        List<RegisterForm> registerFormHolder;
+        DataPage<RegisterForm> registerFormDataPage;
         
-        registerFormHolder = registerFormService.getAllRegisterForm (
-                pageNumber
+        registerFormDataPage = registerFormService.getAllRegisterForm (
+                pageIndex
                 , pageSize
         );
-        return registerFormHolder;
+        return registerFormDataPage;
     } 
     
     @PostMapping ("/register-forms")

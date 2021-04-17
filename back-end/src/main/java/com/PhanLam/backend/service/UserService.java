@@ -6,29 +6,25 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.LoggedInUser;
-import com.PhanLam.backend.model.QCourse;
-import com.PhanLam.backend.model.QRole;
-import com.PhanLam.backend.model.QUser;
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.model.*;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import java.security.Principal;
-import java.util.Optional;
-import javax.persistence.EntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -38,11 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserService {
-    
+
     // Variables declaration:
     private UserRepository userRepository;
     private CourseRepository courseRepository;
-    private JPAQueryFactory queryFactory; 
+    private JPAQueryFactory queryFactory;
 
     public UserService (
             UserRepository userRepository
@@ -69,7 +65,7 @@ public class UserService {
         loggedInUser = new LoggedInUser (userName, roleHolder);
         return loggedInUser;
     }
-    
+
     @Transactional (readOnly = true)
     public List<User> getAllUserWithUserNameIsNot (
             Principal principal
@@ -81,11 +77,11 @@ public class UserService {
         Sort sortInformation;
         PageRequest pagingInformation;
         List<User> userHolder;
-        
+
         if ((pageNumber >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
             userSortInformation = Sort.sort (User.class);
-            sortInformation 
+            sortInformation
                 = userSortInformation.by (User::getFirstName).ascending ()
                 .and (userSortInformation.by (User::getLastName)
                         .ascending ()
@@ -104,12 +100,12 @@ public class UserService {
         else {
             throw new InvalidRequestArgumentException (
                     "The page number and page size number parameters "
-                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "cannot be less than zero." + System.lineSeparator ()
                     + "Parameter name: pageNumber, pageSize"
             );
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentWithCourseIDIsNot (
             int courseID
@@ -124,7 +120,7 @@ public class UserService {
         QueryResults<User> studentPage;
         DataPage<User> studentDataPage;
         long totalRowCount;
-        
+
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
             throw new NotFoundException ("Course");
@@ -160,13 +156,13 @@ public class UserService {
             else {
                 throw new InvalidRequestArgumentException (
                         "The page index number and page size number parameters "
-                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "cannot be less than zero." + System.lineSeparator ()
                         + "Parameter name: pageIndex, pageSize"
                 );
             }
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID
@@ -181,7 +177,7 @@ public class UserService {
         QueryResults<User> studentPage;
         DataPage<User> studentDataPage;
         long totalRowCount;
-        
+
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
             throw new NotFoundException ("Course");
@@ -214,18 +210,18 @@ public class UserService {
             else {
                 throw new InvalidRequestArgumentException (
                         "The page index number and page size number parameters "
-                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "cannot be less than zero." + System.lineSeparator ()
                         + "Parameter name: pageIndex, pageSize"
                 );
             }
         }
     }
-    
+
     public void disableUserByID (int userID, Principal principal){
         Optional <User> nullableUser;
         User user;
         String userName;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("User");
@@ -243,11 +239,11 @@ public class UserService {
             }
         }
     }
-    
+
     public void enableUserByID (int userID){
         Optional <User> nullableUser;
         User user;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("User");
@@ -257,12 +253,12 @@ public class UserService {
             user.setAccountStatus ("Active");
         }
     }
-    
+
     public void deleteUserByID (int userID, Principal principal){
         Optional <User> nullableUser;
         User user;
         String userName;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("User");
@@ -280,11 +276,11 @@ public class UserService {
             }
         }
     }
-    
+
     public List<User> getAll() {
         return userRepository.findAll();
     }
-    
+
     public User updateStudent(User user, int userID) {
         User updatedUser = new User();
         updatedUser.setUserID(userID);
@@ -303,11 +299,15 @@ public class UserService {
         updatedUser.setDateCreated(user.getDateCreated());
         return userRepository.save(updatedUser);
     }
-    
+
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
     }
-    
+
+    public User getByName(String userName){
+        return userRepository.findByUserName(userName).orElseThrow();
+    }
+
     public Optional<User> showInfo(User user, int userID) {
         User showUser = new User();
         showUser.getUserID();
@@ -324,5 +324,21 @@ public class UserService {
         showUser.getPassword();
         showUser.getAccountStatus();
         return userRepository.findById(userID);
+    }
+    public List<User> getAllStudentOfClass(int classID){
+        QCourse course;
+        QClassSession classSession;
+        QUser user;
+        QueryResults<User> studentResults;
+
+        course = new QCourse("question");
+        classSession = new QClassSession("classSession");
+        user = new QUser("user");
+        studentResults = queryFactory
+                .selectFrom(user)
+                .innerJoin(user.courseList, course)
+                .innerJoin(course.classList, classSession).where(classSession.classID.eq(classID))
+                .fetchResults();
+        return studentResults.getResults();
     }
 }

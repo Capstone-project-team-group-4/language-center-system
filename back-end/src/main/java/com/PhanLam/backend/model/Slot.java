@@ -6,13 +6,14 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -37,6 +38,14 @@ public class Slot implements Serializable {
     @Column (name = "SlotName", nullable = false, length = 400)
     private String SlotName;
 
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "slot"
+            , fetch = FetchType.LAZY
+    )
+    private List<ClassSession> classSessionList;
 
     @JsonIgnore
     @ManyToMany (
@@ -78,6 +87,15 @@ public class Slot implements Serializable {
 
     public void setSpareTimeRegisterList(List<SpareTimeRegister> spareTimeRegisterList) {
         this.spareTimeRegisterList = spareTimeRegisterList;
+    }
+
+    @XmlTransient
+    public List<ClassSession> getClassSessionList() {
+        return classSessionList;
+    }
+
+    public void setClassSessionList(List<ClassSession> classSessionList) {
+        this.classSessionList = classSessionList;
     }
 
     @Override

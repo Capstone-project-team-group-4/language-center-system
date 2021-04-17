@@ -3,37 +3,29 @@ package com.PhanLam.backend.controller;
 
 import com.PhanLam.backend.controller.DTO.SpareTimeRegisterRequest;
 import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.QCourseType;
-import com.PhanLam.backend.model.QSpareTimeRegister;
 import com.PhanLam.backend.model.SpareTimeRegister;
 import com.PhanLam.backend.service.SpareTimeRegisterService;
-import com.querydsl.core.QueryResults;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
-import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 
 
 /**
  * @author Phan Lam
  */
 @RestController
+@RequestMapping("/spare-time-registers")
 public class SpareTimeRegisterController {
     // Variables declaration:
     private SpareTimeRegisterService spareTimeService;
-    private JPAQueryFactory queryFactory;
-
 
     public SpareTimeRegisterController(SpareTimeRegisterService spareTimeService, EntityManager entityManager) {
         this.spareTimeService = spareTimeService;
-        queryFactory = new JPAQueryFactory(entityManager);
     }
 
-    @GetMapping("/spare-time-register")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public DataPage<SpareTimeRegister> getAllSpareTime(
             @RequestParam int pageNumber
@@ -51,7 +43,7 @@ public class SpareTimeRegisterController {
         return spareTimeRegisterHolder;
     }
 
-    @PostMapping("/spare-time-register")
+    @PostMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createSpareTimeRegister(
             Principal principal
@@ -60,14 +52,15 @@ public class SpareTimeRegisterController {
         spareTimeService.createSpareTimeRegister(spareTimeRegisterRequest, principal);
     }
 
-    @DeleteMapping("/spare-time-register/{spareTimeID}")
+    @DeleteMapping("/{spareTimeID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeSpareTimeRegister(
             @PathVariable int spareTimeID
     ) {
         spareTimeService.removeSpareTimeRegister(spareTimeID);
     }
-    @PutMapping("/spare-time-register")
+
+    @PutMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editSpareTimeRegister(
             @RequestBody SpareTimeRegisterRequest spareTimeRegisterRequest
@@ -75,4 +68,11 @@ public class SpareTimeRegisterController {
         spareTimeService.editSpareTimeRegister(spareTimeRegisterRequest);
     }
 
+    @PatchMapping("{spareTimeID}:reject")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void rejectTimeSpare(
+            @PathVariable int spareTimeID
+    ) {
+        spareTimeService.rejectSpareTimeById(spareTimeID);
+    }
 }

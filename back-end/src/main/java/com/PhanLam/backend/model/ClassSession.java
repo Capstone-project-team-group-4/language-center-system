@@ -5,31 +5,13 @@
  */
 package com.PhanLam.backend.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -48,10 +30,6 @@ import javax.xml.bind.annotation.XmlTransient;
             , query = "SELECT c FROM ClassSession c WHERE c.classID = :classID"
     ),
     @NamedQuery (
-            name = "ClassSession.findByStartTime"
-            , query = "SELECT c FROM ClassSession c WHERE c.startTime = :startTime"
-    ),
-    @NamedQuery (
             name = "ClassSession.findByStatus"
             , query = "SELECT c FROM ClassSession c WHERE c.status = :status"
     )})
@@ -63,16 +41,12 @@ public class ClassSession implements Serializable {
     @Basic (optional = false)
     @Column (name = "ClassID", nullable = false)
     private Integer classID;
-    @Basic (optional = false)
-    @NotNull
-    @Column (name = "StartTime", nullable = false)
-    @Temporal (TemporalType.TIMESTAMP)
-    private Date startTime;
+
     @Basic (optional = false)
     @NotNull
     @Size (min = 1, max = 500)
-    @Column (name = "Status", nullable = false, length = 500)
-    private String status;
+    @Column (name = "Status", nullable = false)
+    private int status;
     @JoinTable (name = "UserClass", joinColumns = {
         @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)}, inverseJoinColumns = {
         @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)})
@@ -86,6 +60,16 @@ public class ClassSession implements Serializable {
     @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private User teacherID;
+    @Basic (optional = false)
+    @Column (name = "SpareTimeRegisterID", nullable = false)
+    private Integer SpareTimeRegisterID;
+    @JoinColumn (
+            name = "SlotID"
+            , referencedColumnName = "SlotID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private Slot slot;
 
     public ClassSession (){
     }
@@ -94,10 +78,17 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public ClassSession (Integer classID, Date startTime, String status){
+    public ClassSession (Integer classID, int status){
         this.classID = classID;
-        this.startTime = startTime;
         this.status = status;
+    }
+
+    public Slot getSlot() {
+        return slot;
+    }
+
+    public void setSlot(Slot slot) {
+        this.slot = slot;
     }
 
     public Integer getClassID (){
@@ -108,19 +99,11 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public Date getStartTime (){
-        return startTime;
-    }
-
-    public void setStartTime (Date startTime){
-        this.startTime = startTime;
-    }
-
-    public String getStatus (){
+    public int getStatus (){
         return status;
     }
 
-    public void setStatus (String status){
+    public void setStatus (int status){
         this.status = status;
     }
 
@@ -158,6 +141,14 @@ public class ClassSession implements Serializable {
         this.teacherID = teacherID;
     }
 
+    public Integer getSpareTimeRegisterID() {
+        return SpareTimeRegisterID;
+    }
+
+    public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
+        SpareTimeRegisterID = spareTimeRegisterID;
+    }
+
     @Override
     public int hashCode (){
         int hash = 0;
@@ -182,5 +173,5 @@ public class ClassSession implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.ClassSession[ classID=" + classID + " ]";
     }
-    
+
 }

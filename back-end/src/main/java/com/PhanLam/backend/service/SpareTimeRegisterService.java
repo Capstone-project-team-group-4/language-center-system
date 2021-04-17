@@ -4,7 +4,6 @@ import com.PhanLam.backend.controller.DTO.SpareTimeRegisterRequest;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.SpareTimeRegisterRepository;
-import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
@@ -26,18 +25,18 @@ import java.util.Optional;
 public class SpareTimeRegisterService {
     // Variables declaration:
     private SpareTimeRegisterRepository spareTimeRegisterRepository;
-    private UserRepository userRepository;
+    private UserService userService;
     private CourseTypeService courseTypeService;
     private SlotService slotService;
     private JPAQueryFactory queryFactory;
 
     public SpareTimeRegisterService(SpareTimeRegisterRepository spareTimeRegisterRepository,
-                                    UserRepository userRepository,
+                                    UserService userService,
                                     CourseTypeService courseTypeService,
                                     SlotService slotService,
                                     EntityManager entityManager) {
         this.spareTimeRegisterRepository = spareTimeRegisterRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.courseTypeService = courseTypeService;
         this.slotService = slotService;
         queryFactory = new JPAQueryFactory(entityManager);
@@ -49,7 +48,6 @@ public class SpareTimeRegisterService {
             , int pageIndex
             , int pageSize
     ) {
-        Optional<User> nullableUser;
         User user = null;
         Sort.TypedSort<SpareTimeRegister> spareTimeSortInformation;
         Sort sortInformation;
@@ -61,11 +59,7 @@ public class SpareTimeRegisterService {
 
         //handle abnormal case
         if (teacherId != null) {
-            nullableUser = userRepository.findById(teacherId);
-            if (!nullableUser.isPresent() && teacherId != null) {
-                throw new NotFoundException("Teacher");
-            }
-            user = nullableUser.get();
+            user = userService.getById(teacherId);
             boolean isTeacher = user.getRoleList().stream().anyMatch(i -> i.getRoleName().equals(Constant.ROLE_TEACHER));
             if (!isTeacher) {
                 throw new InvalidRequestArgumentException("You don't have permission");
@@ -101,7 +95,7 @@ public class SpareTimeRegisterService {
     }
 
     public void createSpareTimeRegister(SpareTimeRegisterRequest spareTimeRegisterRequest, Principal principal) {
-        User teacher = userRepository.findByUserName(principal.getName()).get();
+        User teacher = userService.getByName(principal.getName());
         SpareTimeRegister spareTimeRegister = new SpareTimeRegister();
         spareTimeRegister.setUserID(teacher);
         spareTimeRegister.setLastModified(new Date());
@@ -121,7 +115,7 @@ public class SpareTimeRegisterService {
         //set list slot
         List<Slot> listSlot = new ArrayList<>();
         for (int id : spareTimeRegisterRequest.getListSlotId()) {
-            Slot slot = slotService.getSlotById(id);
+            Slot slot = slotService.getById(id);
 
             //check teacher already register this slot or not
             List<SpareTimeRegister> spareTimeRegisters = getSpareRegisterByTeacherAndSlot(teacher.getUserID(), slot.getSlotID());
@@ -132,7 +126,7 @@ public class SpareTimeRegisterService {
         }
         spareTimeRegister.setCourseTypeList(listCourseType);
         spareTimeRegister.setSlotList(listSlot);
-        spareTimeRegisterRepository.save(spareTimeRegister);
+        save(spareTimeRegister);
     }
 
     public void removeSpareTimeRegister(int spareTimeId) {
@@ -144,12 +138,12 @@ public class SpareTimeRegisterService {
         if (spareTimeRegister.getStatus() != Constant.STATUS_PENDING) {
             throw new InvalidRequestArgumentException("Only remove pending register");
         }
-        spareTimeRegisterRepository.delete(spareTimeRegister);
+        remove(spareTimeRegister);
 
     }
 
     public void editSpareTimeRegister(SpareTimeRegisterRequest spareTimeRegisterRequest) {
-        SpareTimeRegister spareTimeRegister = getSpareRegisterById(spareTimeRegisterRequest.getSpareTimeRegisterId());
+        SpareTimeRegister spareTimeRegister = getById(spareTimeRegisterRequest.getSpareTimeRegisterId());
         spareTimeRegister.setLastModified(new Date());
         User teacher = spareTimeRegister.getUserID();
 
@@ -167,7 +161,7 @@ public class SpareTimeRegisterService {
         //set list slot
         List<Slot> listSlot = new ArrayList<>();
         for (int id : spareTimeRegisterRequest.getListSlotId()) {
-            Slot slot = slotService.getSlotById(id);
+            Slot slot = slotService.getById(id);
 
             //check teacher already register this slot or not
             List<SpareTimeRegister> spareTimeRegisters = getSpareRegisterByTeacherAndSlotExcludeSpareTimeId(teacher.getUserID(), slot.getSlotID(), spareTimeRegister.getSpareTimeID());
@@ -178,7 +172,32 @@ public class SpareTimeRegisterService {
         }
         spareTimeRegister.setCourseTypeList(listCourseType);
         spareTimeRegister.setSlotList(listSlot);
+        save(spareTimeRegister);
+    }
+
+    public void save(SpareTimeRegister spareTimeRegister) {
         spareTimeRegisterRepository.save(spareTimeRegister);
+    }
+
+    public void remove(SpareTimeRegister spareTimeRegister) {
+        spareTimeRegisterRepository.delete(spareTimeRegister);
+    }
+
+    public void rejectSpareTimeById(int id) {
+        SpareTimeRegister spareTimeRegister = getById(id);
+        if (spareTimeRegister.getStatus() != Constant.STATUS_PENDING) {
+            throw new InvalidRequestArgumentException("Only reject spare time which has status is PENDING");
+        }
+        spareTimeRegister.setStatus(Constant.STATUS_REJECTED);
+        save(spareTimeRegister);
+    }
+
+    public SpareTimeRegister getById(int id) {
+        Optional<SpareTimeRegister> nullableSpareTimeRegister = spareTimeRegisterRepository.findById(id);
+        if (!nullableSpareTimeRegister.isPresent()) {
+            throw new NotFoundException("SpareTimeRegister");
+        }
+        return nullableSpareTimeRegister.get();
     }
 
     private List<SpareTimeRegister> getSpareRegisterByTeacherAndSlot(int teacherId, int slotId) {
@@ -216,13 +235,5 @@ public class SpareTimeRegisterService {
 
                 ).fetchResults();
         return spareTimeRegister.getResults();
-    }
-
-    private SpareTimeRegister getSpareRegisterById(int id) {
-        Optional<SpareTimeRegister> nullableSpareTimeRegister = spareTimeRegisterRepository.findById(id);
-        if (!nullableSpareTimeRegister.isPresent()) {
-            throw new NotFoundException("SpareTimeRegister");
-        }
-        return nullableSpareTimeRegister.get();
     }
 }

@@ -15,9 +15,6 @@ import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 /**
  *
  * @author Phan Lam
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class CourseService {
-    
+
     // Variables declaration:
     private CourseRepository courseRepository;
     private UserRepository userRepository;
@@ -45,12 +46,12 @@ public class CourseService {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
     }
-    
+
     public void createCourse (Course course){
         String courseName;
         boolean courseAlreadyExist;
         Date dateCreated;
-        
+
         courseName = course.getCourseName ();
         courseAlreadyExist = courseRepository.existsByCourseName (courseName);
         if (courseAlreadyExist == true){
@@ -62,7 +63,7 @@ public class CourseService {
             courseRepository.save (course);
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourse (
             int pageIndex
@@ -72,13 +73,13 @@ public class CourseService {
         PageRequest pagingInformation;
         Page<Course> coursePage;
         TypedSort<Course> courseSortInformation;
-        Sort sortInformation; 
+        Sort sortInformation;
         DataPage<Course> courseDataPage;
         long totalRowCount;
-        
+
         if ((pageIndex >= 0) && (pageSize > 0)){
             courseSortInformation = Sort.sort (Course.class);
-            sortInformation 
+            sortInformation
                 = courseSortInformation
                     .by (Course::getCourseName).ascending ();
             pagingInformation = PageRequest.of (
@@ -87,7 +88,7 @@ public class CourseService {
                     , sortInformation
             );
             coursePage = courseRepository.findAll (pagingInformation);
-            totalRowCount = coursePage.getTotalElements ();  
+            totalRowCount = coursePage.getTotalElements ();
             courseHolder = coursePage.getContent ();
             courseDataPage = new DataPage<> (totalRowCount, courseHolder);
             return courseDataPage;
@@ -95,16 +96,16 @@ public class CourseService {
         else {
             throw new InvalidRequestArgumentException (
                     "The page index number and page size number parameters "
-                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "cannot be less than zero." + System.lineSeparator ()
                     + "Parameter name: pageIndex, pageSize"
             );
         }
     }
-    
+
     public void updateCourse (int courseID, Course updatedCourse){
         boolean courseExists;
         Date lastModified;
-        
+
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
             throw new NotFoundException ("Course");
@@ -115,11 +116,11 @@ public class CourseService {
             courseRepository.save (updatedCourse);
         }
     }
-    
+
     public void deleteCourseByID (int courseID){
         Optional <Course> nullableCourse;
         Course course;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -129,7 +130,7 @@ public class CourseService {
             courseRepository.delete (course);
         }
     }
-    
+
     public void addStudentToCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -142,7 +143,7 @@ public class CourseService {
         List<User> userList;
         User userInTheCourse;
         boolean alreadyExistsInTheCourse;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("Student");
@@ -186,8 +187,8 @@ public class CourseService {
                         throw new InvalidRequestArgumentException (
                                 "This student has already existed "
                                 + "in the course please add a student "
-                                + "who is not in the course." 
-                                + System.lineSeparator () 
+                                + "who is not in the course."
+                                + System.lineSeparator ()
                                 + "Parameter name: userID, courseID"
                         );
                     }
@@ -198,7 +199,7 @@ public class CourseService {
             }
         }
     }
-    
+
     public void removeStudentFromCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -211,7 +212,7 @@ public class CourseService {
         List<User> userList;
         User userInTheCourse;
         boolean existsInTheCourse;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("Student");
@@ -255,8 +256,8 @@ public class CourseService {
                         throw new InvalidRequestArgumentException (
                                 "This student no longer exists "
                                 + "in the course please remove a student "
-                                + "who is still in the course." 
-                                + System.lineSeparator () 
+                                + "who is still in the course."
+                                + System.lineSeparator ()
                                 + "Parameter name: userID, courseID"
                         );
                     }
@@ -266,5 +267,13 @@ public class CourseService {
                 }
             }
         }
+    }
+
+    public Course getByCourseId(int id){
+        Optional<Course> nullableCourse = courseRepository.findById(id);
+        if(!nullableCourse.isPresent()){
+            throw new NotFoundException("Course");
+        }
+        return nullableCourse.get();
     }
 }

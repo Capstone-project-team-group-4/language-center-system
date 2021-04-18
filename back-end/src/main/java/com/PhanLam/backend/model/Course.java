@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,19 +21,7 @@ import java.util.List;
  * @author Phan Lam
  */
 @Entity
-@Table (name = "Course", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint (columnNames = {"CourseName"})})
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "Course.findAll", query = "SELECT c FROM Course c"),
-    @NamedQuery (name = "Course.findByCourseID", query = "SELECT c FROM Course c WHERE c.courseID = :courseID"),
-    @NamedQuery (name = "Course.findByCourseName", query = "SELECT c FROM Course c WHERE c.courseName = :courseName"),
-    @NamedQuery (name = "Course.findByDescription", query = "SELECT c FROM Course c WHERE c.description = :description"),
-    @NamedQuery (name = "Course.findByCourseType", query = "SELECT c FROM Course c WHERE c.courseType = :courseType"),
-    @NamedQuery (name = "Course.findByCourseLevel", query = "SELECT c FROM Course c WHERE c.courseLevel = :courseLevel"),
-    @NamedQuery (name = "Course.findByTuitionFee", query = "SELECT c FROM Course c WHERE c.tuitionFee = :tuitionFee"),
-    @NamedQuery (name = "Course.findByDateCreated", query = "SELECT c FROM Course c WHERE c.dateCreated = :dateCreated"),
-    @NamedQuery (name = "Course.findByLastModified", query = "SELECT c FROM Course c WHERE c.lastModified = :lastModified")})
+
 public class Course implements Serializable {
 
     private static final long serialVersionUID = 1L;

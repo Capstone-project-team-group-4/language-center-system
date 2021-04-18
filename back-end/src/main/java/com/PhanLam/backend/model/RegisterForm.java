@@ -7,39 +7,18 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "RegisterForm", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint (columnNames = {"UserName"})})
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "RegisterForm.findAll", query = "SELECT r FROM RegisterForm r"),
-    @NamedQuery (name = "RegisterForm.findByFormID", query = "SELECT r FROM RegisterForm r WHERE r.formID = :formID"),
-    @NamedQuery (name = "RegisterForm.findByUserName", query = "SELECT r FROM RegisterForm r WHERE r.userName = :userName"),
-    @NamedQuery (name = "RegisterForm.findByMiddleName", query = "SELECT r FROM RegisterForm r WHERE r.middleName = :middleName"),
-    @NamedQuery (name = "RegisterForm.findByFirstName", query = "SELECT r FROM RegisterForm r WHERE r.firstName = :firstName"),
-    @NamedQuery (name = "RegisterForm.findByLastName", query = "SELECT r FROM RegisterForm r WHERE r.lastName = :lastName"),
-    @NamedQuery (name = "RegisterForm.findByPhoneNumber", query = "SELECT r FROM RegisterForm r WHERE r.phoneNumber = :phoneNumber"),
-    @NamedQuery (name = "RegisterForm.findByEmail", query = "SELECT r FROM RegisterForm r WHERE r.email = :email"),
-    @NamedQuery (name = "RegisterForm.findByPassword", query = "SELECT r FROM RegisterForm r WHERE r.password = :password")})
+
 public class RegisterForm implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -158,12 +137,12 @@ public class RegisterForm implements Serializable {
     public void setEmail (String email){
         this.email = email;
     }
-    
+
     @JsonIgnore
     public String getPassword (){
         return password;
     }
-    
+
     @JsonProperty
     public void setPassword (String password){
         this.password = password;
@@ -193,5 +172,5 @@ public class RegisterForm implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.RegisterForm[ formID = " + formID + " ]";
     }
-    
+
 }

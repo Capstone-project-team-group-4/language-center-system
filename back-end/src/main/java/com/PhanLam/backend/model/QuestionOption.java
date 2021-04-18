@@ -5,35 +5,18 @@
  */
 package com.PhanLam.backend.model;
 
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "QuestionOption", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "QuestionOption.findAll", query = "SELECT q FROM QuestionOption q"),
-    @NamedQuery (name = "QuestionOption.findByOptionID", query = "SELECT q FROM QuestionOption q WHERE q.optionID = :optionID"),
-    @NamedQuery (name = "QuestionOption.findByContent", query = "SELECT q FROM QuestionOption q WHERE q.content = :content"),
-    @NamedQuery (name = "QuestionOption.findByIsCorrectAnswer", query = "SELECT q FROM QuestionOption q WHERE q.isCorrectAnswer = :isCorrectAnswer")})
+
+
 public class QuestionOption implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,7 +34,7 @@ public class QuestionOption implements Serializable {
     @NotNull
     @Column (name = "IsCorrectAnswer", nullable = false)
     private boolean isCorrectAnswer;
-    
+
     @JoinColumn (
             name = "QuestionID"
             , referencedColumnName = "QuestionID"
@@ -133,5 +116,5 @@ public class QuestionOption implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.QuestionOption[ optionID=" + optionID + " ]";
     }
-    
+
 }

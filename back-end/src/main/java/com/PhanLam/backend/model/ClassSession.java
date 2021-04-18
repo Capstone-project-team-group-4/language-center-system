@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
@@ -19,21 +18,7 @@ import java.util.List;
  * @author Phan Lam
  */
 @Entity
-@Table (name = "ClassSession", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (
-            name = "ClassSession.findAll"
-            , query = "SELECT c FROM ClassSession c"
-    ),
-    @NamedQuery (
-            name = "ClassSession.findByClassID"
-            , query = "SELECT c FROM ClassSession c WHERE c.classID = :classID"
-    ),
-    @NamedQuery (
-            name = "ClassSession.findByStatus"
-            , query = "SELECT c FROM ClassSession c WHERE c.status = :status"
-    )})
+
 public class ClassSession implements Serializable {
 
     private static final long serialVersionUID = 1L;

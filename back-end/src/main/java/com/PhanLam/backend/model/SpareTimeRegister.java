@@ -5,27 +5,19 @@
  */
 package com.PhanLam.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "SpareTimeRegister", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "SpareTimeRegister.findAll", query = "SELECT s FROM SpareTimeRegister s"),
-    @NamedQuery (name = "SpareTimeRegister.findBySpareTimeID", query = "SELECT s FROM SpareTimeRegister s WHERE s.spareTimeID = :spareTimeID")
-})
+
+
 public class SpareTimeRegister implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -5,41 +5,20 @@
  */
 package com.PhanLam.backend.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "HomeWork", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "HomeWork.findAll", query = "SELECT h FROM HomeWork h"),
-    @NamedQuery (name = "HomeWork.findByHomeWorkID", query = "SELECT h FROM HomeWork h WHERE h.homeWorkID = :homeWorkID"),
-    @NamedQuery (name = "HomeWork.findByRequirement", query = "SELECT h FROM HomeWork h WHERE h.requirement = :requirement"),
-    @NamedQuery (name = "HomeWork.findByDeadline", query = "SELECT h FROM HomeWork h WHERE h.deadline = :deadline")})
+
 public class HomeWork implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -175,5 +154,5 @@ public class HomeWork implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.HomeWork[ homeWorkID=" + homeWorkID + " ]";
     }
-    
+
 }

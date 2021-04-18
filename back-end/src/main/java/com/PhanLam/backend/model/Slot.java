@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
@@ -20,9 +19,6 @@ import java.util.List;
  * @author Phan Lam
  */
 @Entity
-@Table (name = "Slot", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"SlotName"})})
-@XmlRootElement
 
 public class Slot implements Serializable {
 

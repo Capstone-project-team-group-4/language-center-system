@@ -6,26 +6,20 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "CourseType", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint (columnNames = {"TypeName"})})
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "CourseType.findAll", query = "SELECT c FROM CourseType c"),
-    @NamedQuery (name = "CourseType.findByTypeID", query = "SELECT c FROM CourseType c WHERE c.typeID = :typeID"),
-    @NamedQuery (name = "CourseType.findByTypeName", query = "SELECT c FROM CourseType c WHERE c.typeName = :typeName")})
+
 public class CourseType implements Serializable {
 
     private static final long serialVersionUID = 1L;

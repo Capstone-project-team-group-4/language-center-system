@@ -6,40 +6,20 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "CourseLevel", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint (columnNames = {"LevelName"})})
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "CourseLevel.findAll", query = "SELECT c FROM CourseLevel c"),
-    @NamedQuery (name = "CourseLevel.findByLevelID", query = "SELECT c FROM CourseLevel c WHERE c.levelID = :levelID"),
-    @NamedQuery (name = "CourseLevel.findByLevelName", query = "SELECT c FROM CourseLevel c WHERE c.levelName = :levelName")})
+
 public class CourseLevel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,7 +33,7 @@ public class CourseLevel implements Serializable {
     @Size (min = 1, max = 400)
     @Column (name = "LevelName", nullable = false, length = 400)
     private String levelName;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -62,7 +42,7 @@ public class CourseLevel implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-    
+
     @JoinColumn (
             name = "TypeID"
             , referencedColumnName = "TypeID"
@@ -140,5 +120,5 @@ public class CourseLevel implements Serializable {
     public String toString (){
         return "com.PhanLam.backend.model.CourseLevel[ levelID=" + levelID + " ]";
     }
-    
+
 }

@@ -67,16 +67,24 @@ export function StudentDashboardPage(
                                                     </Card.Text>
                                                     <Row>
                                                         <Col>
-                                                            <Button href={"/course-detail/" + course.courseID} 
-                                                                    style={{ alignItems: 'stretch', backgroundColor: 'blueviolet', borderColor: 'blueviolet'}} 
-                                                                    size="sm"  
-                                                                    block
+                                                            <Button 
+                                                                style={{alignItems: 'stretch', backgroundColor: 'blueviolet', borderColor: 'blueviolet'}}
+                                                                block = {true}
+                                                                size="sm"
+                                                                as = {Link}
+                                                                to = {
+                                                                    "/course-detail/" + course.courseID
+                                                                }
                                                             >
                                                                 Detail
-                                                        </Button>
+                                                            </Button>
                                                         </Col>
                                                         <Col>
-                                                            <Button href={"/student-dashboards/" + course.courseID} 
+                                                            <Button 
+                                                                    as = {Link}
+                                                                    to = {
+                                                                        "/student-dashboards/" + course.courseID
+                                                                    }
                                                                     style={{ alignItems: 'stretch' }} 
                                                                     size="sm" 
                                                                     block

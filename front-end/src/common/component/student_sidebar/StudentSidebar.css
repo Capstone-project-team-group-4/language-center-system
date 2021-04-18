@@ -10013,9 +10013,9 @@ h3 {
   left: -25%;
   width: 25%;
   height: 100%;
-  background-color: #242424;
+  background-color: black;
   transition: all 1s cubic-bezier(0.6, 0.05, 0.28, 0.91);
-  padding-top: 2%;
+  padding-top: 5%;
 }
 
 #SideBar.activated {
@@ -10047,11 +10047,40 @@ h3 {
     width: 60%;
     left: -60%;
   }
+}
+.btt:hover {
+  transform: scale(0.95);
+  transition-duration: 0.7s;
+}
 
-  .btt:hover {
-    transform: scale(0.95);
-    transition-duration: 0.8s;
-  }
+#SideBarButton {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  top: 11%;
+  left: 1.5%;
+  padding-top: 9px;
+  padding-left: 4px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #ffe400;
+  transition: left 1s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+}
+
+#SideBar {
+  position: fixed;
+  top: 0%;
+  left: -25%;
+  width: 25%;
+  height: 100%;
+  background-color: #242424;
+  transition: all 1s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  padding-top: 2%;
+}
+
+.course {
+  background-color: #242424;
+  border-color: #242424;
 }
 
 /*# sourceMappingURL=StudentSidebar.css.map */

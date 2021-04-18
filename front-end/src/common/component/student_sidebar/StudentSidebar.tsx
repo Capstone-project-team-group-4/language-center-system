@@ -66,7 +66,10 @@ export function StudentSidebar(): ReactElement {
                 <span style={{color:'white', textAlign:'justify'}}>Hi {user.userName}!</span>
                 <ListGroup >
                     <ListGroup.Item action={true} 
-                                    href="\student-dashboard" 
+                                    as = {Link}
+                                    to = {
+                                        "/student-dashboard"
+                                    }
                                     style={{backgroundColor: '#242424', color:'#e6ccb3'}}
                                     className="btt"
                     >
@@ -81,11 +84,21 @@ export function StudentSidebar(): ReactElement {
                                 return (
                                     <Accordion.Collapse eventKey="0">
                                         <Card.Body>
-                                            <a href={"/student-dashboards/" + course.courseID}
-                                               style={{textDecoration: 'none'}}
+                                            <Button
+                                                className="btt"
+                                                as = {Link}
+                                                size="sm"
+                                                to = {
+                                                    "/student-dashboards/" + course.courseID
+                                                }
+                                                style={{backgroundColor: "#242424",
+                                                        borderColor: "#242424",
+                                                        padding: "0px 30px 0px 30px",
+                                                        
+                                                        }}
                                             >
-                                                        {course.courseName}
-                                            </a>
+                                                {course.courseName}
+                                            </Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 )
@@ -93,7 +106,10 @@ export function StudentSidebar(): ReactElement {
                         </Card>
                     </Accordion>
                     <ListGroup.Item action={true} 
-                                    href={"/student-dashboardx/profile/" + user.userID}
+                                    as = {Link}
+                                    to = {
+                                        "/student-dashboardx/profile/" + user.userID
+                                    }
                                     style={{backgroundColor: '#242424', color:'#e6ccb3'}}
                                     className="btt"
                     >

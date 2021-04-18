@@ -393,6 +393,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <StudentDashboardPage modalDialog={modalDialog} />
       </ProtectedRoute>
+      
       <ProtectedRoute 
         path="/student-dashboards/:courseID"
         securityContext = {studentPageSecurity}
@@ -401,6 +402,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <LessonListPage modalDialog={modalDialog} />
       </ProtectedRoute>
+      
       <ProtectedRoute 
         path="/student-dashboardz/:courseName/:lessonID"
         securityContext = {studentPageSecurity}
@@ -409,6 +411,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
       </ProtectedRoute>
+      
       <ProtectedRoute 
         path="/student-dashboardx/profile/:userID"
         securityContext = {studentPageSecurity}
@@ -417,6 +420,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <ProfilePage modalDialog={modalDialog}/>
       </ProtectedRoute>
+      
       <ProtectedRoute 
         path="/course-detail/:courseID"
         securityContext = {studentPageSecurity}

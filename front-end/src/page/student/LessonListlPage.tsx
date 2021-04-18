@@ -73,7 +73,12 @@ export function LessonListPage(
                                 return (
 
                                         <ListGroup className="my-2">
-                                            <ListGroup.Item action href={"/student-dashboardz/" + course.courseName + "/" + lesson.lessonID}>
+                                            <ListGroup.Item action 
+                                                            as = {Link}
+                                                            to = {
+                                                                "/student-dashboardz/" + course.courseName + "/" + lesson.lessonID
+                                                            }
+                                            >
                                                 {lesson.lessonName}
                                             </ListGroup.Item>
                                         </ListGroup>

@@ -326,4 +326,8 @@ public class UserService {
         showUser.getAccountStatus();
         return userRepository.findById(userID).orElseThrow();
     }
+    
+    public User getProfileByUserName(String userName){
+        return userRepository.findByUserName(userName).orElseThrow();
+    }
 }

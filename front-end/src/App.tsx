@@ -80,6 +80,7 @@ export function App(): ReactElement {
   let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;
   let teacherPageSecurity: SecurityContext | undefined;  
+  let studentPageSecurity: SecurityContext | undefined;
   let history: History<unknown>;
   let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean> (false);
   let [typeGuardian] = useState<TypeGuard> (new TypeGuard ());
@@ -122,6 +123,12 @@ export function App(): ReactElement {
   );
   acceptableRoleNameHolder = new Array("ROLE_TEACHER");
   teacherPageSecurity = new SecurityContext(
+    isAuthenticated
+    , loggedInUser
+    , acceptableRoleNameHolder
+  );
+  acceptableRoleNameHolder = new Array("ROLE_STUDENT");
+  studentPageSecurity = new SecurityContext(
     isAuthenticated
     , loggedInUser
     , acceptableRoleNameHolder
@@ -378,26 +385,46 @@ export function App(): ReactElement {
         <TeacherDashboardPage modalDialog = {modalDialog} />
       </ProtectedRoute>
 
-      <Route path="/student-dashboard">
+      <ProtectedRoute 
+        path="/student-dashboard"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <StudentDashboardPage modalDialog={modalDialog} />
-      </Route>
-      <Route path="/student-dashboards/:courseID">
+      </ProtectedRoute>
+      <ProtectedRoute 
+        path="/student-dashboards/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <LessonListPage modalDialog={modalDialog} />
-      </Route>
-      <Route path="/student-dashboardz/:courseName/:lessonID">
+      </ProtectedRoute>
+      <ProtectedRoute 
+        path="/student-dashboardz/:courseName/:lessonID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
-      </Route>
-      <Route path="/student">
+      </ProtectedRoute>
+      <ProtectedRoute 
+        path="/student-dashboardx/profile/:userID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <ProfilePage modalDialog={modalDialog}/>
-      </Route>
-      <Route path="/course-detail/:courseID">
+      </ProtectedRoute>
+      <ProtectedRoute 
+        path="/course-detail/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <CourseDetailPage modalDialog={modalDialog}/>
-      </Route>
+      </ProtectedRoute>
     </Switch>
   );
 }

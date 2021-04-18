@@ -165,10 +165,10 @@ public class UserController {
         return showUser;
     }
     
-    @GetMapping("/getProfile/{userID}")
+    @GetMapping("/getProfile")
     @ResponseStatus(HttpStatus.OK)
-    public User getProfileById(@PathVariable int userID) {
-        User user = userService.getById(userID);
+    public User getProfile(@RequestParam(value = "userName") String userName) {
+        User user = userService.getProfileByUserName(userName);
         return user;
     }
 }

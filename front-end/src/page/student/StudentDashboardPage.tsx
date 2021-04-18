@@ -67,12 +67,20 @@ export function StudentDashboardPage(
                                                     </Card.Text>
                                                     <Row>
                                                         <Col>
-                                                            <Button variant="secondary" href={"/course-detail/" + course.courseID} style={{ alignItems: 'stretch' }} size="sm" block>
+                                                            <Button href={"/course-detail/" + course.courseID} 
+                                                                    style={{ alignItems: 'stretch', backgroundColor: 'blueviolet', borderColor: 'blueviolet'}} 
+                                                                    size="sm"  
+                                                                    block
+                                                            >
                                                                 Detail
                                                         </Button>
                                                         </Col>
                                                         <Col>
-                                                            <Button variant="primary" href={"/student-dashboards/" + course.courseID} style={{ alignItems: 'stretch' }} size="sm" block>
+                                                            <Button href={"/student-dashboards/" + course.courseID} 
+                                                                    style={{ alignItems: 'stretch' }} 
+                                                                    size="sm" 
+                                                                    block
+                                                            >
                                                                 Learn
                                                         </Button>
                                                         </Col>

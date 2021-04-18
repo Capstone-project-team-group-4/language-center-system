@@ -68,7 +68,7 @@ export function LessonDetailPage(
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item
                                     linkAs={Link}
-                                    linkProps={{ to: "/student-dashboard/" + course.courseID }}>
+                                    linkProps={{ to: "/student-dashboards/" + course.courseID }}>
                                     {course.courseName}
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active={true}>

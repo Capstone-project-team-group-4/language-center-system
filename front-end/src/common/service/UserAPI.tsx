@@ -401,12 +401,12 @@ export class UserAPI {
         }
     }
 
-    public async displayProfile (userID: number): Promise<AxiosResponse> {
+    public async displayProfile (userName: any): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
             this.serverResponse = await this.axiosInstance.get(
-                `/getProfile/${userID}`
+                `/getProfile?userName=${userName}`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){

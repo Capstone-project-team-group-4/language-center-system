@@ -6,6 +6,7 @@ import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.ClassSessionRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,11 +67,19 @@ public class ClassSessionService {
             throw new InvalidRequestArgumentException("CourseType not in spare time register of teacher");
         }
 
+        //check student already have class in slot or not
+        List<User> users = userService.getAllStudentsOfCourseAlreadyHaveClassInSlot(slot.getSlotID(),course.getCourseID());
+        if(users.size() != 0){
+            throw new InvalidRequestArgumentException("User "+users+" already have class in slot "+slot.getSlotName());
+        }
+
         //set information for classSession
         classSession.setCourseID(course);
         classSession.setSlot(slot);
         classSession.setTeacherID(spareTimeRegister.getUserID());
-        classSession.setUserList(course.getUserList());
+        List<User> userList = new ArrayList<>();
+        course.getUserList().stream().forEach(u ->userList.add(u));
+        classSession.setUserList(userList);
         classSession.setStatus(Constant.STATUS_ACTIVE_CLASS);
         classSession.setSpareTimeRegisterID(spareTimeRegister.getSpareTimeID());
         save(classSession);
@@ -80,7 +90,7 @@ public class ClassSessionService {
     }
 
     public void deleteClassById(int classId) {
-        ClassSession classSession =getById(classId);
+        ClassSession classSession = getById(classId);
         SpareTimeRegister spareTimeRegister = spareTimeRegisterService.getById(classSession.getSpareTimeRegisterID());
 
         //remove relate spareTimeRegister
@@ -104,27 +114,28 @@ public class ClassSessionService {
         }
         return nullableClassSession.get();
     }
-    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role){
+
+    @Transactional (readOnly = true)
+    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role) {
         Sort.TypedSort<ClassSession> classSessionSort;
         Sort sortInformation;
         PageRequest pagingInformation;
         Page<ClassSession> classSessionPage;
         long totalRowCount;
         List<ClassSession> classSessionList;
-        DataPage<ClassSession> classSessionDataPage;
-        User user;
-
+        DataPage<ClassSession> classSessionDataPage = null;
+        User user = null;
 
         //handle abnormal case
         if (userID != null) {
             user = userService.getById(userID);
-            if(role.equals(Constant.ROLE_STUDENT)) {
+            if (role.equals(Constant.ROLE_STUDENT)) {
                 boolean isStudent = user.getRoleList().stream().anyMatch(i -> i.getRoleName().equals(Constant.ROLE_STUDENT));
                 if (!isStudent) {
                     throw new InvalidRequestArgumentException("You don't have permission");
                 }
             }
-            if(role.equals(Constant.ROLE_TEACHER)) {
+            if (role.equals(Constant.ROLE_TEACHER)) {
                 boolean isTeacher = user.getRoleList().stream().anyMatch(i -> i.getRoleName().equals(Constant.ROLE_TEACHER));
                 if (!isTeacher) {
                     throw new InvalidRequestArgumentException("You don't have permission");
@@ -150,7 +161,7 @@ public class ClassSessionService {
                 , pageSize
                 , sortInformation
         );
-        if(userID == null) {
+        if (userID == null) {
             classSessionPage = classSessionRepository.findAll(pagingInformation);
 
             totalRowCount = classSessionPage.getTotalElements();
@@ -158,6 +169,49 @@ public class ClassSessionService {
             classSessionDataPage = new DataPage(totalRowCount, classSessionList);
         }
 
-        return null;
+        // handle list for teacher
+        else if (userID != null && role.equals(Constant.ROLE_TEACHER)) {
+            classSessionPage = classSessionRepository.findAllByTeacherID(pagingInformation, user);
+
+            totalRowCount = classSessionPage.getTotalElements();
+            classSessionList = classSessionPage.getContent();
+            classSessionDataPage = new DataPage(totalRowCount, classSessionList);
+        }
+
+        //handle list for student
+        else if (userID != null && role.equals(Constant.ROLE_STUDENT)) {
+            QueryResults<ClassSession> classSessionQueryResults;
+            QUser student = new QUser("user");
+            QClassSession classSession = new QClassSession("classSession");
+            List<ClassSession> classSessionHolder;
+
+            classSessionQueryResults = queryFactory
+                    .selectFrom(classSession)
+                    .innerJoin(classSession.userList, student)
+                    .where(
+                            student.userID.eq(user.getUserID())
+                    )
+                    .orderBy(classSession.status.asc())
+                    .limit(pageSize)
+                    .offset(pageSize * pageNumber)
+                    .fetchResults();
+            totalRowCount = classSessionQueryResults.getTotal();
+            classSessionHolder = classSessionQueryResults.getResults();
+            classSessionDataPage = new DataPage<>(totalRowCount, classSessionHolder);
+        } else {
+            throw  new InvalidRequestArgumentException("Bad Request");
+        }
+        return classSessionDataPage;
     }
+
+    public void cancelClassSession(int classSessionId){
+        ClassSession classSession = getById(classSessionId);
+        if(classSession.getStatus() != Constant.STATUS_ACTIVE_CLASS){
+            throw new InvalidRequestArgumentException("Only cancel active class");
+        }
+        classSession.setStatus(Constant.STATUS_INACTIVE_CLASS);
+        save(classSession);
+    }
+
+
 }

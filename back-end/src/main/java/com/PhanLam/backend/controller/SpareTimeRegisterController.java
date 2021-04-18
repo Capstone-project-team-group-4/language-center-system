@@ -44,7 +44,7 @@ public class SpareTimeRegisterController {
     }
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void createSpareTimeRegister(
             Principal principal
             , @RequestBody SpareTimeRegisterRequest spareTimeRegisterRequest
@@ -53,7 +53,7 @@ public class SpareTimeRegisterController {
     }
 
     @DeleteMapping("/{spareTimeID}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void removeSpareTimeRegister(
             @PathVariable int spareTimeID
     ) {
@@ -61,7 +61,7 @@ public class SpareTimeRegisterController {
     }
 
     @PutMapping()
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void editSpareTimeRegister(
             @RequestBody SpareTimeRegisterRequest spareTimeRegisterRequest
     ) {
@@ -69,7 +69,7 @@ public class SpareTimeRegisterController {
     }
 
     @PatchMapping("{spareTimeID}:reject")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void rejectTimeSpare(
             @PathVariable int spareTimeID
     ) {

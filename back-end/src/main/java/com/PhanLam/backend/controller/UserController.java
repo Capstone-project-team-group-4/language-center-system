@@ -11,20 +11,13 @@ import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.ArrayList;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -34,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     // Variables declaration:
-    private UserService userService; 
+    private UserService userService;
     private UserRepository userRepository;
 
     public UserController (
@@ -52,7 +45,7 @@ public class UserController {
         listUsers = userService.getAll();
         return listUsers;
     }
-    
+
     @GetMapping ("/users:excluding-logged-in-user")
     @ResponseStatus (HttpStatus.OK)
     public List<User> getAllUserExcludingCurrentLoggedInUser (
@@ -61,7 +54,7 @@ public class UserController {
             , @RequestParam int pageSize
     ){
         List<User> userHolder;
-        
+
         userHolder = userService.getAllUserWithUserNameIsNot (
                 principal
                 , pageNumber
@@ -69,7 +62,7 @@ public class UserController {
         );
         return userHolder;
     }
-    
+
     @GetMapping ("/students:excluding-student-in-the-course")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentExcludingStudentInTheCourse (
@@ -78,7 +71,7 @@ public class UserController {
             , @RequestParam int pageSize
     ){
         DataPage<User> studentDataPage;
-        
+
         studentDataPage = userService.getAllStudentWithCourseIDIsNot (
                 courseID
                 , pageIndex
@@ -86,7 +79,7 @@ public class UserController {
         );
         return studentDataPage;
     }
-    
+
     @GetMapping ("/courses/{courseID}/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentAreInTheCourse (
@@ -95,7 +88,7 @@ public class UserController {
             , @RequestParam int pageSize
     ){
         DataPage<User> studentDataPage;
-        
+
         studentDataPage = userService.getAllStudentByCourseID (
                 courseID
                 , pageIndex
@@ -103,7 +96,7 @@ public class UserController {
         );
         return studentDataPage;
     }
-    
+
     @PatchMapping ("/users/{userID}:disable")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void disableAnotherUser (
@@ -112,7 +105,7 @@ public class UserController {
     ){
         userService.disableUserByID (userID, principal);
     }
-    
+
     @PatchMapping ("/users/{userID}:enable")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void enableUser (
@@ -120,7 +113,7 @@ public class UserController {
     ){
         userService.enableUserByID (userID);
     }
-    
+
     @DeleteMapping ("/users/{userID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void deleteAnotherUser (
@@ -129,16 +122,16 @@ public class UserController {
     ){
         userService.deleteUserByID (userID, principal);
     }
-    
+
     @GetMapping ("/logged-in-user")
     @ResponseStatus (HttpStatus.OK)
     public LoggedInUser getCurrentLoggedInUser (Principal principal){
         LoggedInUser loggedInUser;
-        
+
         loggedInUser = userService.getLoggedInUser (principal);
         return loggedInUser;
     }
-    
+
     @PutMapping("/editInfo/{userID}")
     @ResponseStatus(HttpStatus.OK)
     public User updateStudentInfo(
@@ -153,7 +146,7 @@ public class UserController {
         User user = userService.getById(userID);
         return user;
     }
-    
+
     @GetMapping("/getUsers/{userID}")
     public Optional showAllUserByID(
             @RequestBody User user
@@ -161,5 +154,22 @@ public class UserController {
     ){
         Optional showUser = userService.showInfo(user, userID);
         return showUser;
+    }
+
+    @GetMapping ("/classes/{classID}/students")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllStudentAreInTheClass (
+            @PathVariable int classID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<User> studentDataPage;
+
+        studentDataPage = userService.getAllStudentByClassId (
+                classID
+                , pageIndex
+                , pageSize
+        );
+        return studentDataPage;
     }
 }

@@ -12,8 +12,10 @@ import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
+import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
@@ -39,13 +41,16 @@ public class UserService {
     private UserRepository userRepository;
     private CourseRepository courseRepository;
     private JPAQueryFactory queryFactory;
+    private ClassSessionService classSessionService;
 
     public UserService (
             UserRepository userRepository
             , CourseRepository courseRepository
             , EntityManager entityManager
+            , @Lazy ClassSessionService classSessionService
     ){
         this.userRepository = userRepository;
+        this.classSessionService = classSessionService;
         this.courseRepository = courseRepository;
         queryFactory = new JPAQueryFactory (entityManager);
     }
@@ -325,20 +330,72 @@ public class UserService {
         showUser.getAccountStatus();
         return userRepository.findById(userID);
     }
-    public List<User> getAllStudentOfClass(int classID){
+    public List<User> getAllStudentsOfCourseAlreadyHaveClassInSlot(int slotId,int courseId){
         QCourse course;
         QClassSession classSession;
         QUser user;
         QueryResults<User> studentResults;
 
-        course = new QCourse("question");
+        course = new QCourse("course");
         classSession = new QClassSession("classSession");
         user = new QUser("user");
         studentResults = queryFactory
                 .selectFrom(user)
                 .innerJoin(user.courseList, course)
-                .innerJoin(course.classList, classSession).where(classSession.classID.eq(classID))
+                .innerJoin(course.classSession, classSession)
+                .where(classSession.slot.slotID.eq(slotId).and(course.courseID.eq(courseId)).and(classSession.status.ne(Constant.STATUS_ACTIVE_CLASS)))
                 .fetchResults();
         return studentResults.getResults();
+    }
+
+    @Transactional (readOnly = true)
+    public DataPage<User> getAllStudentByClassId (
+            int classId
+            , int pageIndex
+            , int pageSize
+    ){
+        ClassSession classSession;
+        List<User> studentHolder;
+        QUser student;
+        QRole qRole;
+        QClassSession qClassSession;
+        QueryResults<User> studentPage;
+        DataPage<User> studentDataPage;
+        long totalRowCount;
+
+        //validate request
+        if ((pageIndex < 0) || (pageSize <= 0)) {
+            throw new InvalidRequestArgumentException(
+                    "The page index number and page size number parameters "
+                            + "cannot be less than zero." + System.lineSeparator()
+                            + "Parameter name: pageIndex, pageSize"
+            );
+        }
+
+        //get list
+        classSession = classSessionService.getById (classId);
+        student = new QUser("student");
+        qRole = QRole.role;
+        qClassSession = QClassSession.classSession;
+        studentPage = queryFactory
+                        .selectFrom(student).distinct()
+                        .leftJoin(student.roleList, qRole)
+                        .leftJoin(student.classList, qClassSession)
+                        .where(
+                                qRole.roleName.eq("ROLE_STUDENT")
+                                        .and(qClassSession.classID.eq(classId))
+                        )
+                        .orderBy(
+                                student.firstName.asc()
+                                , student.lastName.asc()
+                        )
+                        .limit(pageSize)
+                        .offset(pageSize * pageIndex)
+                        .fetchResults();
+        totalRowCount = studentPage.getTotal();
+        studentHolder = studentPage.getResults();
+        studentDataPage = new DataPage<>(totalRowCount, studentHolder);
+        return studentDataPage;
+
     }
 }

@@ -11,10 +11,10 @@ import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.Course;
-import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.model.*;
+import com.PhanLam.backend.service.common.Constant;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,13 +39,20 @@ public class CourseService {
     // Variables declaration:
     private CourseRepository courseRepository;
     private UserRepository userRepository;
+    private CourseTypeService courseTypeService;
+    private JPAQueryFactory queryFactory;
 
     public CourseService (
             CourseRepository courseRepository
             , UserRepository userRepository
+            , CourseTypeService courseTypeService
+            , EntityManager entityManager
     ){
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+        this.courseTypeService = courseTypeService;
+        queryFactory = new JPAQueryFactory (entityManager);
     }
 
     public void createCourse (Course course){
@@ -275,5 +283,39 @@ public class CourseService {
             throw new NotFoundException("Course");
         }
         return nullableCourse.get();
+    }
+    @Transactional (readOnly = true)
+    public DataPage<Course> getAllCourseAvailableToCreateClass(
+            int pageIndex
+            ,int pageSize
+            ,List<Integer> typeIds){
+
+        //validate request
+        if ((pageIndex < 0) || (pageSize <= 0)) {
+            throw new InvalidRequestArgumentException(
+                    "The page index number and page size number parameters "
+                            + "cannot be less than zero." + System.lineSeparator()
+                            + "Parameter name: pageIndex, pageSize"
+            );
+        }
+        typeIds.forEach(typeId ->courseTypeService.getCourseTypeById(typeId));// check existed course type or not
+
+        //get list
+        QClassSession classSession = new QClassSession("classSession");;
+        QCourse course = new QCourse("course");
+        QueryResults<Course> courseQueryResults;
+
+        courseQueryResults = queryFactory
+                .selectFrom(course)
+                .leftJoin(course.classSession, classSession)
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(typeIds)))
+                        .orderBy (course.courseName.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults();
+        long totalRowCount = courseQueryResults.getTotal ();
+        List<Course> courses = courseQueryResults.getResults ();
+        return new DataPage<>(totalRowCount,courses);
+
     }
 }

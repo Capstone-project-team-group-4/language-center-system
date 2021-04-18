@@ -5,9 +5,10 @@
  */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
@@ -44,9 +45,10 @@ public class ClassSession implements Serializable {
 
     @Basic (optional = false)
     @NotNull
-    @Size (min = 1, max = 500)
     @Column (name = "Status", nullable = false)
     private int status;
+
+    @JsonIgnore
     @JoinTable (name = "UserClass", joinColumns = {
         @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)}, inverseJoinColumns = {
         @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)})
@@ -55,7 +57,7 @@ public class ClassSession implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @OneToOne (optional = false, fetch = FetchType.LAZY)
     private Course courseID;
     @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)

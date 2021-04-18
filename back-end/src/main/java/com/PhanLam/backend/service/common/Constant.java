@@ -11,6 +11,6 @@ public class Constant {
     public static final int STATUS_REJECTED = 3;
 
     public static final int STATUS_ACTIVE_CLASS = 1;
-    public static final int STATUS_INACTIVE_CLASS = 2;
+    public static final int STATUS_INACTIVE_CLASS = 0;
 
 }

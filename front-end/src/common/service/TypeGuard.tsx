@@ -4,9 +4,7 @@ import { DataPage } from "../../App";
 import { CourseLevel } from "../../model/CourseLevel";
 import { CourseType } from "../../model/CourseType";
 import { LoggedInUser } from "../../model/LoggedInUser";
-import { RegisterForm } from "../../model/RegisterForm";
 import { Role } from "../../model/Role";
-import { User } from "../../model/User";
 
 export class TypeGuard {
 
@@ -38,24 +36,6 @@ export class TypeGuard {
         return this.isValid;
     }
 
-    public isRegisterFormArray (
-            unknownObject: unknown
-    ): unknownObject is Array<RegisterForm> {
-        this.isValid = false;
-        if (Array.isArray (unknownObject)){
-            if (unknownObject.length > 0){
-                this.testSample = unknownObject[0]; 
-                if (this.isRegisterForm (this.testSample)){
-                    this.isValid = true;
-                }
-            }
-            else {
-                this.isValid = true;
-            }  
-        }
-        return this.isValid;
-    }
-
     public isLoggedInUser (
             unknownObject: unknown
     ): unknownObject is LoggedInUser {
@@ -64,46 +44,6 @@ export class TypeGuard {
             if ((unknownObject as LoggedInUser).roleHolder != undefined){
                 this.isValid = true;
             }
-        }
-        return this.isValid;
-    }
-
-    public isRegisterForm (
-            unknownObject: unknown
-    ): unknownObject is RegisterForm {
-        this.isValid = false;
-        if (unknownObject != undefined){
-            if ((unknownObject as RegisterForm).formID != undefined){
-                this.isValid = true;
-            }
-        }
-        return this.isValid;
-    } 
-
-    public isUser (unknownObject: unknown): unknownObject is User {
-        this.isValid = false;
-        if (unknownObject != undefined){
-            if ((unknownObject as User).userID != undefined){
-                this.isValid = true;
-            }
-        }
-        return this.isValid;
-    }
-
-    public isUserArray (
-            unknownObject: unknown
-    ): unknownObject is Array<User> {
-        this.isValid = false;
-        if (Array.isArray (unknownObject)){
-            if (unknownObject.length > 0){
-                this.testSample = unknownObject[0]; 
-                if (this.isUser (this.testSample)){
-                    this.isValid = true;
-                }
-            }
-            else {
-                this.isValid = true;
-            }  
         }
         return this.isValid;
     }

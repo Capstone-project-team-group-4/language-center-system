@@ -56,19 +56,19 @@ public class UserController {
     
     @GetMapping ("/users:excluding-logged-in-user")
     @ResponseStatus (HttpStatus.OK)
-    public List<User> getAllUserExcludingCurrentLoggedInUser (
+    public DataPage<User> getAllUserExcludingCurrentLoggedInUser (
             Principal principal
-            , @RequestParam int pageNumber
+            , @RequestParam int pageIndex
             , @RequestParam int pageSize
     ){
-        List<User> userHolder;
+        DataPage<User> userDataPage;
         
-        userHolder = userService.getAllUserWithUserNameIsNot (
+        userDataPage = userService.getAllUserWithUserNameIsNot (
                 principal
-                , pageNumber
+                , pageIndex
                 , pageSize
         );
-        return userHolder;
+        return userDataPage;
     }
     
     @GetMapping ("/students:excluding-student-in-the-course")

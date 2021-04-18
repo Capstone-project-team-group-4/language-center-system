@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { 
     ChangeEvent
     , FormEvent
     , MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -18,6 +20,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeConvert } from "../../common/service/TypeConvert";
 import { TypeGuard } from "../../common/service/TypeGuard";
@@ -51,8 +54,8 @@ export function ManageExaminationInCoursePage (
     let courseID 
         = useParams<ManageExaminationInCoursePageUrlParameter> ().courseID;
     let examDataPage: DataPage<Examination> | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let [examHolder, setExamHolder] 
         = useState<Examination[]> (new Array<Examination> ());
@@ -70,6 +73,7 @@ export function ManageExaminationInCoursePage (
     let [showEditExamForm, setShowEditExamForm] = useState<boolean> (false);
     let newExam: Examination | undefined;
     let [pendingExamID, setPendingExamID] = useState<number> (0);
+    let examTable: ReactNode;
 
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
 
@@ -343,6 +347,47 @@ export function ManageExaminationInCoursePage (
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadExamTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (examHolder.length === 0){
+        examTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no exams in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        examTable =
+            examHolder.map (
+                (
+                        exam
+                        , index
+                ) => renderExamTable (
+                        exam
+                        , index
+                        , openViewDetailDialog
+                        , openEditExamForm
+                        , handleDeleteExamInCourse
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -363,7 +408,7 @@ export function ManageExaminationInCoursePage (
                         onSubmit = {
                             (event) => {
                                 createExamInCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -659,7 +704,7 @@ export function ManageExaminationInCoursePage (
                         onSubmit = {
                             (event) => {
                                 editExamInCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -861,20 +906,21 @@ export function ManageExaminationInCoursePage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {examHolder.map (
-                                            (
-                                                    exam
-                                                    , index
-                                            ) => renderExamTable (
-                                                    exam
-                                                    , index
-                                                    , openViewDetailDialog
-                                                    , openEditExamForm
-                                                    , handleDeleteExamInCourse
-                                            )
-                                        )}
+                                        {examTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>

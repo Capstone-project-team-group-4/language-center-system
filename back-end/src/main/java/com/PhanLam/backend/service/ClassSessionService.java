@@ -67,6 +67,12 @@ public class ClassSessionService {
             throw new InvalidRequestArgumentException("CourseType not in spare time register of teacher");
         }
 
+        //check if teacher also is student
+        boolean isStudent = userService.isUserHaveInCourse(course.getCourseID(),spareTimeRegister.getUserID().getUserID());
+        if(isStudent){
+            throw new InvalidRequestArgumentException("The teacher also is student of this course");
+        }
+
         //check student already have class in slot or not
         List<User> users = userService.getAllStudentsOfCourseAlreadyHaveClassInSlot(slot.getSlotID(),course.getCourseID());
         if(users.size() != 0){

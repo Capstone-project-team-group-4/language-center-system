@@ -41,6 +41,7 @@ public class UserService {
     private UserRepository userRepository;
     private CourseRepository courseRepository;
     private JPAQueryFactory queryFactory;
+    private CourseService courseService;
     private ClassSessionService classSessionService;
 
     public UserService (
@@ -48,10 +49,12 @@ public class UserService {
             , CourseRepository courseRepository
             , EntityManager entityManager
             , @Lazy ClassSessionService classSessionService
+            , @Lazy CourseService courseService
     ){
         this.userRepository = userRepository;
         this.classSessionService = classSessionService;
         this.courseRepository = courseRepository;
+        this.courseService = courseService;
         queryFactory = new JPAQueryFactory (entityManager);
     }
 
@@ -354,7 +357,6 @@ public class UserService {
             , int pageIndex
             , int pageSize
     ){
-        ClassSession classSession;
         List<User> studentHolder;
         QUser student;
         QRole qRole;
@@ -373,7 +375,7 @@ public class UserService {
         }
 
         //get list
-        classSession = classSessionService.getById (classId);
+        ClassSession classSession = classSessionService.getById (classId);
         student = new QUser("student");
         qRole = QRole.role;
         qClassSession = QClassSession.classSession;
@@ -397,5 +399,14 @@ public class UserService {
         studentDataPage = new DataPage<>(totalRowCount, studentHolder);
         return studentDataPage;
 
+    }
+
+    public boolean isUserHaveInCourse(int courseId,int userId){
+        Course course = courseService.getByCourseId(courseId);
+        User user = getById(userId);
+        if(course.getUserList().stream().anyMatch(u -> u.getUserID() == user.getUserID())){
+            return true;
+        }
+        return false;
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-await-in-loop */
 // Import package members section:
 import React, { 
@@ -5,6 +6,7 @@ import React, {
     , FormEvent
     , MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -21,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { CourseLevelAPI } from "../../common/service/CourseLevelAPI";
 import { CourseTypeAPI } from "../../common/service/CourseTypeAPI";
@@ -84,8 +87,8 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let courseLevel: CourseLevel | undefined;
     let selectedCourseLevel: CourseLevel; 
     let i: number | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseDataPage: DataPage<Course> | undefined;
     let [courseHolder, setCourseHolder] 
@@ -103,6 +106,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     let [pendingCourseID, setPendingCourseID] = useState<number> (0);
     let [showEditCourseForm, setShowEditCourseForm] 
         = useState<boolean> (false);
+    let courseTable: ReactNode;
     
     let [courseTypeAPI] = useState<CourseTypeAPI> (new CourseTypeAPI ());
     let [courseLevelAPI] = useState<CourseLevelAPI> (new CourseLevelAPI ());
@@ -176,7 +180,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
     function openCreateCourseForm (): void {
         setCourse (new Course ());
         loadCourseTypeDropdownList ().catch (
-                (error: unknown) => {
+                (error) => {
                     console.error (error);
                 }
         );
@@ -473,6 +477,47 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadCourseTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (courseHolder.length === 0){
+        courseTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no courses in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        courseTable =
+            courseHolder.map (
+                (
+                        course
+                        , index
+                ) => renderCourseTable (
+                        course
+                        , index
+                        , openViewDetailDialog
+                        , openEditCourseForm
+                        , handleDeleteCourse
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -493,7 +538,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                         onSubmit = {
                             (event) => {
                                 createCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -821,7 +866,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                         onSubmit = {
                             (event) => {
                                 editCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -1032,20 +1077,21 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {courseHolder.map (
-                                            (
-                                                    course
-                                                    , index
-                                            ) => renderCourseTable (
-                                                    course
-                                                    , index
-                                                    , openViewDetailDialog
-                                                    , openEditCourseForm
-                                                    , handleDeleteCourse
-                                            )
-                                        )}
+                                        {courseTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>
@@ -1107,7 +1153,7 @@ function renderCourseTable (
                     onClick = {
                         (event) => {
                             openEditCourseForm (event).catch (
-                                    (error: unknown) => {
+                                    (error) => {
                                         console.error (error);
                                     }
                             );

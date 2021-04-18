@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { 
     ChangeEvent
     , MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -30,7 +32,10 @@ function renderRoleDropdownList (role: Role): ReactElement {
 
     roleNameWithoutPrefix = role.roleName.slice (5);
     return (
-        <option key = {role.roleID}>
+        <option 
+            key = {role.roleID}
+            value = {role.roleID}
+        >
             {roleNameWithoutPrefix}
         </option>
     );
@@ -64,7 +69,7 @@ export function CreateAccountPage (
     let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let [roleHolder, setRoleHolder] = useState<Role[]> ([]);
-    let [selectedRoleName, setSelectedRoleName] = useState<string> ("");
+    let [selectedRoleID, setSelectedRoleID] = useState<number> (0);
     let [newAccountRoleList, setNewAccountRoleList] = useState<Role[]> ([]);
     let i: number | undefined; 
     let role: Role | undefined;
@@ -75,8 +80,8 @@ export function CreateAccountPage (
     let defaultRoleSelection: Role | undefined;
     let button: HTMLButtonElement | undefined;
     let [userID, setUserID] = useState<number> (0);
-    let roleNameWithoutPrefix: string | undefined;
     let registerFormDataPage: DataPage<RegisterForm> | undefined;
+    let registerFormTable: ReactNode;
 
     let [registerFormAPI] = useState<RegisterFormAPI> (new RegisterFormAPI ());
     let [roleAPI] = useState<RoleAPI> (new RoleAPI ());
@@ -91,6 +96,12 @@ export function CreateAccountPage (
                         Number (button.value)
                         , newAccountRoleList
                 );
+                props.dialogController.setDialogTitle ("Account Created !");
+                props.dialogController.setDialogBody (
+                        "The create account request has been accepted."
+                );
+                props.dialogController.setDialogType ("inform");
+                props.dialogController.setShowDialog (true);
                 await loadRegisterFormTable ();
                 return Promise.resolve<undefined> (undefined);
             }
@@ -166,15 +177,13 @@ export function CreateAccountPage (
     function handleAddRole (): void {
         for (i = 0; i < roleHolder.length; i++){
             role = roleHolder[i];
-            if (role.roleName === `ROLE_${selectedRoleName}`){
+            if (role.roleID === selectedRoleID){
                 updatedRoleHolder = roleHolder.slice ();
                 selectedRoleArray = updatedRoleHolder.splice (i, 1);
                 setRoleHolder (updatedRoleHolder);
                 if (updatedRoleHolder.length > 0){
                     defaultRoleSelection = updatedRoleHolder[0];
-                    roleNameWithoutPrefix 
-                        = defaultRoleSelection.roleName.slice (5); 
-                    setSelectedRoleName (roleNameWithoutPrefix);
+                    setSelectedRoleID (defaultRoleSelection.roleID);
                 }
                 selectedRole = selectedRoleArray[0];
                 updatedNewAccountRoleList = newAccountRoleList.slice ();
@@ -187,7 +196,7 @@ export function CreateAccountPage (
 
     function handleReset (): void {
         loadRoleDropdownList ().catch (
-                (error: unknown) => {
+                (error) => {
                     console.error (error);
                 }
         );
@@ -200,7 +209,7 @@ export function CreateAccountPage (
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >
     ): void {
-        setSelectedRoleName (event.target.value);
+        setSelectedRoleID (Number (event.target.value));
     }
 
     async function loadRoleDropdownList (): Promise<void> {
@@ -208,8 +217,7 @@ export function CreateAccountPage (
             updatedRoleHolder = await roleAPI.getAllRole (); 
             setRoleHolder (updatedRoleHolder);
             defaultRoleSelection = updatedRoleHolder[0];
-            roleNameWithoutPrefix = defaultRoleSelection.roleName.slice (5);
-            setSelectedRoleName (roleNameWithoutPrefix);
+            setSelectedRoleID (defaultRoleSelection.roleID);
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -261,12 +269,12 @@ export function CreateAccountPage (
     useEffect (
         () => {
             loadRoleDropdownList ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
             loadRegisterFormTable ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
@@ -278,7 +286,7 @@ export function CreateAccountPage (
         () => {
             if (props.dialogController.dialogIsConfirmed === true){
                 executeRequestRejection ().catch (
-                        (error: unknown) => {
+                        (error) => {
                             console.error (error);
                         }
                 );
@@ -295,13 +303,38 @@ export function CreateAccountPage (
     useEffect (
         () => {
             loadRegisterFormTable ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
         }
         , [pageIndex]
     );
+    
+    if (registerFormHolder.length === 0){
+        registerFormTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no register-forms in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        registerFormTable =
+            registerFormHolder.map (
+                (
+                        registerForm
+                        , index
+                ) => renderRegisterFormTable (
+                        registerForm
+                        , index
+                        , handleAcceptRequest
+                        , handleRejectRequest
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -345,7 +378,7 @@ export function CreateAccountPage (
                                         <Col xs = "auto" className = "mr-2">
                                             <Form.Control 
                                                 as = "select" 
-                                                value = {selectedRoleName}
+                                                value = {selectedRoleID}
                                                 onChange = {
                                                     (event) => {
                                             // eslint-disable-next-line max-len
@@ -434,17 +467,7 @@ export function CreateAccountPage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {registerFormHolder.map (
-                                            (
-                                                    registerForm
-                                                    , index
-                                            ) => renderRegisterFormTable (
-                                                    registerForm
-                                                    , index
-                                                    , handleAcceptRequest
-                                                    , handleRejectRequest
-                                            )
-                                        )}
+                                        {registerFormTable}
                                     </tbody>
                                 </Table>
                                 <Form.Group>
@@ -511,7 +534,7 @@ function renderRegisterFormTable (
                     onClick = {
                         (event) => {
                             handleAcceptRequest (event).catch (
-                                    (error: unknown) => {
+                                    (error) => {
                                         console.error (error);
                                     }
                             );

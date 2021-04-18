@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,26 +20,7 @@ import java.util.List;
  * @author Phan Lam
  */
 @Entity
-@Table(name = "User", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"UserName"})})
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.findByUserID", query = "SELECT u FROM User u WHERE u.userID = :userID"),
-    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
-    @NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
-    @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-    @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
-    @NamedQuery(name = "User.findByPhoneNumber", query = "SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber"),
-    @NamedQuery(name = "User.findByGender", query = "SELECT u FROM User u WHERE u.gender = :gender"),
-    @NamedQuery(name = "User.findByJob", query = "SELECT u FROM User u WHERE u.job = :job"),
-    @NamedQuery(name = "User.findByPhotoURI", query = "SELECT u FROM User u WHERE u.photoURI = :photoURI"),
-    @NamedQuery(name = "User.findBySelfDescription", query = "SELECT u FROM User u WHERE u.selfDescription = :selfDescription"),
-    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-    @NamedQuery(name = "User.findByAccountStatus", query = "SELECT u FROM User u WHERE u.accountStatus = :accountStatus"),
-    @NamedQuery(name = "User.findByDateCreated", query = "SELECT u FROM User u WHERE u.dateCreated = :dateCreated"),
-    @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin")})
+
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -95,7 +75,7 @@ public class User implements Serializable {
     @Column(name = "PhotoURI", length = 1000)
     private String photoURI;
     @Size(max = 2147483647)
-    @Column(name = "SelfDescription", length = 2147483647)
+    @Column(name = "SelfDescription", length = 100000)
     private String selfDescription;
     @JsonIgnore
     @Basic(optional = false)

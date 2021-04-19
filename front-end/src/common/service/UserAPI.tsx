@@ -29,7 +29,7 @@ export class UserAPI {
     }
 
     public listUsers (): Promise<AxiosResponse> {
-        return this.axiosInstance.get<unknown>("http://localhost:8080/users");
+        return this.axiosInstance.get<unknown>("http://54.169.178.48:8081/users");
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (
@@ -83,15 +83,15 @@ export class UserAPI {
             )){
                 this.userDataPage = this.serverResponse.data;
                 return Promise.resolve<DataPage<User>> (this.userDataPage);
-            } 
+            }
             else {
                 throw new Error ("This server response is not valid !");
-            }  
+            }
         }
         catch (apiError: unknown){
             try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
@@ -118,15 +118,15 @@ export class UserAPI {
             )){
                 this.userDataPage = this.serverResponse.data;
                 return Promise.resolve<DataPage<User>> (this.userDataPage);
-            } 
+            }
             else {
                 throw new Error ("This server response is not valid !");
-            }  
+            }
         }
         catch (apiError: unknown){
             try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
@@ -360,7 +360,7 @@ export class UserAPI {
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
         try {
-            return axios.put(`http://localhost:8080/editInfo/${userID}`, user);
+            return axios.put(`http://54.169.178.48:8081/editInfo/${userID}`, user);
         }
         catch (error) {
             console.error(error.toJSON());
@@ -393,7 +393,7 @@ export class UserAPI {
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
         try {
-            return axios.put(`http://localhost:8080/editInfo/${userID}`, user);
+            return axios.put(`http://54.169.178.48:8081/editInfo/${userID}`, user);
         }
         catch (error) {
             console.error(error.toJSON());

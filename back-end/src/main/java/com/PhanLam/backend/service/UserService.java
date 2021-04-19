@@ -324,13 +324,12 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow();
     }
 
-    public User showInfo(User user, int userID) {
 
     public User getByName(String userName){
         return userRepository.findByUserName(userName).orElseThrow();
     }
 
-    public Optional<User> showInfo(User user, int userID) {
+    public User showInfo(User user, int userID) {
         User showUser = new User();
         showUser.getUserID();
         showUser.getUserName();

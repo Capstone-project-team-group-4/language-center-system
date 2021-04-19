@@ -1,4 +1,5 @@
-import React, { ReactElement, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { 
     Breadcrumb
     , Button
@@ -11,10 +12,9 @@ import {
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { CourseAPI } from "../../common/service/CourseAPI";
+import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { Course } from "../../model/Course";
 import { Examination } from "../../model/Examination";
 
 interface ManageThingsInExaminationPageProps {
@@ -31,9 +31,10 @@ export function ManageThingsInExaminationPage (
     let [examHolder, setExamHolder] 
         = useState<Examination[]> (new Array<Examination> ());
     let examDataPage: DataPage<Examination> | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
+    let examTable: ReactNode;
         
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
     
@@ -75,6 +76,44 @@ export function ManageThingsInExaminationPage (
         }
         , []
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadExamTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (examHolder.length === 0){
+        examTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no exams in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        examTable =
+            examHolder.map (
+                (
+                        course
+                        , index
+                ) => renderExamTable (
+                        course
+                        , index
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -128,17 +167,21 @@ export function ManageThingsInExaminationPage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {examHolder.map (
-                                            (
-                                                    course
-                                                    , index
-                                            ) => renderExamTable (
-                                                    course
-                                                    , index
-                                            )
-                                        )}
+                                        {examTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>

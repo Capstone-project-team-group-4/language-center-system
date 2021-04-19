@@ -7,6 +7,7 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
+import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
@@ -48,19 +49,19 @@ public class UserController {
 
     @GetMapping ("/users:excluding-logged-in-user")
     @ResponseStatus (HttpStatus.OK)
-    public List<User> getAllUserExcludingCurrentLoggedInUser (
+    public DataPage<User> getAllUserExcludingCurrentLoggedInUser (
             Principal principal
-            , @RequestParam int pageNumber
+            , @RequestParam int pageIndex
             , @RequestParam int pageSize
     ){
-        List<User> userHolder;
+        DataPage<User> userDataPage;
 
-        userHolder = userService.getAllUserWithUserNameIsNot (
+        userDataPage = userService.getAllUserWithUserNameIsNot (
                 principal
-                , pageNumber
+                , pageIndex
                 , pageSize
         );
-        return userHolder;
+        return userDataPage;
     }
 
     @GetMapping ("/students:excluding-student-in-the-course")
@@ -142,17 +143,18 @@ public class UserController {
     }
 
     @GetMapping("/getStudent/{userID}")
+    @ResponseStatus(HttpStatus.OK)
     public User getStudentById(@PathVariable int userID) {
         User user = userService.getById(userID);
         return user;
     }
 
     @GetMapping("/getUsers/{userID}")
-    public Optional showAllUserByID(
+    public User showAllUserByID(
             @RequestBody User user
             , @PathVariable int userID
     ){
-        Optional showUser = userService.showInfo(user, userID);
+        User showUser = userService.showInfo(user, userID);
         return showUser;
     }
 

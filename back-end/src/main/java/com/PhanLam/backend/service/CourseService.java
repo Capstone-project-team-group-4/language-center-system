@@ -329,4 +329,21 @@ public class CourseService {
         return new DataPage<>(totalRowCount,courses);
 
     }
+
+    public List<Course> getAllCourse(){
+        return courseRepository.findAll();
+    }
+
+    public Course getCourseById(Integer courseID) {
+        return courseRepository.findById(courseID).orElseThrow();
+    }
+
+    public List<Course> getCoursesByCurrentUserName(String userName) {
+        User user = userRepository.findByUserName(userName).orElseThrow();
+        return user.getCourseList();
+    }
+
+    public Course getCourseByName(String courseName) {
+        return courseRepository.findByCourseName(courseName);
+    }
 }

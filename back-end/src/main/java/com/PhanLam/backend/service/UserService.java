@@ -16,6 +16,11 @@ import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
+import java.util.List;
+import java.security.Principal;
+import java.util.Optional;
+import javax.persistence.EntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
@@ -75,9 +80,9 @@ public class UserService {
     }
 
     @Transactional (readOnly = true)
-    public List<User> getAllUserWithUserNameIsNot (
+    public DataPage<User> getAllUserWithUserNameIsNot (
             Principal principal
-            , int pageNumber
+            , int pageIndex
             , int pageSize
     ){
         String userName;
@@ -85,31 +90,37 @@ public class UserService {
         Sort sortInformation;
         PageRequest pagingInformation;
         List<User> userHolder;
+        Page<User> userPage;
+        long totalRowCount;
+        DataPage<User> userDataPage;
 
-        if ((pageNumber >= 0) && (pageSize >= 0)){
+        if ((pageIndex >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
             userSortInformation = Sort.sort (User.class);
             sortInformation
                 = userSortInformation.by (User::getFirstName).ascending ()
-                .and (userSortInformation.by (User::getLastName)
-                        .ascending ()
-                );
+                    .and (userSortInformation.by (User::getLastName)
+                            .ascending ()
+                    );
             pagingInformation = PageRequest.of (
-                    pageNumber
+                    pageIndex
                     , pageSize
                     , sortInformation
             );
-            userHolder = userRepository.findAllByUserNameIsNot (
+            userPage = userRepository.findAllByUserNameIsNot (
                     userName
                     , pagingInformation
             );
-            return userHolder;
+            totalRowCount = userPage.getTotalElements ();
+            userHolder = userPage.getContent ();
+            userDataPage = new DataPage<> (totalRowCount, userHolder);
+            return userDataPage;
         }
         else {
             throw new InvalidRequestArgumentException (
-                    "The page number and page size number parameters "
+                    "The page index number and page size number parameters "
                     + "cannot be less than zero." + System.lineSeparator ()
-                    + "Parameter name: pageNumber, pageSize"
+                    + "Parameter name: pageIndex, pageSize"
             );
         }
     }
@@ -294,6 +305,7 @@ public class UserService {
         updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setMiddleName(user.getMiddleName());
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setDob(user.getDob());
@@ -311,6 +323,8 @@ public class UserService {
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
     }
+
+    public User showInfo(User user, int userID) {
 
     public User getByName(String userName){
         return userRepository.findByUserName(userName).orElseThrow();
@@ -331,7 +345,7 @@ public class UserService {
         showUser.getSelfDescription();
         showUser.getPassword();
         showUser.getAccountStatus();
-        return userRepository.findById(userID);
+        return userRepository.findById(userID).orElseThrow();
     }
     public List<User> getAllStudentsOfCourseAlreadyHaveClassInSlot(int slotId,int courseId){
         QCourse course;

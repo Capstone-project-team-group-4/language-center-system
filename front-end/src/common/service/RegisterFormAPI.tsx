@@ -1,5 +1,6 @@
 // Import package members section:
 import { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import { DataPage } from "../../App";
 import { RegisterForm } from "../../model/RegisterForm";
 import { Role } from "../../model/Role";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
@@ -17,6 +18,7 @@ export class RegisterFormAPI {
     private serverResponse: AxiosResponse<unknown> | undefined;
     private requestParameterHolder: URLSearchParams | undefined; 
     private typeGuardian: TypeGuard;
+    private registerFormDataPage: DataPage<RegisterForm> | undefined;
     
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -48,23 +50,23 @@ export class RegisterFormAPI {
     }
 
     public async getAllCreateAccountRequest (
-            pageNumber: number
+            pageIndex: number
             , pageSize: number
-    ): Promise<RegisterForm[]> {
+    ): Promise<DataPage<RegisterForm>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/register-forms"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isRegisterFormArray (
+            if (this.typeGuardian.isDataPage<RegisterForm> (
                     this.serverResponse.data
             )){
-                this.registerFormHolder = this.serverResponse.data;
-                return Promise.resolve<RegisterForm[]> (
-                        this.registerFormHolder
+                this.registerFormDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<RegisterForm>> (
+                        this.registerFormDataPage
                 );
             } 
             else {

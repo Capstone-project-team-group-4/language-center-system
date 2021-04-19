@@ -249,6 +249,7 @@ public class Course implements Serializable {
         this.classSession = classSession;
     }
 
+    @XmlTransient
     public List<Examination> getExaminationList (){
         return examinationList;
     }

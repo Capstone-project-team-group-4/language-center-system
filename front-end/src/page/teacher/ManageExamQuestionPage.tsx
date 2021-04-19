@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { 
     ChangeEvent
     , FormEvent
     , MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -29,6 +31,7 @@ import { Quiz } from "../../model/Quiz";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { DataPage } from "../../App";
 import { InputValidate } from "../../common/service/InputValidate";
+import { PagingSection } from "../../common/component/PagingSection";
 
 interface ManageExamQuestionPageProps {
     dialogController: DialogControl;
@@ -60,8 +63,8 @@ export function ManageExamQuestionPage (
     let quiz: Quiz | undefined;
     let quizDataPage: DataPage<Quiz> | undefined; 
     let [quizHolder, setQuizHolder] = useState<Quiz[]> (new Array<Quiz> ());
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let [showViewDetailDialog, setShowViewDetailDialog] 
         = useState<boolean> (false);
@@ -78,7 +81,8 @@ export function ManageExamQuestionPage (
         = useState<boolean> (false);
     let isValid: boolean | undefined;
     let inputValidator: InputValidate;
-    let [pendingQuestionID, setPendingQuestionID] = useState<number> (0); 
+    let [pendingQuestionID, setPendingQuestionID] = useState<number> (0);
+    let quizTable: ReactNode; 
 
     let [quizAPI] = useState<QuizAPI> (new QuizAPI ());
     inputValidator = new InputValidate (props.dialogController);
@@ -411,6 +415,47 @@ export function ManageExamQuestionPage (
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadQuizTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (quizHolder.length === 0){
+        quizTable =
+            <tr>
+                <td colSpan = {4} className = "text-center">
+                    <h5>
+                        There are no quizzes in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        quizTable =
+            quizHolder.map (
+                (
+                        quiz
+                        , index
+                ) => renderQuizTable (
+                        quiz
+                        , index
+                        , openViewDetailDialog
+                        , openEditQuizForm
+                        , handleDeleteQuiz
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -1279,20 +1324,21 @@ export function ManageExamQuestionPage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {quizHolder.map (
-                                            (
-                                                    quiz
-                                                    , index
-                                            ) => renderQuizTable (
-                                                    quiz
-                                                    , index
-                                                    , openViewDetailDialog
-                                                    , openEditQuizForm
-                                                    , handleDeleteQuiz
-                                            )
-                                        )}
+                                        {quizTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>

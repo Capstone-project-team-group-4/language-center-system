@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -153,19 +154,52 @@ public class HomeWork implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (homeWorkID != null ? homeWorkID.hashCode () : 0);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode (this.homeWorkID);
+        hash = 71 * hash + Objects.hashCode (this.requirement);
+        hash = 71 * hash + Objects.hashCode (this.deadline);
+        hash = 71 * hash + Objects.hashCode (this.studentScoreList);
+        hash = 71 * hash + Objects.hashCode (this.documentList);
+        hash = 71 * hash + Objects.hashCode (this.documentList1);
+        hash = 71 * hash + Objects.hashCode (this.classID);
+        hash = 71 * hash + Objects.hashCode (this.lessonID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof HomeWork)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        HomeWork other = (HomeWork) object;
-        if ((this.homeWorkID == null && other.homeWorkID != null) || (this.homeWorkID != null && !this.homeWorkID.equals (other.homeWorkID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final HomeWork other = (HomeWork) obj;
+        if (!Objects.equals (this.requirement, other.requirement)){
+            return false;
+        }
+        if (!Objects.equals (this.homeWorkID, other.homeWorkID)){
+            return false;
+        }
+        if (!Objects.equals (this.deadline, other.deadline)){
+            return false;
+        }
+        if (!Objects.equals (this.studentScoreList, other.studentScoreList)){
+            return false;
+        }
+        if (!Objects.equals (this.documentList, other.documentList)){
+            return false;
+        }
+        if (!Objects.equals (this.documentList1, other.documentList1)){
+            return false;
+        }
+        if (!Objects.equals (this.classID, other.classID)){
+            return false;
+        }
+        if (!Objects.equals (this.lessonID, other.lessonID)){
             return false;
         }
         return true;
@@ -173,7 +207,15 @@ public class HomeWork implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.HomeWork[ homeWorkID=" + homeWorkID + " ]";
+        return "HomeWork {" 
+                + "homeWorkID=" + homeWorkID 
+                + ", requirement=" + requirement 
+                + ", deadline=" + deadline 
+                + ", studentScoreList=" + studentScoreList 
+                + ", documentList=" + documentList 
+                + ", documentList1=" + documentList1 
+                + ", classID=" + classID 
+                + ", lessonID=" + lessonID 
+        + '}';
     }
-    
 }

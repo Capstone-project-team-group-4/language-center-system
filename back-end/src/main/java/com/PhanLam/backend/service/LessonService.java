@@ -8,7 +8,9 @@ package com.PhanLam.backend.service;
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
+import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.LessonRepository;
+import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Lesson;
 import java.util.ArrayList;
@@ -31,28 +33,57 @@ import org.springframework.transaction.annotation.Transactional;
 public class LessonService {
     
     // Variables declaration:
-    private LessonRepository lessonRepository; 
+    private LessonRepository lessonRepository;
+    private CourseRepository courseRepository;
 
-    public LessonService(LessonRepository lessonRepository) {
+    public LessonService(LessonRepository lessonRepository, CourseRepository courseRepository) {
         this.lessonRepository = lessonRepository;
+        this.courseRepository = courseRepository;
     }
     
-    public void createLesson (Lesson lesson){
+//    public void createLesson (Lesson lesson){
+//        String lessonName;
+//        boolean lessonAlreadyExist;
+//        Date dateCreated;
+//        
+//        lessonName = lesson.getLessonName();
+//        lessonAlreadyExist = lessonRepository.existsByLessonName(lessonName);
+//        if (lessonAlreadyExist == true){
+//            throw new AlreadyExistException ("Lesson Name");
+//        }
+//        else {
+//            dateCreated = new Date ();
+//            lesson.setDateCreated (dateCreated);
+//            lessonRepository.save (lesson);
+//        }
+//    }
+    
+    public void createLessonInCourse(Lesson lesson) {
+        Optional<Course> nullableCourse;
+        Course course;
         String lessonName;
         boolean lessonAlreadyExist;
         Date dateCreated;
         
-        lessonName = lesson.getLessonName();
-        lessonAlreadyExist = lessonRepository.existsByLessonName(lessonName);
-        if (lessonAlreadyExist == true){
-            throw new AlreadyExistException ("Lesson Name");
-        }
-        else {
-            dateCreated = new Date ();
-            lesson.setDateCreated (dateCreated);
-            lessonRepository.save (lesson);
+        //hard code
+        nullableCourse = courseRepository.findById(16);
+        if (nullableCourse.isPresent() == false) {
+            throw new NotFoundException("Course");
+        } else {
+            course = nullableCourse.get ();
+            lessonName = lesson.getLessonName();
+            lessonAlreadyExist = lessonRepository.existsByLessonName(lessonName);
+            if (lessonAlreadyExist == true) {
+                throw new AlreadyExistException("Lesson Name");
+            } else {
+                lesson.setCourseID(course);
+                dateCreated = new Date();
+                lesson.setDateCreated(dateCreated);
+                lessonRepository.save(lesson);
+            }
         }
     }
+
     
     @Transactional (readOnly = true)
     public DataPage<Lesson> getAllLesson (

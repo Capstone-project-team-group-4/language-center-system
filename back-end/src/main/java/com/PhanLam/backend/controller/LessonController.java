@@ -39,7 +39,7 @@ public class LessonController {
     public void createNewLesson (
             @Valid @RequestBody Lesson lesson
     ){
-        lessonService.createLesson(lesson);
+        lessonService.createLessonInCourse(lesson);
     }
     
     @GetMapping ("/lessons")

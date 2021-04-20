@@ -56,6 +56,7 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
+import { TeacherSpareTimePage } from './page/teacher/SpareTimePage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -375,6 +376,28 @@ export function App(): ReactElement {
       >
         <PageHeader logOut = {logOut} />
         <TeacherDashboardPage modalDialog = {modalDialog} />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/teacher/spare-time-management"
+        securityContext = {teacherPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <PageHeader logOut = {logOut} />
+        <TeacherSpareTimePage  modalDialog = {modalDialog} />
+      </ProtectedRoute>
+
+      <ProtectedRoute
+        path = "/teacher/create-spare-time"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut} />
+        <CreateAccountPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+          typeGuardian = {typeGuardian}
+        />
       </ProtectedRoute>
 
       <Route path = "/student-dashboard">

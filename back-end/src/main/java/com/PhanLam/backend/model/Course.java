@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -272,7 +273,6 @@ public class Course implements Serializable {
         hash = 19 * hash + Objects.hashCode (this.lastModified);
         hash = 19 * hash + Objects.hashCode (this.userList);
         hash = 19 * hash + Objects.hashCode (this.lessonList);
-        hash = 19 * hash + Objects.hashCode (this.classList);
         hash = 19 * hash + Objects.hashCode (this.examinationList);
         return hash;
     }
@@ -319,9 +319,6 @@ public class Course implements Serializable {
         if (!Objects.equals (this.lessonList, other.lessonList)){
             return false;
         }
-        if (!Objects.equals (this.classList, other.classList)){
-            return false;
-        }
         if (!Objects.equals (this.examinationList, other.examinationList)){
             return false;
         }
@@ -341,7 +338,6 @@ public class Course implements Serializable {
                 + ", lastModified=" + lastModified
                 + ", userList=" + userList
                 + ", lessonList=" + lessonList
-                + ", classList=" + classList
                 + ", examinationList=" + examinationList
         + '}';
     }

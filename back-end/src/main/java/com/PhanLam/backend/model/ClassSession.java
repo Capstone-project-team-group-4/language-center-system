@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -64,7 +65,7 @@ public class ClassSession implements Serializable {
     private User teacherID;
     @Basic (optional = false)
     @Column (name = "SpareTimeRegisterID", nullable = false)
-    private Integer SpareTimeRegisterID;
+    private Integer spareTimeRegisterID;
     @JoinColumn (
             name = "SlotID"
             , referencedColumnName = "SlotID"
@@ -144,18 +145,17 @@ public class ClassSession implements Serializable {
     }
 
     public Integer getSpareTimeRegisterID() {
-        return SpareTimeRegisterID;
+        return spareTimeRegisterID;
     }
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
-        SpareTimeRegisterID = spareTimeRegisterID;
+        spareTimeRegisterID = spareTimeRegisterID;
     }
 
     @Override
     public int hashCode (){
         int hash = 7;
         hash = 79 * hash + Objects.hashCode (this.classID);
-        hash = 79 * hash + Objects.hashCode (this.startTime);
         hash = 79 * hash + Objects.hashCode (this.status);
         hash = 79 * hash + Objects.hashCode (this.userList);
         hash = 79 * hash + Objects.hashCode (this.homeWorkList);
@@ -182,9 +182,7 @@ public class ClassSession implements Serializable {
         if (!Objects.equals (this.classID, other.classID)){
             return false;
         }
-        if (!Objects.equals (this.startTime, other.startTime)){
-            return false;
-        }
+
         if (!Objects.equals (this.userList, other.userList)){
             return false;
         }
@@ -204,7 +202,6 @@ public class ClassSession implements Serializable {
     public String toString (){
         return "ClassSession {"
                 + "classID=" + classID
-                + ", startTime=" + startTime
                 + ", status=" + status
                 + ", userList=" + userList
                 + ", homeWorkList=" + homeWorkList

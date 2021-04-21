@@ -11,22 +11,12 @@ import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.LoggedInUser;
-import com.PhanLam.backend.model.QCourse;
-import com.PhanLam.backend.model.QRole;
-import com.PhanLam.backend.model.QUser;
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.model.User;
-import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
-import java.util.List;
-import java.security.Principal;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -56,7 +46,6 @@ public class UserService {
     private CourseService courseService;
     private ClassSessionService classSessionService;
     private QueryFactoryGet queryFactoryGetter;
-    private JPAQueryFactory queryFactory;
 
     public UserService (
             UserRepository userRepository

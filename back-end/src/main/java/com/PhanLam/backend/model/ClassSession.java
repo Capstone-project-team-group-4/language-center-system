@@ -153,19 +153,48 @@ public class ClassSession implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (classID != null ? classID.hashCode () : 0);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode (this.classID);
+        hash = 79 * hash + Objects.hashCode (this.startTime);
+        hash = 79 * hash + Objects.hashCode (this.status);
+        hash = 79 * hash + Objects.hashCode (this.userList);
+        hash = 79 * hash + Objects.hashCode (this.homeWorkList);
+        hash = 79 * hash + Objects.hashCode (this.courseID);
+        hash = 79 * hash + Objects.hashCode (this.teacherID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ClassSession)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        ClassSession other = (ClassSession) object;
-        if ((this.classID == null && other.classID != null) || (this.classID != null && !this.classID.equals (other.classID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final ClassSession other = (ClassSession) obj;
+        if (!Objects.equals (this.status, other.status)){
+            return false;
+        }
+        if (!Objects.equals (this.classID, other.classID)){
+            return false;
+        }
+        if (!Objects.equals (this.startTime, other.startTime)){
+            return false;
+        }
+        if (!Objects.equals (this.userList, other.userList)){
+            return false;
+        }
+        if (!Objects.equals (this.homeWorkList, other.homeWorkList)){
+            return false;
+        }
+        if (!Objects.equals (this.courseID, other.courseID)){
+            return false;
+        }
+        if (!Objects.equals (this.teacherID, other.teacherID)){
             return false;
         }
         return true;
@@ -173,7 +202,14 @@ public class ClassSession implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.ClassSession[ classID=" + classID + " ]";
+        return "ClassSession {"
+                + "classID=" + classID
+                + ", startTime=" + startTime
+                + ", status=" + status
+                + ", userList=" + userList
+                + ", homeWorkList=" + homeWorkList
+                + ", courseID=" + courseID
+                + ", teacherID=" + teacherID
+        + '}';
     }
-
 }

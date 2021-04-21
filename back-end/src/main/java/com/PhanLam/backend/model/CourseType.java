@@ -128,19 +128,36 @@ public class CourseType implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (typeID != null ? typeID.hashCode () : 0);
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode (this.typeID);
+        hash = 31 * hash + Objects.hashCode (this.typeName);
+        hash = 31 * hash + Objects.hashCode (this.courseList);
+        hash = 31 * hash + Objects.hashCode (this.courseLevelList);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CourseType)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        CourseType other = (CourseType) object;
-        if ((this.typeID == null && other.typeID != null) || (this.typeID != null && !this.typeID.equals (other.typeID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final CourseType other = (CourseType) obj;
+        if (!Objects.equals (this.typeName, other.typeName)){
+            return false;
+        }
+        if (!Objects.equals (this.typeID, other.typeID)){
+            return false;
+        }
+        if (!Objects.equals (this.courseList, other.courseList)){
+            return false;
+        }
+        if (!Objects.equals (this.courseLevelList, other.courseLevelList)){
             return false;
         }
         return true;
@@ -148,7 +165,11 @@ public class CourseType implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.CourseType[ typeID=" + typeID + " ]";
+        return "CourseType {"
+                + "typeID=" + typeID
+                + ", typeName=" + typeName
+                + ", courseList=" + courseList
+                + ", courseLevelList=" + courseLevelList
+        + '}';
     }
-
 }

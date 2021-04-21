@@ -56,6 +56,7 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
+import { useSessionState } from './common/service/PersistedStateHook';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -65,14 +66,16 @@ export interface DataPage<T> {
 export function App(): ReactElement {
 
   // Variables declaration:
-  let [showDialog, setShowDialog] = useState<boolean>(false);
-  let [dialogTitle, setDialogTitle] = useState<string>("");
-  let [dialogBody, setDialogBody] = useState<string>("");
-  let [dialogType, setDialogType] = useState<string>("");
+  let [showDialog, setShowDialog] = useState<boolean> (false);
+  let [dialogTitle, setDialogTitle] = useState<string> ("");
+  let [dialogBody, setDialogBody] = useState<string> ("");
+  let [dialogType, setDialogType] = useState<string> ("");
   let modalDialog: ReactElement | undefined;
-  let [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  let [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(
-    new LoggedInUser()
+  let [isAuthenticated, setIsAuthenticated] 
+    = useSessionState<boolean> ("isAuthenticated", false);
+  let [loggedInUser, setLoggedInUser] = useSessionState<LoggedInUser> (
+    "loggedInUser"
+    , new LoggedInUser ()
   );
   let dialogController: DialogControl | undefined;
   let acceptableRoleNameHolder: string[] | undefined;

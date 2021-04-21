@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -140,19 +141,48 @@ public class Document implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (documentID != null ? documentID.hashCode () : 0);
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode (this.documentID);
+        hash = 17 * hash + Objects.hashCode (this.description);
+        hash = 17 * hash + Objects.hashCode (this.uri);
+        hash = 17 * hash + Objects.hashCode (this.postTime);
+        hash = 17 * hash + Objects.hashCode (this.requirementID);
+        hash = 17 * hash + Objects.hashCode (this.solutionID);
+        hash = 17 * hash + Objects.hashCode (this.lessonID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Document)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        Document other = (Document) object;
-        if ((this.documentID == null && other.documentID != null) || (this.documentID != null && !this.documentID.equals (other.documentID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Document other = (Document) obj;
+        if (!Objects.equals (this.description, other.description)){
+            return false;
+        }
+        if (!Objects.equals (this.uri, other.uri)){
+            return false;
+        }
+        if (!Objects.equals (this.documentID, other.documentID)){
+            return false;
+        }
+        if (!Objects.equals (this.postTime, other.postTime)){
+            return false;
+        }
+        if (!Objects.equals (this.requirementID, other.requirementID)){
+            return false;
+        }
+        if (!Objects.equals (this.solutionID, other.solutionID)){
+            return false;
+        }
+        if (!Objects.equals (this.lessonID, other.lessonID)){
             return false;
         }
         return true;
@@ -160,7 +190,14 @@ public class Document implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.Document[ documentID=" + documentID + " ]";
+        return "Document {" 
+                + "documentID=" + documentID 
+                + ", description=" + description 
+                + ", uri=" + uri 
+                + ", postTime=" + postTime 
+                + ", requirementID=" + requirementID 
+                + ", solutionID=" + solutionID 
+                + ", lessonID=" + lessonID 
+        + '}';
     }
-    
 }

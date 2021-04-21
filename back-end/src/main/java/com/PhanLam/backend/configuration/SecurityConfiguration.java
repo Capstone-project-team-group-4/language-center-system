@@ -111,6 +111,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         security.httpBasic ().authenticationEntryPoint (
                 securityResponseBuilder
         );
+//        security.rememberMe ().alwaysRemember (true);
         security.logout ().logoutSuccessHandler (getLogoutSuccessHandler ());
         security.authorizeRequests ()
                 .antMatchers (HttpMethod.GET, "/logged-in-user")

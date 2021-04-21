@@ -9,6 +9,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -154,19 +169,32 @@ public class SpareTimeRegister implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (spareTimeID != null ? spareTimeID.hashCode () : 0);
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode (this.spareTimeID);
+        hash = 67 * hash + Objects.hashCode (this.spareTime);
+        hash = 67 * hash + Objects.hashCode (this.userID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SpareTimeRegister)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        SpareTimeRegister other = (SpareTimeRegister) object;
-        if ((this.spareTimeID == null && other.spareTimeID != null) || (this.spareTimeID != null && !this.spareTimeID.equals (other.spareTimeID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final SpareTimeRegister other = (SpareTimeRegister) obj;
+        if (!Objects.equals (this.spareTimeID, other.spareTimeID)){
+            return false;
+        }
+        if (!Objects.equals (this.spareTime, other.spareTime)){
+            return false;
+        }
+        if (!Objects.equals (this.userID, other.userID)){
             return false;
         }
         return true;
@@ -174,7 +202,6 @@ public class SpareTimeRegister implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.SpareTimeRegister[ spareTimeID=" + spareTimeID + " ]";
+        return "SpareTimeRegister{" + "spareTimeID=" + spareTimeID + ", spareTime=" + spareTime + ", userID=" + userID + '}';
     }
-
 }

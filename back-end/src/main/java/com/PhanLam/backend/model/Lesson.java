@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -190,28 +191,74 @@ public class Lesson implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (lessonID != null ? lessonID.hashCode() : 0);
+    public int hashCode (){
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode (this.lessonID);
+        hash = 97 * hash + Objects.hashCode (this.lessonName);
+        hash = 97 * hash + Objects.hashCode (this.description);
+        hash = 97 * hash + Objects.hashCode (this.contentURI);
+        hash = 97 * hash + Objects.hashCode (this.type);
+        hash = 97 * hash + this.duration;
+        hash = 97 * hash + Objects.hashCode (this.dateCreated);
+        hash = 97 * hash + Objects.hashCode (this.lastModified);
+        hash = 97 * hash + Objects.hashCode (this.courseID);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Lesson)) {
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        Lesson other = (Lesson) object;
-        if ((this.lessonID == null && other.lessonID != null) || (this.lessonID != null && !this.lessonID.equals(other.lessonID))) {
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Lesson other = (Lesson) obj;
+        if (this.duration != other.duration){
+            return false;
+        }
+        if (!Objects.equals (this.lessonName, other.lessonName)){
+            return false;
+        }
+        if (!Objects.equals (this.description, other.description)){
+            return false;
+        }
+        if (!Objects.equals (this.contentURI, other.contentURI)){
+            return false;
+        }
+        if (!Objects.equals (this.type, other.type)){
+            return false;
+        }
+        if (!Objects.equals (this.lessonID, other.lessonID)){
+            return false;
+        }
+        if (!Objects.equals (this.dateCreated, other.dateCreated)){
+            return false;
+        }
+        if (!Objects.equals (this.lastModified, other.lastModified)){
+            return false;
+        }
+        if (!Objects.equals (this.courseID, other.courseID)){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
-        return "com.PhanLam.backend.model.Lesson[ lessonID=" + lessonID + " ]";
+    public String toString (){
+        return "Lesson {" 
+                + "lessonID=" + lessonID 
+                + ", lessonName=" + lessonName 
+                + ", description=" + description 
+                + ", contentURI=" + contentURI 
+                + ", type=" + type 
+                + ", duration=" + duration 
+                + ", dateCreated=" + dateCreated 
+                + ", lastModified=" + lastModified 
+                + ", courseID=" + courseID 
+        + '}';
     }
-    
 }

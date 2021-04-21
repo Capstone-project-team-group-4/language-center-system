@@ -6,6 +6,7 @@
 package com.PhanLam.backend.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -111,19 +112,36 @@ public class QuestionOption implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (optionID != null ? optionID.hashCode () : 0);
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode (this.optionID);
+        hash = 71 * hash + Objects.hashCode (this.content);
+        hash = 71 * hash + (this.isCorrectAnswer ? 1 : 0);
+        hash = 71 * hash + Objects.hashCode (this.multipleChoiceQuestion);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof QuestionOption)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        QuestionOption other = (QuestionOption) object;
-        if ((this.optionID == null && other.optionID != null) || (this.optionID != null && !this.optionID.equals (other.optionID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final QuestionOption other = (QuestionOption) obj;
+        if (this.isCorrectAnswer != other.isCorrectAnswer){
+            return false;
+        }
+        if (!Objects.equals (this.content, other.content)){
+            return false;
+        }
+        if (!Objects.equals (this.optionID, other.optionID)){
+            return false;
+        }
+        if (!Objects.equals (this.multipleChoiceQuestion, other.multipleChoiceQuestion)){
             return false;
         }
         return true;
@@ -131,7 +149,11 @@ public class QuestionOption implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.QuestionOption[ optionID=" + optionID + " ]";
+        return "QuestionOption {" 
+                + "optionID=" + optionID 
+                + ", content=" + content 
+                + ", isCorrectAnswer=" + isCorrectAnswer 
+                + ", multipleChoiceQuestion=" + multipleChoiceQuestion 
+        + '}';
     }
-    
 }

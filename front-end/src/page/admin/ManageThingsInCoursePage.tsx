@@ -1,4 +1,5 @@
-import React, { ReactElement, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { 
     Breadcrumb
     , Button
@@ -11,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Course } from "../../model/Course";
@@ -29,9 +31,10 @@ export function ManageThingsInCoursePage (
     let [courseHolder, setCourseHolder] 
         = useState<Course[]> (new Array<Course> ());
     let courseDataPage: DataPage<Course> | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
+    let courseTable: ReactNode;
     
     let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
@@ -74,6 +77,44 @@ export function ManageThingsInCoursePage (
         , []
     );
     
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadCourseTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (courseHolder.length === 0){
+        courseTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no courses in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        courseTable =
+            courseHolder.map (
+                (
+                        course
+                        , index
+                ) => renderCourseTable (
+                        course
+                        , index
+                )
+            );
+    }
+
     return (
         <Container fluid = {true}>
             {props.modalDialog}
@@ -126,17 +167,21 @@ export function ManageThingsInCoursePage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {courseHolder.map (
-                                            (
-                                                    course
-                                                    , index
-                                            ) => renderCourseTable (
-                                                    course
-                                                    , index
-                                            )
-                                        )}
+                                        {courseTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>

@@ -29,24 +29,24 @@ export class UserAPI {
     }
 
     public listUsers (): Promise<AxiosResponse> {
-        return axios.get ("http://localhost:8080/users");
+        return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (
-        pageNumber: number
-        , pageSize: number
-    ): Promise<User[]> {
+            pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/users:excluding-logged-in-user"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isUserArray (this.serverResponse.data)){
-                this.userHolder = this.serverResponse.data;
-                return Promise.resolve<User[]> (this.userHolder);
+            if (this.typeGuardian.isDataPage<User> (this.serverResponse.data)){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
             }
             else {
                 throw new Error ("This server response is not valid !");

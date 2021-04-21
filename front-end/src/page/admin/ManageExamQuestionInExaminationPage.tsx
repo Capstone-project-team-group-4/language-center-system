@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { 
     MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -18,6 +20,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { QuizAPI } from "../../common/service/QuizAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
@@ -43,15 +46,15 @@ export function ManageExamQuestionInExaminationPage (
     let [quizInTheExamHolder, setQuizInTheExamHolder] 
         = useState<Quiz[]> (new Array<Quiz> ());
     let quizDataPage: DataPage<Quiz> | undefined;
-    let [pageIndex2] = useState<number> (0);
-    let [pageSize2] = useState<number> (10);
+    let [pageIndex2, setPageIndex2] = useState<number> (0);
+    let [pageSize2] = useState<number> (5);
     let [totalRowCount2, setTotalRowCount2] = useState<number> (0);
     let examID = useParams<ManageExamQuestionInExaminationPageUrlParameter> ()
         .examID;
     let [showAddExamQuestionDialog, setShowAddExamQuestionDialog] 
         = useState<boolean> (false);
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let [quizHolder, setQuizHolder] = useState<Quiz[]> (new Array<Quiz> ());
     let button: HTMLButtonElement | undefined;
@@ -76,6 +79,8 @@ export function ManageExamQuestionInExaminationPage (
         = useState<string> ("");
     let [formattedDateCreated, setFormattedDateCreated] 
         = useState<string> ("");
+    let quizTable: ReactNode;
+    let quizInTheExamTable: ReactNode;
 
     let [quizAPI] = useState<QuizAPI> (new QuizAPI ());
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
@@ -150,7 +155,7 @@ export function ManageExamQuestionInExaminationPage (
 
     function openAddExamQuestionDialog (): void {
         loadQuizExcludingQuizInTheExamTable ().catch (
-                (error: unknown) => {
+                (error) => {
                     console.error (error);
                 }
         );
@@ -170,7 +175,7 @@ export function ManageExamQuestionInExaminationPage (
                 "Confirm Remove Exam Question From Examination"
         );
         props.dialogController.setDialogBody (
-                "Are you sure you want to remove this exam question" 
+                "Are you sure you want to remove this exam question " 
                 + "from the exam ?"
         );
         props.dialogController.setDialogType ("confirm");
@@ -319,6 +324,87 @@ export function ManageExamQuestionInExaminationPage (
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadQuizExcludingQuizInTheExamTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    function goToPage2 (destinationPageIndex: number): void {
+        setPageIndex2 (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadQuizInTheExamTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex2]
+    );
+    
+    if (quizHolder.length === 0){
+        quizTable =
+            <tr>
+                <td colSpan = {4} className = "text-center">
+                    <h5>
+                        There are no exam questions in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        quizTable =
+            quizHolder.map (
+                (
+                        quiz
+                        , index
+                ) => renderQuizTable (
+                        quiz
+                        , index
+                        , openViewExamQuestionDetailDialog
+                        , addAQuizToExam
+                )
+            );
+    }
+
+    if (quizInTheExamHolder.length === 0){
+        quizInTheExamTable =
+            <tr>
+                <td colSpan = {4} className = "text-center">
+                    <h5>
+                        There are no exam questions in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        quizInTheExamTable =
+            quizInTheExamHolder.map (
+                (
+                        quiz
+                        , index
+                ) => renderQuizInTheExamTable (
+                        quiz
+                        , index
+                    // eslint-disable-next-line max-len
+                        , openViewExamQuestionInTheExamDetailDialog
+                        , handleRemoveAQuizFromExam  
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -548,37 +634,41 @@ export function ManageExamQuestionInExaminationPage (
                     <Modal.Title>Add An Exam Question</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Table responsive = "md" hover = {true}>
-                        <thead>
-                            <tr>
-                                <th>
-                                    #
-                                </th>
-                                <th>
-                                    Question Content
-                                </th>
-                                <th>
-                                    Created By
-                                </th>
-                                <th>
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {quizHolder.map (
-                                (
-                                        quiz
-                                        , index
-                                ) => renderQuizTable (
-                                        quiz
-                                        , index
-                                        , openViewExamQuestionDetailDialog
-                                        , addAQuizToExam
-                                )
-                            )}
-                        </tbody>
-                    </Table>
+                    <Form>
+                        <Table responsive = "md" hover = {true}>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        #
+                                    </th>
+                                    <th>
+                                        Question Content
+                                    </th>
+                                    <th>
+                                        Created By
+                                    </th>
+                                    <th>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {quizTable}
+                            </tbody>
+                        </Table>
+                        <Form.Group>
+                            <Form.Row 
+                                className = "justify-content-md-center"
+                            >
+                                <PagingSection 
+                                    pageIndex = {pageIndex}
+                                    pageSize = {pageSize}
+                                    totalRowCount = {totalRowCount}
+                                    goToPage = {goToPage}
+                                />
+                            </Form.Row> 
+                        </Form.Group>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button 
@@ -634,38 +724,41 @@ export function ManageExamQuestionInExaminationPage (
                                     Add Exam Question
                                 </Button>
                             </h1>
-                            <Table responsive = "md" hover = {true}>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            #
-                                        </th>
-                                        <th>
-                                            Question Content
-                                        </th>
-                                        <th>
-                                            Created By
-                                        </th>
-                                        <th>
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {quizInTheExamHolder.map (
-                                        (
-                                                quiz
-                                                , index
-                                        ) => renderQuizInTheExamTable (
-                                                quiz
-                                                , index
-                                            // eslint-disable-next-line max-len
-                                                , openViewExamQuestionInTheExamDetailDialog
-                                                , handleRemoveAQuizFromExam  
-                                        )
-                                    )}
-                                </tbody>
-                            </Table>
+                            <Form>
+                                <Table responsive = "md" hover = {true}>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Question Content
+                                            </th>
+                                            <th>
+                                                Created By
+                                            </th>
+                                            <th>
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {quizInTheExamTable}
+                                    </tbody>
+                                </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex2}
+                                            pageSize = {pageSize2}
+                                            totalRowCount = {totalRowCount2}
+                                            goToPage = {goToPage2}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
+                            </Form>
                         </Col>
                     </Row>
                 </Container>
@@ -723,7 +816,7 @@ function renderQuizTable (
                     onClick = {
                         (event) => {
                             addAQuizToExam (event).catch (
-                                    (error: unknown) => {
+                                    (error) => {
                                         console.error (error);
                                     }
                             );

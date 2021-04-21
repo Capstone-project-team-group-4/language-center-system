@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.PhanLam.backend.dal.repository_interface.RegisterFormRepository;
+import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.RegisterForm;
 import java.util.List;
 
@@ -72,8 +73,8 @@ public class RegisterFormService {
     }
     
     @Transactional (readOnly = true)
-    public List<RegisterForm> getAllRegisterForm (
-            int pageNumber
+    public DataPage<RegisterForm> getAllRegisterForm (
+            int pageIndex
             , int pageSize
     ){
         List<RegisterForm> registerFormHolder;
@@ -81,8 +82,10 @@ public class RegisterFormService {
         Page<RegisterForm> registerFormPage;
         TypedSort<RegisterForm> registerFormSortInformation;
         Sort sortInformation; 
+        DataPage<RegisterForm> registerFormDataPage;
+        long totalRowCount;
         
-        if ((pageNumber >= 0) && (pageSize >= 0)){
+        if ((pageIndex >= 0) && (pageSize > 0)){
             registerFormSortInformation = Sort.sort (RegisterForm.class);
             sortInformation 
                 = registerFormSortInformation
@@ -91,21 +94,26 @@ public class RegisterFormService {
                         .by (RegisterForm::getLastName).ascending ()
                     );
             pagingInformation = PageRequest.of (
-                    pageNumber
+                    pageIndex
                     , pageSize
                     , sortInformation
             );
             registerFormPage = registerFormRepository.findAll (
                     pagingInformation
             );
+            totalRowCount = registerFormPage.getTotalElements ();
             registerFormHolder = registerFormPage.getContent ();
-            return registerFormHolder;
+            registerFormDataPage = new DataPage<> (
+                    totalRowCount
+                    , registerFormHolder
+            );
+            return registerFormDataPage;
         }
         else {
             throw new InvalidRequestArgumentException (
-                    "The page number and page size number parameters "
+                    "The page index number and page size number parameters "
                     + "cannot be less than zero." + System.lineSeparator () 
-                    + "Parameter name: pageNumber, pageSize"
+                    + "Parameter name: pageIndex, pageSize"
             );
         }
     }

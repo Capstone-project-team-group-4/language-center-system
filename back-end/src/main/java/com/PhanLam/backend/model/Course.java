@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,6 +34,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -266,7 +268,8 @@ public class Course implements Serializable {
     public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
-
+    
+    @XmlTransient
     public List<Examination> getExaminationList (){
         return examinationList;
     }
@@ -274,22 +277,71 @@ public class Course implements Serializable {
     public void setExaminationList (List<Examination> examinationList){
         this.examinationList = examinationList;
     }
-    
+
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (courseID != null ? courseID.hashCode () : 0);
+        int hash = 5;
+        hash = 19 * hash + Objects.hashCode (this.courseID);
+        hash = 19 * hash + Objects.hashCode (this.courseName);
+        hash = 19 * hash + Objects.hashCode (this.description);
+        hash = 19 * hash + Objects.hashCode (this.courseType);
+        hash = 19 * hash + Objects.hashCode (this.courseLevel);
+        hash = 19 * hash + Objects.hashCode (this.tuitionFee);
+        hash = 19 * hash + Objects.hashCode (this.dateCreated);
+        hash = 19 * hash + Objects.hashCode (this.lastModified);
+        hash = 19 * hash + Objects.hashCode (this.userList);
+        hash = 19 * hash + Objects.hashCode (this.lessonList);
+        hash = 19 * hash + Objects.hashCode (this.classList);
+        hash = 19 * hash + Objects.hashCode (this.examinationList);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Course)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        Course other = (Course) object;
-        if ((this.courseID == null && other.courseID != null) || (this.courseID != null && !this.courseID.equals (other.courseID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Course other = (Course) obj;
+        if (!Objects.equals (this.courseName, other.courseName)){
+            return false;
+        }
+        if (!Objects.equals (this.description, other.description)){
+            return false;
+        }
+        if (!Objects.equals (this.courseID, other.courseID)){
+            return false;
+        }
+        if (!Objects.equals (this.courseType, other.courseType)){
+            return false;
+        }
+        if (!Objects.equals (this.courseLevel, other.courseLevel)){
+            return false;
+        }
+        if (!Objects.equals (this.tuitionFee, other.tuitionFee)){
+            return false;
+        }
+        if (!Objects.equals (this.dateCreated, other.dateCreated)){
+            return false;
+        }
+        if (!Objects.equals (this.lastModified, other.lastModified)){
+            return false;
+        }
+        if (!Objects.equals (this.userList, other.userList)){
+            return false;
+        }
+        if (!Objects.equals (this.lessonList, other.lessonList)){
+            return false;
+        }
+        if (!Objects.equals (this.classList, other.classList)){
+            return false;
+        }
+        if (!Objects.equals (this.examinationList, other.examinationList)){
             return false;
         }
         return true;
@@ -297,6 +349,20 @@ public class Course implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.Course[ courseID=" + courseID + " ]";
-    }  
+        return "Course {" 
+                + "courseID=" + courseID 
+                + ", courseName=" + courseName 
+                + ", description=" + description 
+                + ", courseType=" + courseType 
+                + ", courseLevel=" + courseLevel 
+                + ", tuitionFee=" + tuitionFee 
+                + ", dateCreated=" + dateCreated 
+                + ", lastModified=" + lastModified 
+                + ", userList=" + userList 
+                + ", lessonList=" + lessonList 
+                + ", classList=" + classList 
+                + ", examinationList=" + examinationList 
+        + '}';
+    }
+    
 }

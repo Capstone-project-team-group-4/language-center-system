@@ -9,6 +9,7 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.service.CourseService;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -87,5 +88,28 @@ public class CourseController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void deleteCourseByID (@PathVariable int courseID){
         courseService.deleteCourseByID (courseID);
+    }
+    
+    @GetMapping("/")
+    @ResponseStatus (HttpStatus.OK)
+    public List<Course> getAllUserCourse(){
+        return courseService.getAllCourse();
+    }
+    
+    @GetMapping("/courses/{courseID}")
+    @ResponseStatus(HttpStatus.OK)
+    public Course getCourseById(@PathVariable("courseID") Integer courseID){
+        return courseService.getCourseById(courseID);
+    }
+    
+    @GetMapping("/getCourseByName")
+    @ResponseStatus(HttpStatus.OK)
+    public Course getCourseByName(@RequestParam("courseName") String courseName){
+        return courseService.getCourseByName(courseName);
+    }
+    
+    @GetMapping("/myCourses")
+    public List<Course> getAllCourseCurrentsLogin(@RequestParam(value = "userName") String userName){
+        return courseService.getCoursesByCurrentUserName(userName);
     }
 }

@@ -15,7 +15,6 @@ import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.List;
-import java.util.Optional;
 import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,22 +59,22 @@ public class UserController {
         listUsers = userService.getAll();
         return listUsers;
     }
-
-    @GetMapping("/users:excluding-logged-in-user")
-    @ResponseStatus(HttpStatus.OK)
-    public List<User> getAllUserExcludingCurrentLoggedInUser(
-            Principal principal,
-            @RequestParam int pageNumber,
-            @RequestParam int pageSize
-    ) {
-        List<User> userHolder;
-
-        userHolder = userService.getAllUserWithUserNameIsNot(
-                principal,
-                pageNumber,
-                pageSize
+    
+    @GetMapping ("/users:excluding-logged-in-user")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllUserExcludingCurrentLoggedInUser (
+            Principal principal
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<User> userDataPage;
+        
+        userDataPage = userService.getAllUserWithUserNameIsNot (
+                principal
+                , pageIndex
+                , pageSize
         );
-        return userHolder;
+        return userDataPage;
     }
 
     @GetMapping("/students:excluding-student-in-the-course")
@@ -157,7 +156,8 @@ public class UserController {
     }
 
     @GetMapping("/getStudent/{userID}")
-    public User getStudentById(@PathVariable Integer userID) {
+    @ResponseStatus(HttpStatus.OK)
+    public User getStudentById(@PathVariable int userID) {
         User user = userService.getById(userID);
         return user;
     }
@@ -250,11 +250,11 @@ public class UserController {
 //        }
 //    }
     @GetMapping("/getUsers/{userID}")
-    public Optional showAllUserByID(
-            @RequestBody User user,
-            @PathVariable int userID
-    ) {
-        Optional showUser = userService.showInfo(user, userID);
+    public User showAllUserByID(
+            @RequestBody User user
+            , @PathVariable int userID
+    ){
+        User showUser = userService.showInfo(user, userID);
         return showUser;
-    }
+    } 
 }

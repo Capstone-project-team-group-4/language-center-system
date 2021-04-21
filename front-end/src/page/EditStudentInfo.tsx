@@ -15,6 +15,7 @@ export function EditStudentInfo(): ReactElement {
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI | undefined;
     let param: any = useParams();
+    let [student, setStudent] = useState<User>(new User());
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -70,6 +71,8 @@ export function EditStudentInfo(): ReactElement {
                                     <Form
                                         noValidate={false}
                                         onSubmit={(event) => {
+
+                                            console.log("ds", event.target);
                                             updateStudent(event, param.studentID);
                                         }}
                                         className="wrapper"
@@ -175,6 +178,7 @@ export function EditStudentInfo(): ReactElement {
                                                     autoFocus={false}
                                                     name="dob"
                                                     id="dob"
+                                        
                                                     required={false}
                                                     spellCheck={false}
                                                     onChange={handleUserChange}

@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -171,19 +172,52 @@ public class RegisterForm implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (formID != null ? formID.hashCode () : 0);
+        int hash = 5;
+        hash = 17 * hash + Objects.hashCode (this.formID);
+        hash = 17 * hash + Objects.hashCode (this.userName);
+        hash = 17 * hash + Objects.hashCode (this.middleName);
+        hash = 17 * hash + Objects.hashCode (this.firstName);
+        hash = 17 * hash + Objects.hashCode (this.lastName);
+        hash = 17 * hash + Objects.hashCode (this.phoneNumber);
+        hash = 17 * hash + Objects.hashCode (this.email);
+        hash = 17 * hash + Objects.hashCode (this.password);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RegisterForm)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        RegisterForm other = (RegisterForm) object;
-        if ((this.formID == null && other.formID != null) || (this.formID != null && !this.formID.equals (other.formID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final RegisterForm other = (RegisterForm) obj;
+        if (!Objects.equals (this.userName, other.userName)){
+            return false;
+        }
+        if (!Objects.equals (this.middleName, other.middleName)){
+            return false;
+        }
+        if (!Objects.equals (this.firstName, other.firstName)){
+            return false;
+        }
+        if (!Objects.equals (this.lastName, other.lastName)){
+            return false;
+        }
+        if (!Objects.equals (this.phoneNumber, other.phoneNumber)){
+            return false;
+        }
+        if (!Objects.equals (this.email, other.email)){
+            return false;
+        }
+        if (!Objects.equals (this.password, other.password)){
+            return false;
+        }
+        if (!Objects.equals (this.formID, other.formID)){
             return false;
         }
         return true;
@@ -191,7 +225,15 @@ public class RegisterForm implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.RegisterForm[ formID = " + formID + " ]";
+        return "RegisterForm {" 
+                + "formID=" + formID 
+                + ", userName=" + userName 
+                + ", middleName=" + middleName 
+                + ", firstName=" + firstName 
+                + ", lastName=" + lastName 
+                + ", phoneNumber=" + phoneNumber 
+                + ", email=" + email 
+                + ", password=[protected]"
+        + '}';
     }
-    
 }

@@ -5,6 +5,8 @@ import { TeacherSidebar } from "../../common/component/teacher_sidebar/TeacherSi
 import { TeacherSpareTimeAPI } from "../../common/service/TeacherSpareTimeAPI";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { SpareTime } from "../../model/SpareTime";
+import { BsFillTrashFill, BsPencil } from 'react-icons/bs';
 
 interface TeacherSpareTimePageProps {
   modalDialog: ReactElement;
@@ -16,6 +18,8 @@ export function TeacherSpareTimePage(
   let sprareTimeAPI: TeacherSpareTimeAPI | undefined;
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [listSpareTime, setListSpareTime] = useState<SpareTime[]>([]);
+
   let history = useHistory();
 
   useEffect(() => {
@@ -26,10 +30,11 @@ export function TeacherSpareTimePage(
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
     sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize).then((res) => {
-      console.log("res", res);
+      setListSpareTime(res.pageDataHolder);
     });
   }
 
+  console.log("11111", listSpareTime);
   return (
     <Container id="AdminSpareTimePage">
       {props.modalDialog}
@@ -58,30 +63,57 @@ export function TeacherSpareTimePage(
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Username</th>
+                      <th>Teacher Name</th>
+                      <th>Course</th>
+                      <th>Slot</th>
+                      <th>Status</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Larry the Bird</td>
-                      <td>@twitter</td>
-                      <td>@fat</td>
-                    </tr>
+                    {listSpareTime.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{item.spareTimeID}</td>
+                          <td>{item.userID.userName}</td>
+                          <td>
+                            {item.courseTypeList.map((courseType, i) => {
+                              return (
+                                <Button variant="outline-info" key={i}>
+                                  {courseType.typeName}
+                                </Button>
+                              );
+                            })}
+                          </td>
+
+                          <td>
+                            {item.slotList.map((slot, i) => {
+                              return (
+                                <Button variant="outline-danger" key={i}>
+                                  {slot.slotName}
+                                </Button>
+                              );
+                            })}
+                          </td>
+                          <td>
+                            {item.status === 2 && "APPROVED"}
+                            {item.status === 3 && "REJECTED"}
+                            {item.status === 1 && (
+                              <div>
+                                <Button variant="success mr-2">Approve</Button>
+                                <Button variant="warning">Reject</Button>
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            <Button variant="primary mr-2">
+                              <BsPencil />
+                            </Button>
+                            <Button variant="danger"><BsFillTrashFill /></Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

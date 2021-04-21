@@ -6,6 +6,7 @@
 package com.PhanLam.backend.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,31 +99,6 @@ public class Address implements Serializable {
         this.userID = userID;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (addressID != null ? addressID.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Address)) {
-            return false;
-        }
-        Address other = (Address) object;
-        if ((this.addressID == null && other.addressID != null) || (this.addressID != null && !this.addressID.equals(other.addressID))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.PhanLam.backend.model.Address[ addressID=" + addressID + " ]";
-    }
-
     public String getCity (){
         return city;
     }
@@ -169,6 +145,73 @@ public class Address implements Serializable {
 
     public void setCountry (String country){
         this.country = country;
+    }
+
+    @Override
+    public int hashCode (){
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode (this.addressID);
+        hash = 67 * hash + Objects.hashCode (this.userID);
+        hash = 67 * hash + Objects.hashCode (this.city);
+        hash = 67 * hash + Objects.hashCode (this.district);
+        hash = 67 * hash + Objects.hashCode (this.ward);
+        hash = 67 * hash + Objects.hashCode (this.street);
+        hash = 67 * hash + Objects.hashCode (this.apartmentNumber);
+        hash = 67 * hash + Objects.hashCode (this.country);
+        return hash;
+    }
+
+    @Override
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
+            return false;
+        }
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Address other = (Address) obj;
+        if (!Objects.equals (this.city, other.city)){
+            return false;
+        }
+        if (!Objects.equals (this.district, other.district)){
+            return false;
+        }
+        if (!Objects.equals (this.ward, other.ward)){
+            return false;
+        }
+        if (!Objects.equals (this.street, other.street)){
+            return false;
+        }
+        if (!Objects.equals (this.apartmentNumber, other.apartmentNumber)){
+            return false;
+        }
+        if (!Objects.equals (this.country, other.country)){
+            return false;
+        }
+        if (!Objects.equals (this.addressID, other.addressID)){
+            return false;
+        }
+        if (!Objects.equals (this.userID, other.userID)){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString (){
+        return "Address {" 
+                + "addressID=" + addressID 
+                + ", userID=" + userID 
+                + ", city=" + city 
+                + ", district=" + district 
+                + ", ward=" + ward 
+                + ", street=" + street 
+                + ", apartmentNumber=" + apartmentNumber 
+                + ", country=" + country 
+        + '}';
     }
     
 }

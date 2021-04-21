@@ -360,7 +360,7 @@ export class UserAPI {
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
         try {
-            return axios.put(`http://54.169.178.48/:8081/editInfo/${userID}`, user);
+            return axios.put(`http://localhost:8080/editInfo/${userID}`, user);
         }
         catch (error) {
             console.error(error.toJSON());
@@ -393,7 +393,7 @@ export class UserAPI {
         user: User, userID: number
     ): Promise<AxiosResponse<unknown>> {
         try {
-            return axios.put(`http://54.169.178.48:8081/editInfo/${userID}`, user);
+            return axios.put(`http://localhost:8080/editInfo/${userID}`, user);
         }
         catch (error) {
             console.error(error.toJSON());

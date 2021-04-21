@@ -7,13 +7,11 @@ package com.PhanLam.backend.controller;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import java.util.List;
-import java.util.Optional;
 import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.http.HttpStatus;

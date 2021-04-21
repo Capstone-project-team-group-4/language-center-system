@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { DataPage } from "../../App";
 import { LoggedInUser } from "../../model/LoggedInUser";
-import { User } from "../../model/User";
+import { SpareTime } from "../../model/SpareTime";
 import { AxiosInstanceGet } from "./AxiosInstanceGet";
 import { ErrorHandle } from "./ErrorHandle";
 import { TypeGuard } from "./TypeGuard";
@@ -17,8 +17,8 @@ export class TeacherSpareTimeAPI {
   private axiosError: AxiosError<unknown> | undefined;
   private errorHandler: ErrorHandle;
   private requestParameterHolder: URLSearchParams | undefined;
-  private userHolder: User[] | undefined;
-  private userDataPage: DataPage<any> | undefined;
+  private spareTimeHolder: SpareTime[] | undefined;
+  private spareTimeDataPage: DataPage<SpareTime> | undefined;
 
   public constructor() {
     this.axiosInstanceGetter = new AxiosInstanceGet();
@@ -37,16 +37,15 @@ export class TeacherSpareTimeAPI {
     try {
       const serverResponse = await this.axiosInstance.get<unknown>(
         "/spare-time-registers",
-        { params: {pageNumber, pageSize} }
+        { params: { pageNumber, pageSize } }
       );
-      console.log("11111", serverResponse);
-    //   if (this.typeGuardian.isDataPage<User>(this.serverResponse.data)) {
-    //     this.userDataPage = this.serverResponse.data;
-    //     return Promise.resolve<DataPage<User>>(this.userDataPage);
-    //   } else {
-    //     // throw new Error("This server response is not valid !");
-    //     alert("Err");
-    //   }
+        if (this.typeGuardian.isDataPage<SpareTime>(serverResponse?.data)) {
+          this.spareTimeDataPage = serverResponse?.data;
+          if(this.spareTimeDataPage)
+          return Promise.resolve<DataPage<SpareTime>> (this.spareTimeDataPage);
+        } else {
+          throw new Error("This server response is not valid !");
+        }
     } catch (apiError: unknown) {
       try {
         this.axiosError = await this.errorHandler.handleApiError(apiError);

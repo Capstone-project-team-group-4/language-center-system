@@ -63,7 +63,7 @@ export function StudentSidebar(): ReactElement {
                 id="SideBar"
                 className={`Side_Bar_Z_Index ${sideBarActivated}`}
             >
-                <span style={{color:'white', textAlign:'justify'}}>Hi {user.userName}!</span>
+                <span style={{color:'white', textAlign:'start'}}>Hi {user.userName}!</span>
                 <ListGroup >
                     <ListGroup.Item action={true} 
                                     as = {Link}
@@ -93,7 +93,7 @@ export function StudentSidebar(): ReactElement {
                                                 }
                                                 style={{backgroundColor: "#242424",
                                                         borderColor: "#242424",
-                                                        padding: "0px 30px 0px 30px",
+                                                        padding: "0 30 0 30",
                                                         
                                                         }}
                                             >

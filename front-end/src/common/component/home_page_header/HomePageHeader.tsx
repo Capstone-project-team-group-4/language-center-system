@@ -93,8 +93,8 @@ export function HomePageHeader (): ReactElement {
                         <Nav.Link as = {Link} to = "/log-in-page">
                             Log in
                         </Nav.Link>
-                        <Nav.Link as = {Link} to = "/log-in-page">
-                            About us
+                        <Nav.Link as = {Link} to = "/contact-us">
+                            Contact us
                         </Nav.Link>
                     </Nav>
                     <Form className = "d-md-inline-flex">

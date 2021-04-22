@@ -1,5 +1,3 @@
-import { LoggedInUser } from "../../model/LoggedInUser";
-
 
 export class LocalStorageService{
     

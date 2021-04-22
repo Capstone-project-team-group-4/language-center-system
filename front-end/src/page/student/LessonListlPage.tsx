@@ -41,7 +41,7 @@ export function LessonListPage(
         ).catch((err) => {
             console.log(err);
         });
-    }, []);
+    }, [param.courseID]);
 
     return (
         <Container id="CourseDetailPage">

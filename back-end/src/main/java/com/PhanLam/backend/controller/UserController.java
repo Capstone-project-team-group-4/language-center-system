@@ -171,4 +171,10 @@ public class UserController {
         User user = userService.getProfileByUserName(userName);
         return user;
     }
+    
+    @PutMapping("/updateMyProfile")
+    @ResponseStatus(HttpStatus.OK)
+    public User updateProfile(@RequestBody User user, @RequestParam(value = "userName") String userName) {
+        return userService.updateProfile(user, userName);
+    }
 }

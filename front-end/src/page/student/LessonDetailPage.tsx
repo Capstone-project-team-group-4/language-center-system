@@ -76,7 +76,7 @@ export function LessonDetailPage(
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <Row style={{backgroundColor: 'white', borderRadius:10 + 'px'}}>
-                                <Col sm={9}>
+                                <Col sm={8}>
                                     <ReactPlayer
                                         controls
                                         url={lesson.contentURI}

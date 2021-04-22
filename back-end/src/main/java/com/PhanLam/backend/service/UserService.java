@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * UserService.java
+ *
+ * All Rights Reserved
+ * Copyright (c) 2021 FPT University
  */
 package com.PhanLam.backend.service;
 
@@ -32,19 +33,43 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * UserService class <br>
+ * 
+ * <pre>
+ * Service class for managing User objects
+ * </pre>
+ * 
  * @author roboc
  * @author Phan Lam
+ * @version 1.0
  */
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserService {
     
-    // Variables declaration:
+    
+    /**
+     * Variables declaration:
+     * - userRepository
+     * - courseRepository
+     * - queryFactory
+     */
     private UserRepository userRepository;
     private CourseRepository courseRepository;
     private JPAQueryFactory queryFactory; 
-
+    
+    /**
+     * Constructor<br>
+     * 
+     * <pre>
+     * This constructs a UserService with a specified 
+     * userRepository, courseRepository and entityManager
+     * </pre>
+     * 
+     * @param userRepository UserRepository
+     * @param courseRepository CourseRepository
+     * @param entityManager  EntityManager
+     */
     public UserService (
             UserRepository userRepository
             , CourseRepository courseRepository
@@ -54,7 +79,19 @@ public class UserService {
         this.courseRepository = courseRepository;
         queryFactory = new JPAQueryFactory (entityManager);
     }
-
+    
+    /**
+     * getLoggedInUser<br>
+     * 
+     * <pre>
+     * Method will get currently logged in user:
+     * - 
+     * - 
+     * </pre>
+     * 
+     * @param principal
+     * @return loggedInUser
+     */
     @Transactional (readOnly = true)
     public LoggedInUser getLoggedInUser (Principal principal){
         LoggedInUser loggedInUser;
@@ -71,6 +108,19 @@ public class UserService {
         return loggedInUser;
     }
     
+    /**
+     * getAllUserWithUserNameIsNot<br>
+     * 
+     * <pre>
+     * Method will get all users with username
+     * </pre>
+     * 
+     * @param principal 
+     * @param pageIndex
+     * @param pageSize
+     * @return userDataPage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<User> getAllUserWithUserNameIsNot (
             Principal principal
@@ -117,6 +167,19 @@ public class UserService {
         }
     }
     
+    /**
+     * getAllStudentWithCourseIDIsNot<br>
+     * 
+     * <pre>
+     * Method will get all students with 
+     * </pre>
+     * 
+     * @param courseID
+     * @param pageIndex
+     * @param pageSize
+     * @return studentDataPage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentWithCourseIDIsNot (
             int courseID
@@ -174,6 +237,19 @@ public class UserService {
         }
     }
     
+    /**
+     * getAllStudentByCourseID<br>
+     * 
+     * <pre>
+     * Method will get all students by course id
+     * </pre>
+     * 
+     * @param courseID
+     * @param pageIndex
+     * @param pageSize
+     * @return studentDataPage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID
@@ -228,6 +304,18 @@ public class UserService {
         }
     }
     
+    /**
+     * disableUserByID<br>
+     * 
+     * <pre>
+     * Method will disable user by user id
+     * </pre>
+     * 
+     * @param userID
+     * @param principal 
+     * @throws NotFoundException
+     * @throws InvalidRequestArgumentException
+     */
     public void disableUserByID (int userID, Principal principal){
         Optional <User> nullableUser;
         User user;
@@ -251,6 +339,15 @@ public class UserService {
         }
     }
     
+    /**
+     * enableUserByID<br>
+     * 
+     * <pre>
+     * Method will enable user by user id
+     * </pre>
+     * 
+     * @param userID 
+     */
     public void enableUserByID (int userID){
         Optional <User> nullableUser;
         User user;
@@ -265,6 +362,16 @@ public class UserService {
         }
     }
     
+    /**
+     * deletaUserByID<br>
+     * 
+     * <pre>
+     * Method will delete user by user id
+     * </pre>
+     * 
+     * @param userID
+     * @param principal 
+     */
     public void deleteUserByID (int userID, Principal principal){
         Optional <User> nullableUser;
         User user;
@@ -292,6 +399,17 @@ public class UserService {
         return userRepository.findAll();
     }
     
+    /**
+     * updateStudent<br>
+     * 
+     * <pre>
+     * Method will update infor of user
+     * </pre>
+     * 
+     * @param user
+     * @param userID
+     * @return user
+     */
     public User updateStudent(User user, int userID) {
         User updatedUser = new User();
         updatedUser.setUserID(userID);
@@ -312,10 +430,31 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
     
+    /**
+     * getById<br>
+     * 
+     * <pre>
+     * Method will 
+     * </pre>
+     * 
+     * @param userID
+     * @return user
+     */
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
     }
     
+    /**
+     * showInfo<br>
+     * 
+     * <pre>
+     * Method will get information of user by id
+     * </pre>
+     * 
+     * @param user
+     * @param userID
+     * @return user
+     */
     public User showInfo(User user, int userID) {
         User showUser = new User();
         showUser.getUserID();
@@ -334,7 +473,37 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow();
     }
     
+    /**
+     * getProfileByUserName<br>
+     * 
+     * <pre>
+     * Method will get information of user data by username
+     * </pre>
+     * 
+     * @param userName
+     * @return user
+     */
     public User getProfileByUserName(String userName){
         return userRepository.findByUserName(userName).orElseThrow();
+    }
+    
+    public User updateProfile(User user, String userName) {
+        User updatedUser = new User();
+        updatedUser.setUserID(user.getUserID());
+        updatedUser.setUserName(user.getUserName());
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setMiddleName(user.getMiddleName());
+        updatedUser.setLastName(user.getLastName());
+        updatedUser.setEmail(user.getEmail());
+        updatedUser.setDob(user.getDob());
+        updatedUser.setPhoneNumber(user.getPhoneNumber());
+        updatedUser.setGender(user.getGender());
+        updatedUser.setJob(user.getJob());
+        updatedUser.setPhotoURI(user.getPhotoURI());
+        updatedUser.setSelfDescription(user.getSelfDescription());
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setAccountStatus(user.getAccountStatus());
+        updatedUser.setDateCreated(user.getDateCreated());
+        return userRepository.save(updatedUser);
     }
 }

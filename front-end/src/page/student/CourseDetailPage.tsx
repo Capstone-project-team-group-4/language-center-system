@@ -6,6 +6,7 @@ import { StudentSidebar } from "../../common/component/student_sidebar/StudentSi
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { Course } from "../../model/Course";
 
+
 interface StudentDashboardPageProps {
     modalDialog: ReactElement;
 }
@@ -17,6 +18,11 @@ export function CourseDetailPage(
     let param: any = useParams();
     let [course, setCourse] = useState<Course>(new Course());
 
+    const options = {
+        style:"currency",
+        currency: "VND"
+    }
+    
     useEffect(() => {
         courseAPI = new CourseAPI();
         courseAPI.getOneCourse(param.courseID).then(
@@ -78,8 +84,8 @@ export function CourseDetailPage(
                                         <td>{course.courseLevel.levelName}</td>
                                     </tr>
                                     <tr>
-                                        <td>Tuition Fee:</td>
-                                        <td>{course.tuitionFee}</td>
+                                        <td>Tuition Fee:</td>                     
+                                        <td>{course.tuitionFee.toLocaleString("de-DE", options)}</td>
                                     </tr>
                                 </tbody>
                             </Table>

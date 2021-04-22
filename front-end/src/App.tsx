@@ -57,6 +57,9 @@ import {
 import { LessonListPage } from './page/student/LessonListlPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { ProfilePage } from './page/student/ProfilePage';
+import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
+import { ContactUs } from './page/contact_us_page/ContactPage';
+import { Header } from './common/component/home_page_header/Header';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -180,6 +183,10 @@ export function App(): ReactElement {
         <HomePageHeader />
         <HomePage modalDialog={modalDialog} />
       </Route>
+      <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route>
 
       <Route path="/sign-up-page">
         <SignUpPage
@@ -196,6 +203,13 @@ export function App(): ReactElement {
           setIsAuthenticated = {setIsAuthenticated}
           setLoggedInUser = {setLoggedInUser}
           typeGuardian = {typeGuardian}
+        />
+      </Route>
+
+      <Route path="/contact-us">
+        <Header />
+        <ContactUs
+          modalDialog = {modalDialog}
         />
       </Route>
 

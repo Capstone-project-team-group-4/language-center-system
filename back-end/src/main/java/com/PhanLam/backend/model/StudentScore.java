@@ -6,6 +6,7 @@
 package com.PhanLam.backend.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -124,19 +125,44 @@ public class StudentScore implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (scoreID != null ? scoreID.hashCode () : 0);
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode (this.scoreID);
+        hash = 67 * hash + (int) (Double.doubleToLongBits (this.score) ^ (Double.doubleToLongBits (this.score) >>> 32));
+        hash = 67 * hash + Objects.hashCode (this.status);
+        hash = 67 * hash + Objects.hashCode (this.examID);
+        hash = 67 * hash + Objects.hashCode (this.homeWorkID);
+        hash = 67 * hash + Objects.hashCode (this.userID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof StudentScore)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        StudentScore other = (StudentScore) object;
-        if ((this.scoreID == null && other.scoreID != null) || (this.scoreID != null && !this.scoreID.equals (other.scoreID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final StudentScore other = (StudentScore) obj;
+        if (Double.doubleToLongBits (this.score) != Double.doubleToLongBits (other.score)){
+            return false;
+        }
+        if (!Objects.equals (this.status, other.status)){
+            return false;
+        }
+        if (!Objects.equals (this.scoreID, other.scoreID)){
+            return false;
+        }
+        if (!Objects.equals (this.examID, other.examID)){
+            return false;
+        }
+        if (!Objects.equals (this.homeWorkID, other.homeWorkID)){
+            return false;
+        }
+        if (!Objects.equals (this.userID, other.userID)){
             return false;
         }
         return true;
@@ -144,7 +170,13 @@ public class StudentScore implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.StudentScore[ scoreID=" + scoreID + " ]";
+        return "StudentScore {" 
+                + "scoreID=" + scoreID 
+                + ", score=" + score 
+                + ", status=" + status 
+                + ", examID=" + examID 
+                + ", homeWorkID=" + homeWorkID 
+                + ", userID=" + userID 
+        + '}';
     }
-    
 }

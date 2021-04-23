@@ -18,12 +18,12 @@ import com.PhanLam.backend.model.QRole;
 import com.PhanLam.backend.model.QUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.security.Principal;
 import java.util.Optional;
-import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -56,6 +56,7 @@ public class UserService {
      */
     private UserRepository userRepository;
     private CourseRepository courseRepository;
+    private QueryFactoryGet queryFactoryGetter;
     private JPAQueryFactory queryFactory; 
     
     /**
@@ -73,11 +74,11 @@ public class UserService {
     public UserService (
             UserRepository userRepository
             , CourseRepository courseRepository
-            , EntityManager entityManager
+            , QueryFactoryGet queryFactoryGetter
     ){
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
-        queryFactory = new JPAQueryFactory (entityManager);
+        this.queryFactoryGetter = queryFactoryGetter;
     }
     
     /**
@@ -202,6 +203,7 @@ public class UserService {
                 student = new QUser ("student");
                 role = QRole.role;
                 course = QCourse.course;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student).distinct ()
                             .leftJoin (student.roleList, role)
@@ -272,6 +274,7 @@ public class UserService {
                 student = new QUser ("student");
                 role = QRole.role;
                 course = QCourse.course;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student).distinct ()
                             .leftJoin (student.roleList, role)

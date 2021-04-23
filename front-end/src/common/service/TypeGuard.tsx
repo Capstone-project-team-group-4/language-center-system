@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 // Import package members section:
 import { AxiosError, AxiosResponse } from "axios";
 import { DataPage } from "../../App";

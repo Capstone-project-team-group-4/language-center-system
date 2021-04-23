@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -101,27 +102,44 @@ public class Role implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (roleID != null ? roleID.hashCode() : 0);
+    public int hashCode (){
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode (this.roleID);
+        hash = 13 * hash + Objects.hashCode (this.roleName);
+        hash = 13 * hash + Objects.hashCode (this.userList);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Role)) {
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        Role other = (Role) object;
-        if ((this.roleID == null && other.roleID != null) || (this.roleID != null && !this.roleID.equals(other.roleID))) {
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Role other = (Role) obj;
+        if (!Objects.equals (this.roleName, other.roleName)){
+            return false;
+        }
+        if (!Objects.equals (this.roleID, other.roleID)){
+            return false;
+        }
+        if (!Objects.equals (this.userList, other.userList)){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
-        return "com.PhanLam.backend.model.Role[ roleID=" + roleID + " ]";
-    } 
+    public String toString (){
+        return "Role {" 
+                + "roleID=" + roleID 
+                + ", roleName=" + roleName 
+                + ", userList=" + userList 
+        + '}';
+    }
 }

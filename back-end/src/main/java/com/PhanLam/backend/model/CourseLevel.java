@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -118,19 +119,36 @@ public class CourseLevel implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (levelID != null ? levelID.hashCode () : 0);
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode (this.levelID);
+        hash = 23 * hash + Objects.hashCode (this.levelName);
+        hash = 23 * hash + Objects.hashCode (this.courseList);
+        hash = 23 * hash + Objects.hashCode (this.courseType);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CourseLevel)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        CourseLevel other = (CourseLevel) object;
-        if ((this.levelID == null && other.levelID != null) || (this.levelID != null && !this.levelID.equals (other.levelID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final CourseLevel other = (CourseLevel) obj;
+        if (!Objects.equals (this.levelName, other.levelName)){
+            return false;
+        }
+        if (!Objects.equals (this.levelID, other.levelID)){
+            return false;
+        }
+        if (!Objects.equals (this.courseList, other.courseList)){
+            return false;
+        }
+        if (!Objects.equals (this.courseType, other.courseType)){
             return false;
         }
         return true;
@@ -138,7 +156,11 @@ public class CourseLevel implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.CourseLevel[ levelID=" + levelID + " ]";
+        return "CourseLevel {" 
+                + "levelID=" + levelID 
+                + ", levelName=" + levelName 
+                + ", courseList=" + courseList 
+                + ", courseType=" + courseType 
+        + '}';
     }
-    
 }

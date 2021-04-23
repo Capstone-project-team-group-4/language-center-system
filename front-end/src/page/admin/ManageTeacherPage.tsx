@@ -14,7 +14,6 @@ import './ManageTeacherPage.css';
 import {
     Pagination
 } from "react-bootstrap";
-import { EditStudentInfo } from "../EditStudentInfo";
 
 export function ManageTeacherPage(): ReactElement {
 
@@ -150,13 +149,13 @@ export function ManageTeacherPage(): ReactElement {
                                                 <td className="text-center text-nowrap" id="action">
                                                     <Link to={"/user_detail/" + item.userID}>
                                                         <button type="button" className="btn btn-outline-info">
-                                                            <span className="fa fa-pencil mr-5">
+                                                            <span className="fa fa-pencil mr-5 text-center text-nowrap">
                                                                 Detail
                                                     </span>
                                                         </button>
                                                     </Link>
                                                     &nbsp;
-                                                    <Link to={"/editStudentInfo/" + item.userID}>
+                                                    <Link to={"/admin-console/editStudentInfo/" + item.userID}>
                                                     <button type="button" className="btn btn-outline-primary">
                                                         <span className="fa fa-pencil mr-5">
                                                             Edit

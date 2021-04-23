@@ -25,7 +25,7 @@ function renderUserTable (
             </tr>
             <tr>
                 <th>Phone</th>
-                <td>{user.phoneNumber.toString()}</td>
+                <td>{user.phoneNumber}</td>
             </tr>
             <tr>
                 <th>DoB</th>

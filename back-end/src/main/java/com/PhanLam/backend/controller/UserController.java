@@ -162,30 +162,6 @@ public class UserController {
         return user;
     }
 
-//    public boolean checkRoleTeacher(int userID) {
-//        Optional<User> nullableUser;
-//        User user;
-//        List<Role> roleHolder;
-//        int i;
-//        Role role;
-//        boolean thisUserIsStudent;
-//        nullableUser = userRepository.findById(userID);
-//        if (nullableUser.isPresent() == false) {
-//            throw new NotFoundException("Teacher");
-//        } else {
-//            user = nullableUser.get();
-//            roleHolder = user.getRoleList();
-//            thisUserIsStudent = false;
-//            for (i = 0; i < roleHolder.size(); i++) {
-//                role = roleHolder.get(i);
-//                if (role.getRoleName().equals("ROLE_TEACHER")) {
-//                    thisUserIsStudent = true;
-//                    break;
-//                }
-//            }
-//        }
-//        return true;
-//    }
     @GetMapping("/getTeacher")
     public List<User> listTeacher() {
         Role teacherRole = new Role(3, "ROLE_TEACHER");
@@ -193,62 +169,16 @@ public class UserController {
         List<User> userList = userRepository.findAll();
         for (User user : userList) {
             List<Role> roleList = user.getRoleList();
-            if (roleList.contains(teacherRole)) {
-                teacherUserList.add(user);
+            for (Role role : roleList) {
+                if (role.getRoleID() == 3) {
+                    teacherUserList.add(user);
+                    break;
+                }
             }
         }
         return teacherUserList;
     }
     
-//    @GetMapping("/getTeacherSize")
-//    public int listTeacherSize() {
-//        Role teacherRole = new Role(3, "ROLE_TEACHER");
-//        List<User> teacherUserList = new ArrayList<>();
-//        List<User> userList = userRepository.findAll();
-//        for (User user : userList) {
-//            List<Role> roleList = user.getRoleList();
-//            if (roleList.contains(teacherRole)) {
-//                teacherUserList.add(user);
-//            }
-//        }
-//        return teacherUserList.size();
-//    }
-
-    //        Optional<User> nullableUser;
-//        List listUsers = new ArrayList<>();
-//        User user = new User();
-//        int userID;
-//        userID = user.getUserID();
-//        List<Role> roleHolder;
-//        int i;
-//        Role role;
-//        boolean thisUserIsTeacher;
-//        nullableUser = userRepository.findUserById(userID);
-//        if (nullableUser.isPresent() == false) {
-//            throw new NotFoundException("Teacher");
-//        } else {
-//            user = nullableUser.get();
-//            roleHolder = user.getRoleList();
-//            thisUserIsTeacher = false;
-//            for (i = 0; i < roleHolder.size(); i++) {
-//                role = roleHolder.get(i);
-//                if (role.getRoleName().equals("ROLE_TEACHER")) {
-//                    thisUserIsTeacher = true;
-//                    break;
-//                }
-//            }
-//            if (thisUserIsTeacher == false) {
-//                throw new InvalidRequestArgumentException(
-//                        "This user is not a teacher." + System.lineSeparator()
-//                        + "Parameter name: userID"
-//                );
-//            } else {
-//                listUsers = userService.getAll();
-//            }
-//
-//            return listUsers;
-//        }
-//    }
     @GetMapping("/getUsers/{userID}")
     public User showAllUserByID(
             @RequestBody User user

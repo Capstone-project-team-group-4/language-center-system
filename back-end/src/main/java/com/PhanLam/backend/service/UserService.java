@@ -17,12 +17,13 @@ import com.PhanLam.backend.model.QRole;
 import com.PhanLam.backend.model.QUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.security.Principal;
 import java.util.Optional;
-import javax.persistence.EntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
@@ -42,16 +43,17 @@ public class UserService {
     // Variables declaration:
     private UserRepository userRepository;
     private CourseRepository courseRepository;
+    private QueryFactoryGet queryFactoryGetter;
     private JPAQueryFactory queryFactory; 
 
     public UserService (
             UserRepository userRepository
             , CourseRepository courseRepository
-            , EntityManager entityManager
+            , QueryFactoryGet queryFactoryGetter
     ){
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
-        queryFactory = new JPAQueryFactory (entityManager);
+        this.queryFactoryGetter = queryFactoryGetter;
     }
 
     @Transactional (readOnly = true)
@@ -71,9 +73,9 @@ public class UserService {
     }
     
     @Transactional (readOnly = true)
-    public List<User> getAllUserWithUserNameIsNot (
+    public DataPage<User> getAllUserWithUserNameIsNot (
             Principal principal
-            , int pageNumber
+            , int pageIndex
             , int pageSize
     ){
         String userName;
@@ -81,31 +83,37 @@ public class UserService {
         Sort sortInformation;
         PageRequest pagingInformation;
         List<User> userHolder;
+        Page<User> userPage;
+        long totalRowCount;
+        DataPage<User> userDataPage;
         
-        if ((pageNumber >= 0) && (pageSize >= 0)){
+        if ((pageIndex >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
             userSortInformation = Sort.sort (User.class);
             sortInformation 
                 = userSortInformation.by (User::getFirstName).ascending ()
-                .and (userSortInformation.by (User::getLastName)
-                        .ascending ()
-                );
+                    .and (userSortInformation.by (User::getLastName)
+                            .ascending ()
+                    );
             pagingInformation = PageRequest.of (
-                    pageNumber
+                    pageIndex
                     , pageSize
                     , sortInformation
             );
-            userHolder = userRepository.findAllByUserNameIsNot (
+            userPage = userRepository.findAllByUserNameIsNot (
                     userName
                     , pagingInformation
             );
-            return userHolder;
+            totalRowCount = userPage.getTotalElements ();
+            userHolder = userPage.getContent ();
+            userDataPage = new DataPage<> (totalRowCount, userHolder);
+            return userDataPage;
         }
         else {
             throw new InvalidRequestArgumentException (
-                    "The page number and page size number parameters "
+                    "The page index number and page size number parameters "
                     + "cannot be less than zero." + System.lineSeparator () 
-                    + "Parameter name: pageNumber, pageSize"
+                    + "Parameter name: pageIndex, pageSize"
             );
         }
     }
@@ -134,13 +142,17 @@ public class UserService {
                 student = new QUser ("student");
                 role = QRole.role;
                 course = QCourse.course;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student).distinct ()
                             .leftJoin (student.roleList, role)
                             .leftJoin (student.courseList, course)
                         .where (
                                 role.roleName.eq ("ROLE_STUDENT")
-                                .and (course.courseID.ne (courseID))
+                                .and (
+                                        course.courseID.ne (courseID)
+                                        .or (course.courseID.isNull ())
+                                )
                         )
                         .orderBy (
                                 student.firstName.asc ()
@@ -230,6 +242,7 @@ public class UserService {
                 student = new QUser ("student");
                 role = QRole.role;
                 course = QCourse.course;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student).distinct ()
                             .leftJoin (student.roleList, role)
@@ -329,6 +342,7 @@ public class UserService {
         updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setMiddleName(user.getMiddleName());
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setDob(user.getDob());
@@ -347,7 +361,7 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow();
     }
     
-    public Optional<User> showInfo(User user, int userID) {
+    public User showInfo(User user, int userID) {
         User showUser = new User();
         showUser.getUserID();
         showUser.getUserName();
@@ -362,6 +376,6 @@ public class UserService {
         showUser.getSelfDescription();
         showUser.getPassword();
         showUser.getAccountStatus();
-        return userRepository.findById(userID);
+        return userRepository.findById(userID).orElseThrow();
     }
 }

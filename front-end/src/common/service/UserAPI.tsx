@@ -67,20 +67,20 @@ export class UserAPI {
     }
 
     public async getAllUserExcludingCurrentLoggedInUser (
-            pageNumber: number
+            pageIndex: number
             , pageSize: number
-    ): Promise<User[]> {
+    ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("pageNumber", pageNumber.toString ());
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/users:excluding-logged-in-user"
                     , {params: this.requestParameterHolder}
             );
-            if (this.typeGuardian.isUserArray (this.serverResponse.data)){
-                this.userHolder = this.serverResponse.data;
-                return Promise.resolve<User[]> (this.userHolder);
+            if (this.typeGuardian.isDataPage<User> (this.serverResponse.data)){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
             }
             else {
                 throw new Error ("This server response is not valid !");
@@ -140,12 +140,11 @@ export class UserAPI {
             , pageSize: number
     ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
-        this.requestParameterHolder.set ("courseID", courseID.toString ());
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
-                    "/students:are-in-the-course"
+                    `/courses/${courseID}/students`
                     , {params: this.requestParameterHolder}
             );
             if (this.typeGuardian.isDataPage<User> (
@@ -332,8 +331,8 @@ export class UserAPI {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
-            this.serverResponse = await this.axiosInstance.get (
-                    `/getUsers/${userID}`
+            this.serverResponse = await this.axiosInstance.get(
+                `/getStudent/${userID}`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){

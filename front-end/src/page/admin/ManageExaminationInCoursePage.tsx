@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { 
     ChangeEvent
     , FormEvent
     , MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -18,6 +20,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeConvert } from "../../common/service/TypeConvert";
 import { TypeGuard } from "../../common/service/TypeGuard";
@@ -30,6 +33,8 @@ interface ManageExaminationInCoursePageUrlParameter {
 interface ManageExaminationInCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
+    typeConverter: TypeConvert;  
 }
 
 export function ManageExaminationInCoursePage (
@@ -46,14 +51,11 @@ export function ManageExaminationInCoursePage (
     let [formattedMinStartTime, setFormattedMinStartTime] 
         = useState<string> ("");
     let [formattedStartTime, setFormattedStartTime] = useState<string> ("");
-    let typeConverter: TypeConvert;
     let courseID 
         = useParams<ManageExaminationInCoursePageUrlParameter> ().courseID;
-    let examAPI: ExaminationAPI;
-    let typeGuardian: TypeGuard;
     let examDataPage: DataPage<Examination> | undefined;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let [examHolder, setExamHolder] 
         = useState<Examination[]> (new Array<Examination> ());
@@ -71,10 +73,9 @@ export function ManageExaminationInCoursePage (
     let [showEditExamForm, setShowEditExamForm] = useState<boolean> (false);
     let newExam: Examination | undefined;
     let [pendingExamID, setPendingExamID] = useState<number> (0);
+    let examTable: ReactNode;
 
-    typeConverter = new TypeConvert ();
-    examAPI = new ExaminationAPI ();
-    typeGuardian = new TypeGuard ();
+    let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
 
     useEffect (
         () => {
@@ -86,7 +87,7 @@ export function ManageExaminationInCoursePage (
             minStartTime = new Date ();
             minStartTime.setDate (minStartTime.getDate () + 7);
             setFormattedMinStartTime (
-                    typeConverter.convertDateTimeToString (minStartTime)
+                    props.typeConverter.convertDateTimeToString (minStartTime)
             );
         }
         , []
@@ -96,7 +97,7 @@ export function ManageExaminationInCoursePage (
         newExam = new Examination ();  
         setExam (newExam);
         setFormattedStartTime (
-                typeConverter.convertDateTimeToString (
+                props.typeConverter.convertDateTimeToString (
                         newExam.startTime
                 )
         );
@@ -148,7 +149,7 @@ export function ManageExaminationInCoursePage (
                 setExam (examSample);
                 rawDate = new Date (examSample.startTime);
                 setFormattedStartTime (
-                        typeConverter.convertDateTimeToString (
+                        props.typeConverter.convertDateTimeToString (
                                 rawDate
                         )
                 );
@@ -180,7 +181,7 @@ export function ManageExaminationInCoursePage (
             case "startTimePicker":
                 updatedExam.startTime = new Date (htmlElement.value);
                 setFormattedStartTime (
-                        typeConverter.convertDateTimeToString (
+                        props.typeConverter.convertDateTimeToString (
                                 updatedExam.startTime
                         )
                 );
@@ -214,7 +215,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -248,7 +249,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -287,7 +288,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                         `${apiError.code}: ${apiError.name}`
@@ -316,7 +317,7 @@ export function ManageExaminationInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -346,6 +347,47 @@ export function ManageExaminationInCoursePage (
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadExamTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (examHolder.length === 0){
+        examTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no exams in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        examTable =
+            examHolder.map (
+                (
+                        exam
+                        , index
+                ) => renderExamTable (
+                        exam
+                        , index
+                        , openViewDetailDialog
+                        , openEditExamForm
+                        , handleDeleteExamInCourse
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -366,7 +408,7 @@ export function ManageExaminationInCoursePage (
                         onSubmit = {
                             (event) => {
                                 createExamInCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -662,7 +704,7 @@ export function ManageExaminationInCoursePage (
                         onSubmit = {
                             (event) => {
                                 editExamInCourse (event).catch (
-                                        (error: unknown) => {
+                                        (error) => {
                                             console.error (error);
                                         }
                                 );
@@ -864,20 +906,21 @@ export function ManageExaminationInCoursePage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {examHolder.map (
-                                            (
-                                                    exam
-                                                    , index
-                                            ) => renderExamTable (
-                                                    exam
-                                                    , index
-                                                    , openViewDetailDialog
-                                                    , openEditExamForm
-                                                    , handleDeleteExamInCourse
-                                            )
-                                        )}
+                                        {examTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>

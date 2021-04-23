@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -63,7 +64,7 @@ public class MultipleChoiceQuestion implements Serializable {
             , referencedColumnName = "UserID"
             , nullable = false
     )
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private User creator;
     
     @Basic (optional = false)
@@ -177,19 +178,48 @@ public class MultipleChoiceQuestion implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (questionID != null ? questionID.hashCode () : 0);
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode (this.questionID);
+        hash = 73 * hash + Objects.hashCode (this.content);
+        hash = 73 * hash + Objects.hashCode (this.creator);
+        hash = 73 * hash + Objects.hashCode (this.dateCreated);
+        hash = 73 * hash + Objects.hashCode (this.lastModified);
+        hash = 73 * hash + Objects.hashCode (this.examinationList);
+        hash = 73 * hash + Objects.hashCode (this.questionOptionList);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MultipleChoiceQuestion)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        MultipleChoiceQuestion other = (MultipleChoiceQuestion) object;
-        if ((this.questionID == null && other.questionID != null) || (this.questionID != null && !this.questionID.equals (other.questionID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final MultipleChoiceQuestion other = (MultipleChoiceQuestion) obj;
+        if (!Objects.equals (this.content, other.content)){
+            return false;
+        }
+        if (!Objects.equals (this.questionID, other.questionID)){
+            return false;
+        }
+        if (!Objects.equals (this.creator, other.creator)){
+            return false;
+        }
+        if (!Objects.equals (this.dateCreated, other.dateCreated)){
+            return false;
+        }
+        if (!Objects.equals (this.lastModified, other.lastModified)){
+            return false;
+        }
+        if (!Objects.equals (this.examinationList, other.examinationList)){
+            return false;
+        }
+        if (!Objects.equals (this.questionOptionList, other.questionOptionList)){
             return false;
         }
         return true;
@@ -197,7 +227,14 @@ public class MultipleChoiceQuestion implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.MultipleChoiceQuestion[ questionID=" + questionID + " ]";
+        return "MultipleChoiceQuestion {" 
+                + "questionID=" + questionID 
+                + ", content=" + content 
+                + ", creator=" + creator 
+                + ", dateCreated=" + dateCreated 
+                + ", lastModified=" + lastModified 
+                + ", examinationList=" + examinationList 
+                + ", questionOptionList=" + questionOptionList 
+        + '}';
     }
-    
 }

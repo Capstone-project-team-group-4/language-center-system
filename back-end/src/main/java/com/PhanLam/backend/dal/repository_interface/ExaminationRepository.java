@@ -38,4 +38,7 @@ public interface ExaminationRepository
     
     @Override
     public void delete (Examination exam);
+
+    @Override
+    public Page<Examination> findAll (Pageable pagingInformation);
 }

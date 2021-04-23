@@ -68,6 +68,7 @@ export class User {
 type stringTypeKey 
     = "userName" 
     | "firstName"
+	| "middleName"
     | "lastName"
     | "email"
     | "phoneNumber"

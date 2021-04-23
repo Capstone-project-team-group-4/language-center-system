@@ -62,6 +62,40 @@ public class QuizController {
         return quizDataPage;
     }
     
+    @GetMapping ("/examinations/{examID}/quizzes")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<Quiz> getAllQuizAreInTheExam (
+            @PathVariable int examID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<Quiz> quizDataPage;
+        
+        quizDataPage = quizService.getAllQuizByExamID (
+                examID
+                , pageIndex
+                , pageSize
+        );
+        return quizDataPage;
+    } 
+    
+    @GetMapping ("/quizzes:excluding-quiz-in-the-exam")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<Quiz> getAllQuizExcludingQuizInTheExam (
+            @RequestParam int examID
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<Quiz> quizDataPage;
+        
+        quizDataPage = quizService.getAllQuizWithExamIDIsNot (
+                examID
+                , pageIndex
+                , pageSize
+        );
+        return quizDataPage;
+    }
+    
     @PutMapping ("/quizzes/{questionID}") 
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateQuiz (

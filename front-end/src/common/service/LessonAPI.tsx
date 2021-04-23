@@ -77,8 +77,29 @@ export class LessonAPI {
                 return Promise.reject(apiError2);
             }
         }
+    }
 
-
+    public async getAllLessonByCourse (
+        courseID: number
+        ): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/lesson?courseID=${courseID}`
+            );
+            this.typeGuardian = new TypeGuard();
+            if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+                return this.serverResponse;
+            }
+            else {
+                throw new Error("This server response is not valid !");
+            }
+        }
+        catch (error) {
+            console.error(error.toJSON());
+            return Promise.reject<AxiosResponse>(error);
+        }
     }
 
     public async updateLesson (updatedLesson: Lesson): Promise<void> {
@@ -138,4 +159,25 @@ export class LessonAPI {
     //         }
     //     }
     // }
+
+    public async getOne (lessonID: number): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/id?lessonID=${lessonID}`
+            );
+            this.typeGuardian = new TypeGuard();
+            if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+                return this.serverResponse;
+            }
+            else {
+                throw new Error("This server response is not valid !");
+            }
+        }
+        catch (error) {
+            console.error(error.toJSON());
+            return Promise.reject<AxiosResponse>(error);
+        }
+    }
 }

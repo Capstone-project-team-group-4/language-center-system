@@ -8,11 +8,8 @@ package com.PhanLam.backend.service;
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
-import com.PhanLam.backend.dal.repository_interface.CourseRepository;
-import com.PhanLam.backend.dal.repository_interface.LessonRepository;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.Lesson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -20,9 +17,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.PhanLam.backend.dal.repository_interface.CourseRepository;
+import com.PhanLam.backend.dal.repository_interface.LessonRepository;
+import com.PhanLam.backend.model.Lesson;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
@@ -162,4 +164,15 @@ public class LessonService {
         }
     }
     
+    public List<Lesson> getAllLessonByCourseID(Integer courseID){
+        return lessonRepository.findAllByCourseID(courseID);
+    }
+    
+    public Lesson getOne(Integer lessonID){
+        return lessonRepository.findByID(lessonID);
+    }
+    
+    public List<Lesson> getAllLesson(){
+        return lessonRepository.findAll();
+    }
 }

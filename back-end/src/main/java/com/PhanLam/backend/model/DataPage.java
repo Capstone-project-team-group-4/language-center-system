@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 // Import package members section:
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -33,5 +34,42 @@ public class DataPage<T> {
 
     public List<T> getPageDataHolder (){
         return pageDataHolder;
+    }
+
+    @Override
+    public int hashCode (){
+        int hash = 5;
+        hash = 79 * hash + (int) (this.totalRowCount ^ (this.totalRowCount >>> 32));
+        hash = 79 * hash + Objects.hashCode (this.pageDataHolder);
+        return hash;
+    }
+
+    @Override
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
+            return false;
+        }
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final DataPage<?> other = (DataPage<?>) obj;
+        if (this.totalRowCount != other.totalRowCount){
+            return false;
+        }
+        if (!Objects.equals (this.pageDataHolder, other.pageDataHolder)){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString (){
+        return "DataPage {" 
+                + "totalRowCount=" + totalRowCount 
+                + ", pageDataHolder=" + pageDataHolder 
+        + '}';
     }
 }

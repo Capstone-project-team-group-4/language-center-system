@@ -1,4 +1,5 @@
-import React, { ReactElement, useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { 
     Breadcrumb
     , Button
@@ -11,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { CourseAPI } from "../../common/service/CourseAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Course } from "../../model/Course";
@@ -18,6 +20,7 @@ import { Course } from "../../model/Course";
 interface ManageThingsInCoursePageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
 }
 
 export function ManageThingsInCoursePage (
@@ -28,14 +31,12 @@ export function ManageThingsInCoursePage (
     let [courseHolder, setCourseHolder] 
         = useState<Course[]> (new Array<Course> ());
     let courseDataPage: DataPage<Course> | undefined;
-    let courseAPI: CourseAPI;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
-    let typeGuardian: TypeGuard;
+    let courseTable: ReactNode;
     
-    courseAPI = new CourseAPI ();
-    typeGuardian = new TypeGuard ();
+    let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
     
     async function loadCourseTable (): Promise<void> {
         try {
@@ -48,7 +49,7 @@ export function ManageThingsInCoursePage (
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
+            if (props.typeGuardian.isAxiosError (apiError)){
                 if (typeof apiError.code === "string"){
                     props.dialogController.setDialogTitle (
                             `${apiError.code}: ${apiError.name}`
@@ -76,6 +77,44 @@ export function ManageThingsInCoursePage (
         , []
     );
     
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadCourseTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+    
+    if (courseHolder.length === 0){
+        courseTable =
+            <tr>
+                <td colSpan = {6} className = "text-center">
+                    <h5>
+                        There are no courses in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        courseTable =
+            courseHolder.map (
+                (
+                        course
+                        , index
+                ) => renderCourseTable (
+                        course
+                        , index
+                )
+            );
+    }
+
     return (
         <Container fluid = {true}>
             {props.modalDialog}
@@ -111,6 +150,9 @@ export function ManageThingsInCoursePage (
                                                 #
                                             </th>
                                             <th>
+                                                Course ID
+                                            </th>
+                                            <th>
                                                 Course Name
                                             </th>
                                             <th>
@@ -120,25 +162,26 @@ export function ManageThingsInCoursePage (
                                                 Course Level
                                             </th>
                                             <th>
-                                                Tuition Fee
-                                            </th>
-                                            <th>
                                                 Actions
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {courseHolder.map (
-                                            (
-                                                    course
-                                                    , index
-                                            ) => renderCourseTable (
-                                                    course
-                                                    , index
-                                            )
-                                        )}
+                                        {courseTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>
@@ -160,6 +203,9 @@ function renderCourseTable (
                 {index + 1}
             </td>
             <td>
+                {course.courseID}
+            </td>
+            <td>
                 {course.courseName}
             </td>
             <td>
@@ -167,9 +213,6 @@ function renderCourseTable (
             </td>
             <td>
                 {course.courseLevel.levelName}
-            </td>
-            <td>
-                {course.tuitionFee}
             </td>
             <td>
                 <Button 

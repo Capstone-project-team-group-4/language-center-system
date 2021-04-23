@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { 
     MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -15,10 +17,328 @@ import {
     , Table 
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
+
+interface DisableOrDeleteAccountPageProps {
+    dialogController: DialogControl;
+    modalDialog: ReactElement;
+    typeGuardian: TypeGuard;
+}
+
+export function DisableOrDeleteAccountPage (
+    props: DisableOrDeleteAccountPageProps
+): ReactElement {
+
+    // Variables declaration:
+    let [userHolder, setUserHolder] = useState<User[]> ([]);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
+    let [totalRowCount, setTotalRowCount] = useState<number> (0);
+    let button: HTMLButtonElement | undefined;
+    let [pendingUserID, setPendingUserID] = useState<number> (0);
+    let [pendingAction, setPendingAction] = useState<string> ("");
+    let userDataPage: DataPage<User> | undefined;
+    let userTable: ReactNode;
+
+    let [userAPI] = useState<UserAPI> (new UserAPI ());
+    
+    function handleDisableUser (
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+    ): void {
+        button = event.target as HTMLButtonElement;
+        setPendingUserID (Number (button.value));
+        setPendingAction ("Disable user");
+        props.dialogController.setDialogTitle ("Confirm Disable User");
+        props.dialogController.setDialogBody (
+                "Are you sure you want to disabe this user ?"
+        );
+        props.dialogController.setDialogType ("confirm");
+        props.dialogController.setShowDialog (true);
+    }
+
+    async function enableUser (
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+    ): Promise<void> {
+        button = event.target as HTMLButtonElement;
+        try {
+            await userAPI.enableUser (Number (button.value));
+            await loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function executeUserDisablement (): Promise<void> {
+        try {
+            await userAPI.disableAnotherUser (
+                    pendingUserID
+            );
+            await loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    function handleDeleteUser (
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+    ): void {
+        button = event.target as HTMLButtonElement;
+        setPendingUserID (Number (button.value));
+        setPendingAction ("Delete user");
+        props.dialogController.setDialogTitle ("Confirm Delete User");
+        props.dialogController.setDialogBody (
+                "Are you sure you want to delete this user ?"
+        );
+        props.dialogController.setDialogType ("confirm");
+        props.dialogController.setShowDialog (true);
+    }
+
+    async function executeUserDeletion (): Promise<void> {
+        try {
+            await userAPI.deleteAnotherUser (pendingUserID);
+            await loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function loadUserTable (): Promise<void> {
+        try {
+            userDataPage 
+                = await userAPI.getAllUserExcludingCurrentLoggedInUser (
+                    pageIndex
+                    , pageSize
+            );
+            setTotalRowCount (userDataPage.totalRowCount);
+            setUserHolder (userDataPage.pageDataHolder);
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    useEffect (
+        (): void => {
+            loadUserTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , []
+    );
+
+    useEffect (
+        (): void => {
+            if (props.dialogController.dialogIsConfirmed === true){
+                if (pendingAction === "Disable user"){
+                    executeUserDisablement ().catch (
+                            (error) => {
+                                console.error (error);
+                            }
+                    );
+                }
+                else if (pendingAction === "Delete user"){
+                    executeUserDeletion ().catch (
+                            (error) => {
+                                console.error (error);
+                            }
+                    );
+                }
+                props.dialogController.setDialogIsConfirmed (false); 
+            }
+        }
+        , [props.dialogController.dialogIsConfirmed]
+    );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadUserTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+
+    if (userHolder.length === 0){
+        userTable =
+            <tr>
+                <td colSpan = {8} className = "text-center">
+                    <h5>
+                        There are no user accounts in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        userTable =
+            userHolder.map (
+                (
+                        user
+                        , index
+                ) => renderUserTable (
+                        user
+                        , index
+                        , handleDisableUser
+                        , enableUser
+                        , handleDeleteUser
+                )
+            );
+    }
+
+    return (
+        <Container fluid = {true}>
+            {props.modalDialog}
+            <main>
+                <Container>
+                    <Row className = "bg-white">
+                        <Col>
+                            <Breadcrumb>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/"}}
+                                >
+                                    Home
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {{to: "/admin-console"}}
+                                >
+                                    Admin Console
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item active>
+                                    Disable Or Delete Account
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                            <h1 className = "mb-3">
+                                Disable Or Delete Account
+                            </h1>
+                            <Form>
+                                <Table responsive = "md" hover = {true}>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                User ID
+                                            </th>
+                                            <th>
+                                                Full Name
+                                            </th>
+                                            <th>
+                                                Phone Number
+                                            </th>
+                                            <th>
+                                                Email
+                                            </th>
+                                            <th>
+                                                User Name
+                                            </th>
+                                            <th>
+                                                AccountStatus
+                                            </th>
+                                            <th>
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {userTable}
+                                    </tbody>
+                                </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
+            </main>
+            <footer>
+            </footer>
+        </Container>
+    );
+}
 
 function renderUserTable (
         user: User
@@ -82,7 +402,7 @@ function renderUserTable (
                     onClick = {
                         (event) => {
                             enableUser (event).catch (
-                                    (error: unknown) => {
+                                    (error) => {
                                         console.error (error);
                                     }
                             );
@@ -105,277 +425,5 @@ function renderUserTable (
                 </Button>
             </td>
         </tr>
-    );
-}
-
-interface DisableOrDeleteAccountPageProps {
-    dialogController: DialogControl;
-    modalDialog: ReactElement;
-}
-
-export function DisableOrDeleteAccountPage (
-    props: DisableOrDeleteAccountPageProps
-): ReactElement {
-
-    // Variables declaration:
-    let [userHolder, setUserHolder] = useState<User[]> ([]);
-    let userAPI: UserAPI;
-    let typeGuardian: TypeGuard;
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
-    let button: HTMLButtonElement | undefined;
-    let [pendingUserID, setPendingUserID] = useState<number> (0);
-    let [pendingAction, setPendingAction] = useState<string> ("");
-
-    userAPI = new UserAPI ();
-    typeGuardian = new TypeGuard ();
-    
-    function handleDisableUser (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): void {
-        button = event.target as HTMLButtonElement;
-        setPendingUserID (Number (button.value));
-        setPendingAction ("Disable user");
-        props.dialogController.setDialogTitle ("Confirm Disable User");
-        props.dialogController.setDialogBody (
-                "Are you sure you want to disabe this user ?"
-        );
-        props.dialogController.setDialogType ("confirm");
-        props.dialogController.setShowDialog (true);
-    }
-
-    async function enableUser (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): Promise<void> {
-        button = event.target as HTMLButtonElement;
-        try {
-            await userAPI.enableUser (Number (button.value));
-            await loadUserTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                        `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    async function executeUserDisablement (): Promise<void> {
-        try {
-            await userAPI.disableAnotherUser (
-                    pendingUserID
-            );
-            await loadUserTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                        `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    function handleDeleteUser (
-            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
-    ): void {
-        button = event.target as HTMLButtonElement;
-        setPendingUserID (Number (button.value));
-        setPendingAction ("Delete user");
-        props.dialogController.setDialogTitle ("Confirm Delete User");
-        props.dialogController.setDialogBody (
-                "Are you sure you want to delete this user ?"
-        );
-        props.dialogController.setDialogType ("confirm");
-        props.dialogController.setShowDialog (true);
-    }
-
-    async function executeUserDeletion (): Promise<void> {
-        try {
-            await userAPI.deleteAnotherUser (pendingUserID);
-            await loadUserTable ();
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                        `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    async function loadUserTable (): Promise<void> {
-        try {
-            setUserHolder (
-                await userAPI.getAllUserExcludingCurrentLoggedInUser (
-                    pageIndex
-                    , pageSize
-                )
-            );
-            return Promise.resolve<undefined> (undefined);
-        }
-        catch (apiError: unknown){
-            if (typeGuardian.isAxiosError (apiError)){
-                if (typeof apiError.code === "string"){
-                    props.dialogController.setDialogTitle (
-                            `${apiError.code}: ${apiError.name}`
-                    );
-                }
-                else {
-                    props.dialogController.setDialogTitle (apiError.name);
-                }
-                props.dialogController.setDialogBody (apiError.message);
-                props.dialogController.setDialogType ("error");
-                props.dialogController.setShowDialog (true);
-            }
-            return Promise.reject (apiError);
-        }
-    }
-
-    useEffect (
-        (): void => {
-            loadUserTable ().catch (
-                    (error: unknown) => {
-                        console.error (error);
-                    }
-            );
-        }
-        , []
-    );
-
-    useEffect (
-        (): void => {
-            if (props.dialogController.dialogIsConfirmed === true){
-                if (pendingAction === "Disable user"){
-                    executeUserDisablement ().catch (
-                            (error: unknown) => {
-                                console.error (error);
-                            }
-                    );
-                }
-                else if (pendingAction === "Delete user"){
-                    executeUserDeletion ().catch (
-                            (error: unknown) => {
-                                console.error (error);
-                            }
-                    );
-                }
-                props.dialogController.setDialogIsConfirmed (false); 
-            }
-        }
-        , [props.dialogController.dialogIsConfirmed]
-    );
-
-    return (
-        <Container fluid = {true}>
-            {props.modalDialog}
-            <main>
-                <Container>
-                    <Row className = "bg-white">
-                        <Col>
-                            <Breadcrumb>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/"}}
-                                >
-                                    Home
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item 
-                                    linkAs = {Link}
-                                    linkProps = {{to: "/admin-console"}}
-                                >
-                                    Admin Console
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item active>
-                                    Disable Or Delete Account
-                                </Breadcrumb.Item>
-                            </Breadcrumb>
-                            <h1 className = "mb-3">
-                                Disable Or Delete Account
-                            </h1>
-                            <Form>
-                                <Table responsive = "md" hover = {true}>
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                #
-                                            </th>
-                                            <th>
-                                                User ID
-                                            </th>
-                                            <th>
-                                                Full Name
-                                            </th>
-                                            <th>
-                                                Phone Number
-                                            </th>
-                                            <th>
-                                                Email
-                                            </th>
-                                            <th>
-                                                User Name
-                                            </th>
-                                            <th>
-                                                AccountStatus
-                                            </th>
-                                            <th>
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {userHolder.map (
-                                            (
-                                                    user
-                                                    , index
-                                            ) => renderUserTable (
-                                                    user
-                                                    , index
-                                                    , handleDisableUser
-                                                    , enableUser
-                                                    , handleDeleteUser
-                                            )
-                                        )}
-                                    </tbody>
-                                </Table>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Container>
-            </main>
-            <footer>
-            </footer>
-        </Container>
     );
 }

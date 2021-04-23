@@ -6,16 +6,17 @@
 package com.PhanLam.backend.controller;
 
 import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.Lesson;
 import com.PhanLam.backend.service.LessonService;
 import javax.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.PhanLam.backend.model.Lesson;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,5 +69,22 @@ public class LessonController {
     public void deleteLesson (@PathVariable int lessonID){
         lessonService.deleteLessonByID(lessonID);
     }
+      
+    @GetMapping("/lesson")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Lesson> getLessonByCourseID(@RequestParam("courseID") Integer courseID){
+        return lessonService.getAllLessonByCourseID(courseID);
+    }
     
+//    @GetMapping("/lessons")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<Lesson> getAllLesson(){
+//        return lessonService.getAllLesson();
+//    }
+    
+    @GetMapping("/id")
+    @ResponseStatus(HttpStatus.OK)
+    public Lesson getOne(@RequestParam("lessonID") Integer lessonID){
+        return lessonService.getOne(lessonID);
+    }
 }

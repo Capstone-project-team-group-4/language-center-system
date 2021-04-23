@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.PhanLam.backend.model;
 
 import java.io.Serializable;
@@ -62,9 +57,9 @@ public class HomeWork implements Serializable {
     @OneToMany (mappedBy = "homeWorkID", fetch = FetchType.LAZY)
     private List<StudentScore> studentScoreList;
     @OneToMany (mappedBy = "requirementID", fetch = FetchType.LAZY)
-    private List<Document> requirementList;
+    private List<Document> documentList;
     @OneToMany (mappedBy = "solutionID", fetch = FetchType.LAZY)
-    private List<Document> solutionList;
+    private List<Document> documentList1;
     @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private ClassSession classID;
@@ -119,21 +114,21 @@ public class HomeWork implements Serializable {
     }
 
     @XmlTransient
-    public List<Document> getRequirementList (){
-        return requirementList;
+    public List<Document> getDocumentList (){
+        return documentList;
     }
 
-    public void setRequirementList (List<Document> requirementList){
-        this.requirementList = requirementList;
+    public void setDocumentList (List<Document> documentList){
+        this.documentList = documentList;
     }
 
     @XmlTransient
-    public List<Document> getSolutionList (){
-        return solutionList;
+    public List<Document> getDocumentList1 (){
+        return documentList1;
     }
 
-    public void setSolutionList (List<Document> solutionList){
-        this.solutionList = solutionList;
+    public void setDocumentList1 (List<Document> documentList1){
+        this.documentList1 = documentList1;
     }
 
     public ClassSession getClassID (){

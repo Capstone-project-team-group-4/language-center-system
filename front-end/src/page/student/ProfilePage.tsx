@@ -27,6 +27,11 @@ export function ProfilePage(
     const handleShow = () => setShow(true);
     const name = localStorageService.getLoggedUserName();
 
+    const date = new Date(user.dob);
+    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+    const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
+    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
     useEffect(() => {
         userAPI = new UserAPI();
         userAPI.displayProfile(name).then(
@@ -103,6 +108,7 @@ export function ProfilePage(
                                                         updateMyProfile(event, name);
                                                     }}
                                                     className="wrapper"
+                                                    style={{width:1000}}
                                                 >
                                                     <Modal.Header closeButton>
                                                         <Modal.Title>Edit My Profile</Modal.Title>
@@ -296,7 +302,7 @@ export function ProfilePage(
                                             </tr>
                                             <tr>
                                                 <td>DOB:</td>
-                                                <td>{user.dob.toString()}</td>
+                                                <td>{day}-{month}-{year}</td>
                                             </tr>
                                             <tr>
                                                 <td>Email:</td>

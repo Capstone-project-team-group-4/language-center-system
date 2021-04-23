@@ -101,14 +101,14 @@ export function ProfilePage(
                                         <Col sm="12" md={{ offset: 3 }}>
                                             <Button style={{ marginTop: 20 }} onClick={handleShow}>Edit Profile</Button>
 
-                                            <Modal show={show} onHide={handleClose}>
+                                            <Modal show={show} onHide={handleClose} size="lg">
                                                 <Form
                                                     noValidate={false}
                                                     onSubmit={(event) => {
                                                         updateMyProfile(event, name);
                                                     }}
                                                     className="wrapper"
-                                                    style={{width:1000}}
+                                                    
                                                 >
                                                     <Modal.Header closeButton>
                                                         <Modal.Title>Edit My Profile</Modal.Title>
@@ -128,7 +128,6 @@ export function ProfilePage(
                                                                 value={user.userName}
                                                                 required={true}
                                                                 spellCheck={false}
-                                                                // value = {student.userName}
                                                                 onChange={handleUserChange}
                                                             />
                                                         </Form.Group>
@@ -147,7 +146,6 @@ export function ProfilePage(
                                                                     value={user.firstName}
                                                                     required={true}
                                                                     spellCheck={false}
-                                                                    // value = {user.userName}
                                                                     onChange={handleUserChange}
                                                                 />
                                                             </Form.Group>
@@ -266,10 +264,10 @@ export function ProfilePage(
                                                         </Form.Group>
                                                     </Modal.Body>
                                                     <Modal.Footer>
-                                                        <Button variant="primary" onClick={handleClose} block={true}>
+                                                        <Button variant="primary" onClick={handleClose} block={true} type="submit">
                                                             Save Changes
                                                         </Button>
-                                                        <Button variant="secondary" onClick={handleClose} type="submit" block={true}>
+                                                        <Button variant="secondary" onClick={handleClose} block={true}>
                                                             Close
                                                         </Button>
                                                     </Modal.Footer>

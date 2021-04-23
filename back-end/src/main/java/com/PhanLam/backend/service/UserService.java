@@ -489,7 +489,7 @@ public class UserService {
     }
     
     public User updateProfile(User user, String userName) {
-        User updatedUser = new User();
+        User updatedUser = userRepository.findByUserName(userName).orElseThrow();
         updatedUser.setUserID(user.getUserID());
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
@@ -502,7 +502,6 @@ public class UserService {
         updatedUser.setJob(user.getJob());
         updatedUser.setPhotoURI(user.getPhotoURI());
         updatedUser.setSelfDescription(user.getSelfDescription());
-        updatedUser.setPassword(user.getPassword());
         updatedUser.setAccountStatus(user.getAccountStatus());
         updatedUser.setDateCreated(user.getDateCreated());
         return userRepository.save(updatedUser);

@@ -45,8 +45,7 @@ import java.util.Optional;
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserService {
-    
-    
+     
     /**
      * Variables declaration:
      * - userRepository

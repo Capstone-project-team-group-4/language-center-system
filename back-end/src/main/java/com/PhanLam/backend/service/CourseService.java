@@ -398,6 +398,7 @@ public class CourseService {
         }
         return nullableCourse.get();
     }
+    
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourseAvailableToCreateClass(
             int pageIndex

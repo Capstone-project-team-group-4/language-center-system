@@ -26,21 +26,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTests {
-    @InjectMocks
-    private CourseService courseService;
-    @Mock
-    private CourseRepository courseRepository;
-    
-    @Test
-    public void testGetByID(int userID){
-        Course axax = new Course();
-        axax.setCourseName("Japanese N5");    
-        axax.setDescription("Intensive course"); 
-        String a = "a";
-        String b = "a";
-            
-    Mockito.when(courseRepository.findById(14).orElseThrow())
-      .thenReturn(axax);
-        Assertions.assertEquals(a,b);
-    }
+//    @InjectMocks
+//    private CourseService courseService;
+//    @Mock
+//    private CourseRepository courseRepository;
+//    
+//    @Test
+//    public void testGetByID(int userID){
+//        Course axax = new Course();
+//        axax.setCourseName("Japanese N5");    
+//        axax.setDescription("Intensive course"); 
+//        String a = "a";
+//        String b = "a";
+//            
+//    Mockito.when(courseRepository.findById(14).orElseThrow())
+//      .thenReturn(axax);
+//        Assertions.assertEquals(a,b);
+//    }
 }

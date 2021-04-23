@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * CourseService.java
+ *
+ * All Rights Reserved
+ * Copyright (c) 2021 FPT University
  */
 package com.PhanLam.backend.service;
 
@@ -27,17 +28,39 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * CourseService class <br>
+ * 
+ * <pre>
+ * Service class for managing Course objects
+ * </pre>
+ * 
+ * @author roboc
  * @author Phan Lam
+ * @version 1.0
  */
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class CourseService {
     
-    // Variables declaration:
+    /**
+     * Variables declaration:
+     * - userRepository
+     * - courseRepository
+     */
     private CourseRepository courseRepository;
     private UserRepository userRepository;
-
+    
+    /**
+     * Constructor<br>
+     * 
+     * <pre>
+     * This constructs a CourseService with a specified 
+     * userRepository and courseRepository
+     * </pre>
+     * 
+     * @param courseRepository
+     * @param userRepository 
+     */
     public CourseService (
             CourseRepository courseRepository
             , UserRepository userRepository
@@ -46,6 +69,15 @@ public class CourseService {
         this.userRepository = userRepository;
     }
     
+    /**
+     * createCourse<br>
+     * 
+     * <pre>
+     * Method will create a Course
+     * </pre>
+     * 
+     * @param course 
+     */
     public void createCourse (Course course){
         String courseName;
         boolean courseAlreadyExist;
@@ -63,6 +95,18 @@ public class CourseService {
         }
     }
     
+    /**
+     * getAllCourse<br>
+     * 
+     * <pre>
+     * Method will get all courses
+     * </pre>
+     * 
+     * @param pageIndex
+     * @param pageSize
+     * @return courseDatapage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourse (
             int pageIndex
@@ -101,6 +145,16 @@ public class CourseService {
         }
     }
     
+    /**
+     * updateCourse<br>
+     * 
+     * <pre>
+     * Method will update information of course
+     * </pre>
+     * 
+     * @param courseID
+     * @param updatedCourse 
+     */
     public void updateCourse (int courseID, Course updatedCourse){
         boolean courseExists;
         Date lastModified;
@@ -116,6 +170,15 @@ public class CourseService {
         }
     }
     
+    /**
+     * deleteCourseByID<br>
+     * 
+     * <pre>
+     * Method will delete a course by courseID
+     * </pre>
+     * 
+     * @param courseID 
+     */
     public void deleteCourseByID (int courseID){
         Optional <Course> nullableCourse;
         Course course;
@@ -130,6 +193,17 @@ public class CourseService {
         }
     }
     
+    /**
+     * addStudentToCourse<br>
+     * 
+     * <pre>
+     * Method will add student to one or many courses
+     * </pre>
+     * 
+     * @param userID
+     * @param courseID 
+     * @throws InvalidRequestArgumentException
+     */
     public void addStudentToCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -199,6 +273,16 @@ public class CourseService {
         }
     }
     
+    /**
+     * removeStudentFromCourse<br>
+     * 
+     * <pre>
+     * Method will remove a student from one or many courses
+     * </pre>
+     * 
+     * @param userID
+     * @param courseID 
+     */
     public void removeStudentFromCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -268,19 +352,42 @@ public class CourseService {
         }
     }
     
+    /**
+     * getAllCourse<br>
+     * 
+     * @return 
+     */
     public List<Course> getAllCourse(){
         return courseRepository.findAll();
     }
     
+    /**
+     * getCourseById<br>
+     * 
+     * @param courseID
+     * @return 
+     */
     public Course getCourseById(Integer courseID) {     
         return courseRepository.findById(courseID).orElseThrow();
     }
     
+    /**
+     * getCourseByCurrentUserName<br>
+     * 
+     * @param userName
+     * @return 
+     */
     public List<Course> getCoursesByCurrentUserName(String userName) {
         User user = userRepository.findByUserName(userName).orElseThrow();
         return user.getCourseList();
     }
-
+    
+    /**
+     * getCourseName<br>
+     * 
+     * @param courseName
+     * @return 
+     */
     public Course getCourseByName(String courseName) {
         return courseRepository.findByCourseName(courseName);
     }

@@ -85,8 +85,6 @@ public class UserService {
      * 
      * <pre>
      * Method will get currently logged in user:
-     * - 
-     * - 
      * </pre>
      * 
      * @param principal

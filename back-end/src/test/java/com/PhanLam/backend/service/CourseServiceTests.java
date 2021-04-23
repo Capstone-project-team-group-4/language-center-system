@@ -9,6 +9,7 @@ import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.CourseService;
 import com.mysema.commons.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

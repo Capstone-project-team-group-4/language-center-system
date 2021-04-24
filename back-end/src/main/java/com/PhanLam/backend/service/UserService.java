@@ -22,6 +22,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.security.Principal;
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,17 +57,19 @@ public class UserService {
         this.queryFactoryGetter = queryFactoryGetter;
     }
 
-    @Transactional (readOnly = true)
     public LoggedInUser getLoggedInUser (Principal principal){
         LoggedInUser loggedInUser;
         String userName;
         Optional<User> nullableUser;
         User user;
         List<Role> roleHolder;
+        Date lastLogin;
 
         userName = principal.getName ();
         nullableUser = userRepository.findByUserName (userName);
         user = nullableUser.get ();
+        lastLogin = new Date ();
+        user.setLastLogin (lastLogin);
         roleHolder = user.getRoleList ();
         loggedInUser = new LoggedInUser (userName, roleHolder);
         return loggedInUser;

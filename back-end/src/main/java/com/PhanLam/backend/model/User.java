@@ -201,8 +201,18 @@ public class User implements Serializable {
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
     
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "user"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
+    
     public User (){
-        multipleChoiceQuestionList = new ArrayList<>();
+        multipleChoiceQuestionList = new ArrayList<> ();
+//        examinationAttemptList = new ArrayList<> ();
     }
 
     public User (
@@ -437,6 +447,16 @@ public class User implements Serializable {
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (
+            List<ExaminationAttempt> examinationAttemptList
+    ){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+    
     @Override
     public int hashCode (){
         int hash = 7;
@@ -465,6 +485,7 @@ public class User implements Serializable {
         hash = 13 * hash + Objects.hashCode (this.classList1);
         hash = 13 * hash + Objects.hashCode (this.addressList);
         hash = 13 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
+        hash = 13 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
@@ -555,6 +576,9 @@ public class User implements Serializable {
         if (!Objects.equals (this.multipleChoiceQuestionList, other.multipleChoiceQuestionList)){
             return false;
         }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
+            return false;
+        }
         return true;
     }
 
@@ -585,7 +609,8 @@ public class User implements Serializable {
                 + ", studentScoreList=" + studentScoreList 
                 + ", classList1=" + classList1 
                 + ", addressList=" + addressList 
-                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
+                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
+                + ", examinationAttemptList=" + examinationAttemptList
         + '}';
     }
 }

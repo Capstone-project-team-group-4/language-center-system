@@ -18,7 +18,6 @@ export class UserAPI {
     private axiosError: AxiosError<unknown> | undefined;
     private errorHandler: ErrorHandle;
     private requestParameterHolder: URLSearchParams | undefined;
-    private userHolder: User[] | undefined;
     private userDataPage: DataPage<User> | undefined;
 
     public constructor (){

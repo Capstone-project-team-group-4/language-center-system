@@ -120,6 +120,18 @@ export class ExaminationAPI {
         }
     }
 
+    public async getAllExamByCurrentLoggedInStudent (
+            pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<Examination>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            
+        }
+    }
+
     public async updateExamInCourse (
             courseID: number
             , updatedExam: Examination 

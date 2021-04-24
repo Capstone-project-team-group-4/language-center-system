@@ -116,6 +116,15 @@ public class Examination implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course course;
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "examination"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
 
     public Examination (){
     }
@@ -222,6 +231,14 @@ public class Examination implements Serializable {
         this.course = course;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (List<ExaminationAttempt> examinationAttemptList){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+    
     @Override
     public int hashCode (){
         int hash = 7;
@@ -235,6 +252,7 @@ public class Examination implements Serializable {
         hash = 19 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
         hash = 19 * hash + Objects.hashCode (this.studentScoreList);
         hash = 19 * hash + Objects.hashCode (this.course);
+        hash = 19 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
@@ -280,6 +298,9 @@ public class Examination implements Serializable {
         if (!Objects.equals (this.course, other.course)){
             return false;
         }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
+            return false;
+        }
         return true;
     }
 
@@ -296,6 +317,7 @@ public class Examination implements Serializable {
                 + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
                 + ", studentScoreList=" + studentScoreList 
                 + ", course=" + course 
+                + ", course=" + examinationAttemptList
         + '}';
     }
 }

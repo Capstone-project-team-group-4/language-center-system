@@ -6,15 +6,26 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.ForbiddenActionException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.ExaminationRepository;
 import com.PhanLam.backend.dal.repository_interface.MultipleChoiceQuestionRepository;
+import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Examination;
 import com.PhanLam.backend.model.MultipleChoiceQuestion;
+import com.PhanLam.backend.model.QCourse;
+import com.PhanLam.backend.model.QExamination;
+import com.PhanLam.backend.model.QUser;
+import com.PhanLam.backend.model.Role;
+import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.common.QueryFactoryGet;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,15 +49,22 @@ public class ExaminationService {
     private CourseRepository courseRepository;
     private ExaminationRepository examinationRepository;
     private MultipleChoiceQuestionRepository questionRepository;
+    private UserRepository userRepository;
+    private QueryFactoryGet queryFactoryGetter;
+    private JPAQueryFactory queryFactory;
 
     public ExaminationService (
             CourseRepository courseRepository
             , ExaminationRepository examinationRepository
             , MultipleChoiceQuestionRepository questionRepository
+            , UserRepository userRepository
+            , QueryFactoryGet queryFactoryGetter
     ){
         this.courseRepository = courseRepository;
         this.examinationRepository = examinationRepository;
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
+        this.queryFactoryGetter = queryFactoryGetter;
     }
 
     public void createExamInCourse (int courseID, Examination exam){
@@ -153,6 +171,76 @@ public class ExaminationService {
                         + "Parameter name: pageIndex, pageSize"
                 );
             }
+        }
+    }
+    
+    @Transactional (readOnly = true)
+    public DataPage<Examination> getAllExamByStudentID (
+            Principal principal
+            , int pageIndex
+            , int pageSize
+    ){
+        String userName;
+        Optional<User> nullableUser;
+        User user;
+        List<Role> roleHolder;
+        int i;
+        Role role;
+        boolean thisUserIsStudent;
+        QueryResults<Examination> examPage;
+        QExamination exam;
+        QCourse course;
+        QUser student;
+        int userID;  
+        long totalRowCount;
+        List<Examination> examHolder;
+        DataPage<Examination> examDataPage;
+     
+        if ((pageIndex >= 0) && (pageSize > 0)){
+            userName = principal.getName ();
+            nullableUser = userRepository.findByUserName (userName);
+            user = nullableUser.get ();
+            roleHolder = user.getRoleList ();
+            thisUserIsStudent = false;
+            for (i = 0; i < roleHolder.size (); i++){
+                role = roleHolder.get (i);
+                if (role.getRoleName ().equals ("ROLE_STUDENT")){
+                    thisUserIsStudent = true;
+                    break;
+                }
+            }
+            if (thisUserIsStudent == false){
+                throw new ForbiddenActionException (
+                        "You cannot get exams because you are not a student."
+                );
+            }
+            else {
+                exam = new QExamination ("exam");
+                course = QCourse.course;
+                student = new QUser ("student");
+                userID = user.getUserID ();
+                queryFactory = queryFactoryGetter.getQueryFactory ();
+                examPage = queryFactory
+                        .selectFrom (exam)
+                            .leftJoin (exam.course, course)
+                            .leftJoin (course.userList, student)
+                        .where (student.userID.eq (userID))
+                        .orderBy (exam.startTime.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = examPage.getTotal ();
+                examHolder = examPage.getResults ();
+                examDataPage = new DataPage<> (totalRowCount, examHolder);
+                return examDataPage;
+            }
+        }
+        else {
+            throw new InvalidRequestArgumentException (
+                    "The page index number and page size number parameters "
+                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "Parameter name: pageIndex, pageSize"
+            );
         }
     }
     

@@ -64,10 +64,8 @@ public class Lesson implements Serializable {
     @Size(max = 1000)
     @Column(name = "Description", length = 1000)
     private String description;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1000)
-    @Column(name = "ContentURI", nullable = false, length = 1000)
+    @Size(max = 1000)
+    @Column(name = "ContentURI", length = 1000)
     private String contentURI;
     @Basic(optional = false)
     @NotNull

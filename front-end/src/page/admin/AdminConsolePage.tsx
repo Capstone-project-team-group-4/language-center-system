@@ -76,9 +76,31 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                         as = {Card.Header} 
                                         eventKey = "1"
                                     >
-                                        Course
+                                        Student
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey = "1">
+                                        <Card.Body>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console/manage-student-page"
+                                                }
+                                            >
+                                                Manage Student
+                                            </Button>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                                <Card>
+                                    <Accordion.Toggle 
+                                        as = {Card.Header} 
+                                        eventKey = "2"
+                                    >
+                                        Course
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey = "2">
                                         <Card.Body>
                                             <Button 
                                                 variant = "success"
@@ -109,11 +131,11 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                 <Card>
                                     <Accordion.Toggle 
                                         as = {Card.Header} 
-                                        eventKey = "2"
+                                        eventKey = "3"
                                     >
                                         Examination
                                     </Accordion.Toggle>
-                                    <Accordion.Collapse eventKey = "2">
+                                    <Accordion.Collapse eventKey = "3">
                                         <Card.Body>
                                             <Button 
                                                 variant = "success"

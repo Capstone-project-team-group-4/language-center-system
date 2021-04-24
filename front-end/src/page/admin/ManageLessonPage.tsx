@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
     ChangeEvent, FormEvent, MouseEvent,
     ReactElement, useEffect, useState
@@ -829,11 +830,19 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 >
                                     Admin Console
                                 </Breadcrumb.Item>
-                                <Breadcrumb.Item active>
-                                    Manage course function
+                                <Breadcrumb.Item 
+                                    linkAs = {Link}
+                                    linkProps = {
+                                        {
+                                            to: "/admin-console"
+                                            + "/manage-things-in-course-page"
+                                        }
+                                    }
+                                >
+                                    Manage Things In Course
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage lesson function
+                                    Manage Lesson In Course
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className="mb-3">

@@ -171,7 +171,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                             </span>
                                         </td>
                                         <td className="text-center" id="action">
-                                            <Link to="/admin-console/view-student-profile">
+                                            <Link to={`/user_detail/${item["userID"]}`}>
                                                 <button type="button"
                                                     className="btn btn-primary" id="btn_details">
                                                     <span className=
@@ -181,14 +181,14 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                                 </button>
                                             </Link>
                                         &nbsp;
-                                        <Link to="/editStudentInfo/studentID">
+                                            <Link to="/editStudentInfo/studentID">
                                                 <button type="button"
                                                     className="btn btn-success" id="btn_edit">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
                                                             Edit
                                                     </span>
-                                        </button>
+                                                </button>
                                             </Link>
                                         </td>
                                     </tr>

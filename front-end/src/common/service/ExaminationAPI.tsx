@@ -128,7 +128,31 @@ export class ExaminationAPI {
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
         try {
-            
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examinations:by-logged-in-student"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<Examination> (
+                    this.serverResponse.data
+            )){
+                this.examDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<Examination>> (
+                        this.examDataPage
+                );
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
         }
     }
 

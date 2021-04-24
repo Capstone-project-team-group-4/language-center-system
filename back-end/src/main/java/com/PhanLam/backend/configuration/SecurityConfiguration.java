@@ -142,6 +142,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         , "/students:excluding-student-in-the-course"
                 )
                         .hasRole ("ADMIN")
+                
                 .antMatchers (HttpMethod.POST, "/courses")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses")

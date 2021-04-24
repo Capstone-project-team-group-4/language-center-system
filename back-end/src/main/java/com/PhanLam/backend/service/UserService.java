@@ -6,7 +6,6 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
-
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.Sort.TypedSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -195,6 +193,7 @@ public class UserService {
         if ((pageIndex >= 0) && (pageSize > 0)){
                 student = new QUser ("student");
                 role = QRole.role;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student)
                             .leftJoin (student.roleList, role)                          
@@ -396,6 +395,7 @@ public class UserService {
         course = new QCourse("course");
         classSession = new QClassSession("classSession");
         user = new QUser("user");
+        queryFactory = queryFactoryGetter.getQueryFactory ();
         studentResults = queryFactory
                 .selectFrom(user)
                 .innerJoin(user.courseList, course)
@@ -429,10 +429,10 @@ public class UserService {
         }
 
         //get list
-        ClassSession classSession = classSessionService.getById (classId);
         student = new QUser("student");
         qRole = QRole.role;
         qClassSession = QClassSession.classSession;
+        queryFactory = queryFactoryGetter.getQueryFactory ();
         studentPage = queryFactory
                         .selectFrom(student).distinct()
                         .leftJoin(student.roleList, qRole)

@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { 
     MouseEvent
     , ReactElement
+    , ReactNode
     , useEffect
     , useState 
 } from "react";
@@ -15,7 +17,9 @@ import {
     , Table 
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
+import { PagingSection } from "../../common/component/PagingSection";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
 import { User } from "../../model/User";
@@ -32,11 +36,14 @@ export function DisableOrDeleteAccountPage (
 
     // Variables declaration:
     let [userHolder, setUserHolder] = useState<User[]> ([]);
-    let [pageIndex] = useState<number> (0);
-    let [pageSize] = useState<number> (10);
+    let [pageIndex, setPageIndex] = useState<number> (0);
+    let [pageSize] = useState<number> (5);
+    let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let button: HTMLButtonElement | undefined;
     let [pendingUserID, setPendingUserID] = useState<number> (0);
     let [pendingAction, setPendingAction] = useState<string> ("");
+    let userDataPage: DataPage<User> | undefined;
+    let userTable: ReactNode;
 
     let [userAPI] = useState<UserAPI> (new UserAPI ());
     
@@ -147,12 +154,13 @@ export function DisableOrDeleteAccountPage (
 
     async function loadUserTable (): Promise<void> {
         try {
-            setUserHolder (
-                await userAPI.getAllUserExcludingCurrentLoggedInUser (
+            userDataPage 
+                = await userAPI.getAllUserExcludingCurrentLoggedInUser (
                     pageIndex
                     , pageSize
-                )
             );
+            setTotalRowCount (userDataPage.totalRowCount);
+            setUserHolder (userDataPage.pageDataHolder);
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
@@ -176,7 +184,7 @@ export function DisableOrDeleteAccountPage (
     useEffect (
         (): void => {
             loadUserTable ().catch (
-                    (error: unknown) => {
+                    (error) => {
                         console.error (error);
                     }
             );
@@ -189,14 +197,14 @@ export function DisableOrDeleteAccountPage (
             if (props.dialogController.dialogIsConfirmed === true){
                 if (pendingAction === "Disable user"){
                     executeUserDisablement ().catch (
-                            (error: unknown) => {
+                            (error) => {
                                 console.error (error);
                             }
                     );
                 }
                 else if (pendingAction === "Delete user"){
                     executeUserDeletion ().catch (
-                            (error: unknown) => {
+                            (error) => {
                                 console.error (error);
                             }
                     );
@@ -206,6 +214,47 @@ export function DisableOrDeleteAccountPage (
         }
         , [props.dialogController.dialogIsConfirmed]
     );
+    
+    function goToPage (destinationPageIndex: number): void {
+        setPageIndex (destinationPageIndex);
+    }
+
+    useEffect (
+        () => {
+            loadUserTable ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , [pageIndex]
+    );
+
+    if (userHolder.length === 0){
+        userTable =
+            <tr>
+                <td colSpan = {8} className = "text-center">
+                    <h5>
+                        There are no user accounts in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        userTable =
+            userHolder.map (
+                (
+                        user
+                        , index
+                ) => renderUserTable (
+                        user
+                        , index
+                        , handleDisableUser
+                        , enableUser
+                        , handleDeleteUser
+                )
+            );
+    }
 
     return (
         <Container fluid = {true}>
@@ -265,20 +314,21 @@ export function DisableOrDeleteAccountPage (
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {userHolder.map (
-                                            (
-                                                    user
-                                                    , index
-                                            ) => renderUserTable (
-                                                    user
-                                                    , index
-                                                    , handleDisableUser
-                                                    , enableUser
-                                                    , handleDeleteUser
-                                            )
-                                        )}
+                                        {userTable}
                                     </tbody>
                                 </Table>
+                                <Form.Group>
+                                    <Form.Row 
+                                        className = "justify-content-md-center"
+                                    >
+                                        <PagingSection 
+                                            pageIndex = {pageIndex}
+                                            pageSize = {pageSize}
+                                            totalRowCount = {totalRowCount}
+                                            goToPage = {goToPage}
+                                        />
+                                    </Form.Row> 
+                                </Form.Group>
                             </Form>
                         </Col>
                     </Row>
@@ -352,7 +402,7 @@ function renderUserTable (
                     onClick = {
                         (event) => {
                             enableUser (event).catch (
-                                    (error: unknown) => {
+                                    (error) => {
                                         console.error (error);
                                     }
                             );

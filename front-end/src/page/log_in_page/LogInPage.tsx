@@ -6,7 +6,7 @@ import React, {
     , SetStateAction, useState 
 } from 'react';
 import { 
-    Button, Container, Form, Row 
+    Button, Container, Form, Row
 } from 'react-bootstrap';
 import './LogInPage.css';
 import { TypeGuard } from '../../common/service/TypeGuard';
@@ -45,7 +45,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     // Variables declaration:
     let [userName, setUserName] = useState<string> ("");
     let [password, setPassword] = useState<string> ("");
-    let inputField: 
+    let inputField:
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let currentLocation: Location<unknown>;
     let locationState: LocationState | undefined;
@@ -53,7 +53,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let loginSucceededLocation: LoginSucceededLocation | undefined;
     let history: History<unknown>;
     let roleHolder: Role[] | undefined;
-    let role: Role | undefined; 
+    let role: Role | undefined;
     let roleName: string | undefined;
     let loggedInUser: LoggedInUser | undefined;
 
@@ -104,8 +104,15 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             break;
 
                         case "ROLE_TEACHER":
-                            loginSucceededLocation.pathname 
+                            loginSucceededLocation.pathname
                                 = "/teacher-dashboard";
+                            break;
+
+                        case "ROLE_STUDENT":
+                            // <Route path="/student-dashboard" render={(props) => <StudentDashboardPage LoginUser="Hello, " {...props} />} />
+                            loginSucceededLocation.pathname
+                                = "/student-dashboard";
+                            localStorage.setItem('account', JSON.stringify(loggedInUser));
                             break;
                     }
                 }

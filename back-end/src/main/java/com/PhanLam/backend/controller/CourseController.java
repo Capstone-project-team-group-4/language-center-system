@@ -83,16 +83,39 @@ public class CourseController {
         courseService.deleteCourseByID (courseID);
     }
 
+    @GetMapping("/")
+    @ResponseStatus (HttpStatus.OK)
+    public List<Course> getAllUserCourse(){
+        return courseService.getAllCourse();
+    }
+
+    @GetMapping("/courses/{courseID}")
+    @ResponseStatus(HttpStatus.OK)
+    public Course getCourseById(@PathVariable("courseID") Integer courseID){
+        return courseService.getCourseById(courseID);
+    }
+
+    @GetMapping("/getCourseByName")
+    @ResponseStatus(HttpStatus.OK)
+    public Course getCourseByName(@RequestParam("courseName") String courseName){
+        return courseService.getCourseByName(courseName);
+    }
+
+    @GetMapping("/myCourses")
+    public List<Course> getAllCourseCurrentsLogin(@RequestParam(value = "userName") String userName){
+        return courseService.getCoursesByCurrentUserName(userName);
+    }
+
     @GetMapping ("/courses-for-create-class")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Course> getAllCourseAvailableToCreateClass (
             @RequestParam int pageIndex
             , @RequestParam int pageSize
-            , @RequestParam List<Integer> typeIds
+            , @RequestParam int spareTimeId
     ){
         DataPage<Course> courseDataPage;
 
-        courseDataPage = courseService.getAllCourseAvailableToCreateClass (pageIndex, pageSize,typeIds);
+        courseDataPage = courseService.getAllCourseAvailableToCreateClass (pageIndex, pageSize,spareTimeId);
         return courseDataPage;
     }
 }

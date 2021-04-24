@@ -39,7 +39,7 @@ export function SelectRolePage (props: SelectRolePageProps): ReactElement {
                             <Card.Header className = "text-center">
                                 <h5>Choose a role</h5> 
                             </Card.Header>
-                            <ListGroup variant = "flush">
+                            <ListGroup variant = "flush" className = "text-center">
                                 <ListGroup.Item 
                                     variant = "secondary" 
                                     action = {true}
@@ -56,8 +56,13 @@ export function SelectRolePage (props: SelectRolePageProps): ReactElement {
                                 >
                                     Teacher
                                 </ListGroup.Item>
-                                <ListGroup.Item>
-                                    Vestibulum at eros
+                                <ListGroup.Item 
+                                    variant = "secondary" 
+                                    action = {true}
+                                    as = {Link}
+                                    to = {"/student-dashboard"}
+                                >
+                                    Student
                                 </ListGroup.Item>
                             </ListGroup>
                         </Card>

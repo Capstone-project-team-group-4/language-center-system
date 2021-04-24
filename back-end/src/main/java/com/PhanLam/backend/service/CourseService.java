@@ -6,6 +6,7 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
@@ -15,6 +16,7 @@ import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,6 +29,7 @@ import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -41,17 +44,23 @@ public class CourseService {
     private UserRepository userRepository;
     private CourseTypeService courseTypeService;
     private JPAQueryFactory queryFactory;
+    private ClassSessionService classSessionService;
+    private SpareTimeRegisterService spareTimeRegisterService;
 
     public CourseService (
             CourseRepository courseRepository
             , UserRepository userRepository
             , CourseTypeService courseTypeService
             , EntityManager entityManager
+            , @Lazy ClassSessionService classSessionService
+            , @Lazy SpareTimeRegisterService spareTimeRegisterService
     ){
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.courseTypeService = courseTypeService;
+        this.classSessionService = classSessionService;
+        this.spareTimeRegisterService = spareTimeRegisterService;
         queryFactory = new JPAQueryFactory (entityManager);
     }
 
@@ -202,6 +211,13 @@ public class CourseService {
                     }
                     else {
                         userList.add (user);
+                        ClassSession classSession =course.getClassSession();
+
+                        //add student to class
+                        if(classSession !=null){
+                            classSession.getUserList().add(user);
+                            classSessionService.save(classSession);
+                        }
                     }
                 }
             }
@@ -288,8 +304,12 @@ public class CourseService {
     public DataPage<Course> getAllCourseAvailableToCreateClass(
             int pageIndex
             ,int pageSize
-            ,List<Integer> typeIds){
+            ,int spareTimeId){
 
+        SpareTimeRegister spareTimeRegister =spareTimeRegisterService.getById(spareTimeId);
+        List<Integer> courseTypeIds = spareTimeRegister.getCourseTypeList().stream()
+                .map(CourseType::getTypeID)
+                .collect(Collectors.toList());
         //validate request
         if ((pageIndex < 0) || (pageSize <= 0)) {
             throw new InvalidRequestArgumentException(
@@ -298,7 +318,6 @@ public class CourseService {
                             + "Parameter name: pageIndex, pageSize"
             );
         }
-        typeIds.forEach(typeId ->courseTypeService.getCourseTypeById(typeId));// check existed course type or not
 
         //get list
         QClassSession classSession = new QClassSession("classSession");;
@@ -308,7 +327,7 @@ public class CourseService {
         courseQueryResults = queryFactory
                 .selectFrom(course)
                 .leftJoin(course.classSession, classSession)
-                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(typeIds)))
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(courseTypeIds)))
                         .orderBy (course.courseName.asc ())
                         .limit (pageSize)
                         .offset (pageSize * pageIndex)
@@ -317,5 +336,22 @@ public class CourseService {
         List<Course> courses = courseQueryResults.getResults ();
         return new DataPage<>(totalRowCount,courses);
 
+    }
+
+    public List<Course> getAllCourse(){
+        return courseRepository.findAll();
+    }
+
+    public Course getCourseById(Integer courseID) {
+        return courseRepository.findById(courseID).orElseThrow();
+    }
+
+    public List<Course> getCoursesByCurrentUserName(String userName) {
+        User user = userRepository.findByUserName(userName).orElseThrow();
+        return user.getCourseList();
+    }
+
+    public Course getCourseByName(String courseName) {
+        return courseRepository.findByCourseName(courseName);
     }
 }

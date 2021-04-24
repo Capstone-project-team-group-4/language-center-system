@@ -53,6 +53,7 @@ public class ClassSessionService {
         SpareTimeRegister spareTimeRegister = spareTimeRegisterService.getById(classSessionRequest.getSpareTimeRegisterID());
         Course course = courseService.getByCourseId(classSessionRequest.getCourseID());
         Slot slot = slotService.getById(classSessionRequest.getSlotID());
+        User user = spareTimeRegister.getUserID();
 
         //validate request
         boolean isContainSlotInSpareRegister = spareTimeRegister.getSlotList()
@@ -68,7 +69,7 @@ public class ClassSessionService {
         }
 
         //check if teacher also is student
-        boolean isStudent = userService.isUserHaveInCourse(course.getCourseID(),spareTimeRegister.getUserID().getUserID());
+        boolean isStudent = userService.isUserHaveInCourse(course.getCourseID(),user.getUserID());
         if(isStudent){
             throw new InvalidRequestArgumentException("The teacher also is student of this course");
         }
@@ -78,6 +79,13 @@ public class ClassSessionService {
         if(users.size() != 0){
             throw new InvalidRequestArgumentException("User "+users+" already have class in slot "+slot.getSlotName());
         }
+
+        // check teacher
+        ClassSession classByTeacherAndSlot = getClassSessionByTeacherAndSlot(user.getUserID(),slot.getSlotID());
+        if(classByTeacherAndSlot !=null){
+            throw new InvalidRequestArgumentException("Teacher " + user.getUserName() + " already has class at slot " + slot.getSlotName());
+        }
+
 
         //set information for classSession
         classSession.setCourseID(course);
@@ -217,6 +225,12 @@ public class ClassSessionService {
         }
         classSession.setStatus(Constant.STATUS_INACTIVE_CLASS);
         save(classSession);
+    }
+
+    public ClassSession getClassSessionByTeacherAndSlot(int teacherId, int slotId) {
+        User user = userService.getById(teacherId);
+        Slot slot = slotService.getById(slotId);
+        return classSessionRepository.findByTeacherIDAndSlot(user,slot);
     }
 
 

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.security.Principal;
 import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
@@ -66,13 +65,24 @@ public class UserController {
             , @RequestParam int pageSize
     ){
         DataPage<User> userDataPage;
-
+        
         userDataPage = userService.getAllUserWithUserNameIsNot (
                 principal
                 , pageIndex
                 , pageSize
         );
         return userDataPage;
+    }
+    
+    @GetMapping ("/students")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<User> getAllStudents (
+            @RequestParam int pageIndex
+            , @RequestParam int pageSize){
+        DataPage<User> studentDataPage;
+        
+        studentDataPage = userService.getAllStudents(pageIndex, pageSize);
+        return studentDataPage;
     }
 
     @GetMapping ("/students:excluding-student-in-the-course")
@@ -91,7 +101,7 @@ public class UserController {
         );
         return studentDataPage;
     }
-
+    
     @GetMapping ("/courses/{courseID}/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentAreInTheCourse (

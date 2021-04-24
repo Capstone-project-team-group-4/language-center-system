@@ -8,6 +8,7 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +29,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -80,12 +83,13 @@ public class Lesson implements Serializable {
     @Column(name = "DateCreated", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @Column(name = "LastModified")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column (name = "LastModified")
+    @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
-    @JoinColumn(name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany (mappedBy = "lessonID", fetch = FetchType.LAZY)
+    private List<Document> documentList;
+    @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course courseID;
     
     public Lesson() {
@@ -180,6 +184,11 @@ public class Lesson implements Serializable {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    @XmlTransient
+    public List<Document> getDocumentList (){
+        return documentList;
     }
 
     public Course getCourseID() {

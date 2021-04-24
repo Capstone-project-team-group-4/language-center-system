@@ -49,7 +49,6 @@ export function HomePage (props: HomePageProps): ReactElement {
                                     </Media>
                                 </Container>
                             </Jumbotron>
-                            <div>sdasdsadsadsa</div>
                         </Col>
                     </Row>
                 </Container>

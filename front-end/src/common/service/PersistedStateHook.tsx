@@ -14,7 +14,7 @@ export function useSessionState<T> (
         let jsonState: string | null;
 
         jsonState = sessionStorage.getItem (key);
-        if (jsonState !== null){
+        if (jsonState != null){
             sessionState = JSON.parse (jsonState);
         }
         else {

@@ -6,7 +6,6 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
-
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
@@ -24,8 +23,6 @@ import org.springframework.data.domain.Sort.TypedSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +47,6 @@ public class UserService {
     public UserService (
             UserRepository userRepository
             , CourseRepository courseRepository
-            , EntityManager entityManager
             , @Lazy ClassSessionService classSessionService
             , @Lazy CourseService courseService
             , QueryFactoryGet queryFactoryGetter
@@ -60,7 +56,6 @@ public class UserService {
         this.courseRepository = courseRepository;
         this.queryFactoryGetter = queryFactoryGetter;
         this.courseService = courseService;
-        queryFactory = new JPAQueryFactory (entityManager);
     }
 
     @Transactional (readOnly = true)
@@ -93,7 +88,7 @@ public class UserService {
         Page<User> userPage;
         long totalRowCount;
         DataPage<User> userDataPage;
-
+        
         if ((pageIndex >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
             userSortInformation = Sort.sort (User.class);
@@ -183,6 +178,49 @@ public class UserService {
         }
     }
 
+    @Transactional (readOnly = true)
+    public DataPage<User> getAllStudents (         
+            int pageIndex
+            , int pageSize
+    ){
+        List<User> studentHolder;
+        QUser student;
+        QRole role;
+        QueryResults<User> studentPage;
+        DataPage<User> studentDataPage;
+        long totalRowCount;
+        
+        if ((pageIndex >= 0) && (pageSize > 0)){
+                student = new QUser ("student");
+                role = QRole.role;
+                queryFactory = queryFactoryGetter.getQueryFactory ();
+                studentPage = queryFactory
+                        .selectFrom (student)
+                            .leftJoin (student.roleList, role)                          
+                        .where (
+                                role.roleName.eq ("ROLE_STUDENT")                            
+                        )
+                        .orderBy (
+                                student.firstName.asc ()
+                                , student.lastName.asc ()
+                        )
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = studentPage.getTotal ();
+                studentHolder = studentPage.getResults ();
+                studentDataPage = new DataPage<> (totalRowCount, studentHolder);
+                return studentDataPage;
+            }
+            else {
+                throw new InvalidRequestArgumentException (
+                        "The page index number and page size number parameters "
+                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "Parameter name: pageIndex, pageSize"
+                );
+            }
+    }
+    
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID
@@ -326,7 +364,6 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow();
     }
 
-
     public User getByName(String userName){
         return userRepository.findByUserName(userName).orElseThrow();
     }
@@ -348,6 +385,7 @@ public class UserService {
         showUser.getAccountStatus();
         return userRepository.findById(userID).orElseThrow();
     }
+
     public List<User> getAllStudentsOfCourseAlreadyHaveClassInSlot(int slotId,int courseId){
         QCourse course;
         QClassSession classSession;
@@ -357,6 +395,7 @@ public class UserService {
         course = new QCourse("course");
         classSession = new QClassSession("classSession");
         user = new QUser("user");
+        queryFactory = queryFactoryGetter.getQueryFactory ();
         studentResults = queryFactory
                 .selectFrom(user)
                 .innerJoin(user.courseList, course)
@@ -390,10 +429,10 @@ public class UserService {
         }
 
         //get list
-        ClassSession classSession = classSessionService.getById (classId);
         student = new QUser("student");
         qRole = QRole.role;
         qClassSession = QClassSession.classSession;
+        queryFactory = queryFactoryGetter.getQueryFactory ();
         studentPage = queryFactory
                         .selectFrom(student).distinct()
                         .leftJoin(student.roleList, qRole)
@@ -413,7 +452,6 @@ public class UserService {
         studentHolder = studentPage.getResults();
         studentDataPage = new DataPage<>(totalRowCount, studentHolder);
         return studentDataPage;
-
     }
 
     public boolean isUserHaveInCourse(int courseId,int userId){

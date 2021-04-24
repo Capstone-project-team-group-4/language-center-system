@@ -33,6 +33,7 @@ import { ManageCoursePage } from './page/admin/ManageCoursePage';
 import {
   ManageStudentInCoursePage
 } from './page/admin/ManageStudentInCoursePage';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
 import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
 import { StudentDashboardPage } from './page/student/StudentDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
@@ -41,7 +42,6 @@ import { DetailPage } from './page/DetailPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { LessonDetailPage } from './page/student/LessonDetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
-import { ManageStudentPage } from './page/admin/ManageStudentPage';
 import { InfoPage } from './page/student/InfoPage';
 import { 
   ManageThingsInCoursePage 
@@ -49,6 +49,7 @@ import {
 import { 
   ManageExaminationInCoursePage 
 } from './page/admin/ManageExaminationInCoursePage';
+import { ManageLessonPage } from './page/admin/ManageLessonPage';
 import { TypeConvert } from './common/service/TypeConvert';
 import { 
   ManageThingsInExaminationPage 
@@ -176,6 +177,26 @@ export function App(): ReactElement {
         <HomePage modalDialog = {modalDialog} />
       </Route>
 
+      <ProtectedRoute
+        path = "/admin-console/manage-student-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageStudentPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+        />
+      </ProtectedRoute>
+
+      <Route exact path="/editStudentInfo/studentID">
+        <EditStudentInfo />
+      </Route>
+
+      <Route path="/admin-console/view-student-detail">
+        <ViewProfilePage />
+      </Route>
+
       <Route path = "/sign-up-page">
         <SignUpPage
           dialogController = {dialogController}
@@ -218,11 +239,6 @@ export function App(): ReactElement {
       <Route path = "/user_detail/:studentID">
         <DetailPage />
       </Route>
-
-      <Route path = "/admin-console/manage-student-page">
-        <ManageStudentPage />
-      </Route>
-
 
       <ProtectedRoute
         path = "/admin-console/create-account-request-page"
@@ -335,6 +351,17 @@ export function App(): ReactElement {
           dialogController = {dialogController}
           modalDialog = {modalDialog} 
           typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/admin-console/manage-lesson-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <ManageLessonPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
         />
       </ProtectedRoute>
 

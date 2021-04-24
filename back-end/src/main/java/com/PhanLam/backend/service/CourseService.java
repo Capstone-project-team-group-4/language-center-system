@@ -287,7 +287,15 @@ public class CourseService {
             }
         }
     }
-
+    
+    public List<Course> getAllCourse(){
+        return courseRepository.findAll();
+    }
+    
+    public Course getCourseById(Integer courseID) {     
+        return courseRepository.findById(courseID).orElseThrow();
+    }
+    
     public Course getByCourseId(int id){
         Optional<Course> nullableCourse = courseRepository.findById(id);
         if(!nullableCourse.isPresent()){
@@ -328,14 +336,6 @@ public class CourseService {
         List<Course> courses = courseQueryResults.getResults ();
         return new DataPage<>(totalRowCount,courses);
 
-    }
-
-    public List<Course> getAllCourse(){
-        return courseRepository.findAll();
-    }
-
-    public Course getCourseById(Integer courseID) {
-        return courseRepository.findById(courseID).orElseThrow();
     }
 
     public List<Course> getCoursesByCurrentUserName(String userName) {

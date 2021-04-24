@@ -259,6 +259,7 @@ export function App(): ReactElement {
       </Route>
 
       <Route path = "/user_detail/:studentID">
+        <PageHeader logOut = {logOut} />
         <DetailPage />
       </Route>
 

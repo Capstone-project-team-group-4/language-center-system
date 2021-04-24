@@ -375,6 +375,10 @@ public class CourseService {
     /**
      * getAllCourse<br>
      * 
+     * <pre>
+     * 
+     * </pre>
+     * 
      * @return 
      */
     public List<Course> getAllCourse(){
@@ -384,6 +388,10 @@ public class CourseService {
     /**
      * getCourseById<br>
      * 
+     * <pre>
+     * 
+     * </pre>
+     * 
      * @param courseID
      * @return 
      */
@@ -391,6 +399,16 @@ public class CourseService {
         return courseRepository.findById(courseID).orElseThrow();
     }
 
+    /**
+     * getByCourseId<br>
+     * 
+     * <pre>
+     * 
+     * </pre>
+     * 
+     * @param id
+     * @return 
+     */
     public Course getByCourseId(int id){
         Optional<Course> nullableCourse = courseRepository.findById(id);
         if(!nullableCourse.isPresent()){
@@ -399,6 +417,18 @@ public class CourseService {
         return nullableCourse.get();
     }
     
+    /**
+     * getAllCourseAvailableToCreateClass<br>
+     * 
+     * <pre>
+     * 
+     * </pre>
+     * 
+     * @param pageIndex
+     * @param pageSize
+     * @param typeIds
+     * @return DataPage
+     */
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourseAvailableToCreateClass(
             int pageIndex
@@ -437,6 +467,10 @@ public class CourseService {
     /**
      * getCourseByCurrentUserName<br>
      * 
+     * <pre>
+     * 
+     * </pre>
+     * 
      * @param userName
      * @return 
      */
@@ -447,6 +481,10 @@ public class CourseService {
     
     /**
      * getCourseName<br>
+     * 
+     * <pre>
+     * 
+     * </pre>
      * 
      * @param courseName
      * @return 

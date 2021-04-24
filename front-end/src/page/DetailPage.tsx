@@ -14,9 +14,14 @@ import './ViewProfilePage.css';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 function renderUserTable (
-    user: User
+    user: any
     // , index: number
 ): ReactElement {
+    const date = new Date(user.dob);
+    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+    const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date);
+    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
     return (
         <table key={user.userID} className="table table-bordered">
             <tr>
@@ -29,7 +34,7 @@ function renderUserTable (
             </tr>
             <tr>
                 <th>DoB</th>
-                <td>{user.dob.toString()}</td>
+                <td>{day}-{month}-{year}</td>
             </tr>
             <tr>
                 <th>Email</th>
@@ -57,11 +62,11 @@ function renderUserTable (
             </tr>
             <tr>
                 <th>Last Login</th>
-                <td>{user.lastLogin.toString()}</td>
+                <td>{(user.lastLogin) ? user.lastLogin.toString() : ""}</td>
             </tr>
             <tr>
                 <th>Last Modified</th>
-                <td>{user.lastModified.toString()}</td>
+                <td>{(user.lastModified) ? user.lastModified.toString() : ""}</td>
             </tr>
         </table>
     );

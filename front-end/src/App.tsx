@@ -64,7 +64,7 @@ export interface DataPage<T> {
   pageDataHolder: T[];
 }
 
-export function App (): ReactElement {
+export function App(): ReactElement {
 
   // Variables declaration:
   let [showDialog, setShowDialog] = useState<boolean> (false);
@@ -140,7 +140,7 @@ export function App (): ReactElement {
     , acceptableRoleNameHolder
   );
 
-  async function logOut (): Promise<void> {
+  async function logOut(): Promise<void> {
     try {
       await logOutAPI.logOut();
       history.push("/");

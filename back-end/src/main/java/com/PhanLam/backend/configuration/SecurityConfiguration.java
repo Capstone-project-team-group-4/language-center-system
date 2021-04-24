@@ -32,10 +32,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    
+
     // Variables declaration:
     private UserInformationGet userInformationGetter;
-    private SecurityResponseBuild securityResponseBuilder; 
+    private SecurityResponseBuild securityResponseBuilder;
 
     public SecurityConfiguration (
             UserInformationGet userInformationGetter
@@ -48,16 +48,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public Argon2PasswordEncoder getPasswordEncoderForEncoding (){
         Argon2PasswordEncoder passwordEncoder;
-        
+
         passwordEncoder = new Argon2PasswordEncoder ();
         return passwordEncoder;
     }
-    
+
     @Bean
     public DelegatingPasswordEncoder getPasswordEncoderForMatches (){
         DelegatingPasswordEncoder passwordEncoderForMatches;
-        
-        passwordEncoderForMatches 
+
+        passwordEncoderForMatches
                 = (DelegatingPasswordEncoder) PasswordEncoderFactories
                         .createDelegatingPasswordEncoder ();
         passwordEncoderForMatches.setDefaultPasswordEncoderForMatches (
@@ -65,12 +65,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         );
         return passwordEncoderForMatches;
     }
-    
+
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource (){
         CorsConfiguration corsConfiguration;
         UrlBasedCorsConfigurationSource source;
-        
+
         corsConfiguration = new CorsConfiguration ();
         corsConfiguration.addAllowedOriginPattern ("http://localhost:3000");
         corsConfiguration.addAllowedOriginPattern ("http://localhost:3000/**");
@@ -84,19 +84,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         );
         return source;
     }
-    
+
     @Bean
     public HttpStatusReturningLogoutSuccessHandler getLogoutSuccessHandler (){
         HttpStatusReturningLogoutSuccessHandler logoutSuccessHandler;
-        
+
         logoutSuccessHandler = new HttpStatusReturningLogoutSuccessHandler ();
         return logoutSuccessHandler;
-    } 
-    
+    }
+
     @Override
     protected void configure (
             AuthenticationManagerBuilder authenticationManagerBuilder
-    ) throws Exception { 
+    ) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService (userInformationGetter)
                 .passwordEncoder (getPasswordEncoderForMatches ());
@@ -116,7 +116,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         security.authorizeRequests ()
                 .antMatchers (HttpMethod.GET, "/logged-in-user")
                         .authenticated ()
-                
+
                 .antMatchers (HttpMethod.GET, "/register-forms")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.POST, "/register-forms")
@@ -125,19 +125,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/register-forms/*")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.GET, "/users*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PATCH, "/users/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
-                
-                .antMatchers (HttpMethod.GET, "/students*")
-                        .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.GET, "/getStudent/*")
-                        .hasRole ("ADMIN")  
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PUT, "/editInfo/*")
                         .hasRole ("ADMIN")
                 .antMatchers (
@@ -145,7 +142,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         , "/students:excluding-student-in-the-course"
                 )
                         .hasRole ("ADMIN")
-                
                 .antMatchers (HttpMethod.POST, "/courses")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses")
@@ -157,7 +153,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/courses/*")
                         .hasRole ("ADMIN")
                 
-                
                 .antMatchers (HttpMethod.POST, "/lessons")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/lessons")
@@ -168,10 +163,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/lessons/*")
                         .hasRole ("ADMIN")
-                
+               
+                .antMatchers (HttpMethod.GET, "/courses-for-create-class")
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses/*/students")
                         .hasRole ("ADMIN")
-                
+                .antMatchers (HttpMethod.GET, "/classes/*/students")
+                        .hasRole ("TEACHER")
+
                 .antMatchers (HttpMethod.POST, "/courses/*/examinations")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses/*/examinations")
@@ -184,7 +183,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PATCH, "/examinations/*")
                         .hasRole ("ADMIN")
-                
+                .antMatchers (HttpMethod.GET, "/examinations")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/examinations/*")
+                        .hasRole ("ADMIN")
+
                 .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
                 
@@ -194,7 +197,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/course-types/*/course-levels")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.POST, "/quizzes")
                         .hasRole ("TEACHER")
                 .antMatchers (HttpMethod.GET, "/quizzes*")
@@ -211,11 +214,45 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.GET, "/getCourseByName*")
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/myCourses*")
-                        .hasRole ("STUDENT")   
+                        .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/id*")
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/lesson*")
                         .hasRole ("STUDENT")
+
+                .antMatchers(HttpMethod.GET, "/spare-time-register/*")
+                    .hasAnyRole("ADMIN","TEACHER")
+                .antMatchers(HttpMethod.GET, "/spare-time-register*")
+                .   hasAnyRole("ADMIN","TEACHER")
+                .antMatchers(HttpMethod.POST, "/spare-time-register/*")
+                .hasAnyRole("TEACHER")
+                .antMatchers(HttpMethod.POST, "/spare-time-register*")
+                .   hasAnyRole("TEACHER")
+                .antMatchers(HttpMethod.DELETE, "/spare-time-register/*")
+                .   hasAnyRole("TEACHER")
+                .antMatchers(HttpMethod.DELETE, "/spare-time-register*")
+                .   hasAnyRole("TEACHER")
+                .antMatchers(HttpMethod.PUT, "/spare-time-register*")
+                .   hasAnyRole("TEACHER")
+                .antMatchers(HttpMethod.PUT, "/spare-time-register*")
+                .   hasAnyRole("TEACHER")
+
+                .antMatchers(HttpMethod.POST, "/class-sessions*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/class-sessions/*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/class-sessions*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/class-sessions/*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/class-sessions*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/class-sessions/*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/class-sessions*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/class-sessions/*")
+                .   hasAnyRole("ADMIN")
                 .anyRequest ().denyAll ();
     }
 }

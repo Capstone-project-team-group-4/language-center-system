@@ -8,6 +8,7 @@ import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -35,7 +36,7 @@ public class ClassSessionService {
                                CourseTypeService courseTypeService,
                                SlotService slotService,
                                EntityManager entityManager,
-                               SpareTimeRegisterService spareTimeRegisterService,
+                               @Lazy SpareTimeRegisterService spareTimeRegisterService,
                                CourseService courseService,
                                UserService userService
     ) {

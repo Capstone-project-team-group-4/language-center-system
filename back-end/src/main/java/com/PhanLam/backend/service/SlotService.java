@@ -6,6 +6,7 @@ import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class SlotService {
 
     public SlotService(SlotRepository slotRepository
             , EntityManager entityManager
-            , SpareTimeRegisterService spareTimeRegisterService) {
+            , @Lazy SpareTimeRegisterService spareTimeRegisterService) {
         this.slotRepository = slotRepository;
         this.spareTimeRegisterService = spareTimeRegisterService;
         queryFactory = new JPAQueryFactory (entityManager);

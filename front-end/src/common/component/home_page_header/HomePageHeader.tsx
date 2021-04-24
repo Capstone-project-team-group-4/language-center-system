@@ -8,6 +8,7 @@ import './HomePageHeader.css';
 import Carousel1 from './Carousel-1.jpg';
 import Carousel2 from './Carousel-2.jpg';
 import Carousel3 from './Carousel-3.jpg';
+import { textSpanEnd } from "typescript";
 
 export function HomePageHeader (): ReactElement {
     return (
@@ -24,10 +25,9 @@ export function HomePageHeader (): ReactElement {
                         />
                         <Carousel.Caption>
                             <h1>Welcome to Language Center</h1>
-                            <p>
-                                Nâng cao kỹ năng giao tiếp
-                                , sử dụng Tiếng Anh trong môi trường công sở
-                                , nâng tầm sự phát triển của doanh nghiệp.
+                            <p style={{textAlign:'left'}}>
+                            LCS has a mission to help improve and improve foreign languages for employees, 
+                            students easily get job opportunities and deeply integrate in the knowledge economy.
                             </p>
                         </Carousel.Caption>
                     </Carousel.Item>
@@ -38,8 +38,11 @@ export function HomePageHeader (): ReactElement {
                             alt="Third slide"
                         />
                         <Carousel.Caption>
-                            <h1>Foreign language certificates</h1>
-                            <p>Lorem ipsum dolor sit amet</p>
+                            <h1 style={{textAlign:'left'}}>Career Skills - Soft skills develop themselves at work</h1>
+                            <p style={{textAlign:'left'}}>
+                            Giving learners 5 essential and important soft skills for employees: Study skills; 
+                            Personal development skills; Communication skills; Speech skills; Leadership skills
+                            </p>
                         </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item>
@@ -49,8 +52,11 @@ export function HomePageHeader (): ReactElement {
                             alt="Third slide"
                         />
                         <Carousel.Caption>
-                            <h1>Third slide label</h1>
-                            <p>Praesent commodo cursus magna</p>
+                            <h1 style={{textAlign:'left'}}>JLPT certified Japanese for student and employee</h1>
+                            <p style={{textAlign:'left'}}>
+                            Expand your opportunities for personal development by Japanese-Language Proficiency Test - JLPT
+                            with a commitment to meeting the output standards with a minimum of N4
+                            </p>
                         </Carousel.Caption>
                     </Carousel.Item>
                 </Carousel>
@@ -62,8 +68,16 @@ export function HomePageHeader (): ReactElement {
                     expand = "md"
                     className = "w-100 px-5"
                 >
-                    <Navbar.Brand as = {Link} to = "/" className = "py-4">
-                        Logo
+                    <Navbar.Brand as = {Link} to = "/" 
+                                className = "py-4" 
+                                style={{fontFamily: 'Calibri', 
+                                        fontWeight: 'bold',
+                                        color: 'white',
+                                    }}
+                    >
+                        <span style={{fontSize: 40 + 'px', verticalAlign: 'top'}} >LCS</span>
+                        {/* <span style={{fontSize:10}}>Language Center System</span> */}
+                        
                     </Navbar.Brand>
                     <Nav 
                         id = "NavLinkSection" 
@@ -78,6 +92,9 @@ export function HomePageHeader (): ReactElement {
                         </Nav.Link>
                         <Nav.Link as = {Link} to = "/log-in-page">
                             Log in
+                        </Nav.Link>
+                        <Nav.Link as = {Link} to = "/contact-us">
+                            Contact us
                         </Nav.Link>
                     </Nav>
                     <Form className = "d-md-inline-flex">

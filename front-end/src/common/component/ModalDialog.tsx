@@ -9,7 +9,7 @@ export class DialogControl {
     public setDialogBody: (dialogBody: string) => void;
     public setDialogType: (dialogType: string) => void;
     public setDialogIsConfirmed: (dialogIsConfirmed: boolean) => void;
-    public dialogIsConfirmed: boolean; 
+    public dialogIsConfirmed: boolean;
 
     constructor (
             setShowDialog: (showDialog: boolean) => void

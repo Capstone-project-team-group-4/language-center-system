@@ -29,16 +29,19 @@ public class SpareTimeRegisterService {
     private CourseTypeService courseTypeService;
     private SlotService slotService;
     private JPAQueryFactory queryFactory;
+    private ClassSessionService classSessionService;
 
     public SpareTimeRegisterService(SpareTimeRegisterRepository spareTimeRegisterRepository,
                                     UserService userService,
                                     CourseTypeService courseTypeService,
                                     SlotService slotService,
+                                    ClassSessionService classSessionService,
                                     EntityManager entityManager) {
         this.spareTimeRegisterRepository = spareTimeRegisterRepository;
         this.userService = userService;
         this.courseTypeService = courseTypeService;
         this.slotService = slotService;
+        this.classSessionService =classSessionService;
         queryFactory = new JPAQueryFactory(entityManager);
     }
 
@@ -117,10 +120,10 @@ public class SpareTimeRegisterService {
         for (int id : spareTimeRegisterRequest.getListSlotId()) {
             Slot slot = slotService.getById(id);
 
-            //check teacher already register this slot or not
-            List<SpareTimeRegister> spareTimeRegisters = getSpareRegisterByTeacherAndSlot(teacher.getUserID(), slot.getSlotID());
-            if (spareTimeRegisters.size() > 0) {
-                throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " has already register slot " + slot.getSlotID());
+            //check teacher already have class in this slot or not
+            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(),id);
+            if (classSession != null) {
+                throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " already has class at slot " + slot.getSlotName());
             }
             listSlot.add(slot);
         }
@@ -163,10 +166,10 @@ public class SpareTimeRegisterService {
         for (int id : spareTimeRegisterRequest.getListSlotId()) {
             Slot slot = slotService.getById(id);
 
-            //check teacher already register this slot or not
-            List<SpareTimeRegister> spareTimeRegisters = getSpareRegisterByTeacherAndSlotExcludeSpareTimeId(teacher.getUserID(), slot.getSlotID(), spareTimeRegister.getSpareTimeID());
-            if (spareTimeRegisters.size() > 0) {
-                throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " has already register slot " + slot.getSlotID());
+            //check teacher already have class in this slot or not
+            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(),id);
+            if (classSession != null) {
+                throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " already has class at slot " + slot.getSlotName());
             }
             listSlot.add(slot);
         }

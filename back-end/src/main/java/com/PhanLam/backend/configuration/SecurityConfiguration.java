@@ -220,6 +220,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/lesson*")
                         .hasRole ("STUDENT")
+                .antMatchers (HttpMethod.GET, "/getProfile*")
+                        .hasRole ("STUDENT")
+                .antMatchers (HttpMethod.PUT, "/updateMyProfile*")
+                        .hasRole ("STUDENT")
 
                 .antMatchers(HttpMethod.GET, "/spare-time-register/*")
                     .hasAnyRole("ADMIN","TEACHER")

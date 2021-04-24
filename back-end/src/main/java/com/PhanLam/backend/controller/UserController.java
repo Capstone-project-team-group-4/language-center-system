@@ -178,6 +178,19 @@ public class UserController {
         User showUser = userService.showInfo(user, userID);
         return showUser;
     }
+    
+    @GetMapping("/getProfile")
+    @ResponseStatus(HttpStatus.OK)
+    public User getProfile(@RequestParam(value = "userName") String userName) {
+        User user = userService.getProfileByUserName(userName);
+        return user;
+    }
+    
+    @PutMapping("/updateMyProfile")
+    @ResponseStatus(HttpStatus.OK)
+    public User updateProfile(@RequestBody User user, @RequestParam(value = "userName") String userName) {
+        return userService.updateProfile(user, userName);
+    }
 
     @GetMapping ("/classes/{classID}/students")
     @ResponseStatus (HttpStatus.OK)

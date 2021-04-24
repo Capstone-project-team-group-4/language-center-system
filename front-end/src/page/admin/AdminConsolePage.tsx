@@ -106,14 +106,39 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
+
                                 <Card>
                                     <Accordion.Toggle 
                                         as = {Card.Header} 
                                         eventKey = "2"
                                     >
-                                        Examination
+                                        Teacher
                                     </Accordion.Toggle>
                                     <Accordion.Collapse eventKey = "2">
+                                        <Card.Body>
+                                            <Button 
+                                                variant = "success"
+                                                block = {true}
+                                                as = {Link}
+                                                to = {
+                                                    "/admin-console"
+                                                    + "/manage-teacher-page"
+                                                }
+                                            >
+                                                Manage Teacher
+                                            </Button>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+
+                                <Card>
+                                    <Accordion.Toggle 
+                                        as = {Card.Header} 
+                                        eventKey = "3"
+                                    >
+                                        Examination
+                                    </Accordion.Toggle>
+                                    <Accordion.Collapse eventKey = "3">
                                         <Card.Body>
                                             <Button 
                                                 variant = "success"

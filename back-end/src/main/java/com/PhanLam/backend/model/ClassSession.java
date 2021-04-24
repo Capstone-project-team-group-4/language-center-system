@@ -73,6 +73,9 @@ public class ClassSession implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Slot slot;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classSession", fetch = FetchType.LAZY)
+    private List<Comment> commentList;
 
     public ClassSession (){
     }
@@ -150,6 +153,15 @@ public class ClassSession implements Serializable {
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
         spareTimeRegisterID = spareTimeRegisterID;
+    }
+
+    @XmlTransient
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 
     @Override

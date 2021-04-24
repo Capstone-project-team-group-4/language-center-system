@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "Comment", catalog = "LanguageCenterDB", schema = "dbo")
 public class Comment {
     private static final long serialVersionUID = 1L;
 

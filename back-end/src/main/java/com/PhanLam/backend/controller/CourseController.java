@@ -10,8 +10,6 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.service.CourseService;
-import java.util.List;
-import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,11 +111,11 @@ public class CourseController {
     public DataPage<Course> getAllCourseAvailableToCreateClass (
             @RequestParam int pageIndex
             , @RequestParam int pageSize
-            , @RequestParam List<Integer> typeIds
+            , @RequestParam int spareTimeId
     ){
         DataPage<Course> courseDataPage;
 
-        courseDataPage = courseService.getAllCourseAvailableToCreateClass (pageIndex, pageSize,typeIds);
+        courseDataPage = courseService.getAllCourseAvailableToCreateClass (pageIndex, pageSize,spareTimeId);
         return courseDataPage;
     }
 }

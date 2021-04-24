@@ -240,6 +240,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .   hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/class-sessions/*")
                 .   hasAnyRole("ADMIN")
+
+                .antMatchers (HttpMethod.GET, "/slots-for-create-class")
+                .hasRole ("ADMIN")
+
                 .anyRequest ().denyAll ();
 
 

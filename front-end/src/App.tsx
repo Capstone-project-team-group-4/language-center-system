@@ -213,10 +213,19 @@ export function App(): ReactElement {
         <ViewProfilePage />
       </Route>
 
-      <Route path = "/admin-console/manage-teacher-page">
+      {/* <Route path = "/admin-console/manage-teacher-page">
         <PageHeader logOut = {logOut}/>
         <ManageTeacherPage />
-      </Route>
+      </Route> */}
+
+      <ProtectedRoute
+        path = "/admin-console/manage-teacher-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage/>
+      </ProtectedRoute>
 
       <Route path = "/sign-up-page">
         <SignUpPage

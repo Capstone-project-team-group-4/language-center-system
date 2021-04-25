@@ -64,7 +64,7 @@ public class CourseService {
      * userRepository and courseRepository
      * </pre>
      * 
-     * @param courseRepository a.
+     * @param courseRepository
      * @param userRepository 
      */
     public CourseService (

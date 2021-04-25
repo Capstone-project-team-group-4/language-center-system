@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Phan Lam
  */
 @RestController
-@Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class UserController {
 
     // Variables declaration:
@@ -49,8 +48,8 @@ public class UserController {
     private UserRepository userRepository;
 
     public UserController(
-            UserService userService,
-            UserRepository userRepository
+            UserService userService
+            , UserRepository userRepository
     ) {
         this.userService = userService;
         this.userRepository = userRepository;
@@ -58,7 +57,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> listUsers() {
-        List listUsers = new ArrayList<>();
+        List listUsers = new ArrayList<> ();
         listUsers = userService.getAll();
         return listUsers;
     }
@@ -139,7 +138,7 @@ public class UserController {
     public void enableUser (
             @PathVariable int userID
     ) {
-        userService.enableUserByID(userID);
+        userService.enableUserByID (userID);
     }
 
     @DeleteMapping ("/users/{userID}")

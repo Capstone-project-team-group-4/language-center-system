@@ -74,20 +74,20 @@ public class User implements Serializable {
     @Basic(optional = false)
     @Column(name = "UserID", nullable = false)
     private Integer userID;
-    @Basic(optional = false)
+    @Basic (optional = false)
     @NotNull
-    @Size(min = 1, max = 400)
-    @Column(name = "UserName", nullable = false, length = 400)
+    @Size (min = 1, max = 400)
+    @Column (name = "UserName", nullable = false, length = 400)
     private String userName;
     @Basic(optional = false)
-    @NotNull()
+    @NotNull
     @Size(min = 1, max = 1000)
     @Column(name = "FirstName", nullable = false, length = 1000)
     private String firstName;
-    @Basic (optional = false)
+    @Basic(optional = false)
     @NotNull
-    @Size (min = 1, max = 1000)
-    @Column (name = "MiddleName", nullable = false, length = 1000)
+    @Size(min = 1, max = 1000)
+    @Column(name = "MiddleName", nullable = false, length = 1000)
     private String middleName;
     @Basic(optional = false)
     @NotNull
@@ -107,14 +107,13 @@ public class User implements Serializable {
     private Date dob;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "PhoneNumber", nullable = false, length = 100)
+    @Size (min = 1, max = 100)
+    @Column (name = "PhoneNumber", nullable = false, length = 100)
     private String phoneNumber;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "Gender", nullable = false, length = 100)
+    @Size (min = 0, max = 100)
+    @Column (name = "Gender", nullable = false, length = 100)
     private String gender;
     @Size(max = 500)
     @Column(name = "Job", length = 500)
@@ -125,18 +124,19 @@ public class User implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "SelfDescription", length = 2147483647)
     private String selfDescription;
+    @JsonIgnore
     @Basic(optional = false)
-    @NotNull()
-    @Size(min = 1, max = 1000)
-    @Column(name = "Password", nullable = false, length = 1000)
+    @NotNull
+    @Size (min = 1, max = 1000)
+    @Column (name = "Password", nullable = false, length = 1000)
     private String password;
     @Basic(optional = false)
-    @NotNull()
-    @Size(min = 1, max = 100)
-    @Column(name = "AccountStatus", nullable = false, length = 100)
+    @NotNull
+    @Size (min = 1, max = 100)
+    @Column (name = "AccountStatus", nullable = false, length = 100)
     private String accountStatus;
     @Basic(optional = false)
-    @NotNull()
+    @NotNull
     @Column(name = "DateCreated", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
@@ -192,7 +192,6 @@ public class User implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<StudentScore> studentScoreList;
 
     @JsonIgnore
@@ -238,51 +237,51 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getUserID (){
+    public Integer getUserID() {
         return userID;
     }
 
-    public void setUserID (Integer userID){
+    public void setUserID(Integer userID) {
         this.userID = userID;
     }
-    
-    public String getUserName() {
+
+    public String getUserName (){
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName (String userName){
         this.userName = userName;
     }
 
-    public String getFirstName() {
+    public String getFirstName (){
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName (String firstName){
         this.firstName = firstName;
     }
 
-    public String getMiddleName() {
+    public String getMiddleName (){
         return middleName;
     }
 
-    public void setMiddleName(String middleName) {
+    public void setMiddleName (String middleName){
         this.middleName = middleName;
     }
 
-    public String getLastName() {
+    public String getLastName (){
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName (String lastName){
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public String getEmail (){
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail (String email){
         this.email = email;
     }
 
@@ -298,63 +297,63 @@ public class User implements Serializable {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber (String phoneNumber){
         this.phoneNumber = phoneNumber;
     }
 
-    public String getGender() {
+    public String getGender (){
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender (String gender){
         this.gender = gender;
     }
 
-    public String getJob() {
+    public String getJob (){
         return job;
     }
 
-    public void setJob(String job) {
+    public void setJob (String job){
         this.job = job;
     }
 
-    public String getPhotoURI() {
+    public String getPhotoURI (){
         return photoURI;
     }
 
-    public void setPhotoURI(String photoURI) {
+    public void setPhotoURI (String photoURI){
         this.photoURI = photoURI;
     }
 
-    public String getSelfDescription() {
+    public String getSelfDescription (){
         return selfDescription;
     }
 
-    public void setSelfDescription(String selfDescription) {
+    public void setSelfDescription (String selfDescription){
         this.selfDescription = selfDescription;
     }
 
-    public String getPassword() {
+    public String getPassword (){
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword (String password){
         this.password = password;
     }
 
-    public String getAccountStatus() {
+    public String getAccountStatus (){
         return accountStatus;
     }
 
-    public void setAccountStatus(String accountStatus) {
+    public void setAccountStatus (String accountStatus){
         this.accountStatus = accountStatus;
     }
 
-    public Date getDateCreated() {
+    public Date getDateCreated (){
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated (Date dateCreated){
         this.dateCreated = dateCreated;
     }
 

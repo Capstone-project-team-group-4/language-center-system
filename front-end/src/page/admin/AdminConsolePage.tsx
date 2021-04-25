@@ -156,11 +156,11 @@ export function AdminConsolePage (props: AdminConsolePageProps): ReactElement {
                                 <Card>
                                     <Accordion.Toggle 
                                         as = {Card.Header} 
-                                        eventKey = "3"
+                                        eventKey = "4"
                                     >
                                         Examination
                                     </Accordion.Toggle>
-                                    <Accordion.Collapse eventKey = "3">
+                                    <Accordion.Collapse eventKey = "4">
                                         <Card.Body>
                                             <Button 
                                                 variant = "success"

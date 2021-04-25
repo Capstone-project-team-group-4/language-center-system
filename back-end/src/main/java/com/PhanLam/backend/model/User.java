@@ -6,6 +6,8 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -62,7 +67,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin"),
     @NamedQuery(name = "User.findByLastModified", query = "SELECT u FROM User u WHERE u.lastModified = :lastModified")})
 public class User implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "UserID", nullable = false)
+    private Integer userID;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 400)
@@ -129,19 +140,13 @@ public class User implements Serializable {
     @Column(name = "DateCreated", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "UserID", nullable = false)
-    private Integer userID;
     @Column(name = "LastLogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
     @Column(name = "LastModified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModified;
-    
+
     @JsonIgnore
     @ManyToMany (
             mappedBy = "userList"
@@ -155,10 +160,11 @@ public class User implements Serializable {
     )
     private List<Course> courseList;
     
+    @JsonIgnore
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ClassSession> classList;
-    
+
     @JsonIgnore
     @JoinTable (name = "UserRole", joinColumns = {
         @JoinColumn (
@@ -182,19 +188,21 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Role> roleList;
-    
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.EAGER)
+
+    @JsonIgnore
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<StudentScore> studentScoreList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
+
     @JsonIgnore
-    private List<ClassSession> classList1;  
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "teacherID", fetch = FetchType.LAZY)
+    private List<ClassSession> classList1;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<Address> addressList;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -202,8 +210,8 @@ public class User implements Serializable {
             , mappedBy = "creator"
             , fetch = FetchType.LAZY
     )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestionList = new ArrayList<MultipleChoiceQuestion>();
-    
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
+
     public User (){
         multipleChoiceQuestionList = new ArrayList<>();
     }
@@ -231,6 +239,14 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
     }
 
+    public Integer getUserID (){
+        return userID;
+    }
+
+    public void setUserID (Integer userID){
+        this.userID = userID;
+    }
+    
     public String getUserName() {
         return userName;
     }
@@ -271,7 +287,15 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getPhoneNumber (){
         return phoneNumber;
     }
 
@@ -335,24 +359,6 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getUserID() {
-        return userID;
-    }
-
-    public void setUserID(Integer userID) {
-        this.userID = userID;
-    }
-
-    
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-    
-    
     public Date getLastLogin() {
         return lastLogin;
     }
@@ -368,7 +374,7 @@ public class User implements Serializable {
     public void setLastModified (Date lastModified){
         this.lastModified = lastModified;
     }
-    
+
     @XmlTransient
     public List<Course> getCourseList (){
         return courseList;
@@ -386,7 +392,7 @@ public class User implements Serializable {
     public void setClassList (List<ClassSession> classList){
         this.classList = classList;
     }
-    
+
     @XmlTransient
     public List<Role> getRoleList (){
         return roleList;
@@ -413,7 +419,7 @@ public class User implements Serializable {
     public void setStudentScoreList (List<StudentScore> studentScoreList){
         this.studentScoreList = studentScoreList;
     }
-    
+
     @XmlTransient
     public List<ClassSession> getClassList1 (){
         return classList1;
@@ -422,7 +428,7 @@ public class User implements Serializable {
     public void setClassList1 (List<ClassSession> classList1){
         this.classList1 = classList1;
     }
-    
+
     @XmlTransient
     public List<Address> getAddressList() {
         return addressList;
@@ -565,32 +571,32 @@ public class User implements Serializable {
 
     @Override
     public String toString (){
-        return "User {" 
-                + "userID=" + userID 
-                + ", userName=" + userName 
-                + ", firstName=" + firstName 
-                + ", middleName=" + middleName 
-                + ", lastName=" + lastName 
-                + ", email=" + email 
-                + ", dob=" + dob 
-                + ", phoneNumber=" + phoneNumber 
-                + ", gender=" + gender 
-                + ", job=" + job 
-                + ", photoURI=" + photoURI 
-                + ", selfDescription=" + selfDescription 
+        return "User {"
+                + "userID=" + userID
+                + ", userName=" + userName
+                + ", firstName=" + firstName
+                + ", middleName=" + middleName
+                + ", lastName=" + lastName
+                + ", email=" + email
+                + ", dob=" + dob
+                + ", phoneNumber=" + phoneNumber
+                + ", gender=" + gender
+                + ", job=" + job
+                + ", photoURI=" + photoURI
+                + ", selfDescription=" + selfDescription
                 + ", password=[protected]"
-                + ", accountStatus=" + accountStatus 
-                + ", dateCreated=" + dateCreated 
-                + ", lastLogin=" + lastLogin 
-                + ", lastModified=" + lastModified 
-                + ", courseList=" + courseList 
-                + ", classList=" + classList 
-                + ", roleList=" + roleList 
-                + ", spareTimeRegisterList=" + spareTimeRegisterList 
-                + ", studentScoreList=" + studentScoreList 
-                + ", classList1=" + classList1 
-                + ", addressList=" + addressList 
-                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
+                + ", accountStatus=" + accountStatus
+                + ", dateCreated=" + dateCreated
+                + ", lastLogin=" + lastLogin
+                + ", lastModified=" + lastModified
+                + ", courseList=" + courseList
+                + ", classList=" + classList
+                + ", roleList=" + roleList
+                + ", spareTimeRegisterList=" + spareTimeRegisterList
+                + ", studentScoreList=" + studentScoreList
+                + ", classList1=" + classList1
+                + ", addressList=" + addressList
+                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
         + '}';
     }
 }

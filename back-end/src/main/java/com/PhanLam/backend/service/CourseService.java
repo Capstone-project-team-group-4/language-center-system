@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * CourseService.java
+ *
+ * All Rights Reserved
+ * Copyright (c) 2021 FPT University
  */
 package com.PhanLam.backend.service;
 
@@ -11,13 +12,11 @@ import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.Course;
-import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.model.User;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import com.PhanLam.backend.model.*;
+import com.PhanLam.backend.service.common.Constant;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,31 +25,77 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 /**
- *
+ * CourseService class <br>
+ * 
+ * <pre>
+ * Service class for managing Course objects
+ * </pre>
+ * 
+ * @author roboc
  * @author Phan Lam
+ * @version 1.0
  */
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class CourseService {
     
-    // Variables declaration:
+    /**
+     * Variables declaration:
+     * - userRepository
+     * - courseRepository
+     */
     private CourseRepository courseRepository;
     private UserRepository userRepository;
-
+    private CourseTypeService courseTypeService;
+    private JPAQueryFactory queryFactory;
+    private ClassSessionService classSessionService;
+    
+    /**
+     * Constructor<br>
+     * 
+     * <pre>
+     * This constructs a CourseService with a specified 
+     * userRepository and courseRepository
+     * </pre>
+     * 
+     * @param courseRepository
+     * @param userRepository 
+     */
     public CourseService (
             CourseRepository courseRepository
             , UserRepository userRepository
+            , CourseTypeService courseTypeService
+            , EntityManager entityManager
+            , @Lazy ClassSessionService classSessionService
     ){
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+        this.courseTypeService = courseTypeService;
+        this.classSessionService = classSessionService;
+        queryFactory = new JPAQueryFactory (entityManager);
     }
     
+    /**
+     * createCourse<br>
+     * 
+     * <pre>
+     * Method will create a Course
+     * </pre>
+     * 
+     * @param course 
+     */
     public void createCourse (Course course){
         String courseName;
         boolean courseAlreadyExist;
         Date dateCreated;
-        
+
         courseName = course.getCourseName ();
         courseAlreadyExist = courseRepository.existsByCourseName (courseName);
         if (courseAlreadyExist == true){
@@ -63,6 +108,18 @@ public class CourseService {
         }
     }
     
+    /**
+     * getAllCourse<br>
+     * 
+     * <pre>
+     * Method will get all courses
+     * </pre>
+     * 
+     * @param pageIndex
+     * @param pageSize
+     * @return courseDatapage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourse (
             int pageIndex
@@ -72,13 +129,13 @@ public class CourseService {
         PageRequest pagingInformation;
         Page<Course> coursePage;
         TypedSort<Course> courseSortInformation;
-        Sort sortInformation; 
+        Sort sortInformation;
         DataPage<Course> courseDataPage;
         long totalRowCount;
-        
+
         if ((pageIndex >= 0) && (pageSize > 0)){
             courseSortInformation = Sort.sort (Course.class);
-            sortInformation 
+            sortInformation
                 = courseSortInformation
                     .by (Course::getCourseName).ascending ();
             pagingInformation = PageRequest.of (
@@ -87,7 +144,7 @@ public class CourseService {
                     , sortInformation
             );
             coursePage = courseRepository.findAll (pagingInformation);
-            totalRowCount = coursePage.getTotalElements ();  
+            totalRowCount = coursePage.getTotalElements ();
             courseHolder = coursePage.getContent ();
             courseDataPage = new DataPage<> (totalRowCount, courseHolder);
             return courseDataPage;
@@ -95,16 +152,26 @@ public class CourseService {
         else {
             throw new InvalidRequestArgumentException (
                     "The page index number and page size number parameters "
-                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "cannot be less than zero." + System.lineSeparator ()
                     + "Parameter name: pageIndex, pageSize"
             );
         }
     }
     
+    /**
+     * updateCourse<br>
+     * 
+     * <pre>
+     * Method will update information of course
+     * </pre>
+     * 
+     * @param courseID
+     * @param updatedCourse 
+     */
     public void updateCourse (int courseID, Course updatedCourse){
         boolean courseExists;
         Date lastModified;
-        
+
         courseExists = courseRepository.existsById (courseID);
         if (courseExists == false){
             throw new NotFoundException ("Course");
@@ -116,10 +183,19 @@ public class CourseService {
         }
     }
     
+    /**
+     * deleteCourseByID<br>
+     * 
+     * <pre>
+     * Method will delete a course by courseID
+     * </pre>
+     * 
+     * @param courseID 
+     */
     public void deleteCourseByID (int courseID){
         Optional <Course> nullableCourse;
         Course course;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -130,6 +206,17 @@ public class CourseService {
         }
     }
     
+    /**
+     * addStudentToCourse<br>
+     * 
+     * <pre>
+     * Method will add student to one or many courses
+     * </pre>
+     * 
+     * @param userID
+     * @param courseID 
+     * @throws InvalidRequestArgumentException
+     */
     public void addStudentToCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -142,7 +229,7 @@ public class CourseService {
         List<User> userList;
         User userInTheCourse;
         boolean alreadyExistsInTheCourse;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("Student");
@@ -186,19 +273,36 @@ public class CourseService {
                         throw new InvalidRequestArgumentException (
                                 "This student has already existed "
                                 + "in the course please add a student "
-                                + "who is not in the course." 
-                                + System.lineSeparator () 
+                                + "who is not in the course."
+                                + System.lineSeparator ()
                                 + "Parameter name: userID, courseID"
                         );
                     }
                     else {
                         userList.add (user);
+                        ClassSession classSession =course.getClassSession();
+
+                        //add student to class
+                        if(classSession !=null){
+                            classSession.getUserList().add(user);
+                            classSessionService.save(classSession);
+                        }
                     }
                 }
             }
         }
     }
     
+    /**
+     * removeStudentFromCourse<br>
+     * 
+     * <pre>
+     * Method will remove a student from one or many courses
+     * </pre>
+     * 
+     * @param userID
+     * @param courseID 
+     */
     public void removeStudentFromCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -211,7 +315,7 @@ public class CourseService {
         List<User> userList;
         User userInTheCourse;
         boolean existsInTheCourse;
-        
+
         nullableUser = userRepository.findById (userID);
         if (nullableUser.isPresent () == false){
             throw new NotFoundException ("Student");
@@ -255,8 +359,8 @@ public class CourseService {
                         throw new InvalidRequestArgumentException (
                                 "This student no longer exists "
                                 + "in the course please remove a student "
-                                + "who is still in the course." 
-                                + System.lineSeparator () 
+                                + "who is still in the course."
+                                + System.lineSeparator ()
                                 + "Parameter name: userID, courseID"
                         );
                     }
@@ -268,19 +372,85 @@ public class CourseService {
         }
     }
     
+    /**
+     * getAllCourse<br>
+     * 
+     * @return 
+     */
     public List<Course> getAllCourse(){
         return courseRepository.findAll();
     }
     
+    /**
+     * getCourseById<br>
+     * 
+     * @param courseID
+     * @return 
+     */
     public Course getCourseById(Integer courseID) {     
         return courseRepository.findById(courseID).orElseThrow();
     }
+
+    public Course getByCourseId(int id){
+        Optional<Course> nullableCourse = courseRepository.findById(id);
+        if(!nullableCourse.isPresent()){
+            throw new NotFoundException("Course");
+        }
+        return nullableCourse.get();
+    }
     
+    @Transactional (readOnly = true)
+    public DataPage<Course> getAllCourseAvailableToCreateClass(
+            int pageIndex
+            ,int pageSize
+            ,List<Integer> typeIds){
+
+        //validate request
+        if ((pageIndex < 0) || (pageSize <= 0)) {
+            throw new InvalidRequestArgumentException(
+                    "The page index number and page size number parameters "
+                            + "cannot be less than zero." + System.lineSeparator()
+                            + "Parameter name: pageIndex, pageSize"
+            );
+        }
+        typeIds.forEach(typeId ->courseTypeService.getCourseTypeById(typeId));// check existed course type or not
+
+        //get list
+        QClassSession classSession = new QClassSession("classSession");;
+        QCourse course = new QCourse("course");
+        QueryResults<Course> courseQueryResults;
+
+        courseQueryResults = queryFactory
+                .selectFrom(course)
+                .leftJoin(course.classSession, classSession)
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(typeIds)))
+                        .orderBy (course.courseName.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults();
+        long totalRowCount = courseQueryResults.getTotal ();
+        List<Course> courses = courseQueryResults.getResults ();
+        return new DataPage<>(totalRowCount,courses);
+
+    }
+
+    /**
+     * getCourseByCurrentUserName<br>
+     * 
+     * @param userName
+     * @return 
+     */
     public List<Course> getCoursesByCurrentUserName(String userName) {
         User user = userRepository.findByUserName(userName).orElseThrow();
         return user.getCourseList();
     }
-
+    
+    /**
+     * getCourseName<br>
+     * 
+     * @param courseName
+     * @return 
+     */
     public Course getCourseByName(String courseName) {
         return courseRepository.findByCourseName(courseName);
     }

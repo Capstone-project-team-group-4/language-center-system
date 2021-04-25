@@ -6,9 +6,12 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseTypeRepository;
 import com.PhanLam.backend.model.CourseType;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,21 +21,29 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Phan Lam
  */
 @Service
-@Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false) 
+@Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class CourseTypeService {
-    
+
     // Variables declaration:
-    private CourseTypeRepository courseTypeRepository; 
+    private CourseTypeRepository courseTypeRepository;
 
     public CourseTypeService (CourseTypeRepository courseTypeRepository){
         this.courseTypeRepository = courseTypeRepository;
     }
-    
+
     @Transactional (readOnly = true)
     public List<CourseType> getAllCourseType (){
         List<CourseType> courseTypeHolder;
         
         courseTypeHolder = courseTypeRepository.findAll ();
         return courseTypeHolder;
+    }
+
+    public CourseType getCourseTypeById(int id){
+        Optional<CourseType> courseTypeNullAble = courseTypeRepository.findById(id);
+        if (!courseTypeNullAble.isPresent()) {
+            throw new NotFoundException("CourseType");
+        }
+        return courseTypeNullAble.get();
     }
 }

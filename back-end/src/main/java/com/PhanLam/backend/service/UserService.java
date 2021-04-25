@@ -459,8 +459,8 @@ public class UserService {
      * @return user
      */
     public User updateStudent(User user, int userID) {
-        User updatedUser = new User();
-        updatedUser.setUserID(userID);
+        User updatedUser = userRepository.findById(userID).orElseThrow();
+//        updatedUser.setUserID(userID);
         updatedUser.setUserName(user.getUserName());
         updatedUser.setFirstName(user.getFirstName());
         updatedUser.setMiddleName(user.getMiddleName());
@@ -470,11 +470,11 @@ public class UserService {
         updatedUser.setPhoneNumber(user.getPhoneNumber());
         updatedUser.setGender(user.getGender());
         updatedUser.setJob(user.getJob());
-        updatedUser.setPhotoURI(user.getPhotoURI());
-        updatedUser.setSelfDescription(user.getSelfDescription());
-        updatedUser.setPassword(user.getPassword());
-        updatedUser.setAccountStatus(user.getAccountStatus());
-        updatedUser.setDateCreated(user.getDateCreated());
+//        updatedUser.setPhotoURI(user.getPhotoURI());
+//        updatedUser.setSelfDescription(user.getSelfDescription());
+//        updatedUser.setAccountStatus(user.getAccountStatus());
+//        updatedUser.setDateCreated(user.getDateCreated());
+//        updatedUser.setPassword(user.getPassword());
         return userRepository.save(updatedUser);
     }
 

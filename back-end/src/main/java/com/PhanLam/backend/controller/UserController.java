@@ -6,9 +6,12 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
+import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
+import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.security.Principal;
 import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,13 +47,12 @@ public class UserController {
     private UserService userService;
     private UserRepository userRepository;
 
-    public UserController (
+    public UserController(
             UserService userService
             , UserRepository userRepository
-    ){
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
     @GetMapping("/users")
@@ -132,7 +137,7 @@ public class UserController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void enableUser (
             @PathVariable int userID
-    ){
+    ) {
         userService.enableUserByID (userID);
     }
 
@@ -170,6 +175,23 @@ public class UserController {
         return user;
     }
 
+    @GetMapping("/getTeacher")
+    public List<User> listTeacher() {
+        Role teacherRole = new Role(3, "ROLE_TEACHER");
+        List<User> teacherUserList = new ArrayList<>();
+        List<User> userList = userRepository.findAll();
+        for (User user : userList) {
+            List<Role> roleList = user.getRoleList();
+            for (Role role : roleList) {
+                if (role.getRoleID() == 3) {
+                    teacherUserList.add(user);
+                    break;
+                }
+            }
+        }
+        return teacherUserList;
+    }
+    
     @GetMapping("/getUsers/{userID}")
     public User showAllUserByID(
             @RequestBody User user

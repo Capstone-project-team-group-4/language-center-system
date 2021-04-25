@@ -21,14 +21,14 @@ import {
   Tag,
 } from "antd";
 
-interface TeacherSpareTimePageProps {
+interface AdminSpareTimePageProps {
   modalDialog: ReactElement;
   dialogController: DialogControl;
   typeGuardian: TypeGuard;
 }
 
-export function TeacherSpareTimePage(
-  props: TeacherSpareTimePageProps
+export function AdminSpareTimePage(
+  props: AdminSpareTimePageProps
 ): ReactElement {
   let sprareTimeAPI: TeacherSpareTimeAPI | undefined;
   const [pageNumber, setPageNumber] = useState(0);
@@ -271,6 +271,16 @@ export function TeacherSpareTimePage(
       },
     },
     {
+      title: "Teacher Name",
+      dataIndex: "userID",
+      key: "userID",
+      width: "10%",
+      align: "center",
+      render: (userID: any) => {
+        return <span>{userID.userName}</span>;
+      },
+    },
+    {
       title: "Course",
       dataIndex: "courseTypeList",
       key: "typeName",
@@ -307,6 +317,44 @@ export function TeacherSpareTimePage(
               );
             })}
           </span>
+        );
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: "15%",
+      align: "center",
+      render: (status: any, record: any) => {
+        return (
+          <div>
+            {status === 2 && "APPROVED"}
+            {status === 3 && "REJECTED"}
+            {status === 1 && (
+              <div style={{ display: "flex" }}>
+                <div>
+                  <Button type="primary" className="mr-2" onClick={() => {approveSpareTime(record);}}>
+                    Approve
+                  </Button>
+                </div>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Are you sure you want to reject?",
+                      onOk: () => {
+                        rejectSpareTime(record);
+                      },
+                      okText: "Confirm",
+                    });
+                  }}
+                >
+                  <Button danger>Reject</Button>
+                </div>
+              </div>
+            )}
+          </div>
         );
       },
     },

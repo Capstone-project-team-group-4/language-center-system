@@ -42,6 +42,10 @@ import { ManageExamQuestionInExaminationPage } from "./page/admin/ManageExamQues
 import { TeacherSpareTimePage } from "./page/teacher/SpareTimePage";
 import { useSessionState } from "./common/service/PersistedStateHook";
 import 'antd/dist/antd.css';
+import { AdminClassPage } from "./page/admin/AdminClassPage";
+import { TeacherClassPage } from "./page/teacher/TeacherClassPage";
+import { StudentClassPage } from "./page/student/StudentClassPage";
+import { AdminSpareTimePage } from "./page/admin/AdminSpareTimePage";
 export interface DataPage<T> {
   totalRowCount: number;
   pageDataHolder: T[];
@@ -319,12 +323,34 @@ export function App(): ReactElement {
       </ProtectedRoute>
 
       <ProtectedRoute
+        path="/admin-console/class-page"
+        securityContext={adminPageSecurity}
+        dialogController={dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <AdminClassPage />
+      </ProtectedRoute>
+
+      <ProtectedRoute
         path="/admin-console"
         securityContext={adminPageSecurity}
         dialogController={dialogController}
       >
         <PageHeader logOut={logOut} />
         <AdminConsolePage modalDialog={modalDialog} />
+      </ProtectedRoute>
+
+      <ProtectedRoute
+        path="/admin/spare-time-management"
+        securityContext={adminPageSecurity}
+        dialogController={dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <AdminSpareTimePage
+          modalDialog={modalDialog}
+          dialogController={dialogController}
+          typeGuardian={typeGuardian}
+        />
       </ProtectedRoute>
 
       <ProtectedRoute
@@ -361,6 +387,15 @@ export function App(): ReactElement {
       </ProtectedRoute>
 
       <ProtectedRoute
+        path="/teacher/class-page"
+        securityContext={teacherPageSecurity}
+        dialogController={dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <TeacherClassPage />
+      </ProtectedRoute>
+
+      <ProtectedRoute
         path="/teacher/spare-time-management"
         securityContext={teacherPageSecurity}
         dialogController={dialogController}
@@ -388,6 +423,10 @@ export function App(): ReactElement {
       <Route path="/student">
         <PageHeader logOut={logOut} />
         <InfoPage modalDialog={modalDialog} />
+      </Route>
+      <Route path="/student/class-page">
+        <PageHeader logOut={logOut} />
+        <StudentClassPage />
       </Route>
     </Switch>
   );

@@ -43,10 +43,11 @@ public class CourseController {
     public DataPage<Course> getAllCourse (
             @RequestParam int pageIndex
             , @RequestParam int pageSize
+            , @RequestParam String searchParam
     ){
         DataPage<Course> courseDataPage;
 
-        courseDataPage = courseService.getAllCourse (pageIndex, pageSize);
+        courseDataPage = courseService.getAllCourse (pageIndex, pageSize,searchParam);
         return courseDataPage;
     }
 

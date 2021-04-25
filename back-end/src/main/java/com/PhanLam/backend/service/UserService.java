@@ -14,6 +14,8 @@ import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
 import com.PhanLam.backend.service.common.QueryFactoryGet;
+import com.PhanLam.backend.service.common.SearchCriteria;
+import com.PhanLam.backend.service.common.SearchSpecification;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +87,7 @@ public class UserService {
             Principal principal
             , int pageIndex
             , int pageSize
+            , String searchParam
     ){
         String userName;
         TypedSort<User> userSortInformation;
@@ -107,8 +111,19 @@ public class UserService {
                     , pageSize
                     , sortInformation
             );
-            userPage = userRepository.findAllByUserNameIsNot (
-                    userName
+
+            //for search
+            SearchSpecification spec1 =
+                    new SearchSpecification(new SearchCriteria("middleName", "like", searchParam));
+            SearchSpecification spec2 =
+                    new SearchSpecification(new SearchCriteria("lastName", "like", searchParam));
+            SearchSpecification spec3 =
+                    new SearchSpecification(new SearchCriteria("firstName", "like", searchParam));
+            SearchSpecification spec4 =
+                    new SearchSpecification(new SearchCriteria("userName", "notlike", userName));
+
+            userPage = userRepository.findAll(
+                    Specification.where(spec1).or(spec2).or(spec3).and(spec4)
                     , pagingInformation
             );
             totalRowCount = userPage.getTotalElements ();

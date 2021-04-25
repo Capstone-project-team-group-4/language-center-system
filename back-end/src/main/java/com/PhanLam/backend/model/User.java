@@ -162,7 +162,6 @@ public class User implements Serializable {
     
     @JsonIgnore
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<ClassSession> classList;
 
     @JsonIgnore

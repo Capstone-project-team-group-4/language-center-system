@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
@@ -43,6 +44,7 @@ public class SlotService {
 
         //get teacher of spare time
         SpareTimeRegister spareTimeRegister = spareTimeRegisterService.getById(spareTimeId);
+        List<Integer> slotIds =spareTimeRegister.getSlotList().stream().map(Slot::getSlotID).collect(Collectors.toList());
         User teacher = spareTimeRegister.getUserID();
 
         //get list
@@ -53,7 +55,7 @@ public class SlotService {
         slotQueryResults = queryFactory
                 .selectFrom(slot)
                 .leftJoin(slot.classSessionList, classSession)
-                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(classSession.teacherID.ne(teacher)))
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS).and(classSession.teacherID.ne(teacher))).and(slot.slotID.in(slotIds)))
                 .orderBy (slot.slotID.asc ())
                 .fetchResults();
         return slotQueryResults.getResults();

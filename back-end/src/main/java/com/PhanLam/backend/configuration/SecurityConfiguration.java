@@ -221,9 +221,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .   hasAnyRole("TEACHER")
                 .antMatchers(HttpMethod.PUT, "/spare-time-register*")
                 .   hasAnyRole("TEACHER")
-                .antMatchers(HttpMethod.PUT, "/spare-time-register*")
-                .   hasAnyRole("TEACHER")
                 .antMatchers(HttpMethod.PATCH, "/spare-time-register*")
+                .   hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/spare-time-register/*")
                 .   hasAnyRole("ADMIN")
 
 

@@ -55,6 +55,7 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
+import { DetailPages } from './page/DetailPages';
 import { LessonListPage } from './page/student/LessonListlPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { ProfilePage } from './page/student/ProfilePage';
@@ -211,6 +212,20 @@ export function App(): ReactElement {
       <Route path="/admin-console/view-student-detail">
         <ViewProfilePage />
       </Route>
+
+      {/* <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route> */}
+
+      <ProtectedRoute
+        path = "/admin-console/manage-teacher-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage/>
+      </ProtectedRoute>
 
       <Route path = "/sign-up-page">
         <SignUpPage

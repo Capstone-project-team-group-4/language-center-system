@@ -14,6 +14,8 @@ import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.PhanLam.backend.service.common.SearchCriteria;
+import com.PhanLam.backend.service.common.SearchSpecification;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +88,7 @@ public class CourseService {
     public DataPage<Course> getAllCourse (
             int pageIndex
             , int pageSize
+            , String searchParam
     ){
         List<Course> courseHolder;
         PageRequest pagingInformation;
@@ -104,7 +108,11 @@ public class CourseService {
                     , pageSize
                     , sortInformation
             );
-            coursePage = courseRepository.findAll (pagingInformation);
+
+            //for seaching
+            SearchSpecification spec =
+                    new SearchSpecification(new SearchCriteria("courseName", "like", searchParam));
+            coursePage = courseRepository.findAll (Specification.where(spec),pagingInformation);
             totalRowCount = coursePage.getTotalElements ();
             courseHolder = coursePage.getContent ();
             courseDataPage = new DataPage<> (totalRowCount, courseHolder);

@@ -1,6 +1,6 @@
 // Import package members section:
 import { Class } from "@material-ui/icons";
-import { Table } from "antd";
+import { Table, Tag, Button, Modal } from "antd";
 import React, { ReactElement, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -16,55 +16,92 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
 
   useEffect(() => {
     getListClass();
-  },[])
+  }, []);
 
   function getListClass() {
     classAPI = new ClassAPI();
 
-    classAPI.getListClass(pageNumber, pageSize ).then((res) => {
+    classAPI.getListClass(pageNumber, pageSize).then((res) => {
       setListClass(res.pageDataHolder);
     });
   }
 
+  const deleteClass = (id: number) => {
+    classAPI = new ClassAPI();
+
+    classAPI?.deleteClass(id).then((res) => {
+      getListClass();
+    });
+  };
+
   const columns: any = [
     {
-        title: "#",
-        dataIndex: "classID",
-        key: "classID",
-        render: (value: any, item: any, index: number) => {
-          return <span>{index + 1}</span>;
-        },
+      title: "#",
+      dataIndex: "classID",
+      key: "classID",
+      render: (value: any, item: any, index: number) => {
+        return <span>{index + 1}</span>;
       },
-      {
-        title: "Course Name",
-        dataIndex: "courseID",
-        key: "courseID",
-        width: "30%",
-        align: "center",
-        render: (courseID: any) => {
-          return <span>{courseID.courseName}</span>;
-        },
+    },
+    {
+      title: "Course Name",
+      dataIndex: "courseID",
+      key: "courseID",
+      width: "30%",
+      align: "center",
+      render: (courseID: any) => {
+        return <span>{courseID.courseName}</span>;
       },
-      {
-        title: "User Name",
-        dataIndex: "teacherID",
-        key: "teacherID",
-        width: "30%",
-        align: "center",
-        render: (teacherID: any) => {
-          return <span>{teacherID.userName}</span>;
-        },
+    },
+    {
+      title: "Teacher Name",
+      dataIndex: "teacherID",
+      key: "teacherID",
+      width: "30%",
+      align: "center",
+      render: (teacherID: any) => {
+        return <span>{teacherID.userName}</span>;
       },
-      {
-        title: "Slot",
-        dataIndex: "slot",
-        key: "slot",
-        width: "30%",
-        align: "center",
-        render: (slot: any) => {
-          return <span>{slot.slotName}</span>;
-        },
+    },
+    {
+      title: "Slot",
+      dataIndex: "slot",
+      key: "slot",
+      width: "30%",
+      align: "center",
+      render: (slot: any) => {
+        return (
+          <span>
+            <Tag color="#87d068">{slot.slotName}</Tag>
+          </span>
+        );
       },
+    },
+    {
+      title: "Action",
+      dataIndex: "classID",
+      key: "classID",
+      width: "30%",
+      align: "center",
+      render: (classID: number) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            Modal.confirm({
+              title: "Are you sure you want to delete?",
+              onOk: () => {
+                deleteClass(classID);
+              },
+              okText: "Confirm",
+            });
+          }}
+        >
+          <Button type="primary" danger>
+            Delete
+          </Button>
+        </div>
+      ),
+    },
   ];
   return (
     <Container fluid={true}>
@@ -86,7 +123,7 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
                   dataSource={listClass}
                   // loading={loading}
                   // @ts-ignore
-                //   rowKey={classID}
+                  //   rowKey={classID}
                   columns={columns}
                   pagination={false}
                   // pagination={{

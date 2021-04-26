@@ -59,4 +59,79 @@ export class ClassAPI {
     }
   }
 
+  public async cancelClass(
+    classSessionID: number
+  ): Promise<AxiosResponse> {
+    this.axiosInstanceGetter = new AxiosInstanceGet();
+    this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+    try {
+      this.serverResponse = await this.axiosInstance.patch(
+        `/class-sessions/${classSessionID}:cancel`,
+        
+      );
+      this.typeGuardian = new TypeGuard();
+      if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+        return this.serverResponse;
+      } else {
+        throw new Error("This server response is not valid !");
+      }
+    } catch (error) {
+      console.error(error.toJSON());
+      return Promise.reject<AxiosResponse>(error);
+    }
+  }
+
+  public async deleteClass(
+    classSessionID: number
+  ): Promise<AxiosResponse> {
+    this.axiosInstanceGetter = new AxiosInstanceGet();
+    this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+    try {
+      this.serverResponse = await this.axiosInstance.delete(
+        `/class-sessions/${classSessionID}`,
+        
+      );
+      this.typeGuardian = new TypeGuard();
+      if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+        return this.serverResponse;
+      } else {
+        throw new Error("This server response is not valid !");
+      }
+    } catch (error) {
+      console.error(error.toJSON());
+      return Promise.reject<AxiosResponse>(error);
+    }
+  }
+
+  public async getAllOFClass(
+    pageIndex : number,
+    pageSize: number,
+    classID: number,
+  ): Promise<any> {
+    this.requestParameterHolder = new URLSearchParams();
+    this.requestParameterHolder.set("pageIndex", pageIndex.toString());
+    this.requestParameterHolder.set("pageSize", pageSize.toString());
+    try {
+      const serverResponse = await this.axiosInstance.get<unknown>(
+        `/classes/${classID}/students`,
+        { params: { pageIndex , pageSize } }
+      );
+      if (serverResponse?.data) {
+        if (serverResponse?.data)
+      console.log('serverResponse?.data', serverResponse?.data);
+
+          return Promise.resolve<any>(serverResponse?.data);
+      } else {
+        // throw new Error("This server response is not valid !");
+      }
+    } catch (apiError: unknown) {
+      try {
+        this.axiosError = await this.errorHandler.handleApiError(apiError);
+        return Promise.reject(this.axiosError);
+      } catch (apiError2: unknown) {
+        return Promise.reject(apiError2);
+      }
+    }
+  }
+
 }

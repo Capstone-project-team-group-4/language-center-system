@@ -116,7 +116,7 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
 
                 <Card>
                   <Accordion.Toggle as={Card.Header} eventKey="3">
-                    Admin Spare Time Page
+                    Spare Time Management
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="3">
                     <Card.Body>
@@ -126,7 +126,7 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                         as={Link}
                         to={"/admin" + "/spare-time-management"}
                       >
-                        Admin Spare Time
+                        List Spare Time
                       </Button>
                     </Card.Body>
                   </Accordion.Collapse>

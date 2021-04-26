@@ -17,7 +17,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
   useEffect(() => {
     getListClass();
   },[])
-
+  console.log('aaaa');
   function getListClass() {
     classAPI = new ClassAPI();
 
@@ -67,7 +67,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
       },
   ];
   return (
-    <Container fluid={true}>
+    <Container>
       <main>
         <Container>
           <div className="col-lg-12">

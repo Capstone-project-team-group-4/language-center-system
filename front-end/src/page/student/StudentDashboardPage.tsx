@@ -96,7 +96,7 @@ export function StudentDashboardPage(props: any): ReactElement {
                       as={Link}
                       to={"/student" + "/class-page"}
                     >
-                      Studen Class
+                      Student Class
                     </Button>
                   </Card.Body>
                 </Accordion.Collapse>

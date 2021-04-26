@@ -266,6 +266,7 @@ export function AdminSpareTimePage(
       title: "#",
       dataIndex: "spareTimeID",
       key: "spareTimeID",
+      width: "10%",
       render: (value: any, item: any, index: number) => {
         return <span>{index + 1}</span>;
       },
@@ -357,48 +358,7 @@ export function AdminSpareTimePage(
           </div>
         );
       },
-    },
-    {
-      title: "Action",
-      dataIndex: "spareTimeID",
-      key: "spareTimeID",
-      width: "20%",
-      ellipsis: true,
-      align: "center",
-      render: (spareTimeID: number, record: any) => (
-        <div className="view-icon">
-          {record.status === 1 && (
-            <div style={{ display: "flex" }}>
-              <Button
-                type="primary"
-                className="mr-2"
-                onClick={() => {
-                  editSpareTime(record);
-                }}
-              >
-                Edit
-              </Button>
-              <div
-                className="cursor-pointer"
-                onClick={() => {
-                  Modal.confirm({
-                    title: "Are you sure you want to delete?",
-                    onOk: () => {
-                      deteleSpareTime(spareTimeID);
-                    },
-                    okText: "Confirm",
-                  });
-                }}
-              >
-                <Button type="primary" danger>
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      ),
-    },
+    }
   ];
   const listOptionCourse = listCourse?.map((item) => {
     return item.typeName;
@@ -428,13 +388,6 @@ export function AdminSpareTimePage(
                 onChange={(e) => setSearchParam(e.target.value)}
                 onBlur={searchName}
               />
-              <Button
-                className="float-right"
-                type="primary"
-                onClick={() => setVisibleModalCreate(true)}
-              >
-                + Add New
-              </Button>
             </div>
 
             <div className="card-body pt-0">
@@ -569,7 +522,7 @@ export function AdminSpareTimePage(
         </Row>
         <div>
           <Row gutter={[16, 16]}>
-            <Col span={4}>Course Type</Col>
+            <Col span={4}>Course</Col>
             <Col span={20}>
               <Select
                 style={{ width: "100%" }}

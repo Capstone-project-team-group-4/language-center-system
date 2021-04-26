@@ -266,6 +266,7 @@ export function TeacherSpareTimePage(
       title: "#",
       dataIndex: "spareTimeID",
       key: "spareTimeID",
+      width: "10%",
       render: (value: any, item: any, index: number) => {
         return <span>{index + 1}</span>;
       },
@@ -306,6 +307,22 @@ export function TeacherSpareTimePage(
                 </span>
               );
             })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: "30%",
+      align: "center",
+      render: (status: number) => {
+        return (
+          <span>
+            {status === 1 && 'PENDING'}
+            {status === 2 && 'APPROVED'}
+            {status === 3 && 'REJECTED'}
           </span>
         );
       },

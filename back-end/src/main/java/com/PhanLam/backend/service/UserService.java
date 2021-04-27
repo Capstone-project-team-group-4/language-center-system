@@ -82,7 +82,7 @@ public class UserService {
         nullableUser = userRepository.findByUserName (userName);
         user = nullableUser.get ();
         roleHolder = user.getRoleList ();
-        loggedInUser = new LoggedInUser (userName, roleHolder);
+        loggedInUser = new LoggedInUser (userName, roleHolder,user.getUserID());
         return loggedInUser;
     }
 

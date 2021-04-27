@@ -14,18 +14,21 @@ import java.util.Objects;
  * @author Phan Lam
  */
 public class LoggedInUser {
-    
+
     // Variables declaration:
     private String userName;
-    private List<Role> roleHolder; 
+    private List<Role> roleHolder;
+    private Integer id;
 
     public LoggedInUser (){
     }
 
-    public LoggedInUser (String userName, List<Role> roleHolder){
+    public LoggedInUser (String userName, List<Role> roleHolder,Integer id){
         this.userName = userName;
         this.roleHolder = roleHolder;
+        this.id =id;
     }
+
 
     public String getUserName (){
         return userName;
@@ -66,9 +69,9 @@ public class LoggedInUser {
 
     @Override
     public String toString (){
-        return "LoggedInUser {" 
-                + "userName=" + userName 
-                + ", roleHolder=" + roleHolder 
+        return "LoggedInUser {"
+                + "userName=" + userName
+                + ", roleHolder=" + roleHolder
         + '}';
     }
 }

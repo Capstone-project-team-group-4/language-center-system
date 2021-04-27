@@ -2,4 +2,13 @@
   background-color: #f8fcff;
 }
 
+.nation {
+  opacity: 0.5;
+  border-style: none;
+}
+
+.txt {
+  text-align: center;
+}
+
 /*# sourceMappingURL=HomePage.css.map */

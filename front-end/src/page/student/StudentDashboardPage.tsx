@@ -52,9 +52,9 @@ export function StudentDashboardPage(
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <Row>
-                                {myCourseList.map((course) => {
+                                {myCourseList.map((course, i) => {
                                     return (
-                                        <Col md={3}>
+                                        <Col md={3} key={i}>
                                             <Card className="mb-3">
                                                 <Card.Body>
                                                     <Card.Title>

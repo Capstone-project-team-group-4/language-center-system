@@ -63,7 +63,7 @@ export function StudentSidebar(): ReactElement {
                 id="SideBar"
                 className={`Side_Bar_Z_Index ${sideBarActivated}`}
             >
-                <span style={{color:'white', textAlign:'start'}}>Hi {user.userName}!</span>
+                <span style={{color:'white', marginLeft:20}}>Hi {user.userName}!</span>
                 <ListGroup >
                     <ListGroup.Item action={true} 
                                     as = {Link}
@@ -80,9 +80,9 @@ export function StudentSidebar(): ReactElement {
                             <Accordion.Toggle as={Card.Header} eventKey="0" style={{color:'#e6ccb3'}}>
                                 Course
                             </Accordion.Toggle>
-                            {myCourseList.map((course) => {
+                            {myCourseList.map((course, i) => {
                                 return (
-                                    <Accordion.Collapse eventKey="0">
+                                    <Accordion.Collapse eventKey="0" key={i}>
                                         <Card.Body>
                                             <Button
                                                 className="btt"

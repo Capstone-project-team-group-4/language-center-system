@@ -64,9 +64,11 @@ public class UserService {
      * userRepository, courseRepository and entityManager
      * </pre>
      * 
-     * @param userRepository UserRepository
-     * @param courseRepository CourseRepository
-     * @param entityManager  EntityManager
+     * @param userRepository Is repository of user
+     * @param courseRepository Is repository of course
+     * @param classSessionService Is service of class session
+     * @param courseService Is service of course
+     * @param queryFactoryGetter  
      */
     public UserService (
             UserRepository userRepository
@@ -86,11 +88,11 @@ public class UserService {
      * getLoggedInUser<br>
      * 
      * <pre>
-     * Method will get currently logged in user:
+     * Method will get currently user logged in:
      * </pre>
      * 
-     * @param principal
-     * @return loggedInUser
+     * @param principal can be used to represent any entity              
+     * @return user logged in system
      */
     @Transactional (readOnly = true)
     public LoggedInUser getLoggedInUser (Principal principal){
@@ -112,13 +114,13 @@ public class UserService {
      * getAllUserWithUserNameIsNot<br>
      * 
      * <pre>
-     * Method will get all users with username
+     * Method will get all users with username 
      * </pre>
      * 
-     * @param principal 
-     * @param pageIndex
-     * @param pageSize
-     * @return userDataPage
+     * @param principal Can be used to represent any entity
+     * @param pageIndex The page's current position when paging
+     * @param pageSize The number of items in each page
+     * @return a list of user 
      * @throws InvalidRequestArgumentException
      */
     @Transactional (readOnly = true)
@@ -174,9 +176,9 @@ public class UserService {
      * Method will get all students with 
      * </pre>
      * 
-     * @param courseID
-     * @param pageIndex
-     * @param pageSize
+     * @param courseID Is an identifier for this course unique within your method
+     * @param pageIndex The page's current position when paging
+     * @param pageSize The number of items in each page
      * @return studentDataPage
      * @throws InvalidRequestArgumentException
      */
@@ -245,9 +247,8 @@ public class UserService {
      * Method will get all students by course id
      * </pre>
      * 
-     * @param courseID
-     * @param pageIndex
-     * @param pageSize
+     * @param pageIndex The page's current position when paging
+     * @param pageSize The number of items in each page
      * @return studentDataPage
      * @throws InvalidRequestArgumentException
      */
@@ -294,6 +295,18 @@ public class UserService {
             }
     }
     
+    /**
+     * getAllStudentByCourseID<br>
+     * 
+     * <pre>
+     * Method will get all students by course id
+     * </pre>
+     * 
+     * @param courseID Is an identifier for this course unique within your method
+     * @param pageIndex The page's current position when paging
+     * @param pageSize The number of items in each page
+     * @return studentDatapage
+     */
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID
@@ -356,8 +369,8 @@ public class UserService {
      * Method will disable user by user id
      * </pre>
      * 
-     * @param userID
-     * @param principal 
+     * @param userID Is an identifier for this user unique within your method
+     * @param principal Can be used to represent any entity
      * @throws NotFoundException
      * @throws InvalidRequestArgumentException
      */
@@ -391,7 +404,7 @@ public class UserService {
      * Method will enable user by user id
      * </pre>
      * 
-     * @param userID 
+     * @param userID Is an identifier for this user unique within your method
      */
     public void enableUserByID (int userID){
         Optional <User> nullableUser;
@@ -414,8 +427,8 @@ public class UserService {
      * Method will delete user by user id
      * </pre>
      * 
-     * @param userID
-     * @param principal 
+     * @param userID Is an identifier for this user unique within your method
+     * @param principal Can be used to represent any entity
      */
     public void deleteUserByID (int userID, Principal principal){
         Optional <User> nullableUser;
@@ -440,6 +453,15 @@ public class UserService {
         }
     }
 
+    /**
+     * getAll<br>
+     * 
+     * <pre>
+     * Method will get all user
+     * </pre>
+     * 
+     * @return a list of user
+     */
     public List<User> getAll() {
         return userRepository.findAll();
     }
@@ -451,9 +473,9 @@ public class UserService {
      * Method will update infor of user
      * </pre>
      * 
-     * @param user
-     * @param userID
-     * @return user
+     * @param user Is an object of type User
+     * @param userID Is an identifier for this user unique within your method
+     * @return a user
      */
     public User updateStudent(User user, int userID) {
         User updatedUser = new User();
@@ -479,16 +501,26 @@ public class UserService {
      * getById<br>
      * 
      * <pre>
-     * Method will 
+     * Method will get one user by id
      * </pre>
      * 
-     * @param userID
-     * @return user
+     * @param userID Is an identifier for this user unique within your method
+     * @return a user
      */
     public User getById(int userID){
         return userRepository.findById(userID).orElseThrow();
     }
 
+    /**
+     * getByName<br>
+     * 
+     * <pre>
+     * Method will get all fields in user by username 
+     * </pre>
+     * 
+     * @param userName 
+     * @return 
+     */
     public User getByName(String userName){
         return userRepository.findByUserName(userName).orElseThrow();
     }
@@ -500,8 +532,8 @@ public class UserService {
      * Method will get information of user by id
      * </pre>
      * 
-     * @param user
-     * @param userID
+     * @param user Is an object of type User
+     * @param userID Is an identifier for this user unique within your method
      * @return user
      */
     public User showInfo(User user, int userID) {
@@ -536,6 +568,17 @@ public class UserService {
         return userRepository.findByUserName(userName).orElseThrow();
     }
     
+    /**
+     * updateProfile<br>
+     * 
+     * <pre>
+     * Method will update personal information of the user
+     * </pre>
+     * 
+     * @param user Is an object of type User
+     * @param userName 
+     * @return a user
+     */
     public User updateProfile(User user, String userName) {
         User updatedUser = userRepository.findByUserName(userName).orElseThrow();
         updatedUser.setUserID(user.getUserID());
@@ -555,6 +598,17 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
 
+    /**
+     * getAllStudentsOfCourseAlreadyHaveClassInSlot<br>
+     * 
+     * <pre>
+     * Method will get all students of a course that already have class in a slot
+     * </pre>
+     * 
+     * @param slotId Is an identifier for this slot unique within your method.
+     * @param courseId Is an identifier for this course unique within your method
+     * @return list of users
+     */
     public List<User> getAllStudentsOfCourseAlreadyHaveClassInSlot(int slotId,int courseId){
         QCourse course;
         QClassSession classSession;
@@ -574,6 +628,18 @@ public class UserService {
         return studentResults.getResults();
     }
 
+    /**
+     * getAllStudentByClassId<br>
+     * 
+     * <pre>
+     * Method will get all students by class id
+     * </pre>
+     * 
+     * @param classId Is an identifier for this class unique within your method
+     * @param pageIndex The page's current position when paging
+     * @param pageSize The number of items in each page
+     * @return a list of Student with paging
+     */
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByClassId (
             int classId
@@ -623,6 +689,17 @@ public class UserService {
         return studentDataPage;
     }
 
+    /**
+     * isUserHaveInCourse<br>
+     * 
+     * <pre>
+     * Method will check if the user already has in this course
+     * </pre>
+     * 
+     * @param courseId Is an identifier for this course unique within your method
+     * @param userId Is an identifier for this user unique within your method
+     * @return Boolean
+     */
     public boolean isUserHaveInCourse(int courseId,int userId){
         Course course = courseService.getByCourseId(courseId);
         User user = getById(userId);

@@ -1,7 +1,7 @@
 // Import package members section:
 import React, { ReactElement } from "react";
 import { 
-    Button, Carousel, Container, Form, FormControl, Nav, Navbar 
+    Button, Carousel, Container, Form, FormControl, Image, Nav, Navbar 
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './HomePageHeader.css';
@@ -9,6 +9,7 @@ import Carousel1 from './Carousel-1.jpg';
 import Carousel2 from './Carousel-2.jpg';
 import Carousel3 from './Carousel-3.jpg';
 import { textSpanEnd } from "typescript";
+import Logo from './logo.png'
 
 export function HomePageHeader (): ReactElement {
     return (
@@ -75,9 +76,7 @@ export function HomePageHeader (): ReactElement {
                                         color: 'white',
                                     }}
                     >
-                        <span style={{fontSize: 40 + 'px', verticalAlign: 'top'}} >LCS</span>
-                        {/* <span style={{fontSize:10}}>Language Center System</span> */}
-                        
+                        <Image src={Logo} style={{width: 150, height:40}}/>                    
                     </Navbar.Brand>
                     <Nav 
                         id = "NavLinkSection" 

@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { ReactElement } from "react";
 import { Breadcrumb, Button, Col, Container, Form, Image, Modal, Row, Table } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { StudentSidebar } from "../../common/component/student_sidebar/StudentSidebar";
 import { LocalStorageService } from "../../common/service/LocalStorageService";
 import { UserAPI } from "../../common/service/UserAPI";
@@ -21,7 +21,7 @@ export function ProfilePage(
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     let userAPI: UserAPI | undefined;
     let localStorageService = new LocalStorageService();
-    
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -108,29 +108,12 @@ export function ProfilePage(
                                                         updateMyProfile(event, name);
                                                     }}
                                                     className="wrapper"
-                                                    
+
                                                 >
                                                     <Modal.Header closeButton>
                                                         <Modal.Title>Edit My Profile</Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
-                                                        <Form.Group>
-                                                            <Form.Label>
-                                                                User Name:
-                                                        </Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                autoComplete="on"
-                                                                autoFocus={true}
-                                                                name="userName"
-                                                                id="userName"
-                                                                pattern="^[\p{L} .'-]+$"
-                                                                value={user.userName}
-                                                                required={true}
-                                                                spellCheck={false}
-                                                                onChange={handleUserChange}
-                                                            />
-                                                        </Form.Group>
                                                         <Form.Row>
                                                             <Form.Group as={Col}>
                                                                 <Form.Label>
@@ -186,6 +169,35 @@ export function ProfilePage(
                                                                 />
                                                             </Form.Group>
                                                         </Form.Row>
+                                                        <Form.Row>
+                                                            <Form.Group as={Col}>
+                                                                <Form.Label>
+                                                                    DOB:
+                                                                 </Form.Label>
+                                                                <Form.Control
+                                                                    type="date"
+                                                                    autoComplete="on"
+                                                                    autoFocus={false}
+                                                                    name="dob"
+                                                                    id="dob"
+                                                                    pattern="^(0[1-9]|1[012])[-/.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)\\d\\d$"
+                                                                    value={user.dob.toString()}
+                                                                    required={false}
+                                                                    spellCheck={false}
+                                                                    onChange={handleUserChange}
+                                                                />
+                                                            </Form.Group>
+                                                            <Form.Group as={Col}>
+                                                                <Form.Label>
+                                                                    Gender
+                                                                </Form.Label>
+                                                                <Form.Control as="select" id="gender" name="gender" onChange={handleUserChange}>
+                                                                    <option value="Male">Male</option>
+                                                                    <option value="Female">Female</option>
+                                                                    <option value="Bisexual">Bisexual</option>
+                                                                </Form.Control>
+                                                            </Form.Group>
+                                                        </Form.Row>
                                                         <Form.Group>
                                                             <Form.Label>
                                                                 Email:
@@ -204,16 +216,17 @@ export function ProfilePage(
                                                         </Form.Group>
                                                         <Form.Group>
                                                             <Form.Label>
-                                                                DOB:
+                                                                Job:
                                                         </Form.Label>
                                                             <Form.Control
-                                                                type="date"
+                                                                type="text"
                                                                 autoComplete="on"
                                                                 autoFocus={false}
-                                                                name="dob"
-                                                                id="dob"
-                                                                value={user.dob.toString()}
-                                                                required={false}
+                                                                name="job"
+                                                                id="job"
+                                                                pattern="^[\p{L} .'-]+$"
+                                                                value={user.job}
+                                                                required={true}
                                                                 spellCheck={false}
                                                                 onChange={handleUserChange}
                                                             />
@@ -237,31 +250,23 @@ export function ProfilePage(
                                                         </Form.Group>
                                                         <Form.Group>
                                                             <Form.Label>
-                                                                Gender
-                                                        </Form.Label>
-                                                            <Form.Control as="select" id="gender" name="gender" onChange={handleUserChange}>
-                                                                <option value="Male">Male</option>
-                                                                <option value="Female">Female</option>
-                                                                <option value="Bisexual">Bisexual</option>
-                                                            </Form.Control>
-                                                        </Form.Group>
-                                                        <Form.Group>
-                                                            <Form.Label>
-                                                                Job:
+                                                                Description:
                                                         </Form.Label>
                                                             <Form.Control
                                                                 type="text"
                                                                 autoComplete="on"
                                                                 autoFocus={false}
-                                                                name="job"
-                                                                id="job"
-                                                                pattern="^[\p{L} .'-]+$"
-                                                                value={user.job}
-                                                                required={true}
+                                                                name="selfDescription"
+                                                                id="selfDescription"
+                                                                pattern="^(?:[0-9] ?){6,14}[0-9]$"
+                                                                value={user.selfDescription}
+                                                                required={false}
                                                                 spellCheck={false}
                                                                 onChange={handleUserChange}
                                                             />
                                                         </Form.Group>
+
+
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button variant="primary" onClick={handleClose} block={true} type="submit">

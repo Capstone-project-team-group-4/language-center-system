@@ -66,6 +66,9 @@ public class CourseService {
      * 
      * @param courseRepository
      * @param userRepository 
+     * @param courseTypeService 
+     * @param entityManager 
+     * @param classSessionService 
      */
     public CourseService (
             CourseRepository courseRepository

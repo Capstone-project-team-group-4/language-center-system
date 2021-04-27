@@ -83,6 +83,7 @@ public class UserServiceTests {
         expectedOutput = new LoggedInUser (
                 loggedInUserName
                 , roleHolder
+                , user.getUserID()
         );
 
         // When

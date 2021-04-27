@@ -26,7 +26,7 @@ public class LoggedInUser {
     public LoggedInUser (String userName, List<Role> roleHolder,Integer id){
         this.userName = userName;
         this.roleHolder = roleHolder;
-        this.id =id;
+        this.id = id;
     }
 
 
@@ -36,6 +36,10 @@ public class LoggedInUser {
 
     public List<Role> getRoleHolder (){
         return roleHolder;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     @Override

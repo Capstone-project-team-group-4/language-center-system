@@ -191,6 +191,9 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private List<Comment> commentList;
+
+    @Transient
+    private String commentOfClass;
     public User (){
         multipleChoiceQuestionList = new ArrayList<>();
     }
@@ -434,6 +437,14 @@ public class User implements Serializable {
 
     public void setCommentList(List<Comment> commentList) {
         this.commentList = commentList;
+    }
+
+    public String getCommentOfClass() {
+        return commentOfClass;
+    }
+
+    public void setCommentOfClass(String commentOfClass) {
+        this.commentOfClass = commentOfClass;
     }
 
     @Override

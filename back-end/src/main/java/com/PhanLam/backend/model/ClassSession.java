@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +44,9 @@ public class ClassSession implements Serializable {
     @Basic (optional = false)
     @Column (name = "ClassID", nullable = false)
     private Integer classID;
-
+    @Column(name = "LastModified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
     @Basic (optional = false)
     @NotNull
     @Column (name = "Status", nullable = false)
@@ -58,7 +61,7 @@ public class ClassSession implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @OneToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private Course courseID;
     @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
@@ -153,6 +156,14 @@ public class ClassSession implements Serializable {
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
         spareTimeRegisterID = spareTimeRegisterID;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
     @XmlTransient

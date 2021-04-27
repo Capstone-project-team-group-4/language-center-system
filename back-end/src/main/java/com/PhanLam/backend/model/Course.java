@@ -119,13 +119,13 @@ public class Course implements Serializable {
     private List<Lesson> lessonList;
 
     @JsonIgnore
-    @OneToOne(
+    @OneToMany(
             cascade = CascadeType.ALL
             , orphanRemoval = true
             , mappedBy = "courseID"
             , fetch = FetchType.LAZY
     )
-    private ClassSession classSession;
+    private List<ClassSession> classSessionList;
 
     @JsonIgnore
     @OneToMany (
@@ -243,12 +243,12 @@ public class Course implements Serializable {
         this.lessonList = lessonList;
     }
 
-    public ClassSession getClassSession (){
-        return classSession;
+    public List<ClassSession> getClassSessionList() {
+        return classSessionList;
     }
 
-    public void setClassSession      (ClassSession classSession){
-        this.classSession = classSession;
+    public void setClassSessionList(List<ClassSession> classSessionList) {
+        this.classSessionList = classSessionList;
     }
 
     @XmlTransient

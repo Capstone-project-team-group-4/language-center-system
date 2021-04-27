@@ -106,15 +106,9 @@ public class RegisterFormService {
             );
 
             //search
-            SearchSpecification spec1 =
-                    new SearchSpecification(new SearchCriteria("middleName", "like", searchParam));
-
-            SearchSpecification spec2 =
-                    new SearchSpecification(new SearchCriteria("lastName", "like", searchParam));
-
-            SearchSpecification spec3 =
-                    new SearchSpecification(new SearchCriteria("firstName", "like", searchParam));
-            registerFormPage = registerFormRepository.findAll( Specification.where(spec1).or(spec2).or(spec3), pagingInformation);
+            SearchSpecification spec =
+                    new SearchSpecification(new SearchCriteria("middleName", "forName", searchParam));
+            registerFormPage = registerFormRepository.findAll( Specification.where(spec), pagingInformation);
 
             totalRowCount = registerFormPage.getTotalElements ();
             registerFormHolder = registerFormPage.getContent ();

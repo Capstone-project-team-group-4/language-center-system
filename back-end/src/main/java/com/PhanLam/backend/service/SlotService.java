@@ -58,7 +58,7 @@ public class SlotService {
         slotQueryResults = queryFactory
                 .selectFrom(slot)
                 .leftJoin(slot.classSessionList, classSession)
-                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS).and(classSession.teacherID.ne(teacher))).and(slot.slotID.in(slotIds)))
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS).or(classSession.teacherID.ne(teacher))).and(slot.slotID.in(slotIds)))
                 .orderBy (slot.slotID.asc ())
                 .fetchResults();
         return slotQueryResults.getResults();

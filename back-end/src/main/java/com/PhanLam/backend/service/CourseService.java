@@ -219,7 +219,9 @@ public class CourseService {
                     }
                     else {
                         userList.add (user);
-                        ClassSession classSession =course.getClassSession();
+                        ClassSession classSession =course.getClassSessionList().stream()
+                                .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
+                                .findFirst().get();
 
                         //add student to class
                         if(classSession !=null){

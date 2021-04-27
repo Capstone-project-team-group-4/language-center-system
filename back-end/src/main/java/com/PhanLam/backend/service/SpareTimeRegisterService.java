@@ -41,7 +41,7 @@ public class SpareTimeRegisterService {
         this.userService = userService;
         this.courseTypeService = courseTypeService;
         this.slotService = slotService;
-        this.classSessionService =classSessionService;
+        this.classSessionService = classSessionService;
         queryFactory = new JPAQueryFactory(entityManager);
     }
 
@@ -81,7 +81,8 @@ public class SpareTimeRegisterService {
         spareTimeSortInformation = Sort.sort(SpareTimeRegister.class);
         sortInformation
                 = spareTimeSortInformation
-                .by(SpareTimeRegister::getSpareTimeID).ascending();
+                .by(SpareTimeRegister::getStatus).ascending().and(spareTimeSortInformation
+                        .by(SpareTimeRegister::getLastModified).descending());
         pagingInformation = PageRequest.of(
                 pageIndex
                 , pageSize
@@ -99,21 +100,25 @@ public class SpareTimeRegisterService {
 
     public void createSpareTimeRegister(SpareTimeRegisterRequest spareTimeRegisterRequest, Principal principal) {
         User teacher = userService.getByName(principal.getName());
+        int courseTypeId = spareTimeRegisterRequest.getCourseTypeId();
         SpareTimeRegister spareTimeRegister = new SpareTimeRegister();
         spareTimeRegister.setUserID(teacher);
         spareTimeRegister.setLastModified(new Date());
         spareTimeRegister.setStatus(Constant.STATUS_PENDING);
 
+
         //validate request
-        if (spareTimeRegisterRequest.getListCourseTypeId().size() == 0 || spareTimeRegisterRequest.getListSlotId().size() == 0) {
+        if (spareTimeRegisterRequest.getCourseTypeId() == null || spareTimeRegisterRequest.getListSlotId().size() == 0) {
             throw new InvalidRequestArgumentException("Must be choose at least 1 slot and 1 course type");
         }
 
+        //check course type select
+        if(getSpareRegisterByTeacherAndCourseType(teacher.getUserID(),courseTypeId).size() > 0 ){
+            throw new InvalidRequestArgumentException("This teacher already register this type");
+        }
         //set list course type
         List<CourseType> listCourseType = new ArrayList<>();
-        for (int id : spareTimeRegisterRequest.getListCourseTypeId()) {
-            listCourseType.add(courseTypeService.getCourseTypeById(id));
-        }
+        listCourseType.add(courseTypeService.getCourseTypeById(spareTimeRegisterRequest.getCourseTypeId()));
 
         //set list slot
         List<Slot> listSlot = new ArrayList<>();
@@ -121,7 +126,7 @@ public class SpareTimeRegisterService {
             Slot slot = slotService.getById(id);
 
             //check teacher already have class in this slot or not
-            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(),id);
+            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(), id);
             if (classSession != null) {
                 throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " already has class at slot " + slot.getSlotName());
             }
@@ -147,19 +152,23 @@ public class SpareTimeRegisterService {
 
     public void editSpareTimeRegister(SpareTimeRegisterRequest spareTimeRegisterRequest) {
         SpareTimeRegister spareTimeRegister = getById(spareTimeRegisterRequest.getSpareTimeRegisterId());
+        int courseTypeId = spareTimeRegisterRequest.getCourseTypeId();
         spareTimeRegister.setLastModified(new Date());
         User teacher = spareTimeRegister.getUserID();
 
         //validate request
-        if (spareTimeRegisterRequest.getListCourseTypeId().size() == 0 || spareTimeRegisterRequest.getListSlotId().size() == 0) {
+        if (spareTimeRegisterRequest.getCourseTypeId() == null || spareTimeRegisterRequest.getListSlotId().size() == 0) {
             throw new InvalidRequestArgumentException("Must be choose at least 1 slot and 1 course type");
+        }
+
+        //check course type select
+        if(getSpareRegisterByTeacherAndCourseExcludeSpareTimeId(teacher.getUserID(),courseTypeId,spareTimeRegister.getSpareTimeID()).size() > 0 ){
+            throw new InvalidRequestArgumentException("This teacher already register this type");
         }
 
         //set list course type
         List<CourseType> listCourseType = new ArrayList<>();
-        for (int id : spareTimeRegisterRequest.getListCourseTypeId()) {
-            listCourseType.add(courseTypeService.getCourseTypeById(id));
-        }
+        listCourseType.add(courseTypeService.getCourseTypeById(spareTimeRegisterRequest.getCourseTypeId()));
 
         //set list slot
         List<Slot> listSlot = new ArrayList<>();
@@ -167,7 +176,7 @@ public class SpareTimeRegisterService {
             Slot slot = slotService.getById(id);
 
             //check teacher already have class in this slot or not
-            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(),id);
+            ClassSession classSession = classSessionService.getClassSessionByTeacherAndSlot(teacher.getUserID(), id);
             if (classSession != null) {
                 throw new InvalidRequestArgumentException("Teacher " + teacher.getUserName() + " already has class at slot " + slot.getSlotName());
             }
@@ -203,17 +212,17 @@ public class SpareTimeRegisterService {
         return nullableSpareTimeRegister.get();
     }
 
-    private List<SpareTimeRegister> getSpareRegisterByTeacherAndSlot(int teacherId, int slotId) {
-        QSlot slot;
+    private List<SpareTimeRegister> getSpareRegisterByTeacherAndCourseType(int teacherId, int courseTypeId) {
+        QCourseType courseType;
         QSpareTimeRegister register;
         QueryResults<SpareTimeRegister> spareTimeRegister;
-        slot = new QSlot("slot");
+        courseType = new QCourseType("courseType");
         register = new QSpareTimeRegister("register");
         spareTimeRegister = queryFactory
                 .selectFrom(register)
-                .innerJoin(register.slotList, slot)
+                .innerJoin(register.courseTypeList, courseType)
                 .where(
-                        slot.slotID.eq(slotId)
+                        courseType.typeID.eq(courseTypeId)
                                 .and(register.userID.userID.eq(teacherId))
                                 .and(register.status.ne(Constant.STATUS_REJECTED))
 
@@ -221,17 +230,17 @@ public class SpareTimeRegisterService {
         return spareTimeRegister.getResults();
     }
 
-    private List<SpareTimeRegister> getSpareRegisterByTeacherAndSlotExcludeSpareTimeId(int teacherId, int slotId, int spareTimeId) {
-        QSlot slot;
+    private List<SpareTimeRegister> getSpareRegisterByTeacherAndCourseExcludeSpareTimeId(int teacherId, int courseTypeId, int spareTimeId) {
+        QCourseType courseType;
         QSpareTimeRegister register;
         QueryResults<SpareTimeRegister> spareTimeRegister;
-        slot = new QSlot("slot");
+        courseType = new QCourseType("courseType");
         register = new QSpareTimeRegister("register");
         spareTimeRegister = queryFactory
                 .selectFrom(register)
-                .innerJoin(register.slotList, slot)
+                .innerJoin(register.courseTypeList, courseType)
                 .where(
-                        slot.slotID.eq(slotId)
+                        courseType.typeID.eq(courseTypeId)
                                 .and(register.userID.userID.eq(teacherId))
                                 .and(register.status.ne(Constant.STATUS_REJECTED))
                                 .and(register.spareTimeID.ne(spareTimeId))

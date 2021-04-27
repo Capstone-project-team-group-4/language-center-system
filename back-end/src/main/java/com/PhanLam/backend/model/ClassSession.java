@@ -35,7 +35,7 @@ public class ClassSession implements Serializable {
     @Basic (optional = false)
     @NotNull
     @Column (name = "Status", nullable = false)
-    private int status;
+    private Integer status;
 
     @JsonIgnore
     @JoinTable (name = "UserClass", joinColumns = {
@@ -72,7 +72,7 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public ClassSession (Integer classID, int status){
+    public ClassSession (Integer classID, Integer status){
         this.classID = classID;
         this.status = status;
     }
@@ -93,11 +93,11 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public int getStatus (){
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus (int status){
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

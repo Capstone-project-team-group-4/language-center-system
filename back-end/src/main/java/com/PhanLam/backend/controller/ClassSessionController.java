@@ -39,6 +39,7 @@ public class ClassSessionController {
             , @RequestParam int pageSize
             , @RequestParam(required = false) Integer userID
             , @RequestParam(required = false) String role
+            , @RequestParam String searchParam
     ) {
         DataPage<ClassSession> classSessionDataPage;
         classSessionDataPage = classSessionService.getAllClassSession(
@@ -46,6 +47,7 @@ public class ClassSessionController {
                 , pageSize
                 , userID
                 , role
+                , searchParam
 
         );
         return classSessionDataPage;

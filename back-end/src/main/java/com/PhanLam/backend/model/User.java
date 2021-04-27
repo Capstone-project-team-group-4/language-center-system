@@ -10,17 +10,41 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-
+@Table(name = "User", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"UserName"})})
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+    @NamedQuery(name = "User.findByUserID", query = "SELECT u FROM User u WHERE u.userID = :userID"),
+    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
+    @NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
+    @NamedQuery(name = "User.findByMiddleName", query = "SELECT u FROM User u WHERE u.middleName = :middleName"),
+    @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+    @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
+    @NamedQuery(name = "User.findByPhoneNumber", query = "SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber"),
+    @NamedQuery(name = "User.findByGender", query = "SELECT u FROM User u WHERE u.gender = :gender"),
+    @NamedQuery(name = "User.findByJob", query = "SELECT u FROM User u WHERE u.job = :job"),
+    @NamedQuery(name = "User.findByPhotoURI", query = "SELECT u FROM User u WHERE u.photoURI = :photoURI"),
+    @NamedQuery(name = "User.findBySelfDescription", query = "SELECT u FROM User u WHERE u.selfDescription = :selfDescription"),
+    @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
+    @NamedQuery(name = "User.findByAccountStatus", query = "SELECT u FROM User u WHERE u.accountStatus = :accountStatus"),
+    @NamedQuery(name = "User.findByDateCreated", query = "SELECT u FROM User u WHERE u.dateCreated = :dateCreated"),
+    @NamedQuery(name = "User.findByLastLogin", query = "SELECT u FROM User u WHERE u.lastLogin = :lastLogin"),
+    @NamedQuery(name = "User.findByLastModified", query = "SELECT u FROM User u WHERE u.lastModified = :lastModified")})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,7 +79,9 @@ public class User implements Serializable {
     @Size(min = 1, max = 1000)
     @Column(name = "Email", nullable = false, length = 1000)
     private String email;
-    @Column(name = "DOB")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DOB", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dob;
     @Basic(optional = false)
@@ -75,7 +101,7 @@ public class User implements Serializable {
     @Column(name = "PhotoURI", length = 1000)
     private String photoURI;
     @Size(max = 2147483647)
-    @Column(name = "SelfDescription", length = 100000)
+    @Column(name = "SelfDescription", length = 2147483647)
     private String selfDescription;
     @JsonIgnore
     @Basic(optional = false)
@@ -162,7 +188,14 @@ public class User implements Serializable {
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> commentList;
+
+    @Transient
+    private String commentOfClass;
     public User (){
+        multipleChoiceQuestionList = new ArrayList<>();
     }
 
     public User (
@@ -397,28 +430,172 @@ public class User implements Serializable {
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
 
+    @XmlTransient
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
+    public String getCommentOfClass() {
+        return commentOfClass;
+    }
+
+    public void setCommentOfClass(String commentOfClass) {
+        this.commentOfClass = commentOfClass;
+    }
+
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (userID != null ? userID.hashCode() : 0);
+    public int hashCode (){
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode (this.userID);
+        hash = 13 * hash + Objects.hashCode (this.userName);
+        hash = 13 * hash + Objects.hashCode (this.firstName);
+        hash = 13 * hash + Objects.hashCode (this.middleName);
+        hash = 13 * hash + Objects.hashCode (this.lastName);
+        hash = 13 * hash + Objects.hashCode (this.email);
+        hash = 13 * hash + Objects.hashCode (this.dob);
+        hash = 13 * hash + Objects.hashCode (this.phoneNumber);
+        hash = 13 * hash + Objects.hashCode (this.gender);
+        hash = 13 * hash + Objects.hashCode (this.job);
+        hash = 13 * hash + Objects.hashCode (this.photoURI);
+        hash = 13 * hash + Objects.hashCode (this.selfDescription);
+        hash = 13 * hash + Objects.hashCode (this.password);
+        hash = 13 * hash + Objects.hashCode (this.accountStatus);
+        hash = 13 * hash + Objects.hashCode (this.dateCreated);
+        hash = 13 * hash + Objects.hashCode (this.lastLogin);
+        hash = 13 * hash + Objects.hashCode (this.lastModified);
+        hash = 13 * hash + Objects.hashCode (this.courseList);
+        hash = 13 * hash + Objects.hashCode (this.classList);
+        hash = 13 * hash + Objects.hashCode (this.roleList);
+        hash = 13 * hash + Objects.hashCode (this.spareTimeRegisterList);
+        hash = 13 * hash + Objects.hashCode (this.studentScoreList);
+        hash = 13 * hash + Objects.hashCode (this.classList1);
+        hash = 13 * hash + Objects.hashCode (this.addressList);
+        hash = 13 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        User other = (User) object;
-        if ((this.userID == null && other.userID != null) || (this.userID != null && !this.userID.equals(other.userID))) {
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals (this.userName, other.userName)){
+            return false;
+        }
+        if (!Objects.equals (this.firstName, other.firstName)){
+            return false;
+        }
+        if (!Objects.equals (this.middleName, other.middleName)){
+            return false;
+        }
+        if (!Objects.equals (this.lastName, other.lastName)){
+            return false;
+        }
+        if (!Objects.equals (this.email, other.email)){
+            return false;
+        }
+        if (!Objects.equals (this.phoneNumber, other.phoneNumber)){
+            return false;
+        }
+        if (!Objects.equals (this.gender, other.gender)){
+            return false;
+        }
+        if (!Objects.equals (this.job, other.job)){
+            return false;
+        }
+        if (!Objects.equals (this.photoURI, other.photoURI)){
+            return false;
+        }
+        if (!Objects.equals (this.selfDescription, other.selfDescription)){
+            return false;
+        }
+        if (!Objects.equals (this.password, other.password)){
+            return false;
+        }
+        if (!Objects.equals (this.accountStatus, other.accountStatus)){
+            return false;
+        }
+        if (!Objects.equals (this.userID, other.userID)){
+            return false;
+        }
+        if (!Objects.equals (this.dob, other.dob)){
+            return false;
+        }
+        if (!Objects.equals (this.dateCreated, other.dateCreated)){
+            return false;
+        }
+        if (!Objects.equals (this.lastLogin, other.lastLogin)){
+            return false;
+        }
+        if (!Objects.equals (this.lastModified, other.lastModified)){
+            return false;
+        }
+        if (!Objects.equals (this.courseList, other.courseList)){
+            return false;
+        }
+        if (!Objects.equals (this.classList, other.classList)){
+            return false;
+        }
+        if (!Objects.equals (this.roleList, other.roleList)){
+            return false;
+        }
+        if (!Objects.equals (this.spareTimeRegisterList, other.spareTimeRegisterList)){
+            return false;
+        }
+        if (!Objects.equals (this.studentScoreList, other.studentScoreList)){
+            return false;
+        }
+        if (!Objects.equals (this.classList1, other.classList1)){
+            return false;
+        }
+        if (!Objects.equals (this.addressList, other.addressList)){
+            return false;
+        }
+        if (!Objects.equals (this.multipleChoiceQuestionList, other.multipleChoiceQuestionList)){
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
-        return "com.PhanLam.backend.model.User[ userID=" + userID + " ]";
+    public String toString (){
+        return "User {"
+                + "userID=" + userID
+                + ", userName=" + userName
+                + ", firstName=" + firstName
+                + ", middleName=" + middleName
+                + ", lastName=" + lastName
+                + ", email=" + email
+                + ", dob=" + dob
+                + ", phoneNumber=" + phoneNumber
+                + ", gender=" + gender
+                + ", job=" + job
+                + ", photoURI=" + photoURI
+                + ", selfDescription=" + selfDescription
+                + ", password=[protected]"
+                + ", accountStatus=" + accountStatus
+                + ", dateCreated=" + dateCreated
+                + ", lastLogin=" + lastLogin
+                + ", lastModified=" + lastModified
+                + ", courseList=" + courseList
+                + ", classList=" + classList
+                + ", roleList=" + roleList
+                + ", spareTimeRegisterList=" + spareTimeRegisterList
+                + ", studentScoreList=" + studentScoreList
+                + ", classList1=" + classList1
+                + ", addressList=" + addressList
+                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
+        + '}';
     }
 }

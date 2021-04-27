@@ -6,12 +6,15 @@ import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.ClassSessionRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.PhanLam.backend.service.common.SearchCriteria;
+import com.PhanLam.backend.service.common.SearchSpecification;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,7 +136,7 @@ public class ClassSessionService {
     }
 
     @Transactional (readOnly = true)
-    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role) {
+    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role,String searchParam) {
         Sort.TypedSort<ClassSession> classSessionSort;
         Sort sortInformation;
         PageRequest pagingInformation;
@@ -168,6 +171,10 @@ public class ClassSessionService {
             );
         }
 
+        //for search
+        SearchSpecification spec =
+                new SearchSpecification(new SearchCriteria("courseID.courseName", "like", searchParam));
+
         // handle list for admin
         classSessionSort = Sort.sort(ClassSession.class);
         sortInformation
@@ -180,7 +187,7 @@ public class ClassSessionService {
                 , sortInformation
         );
         if (userID == null) {
-            classSessionPage = classSessionRepository.findAll(pagingInformation);
+            classSessionPage = classSessionRepository.findAll( Specification.where(spec),pagingInformation);
 
             totalRowCount = classSessionPage.getTotalElements();
             classSessionList = classSessionPage.getContent();
@@ -207,7 +214,7 @@ public class ClassSessionService {
                     .selectFrom(classSession)
                     .innerJoin(classSession.userList, student)
                     .where(
-                            student.userID.eq(user.getUserID())
+                            student.userID.eq(user.getUserID()).and(classSession.courseID.courseName.eq("%"+searchParam+"%"))
                     )
                     .orderBy(classSession.status.asc())
                     .limit(pageSize)

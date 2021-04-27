@@ -9,6 +9,7 @@ package com.PhanLam.backend.service;
 
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
+import com.PhanLam.backend.dal.repository_interface.CommentRepository;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
@@ -49,6 +50,7 @@ public class UserService {
     private CourseService courseService;
     private ClassSessionService classSessionService;
     private QueryFactoryGet queryFactoryGetter;
+    private CommentRepository commentRepository;
 
     public UserService (
             UserRepository userRepository
@@ -57,12 +59,14 @@ public class UserService {
             , @Lazy ClassSessionService classSessionService
             , @Lazy CourseService courseService
             , QueryFactoryGet queryFactoryGetter
+            , CommentRepository commentRepository
     ){
         this.userRepository = userRepository;
         this.classSessionService = classSessionService;
         this.courseRepository = courseRepository;
         this.queryFactoryGetter = queryFactoryGetter;
         this.courseService = courseService;
+        this.commentRepository = commentRepository;
         queryFactory = new JPAQueryFactory (entityManager);
     }
 
@@ -423,6 +427,13 @@ public class UserService {
                         .fetchResults();
         totalRowCount = studentPage.getTotal();
         studentHolder = studentPage.getResults();
+
+        //set comment
+        for(User user : studentHolder){
+            Comment comment = commentRepository.findAllByUserAndClassSession(user,classSession);
+            String content = comment == null ? "" : comment.getContent();
+            user.setCommentOfClass(content);
+        }
         studentDataPage = new DataPage<>(totalRowCount, studentHolder);
         return studentDataPage;
 

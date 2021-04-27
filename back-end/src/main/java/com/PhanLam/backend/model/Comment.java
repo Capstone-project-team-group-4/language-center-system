@@ -1,5 +1,7 @@
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -13,8 +15,12 @@ public class Comment {
     @Basic (optional = false)
     @Column (name = "CommentId", nullable = false)
     private Integer CommentId;
+
+    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private User user;
+
+    @JsonIgnore
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private ClassSession classSession;
     @Basic (optional = false)
@@ -68,4 +74,5 @@ public class Comment {
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
+
 }

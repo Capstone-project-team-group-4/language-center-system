@@ -431,7 +431,8 @@ public class UserService {
         //set comment
         for(User user : studentHolder){
             Comment comment = commentRepository.findAllByUserAndClassSession(user,classSession);
-            user.setCommentOfClass(comment.getContent());
+            String content = comment == null ? "" : comment.getContent();
+            user.setCommentOfClass(content);
         }
         studentDataPage = new DataPage<>(totalRowCount, studentHolder);
         return studentDataPage;

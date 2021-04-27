@@ -134,14 +134,9 @@ public class UserServiceTests {
                 , pageSize
                 , sortInformation
         );
-        SearchSpecification spec1 =
-                new SearchSpecification(new SearchCriteria("middleName", "like", searchParam));
+        SearchSpecification spec =
+                new SearchSpecification(new SearchCriteria("middleName", "forName", searchParam));
 
-        SearchSpecification spec2 =
-                new SearchSpecification(new SearchCriteria("lastName", "like", searchParam));
-
-        SearchSpecification spec3 =
-                new SearchSpecification(new SearchCriteria("firstName", "like", searchParam));
         userPage = new PageImpl<> (
                 userHolder
                 , pagingInformation
@@ -150,7 +145,7 @@ public class UserServiceTests {
         when (
                 userRepository.findAllByUserNameIsNot (
                         userName
-                        , Specification.where(spec1).or(spec2).or(spec3)
+                        , Specification.where(spec)
                         , pagingInformation
                 )
         ).thenReturn (userPage);

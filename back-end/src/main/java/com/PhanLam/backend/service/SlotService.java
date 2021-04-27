@@ -44,8 +44,11 @@ public class SlotService {
 
         //get teacher of spare time
         SpareTimeRegister spareTimeRegister = spareTimeRegisterService.getById(spareTimeId);
-        List<Integer> slotIds =spareTimeRegister.getSlotList().stream().map(Slot::getSlotID).collect(Collectors.toList());
         User teacher = spareTimeRegister.getUserID();
+        List<Integer> slotIds = spareTimeRegister.getSlotList()
+                .stream()
+                .map(Slot::getSlotID)
+                .collect(Collectors.toList());
 
         //get list
         QClassSession classSession = new QClassSession("classSession");;
@@ -55,7 +58,7 @@ public class SlotService {
         slotQueryResults = queryFactory
                 .selectFrom(slot)
                 .leftJoin(slot.classSessionList, classSession)
-                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS).and(classSession.teacherID.ne(teacher))).and(slot.slotID.in(slotIds)))
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS).or(classSession.teacherID.ne(teacher))).and(slot.slotID.in(slotIds)))
                 .orderBy (slot.slotID.asc ())
                 .fetchResults();
         return slotQueryResults.getResults();

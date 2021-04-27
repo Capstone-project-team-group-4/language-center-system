@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SpareTimeRegisterRequest {
     private int spareTimeRegisterId;
-    private List<Integer> listCourseTypeId = new ArrayList<>();
+    private Integer courseTypeId ;
     private List<Integer> listSlotId = new ArrayList<>();
 
     public List<Integer> getListSlotId() {
@@ -16,12 +16,12 @@ public class SpareTimeRegisterRequest {
         this.listSlotId = listSlotId;
     }
 
-    public List<Integer> getListCourseTypeId() {
-        return listCourseTypeId;
+    public Integer getCourseTypeId() {
+        return courseTypeId;
     }
 
-    public void setListCourseTypeId(List<Integer> listCourseTypeId) {
-        this.listCourseTypeId = listCourseTypeId;
+    public void setCourseTypeId(Integer courseTypeId) {
+        this.courseTypeId = courseTypeId;
     }
 
     public int getSpareTimeRegisterId() {

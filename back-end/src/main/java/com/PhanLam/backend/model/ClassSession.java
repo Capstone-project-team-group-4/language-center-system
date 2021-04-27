@@ -9,16 +9,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-
+@Table (name = "ClassSession", catalog = "LanguageCenterDB", schema = "dbo")
+@XmlRootElement
+@NamedQueries ({
+    @NamedQuery (
+            name = "ClassSession.findAll"
+            , query = "SELECT c FROM ClassSession c"
+    ),
+    @NamedQuery (
+            name = "ClassSession.findByClassID"
+            , query = "SELECT c FROM ClassSession c WHERE c.classID = :classID"
+    ),
+    @NamedQuery (
+            name = "ClassSession.findByStatus"
+            , query = "SELECT c FROM ClassSession c WHERE c.status = :status"
+    )})
 public class ClassSession implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,7 +44,9 @@ public class ClassSession implements Serializable {
     @Basic (optional = false)
     @Column (name = "ClassID", nullable = false)
     private Integer classID;
-
+    @Column(name = "LastModified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
     @Basic (optional = false)
     @NotNull
     @Column (name = "Status", nullable = false)
@@ -42,14 +61,14 @@ public class ClassSession implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @OneToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private Course courseID;
     @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private User teacherID;
     @Basic (optional = false)
     @Column (name = "SpareTimeRegisterID", nullable = false)
-    private Integer SpareTimeRegisterID;
+    private Integer spareTimeRegisterID;
     @JoinColumn (
             name = "SlotID"
             , referencedColumnName = "SlotID"
@@ -57,6 +76,9 @@ public class ClassSession implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Slot slot;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classSession", fetch = FetchType.LAZY)
+    private List<Comment> commentList;
 
     public ClassSession (){
     }
@@ -129,28 +151,71 @@ public class ClassSession implements Serializable {
     }
 
     public Integer getSpareTimeRegisterID() {
-        return SpareTimeRegisterID;
+        return spareTimeRegisterID;
     }
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
-        SpareTimeRegisterID = spareTimeRegisterID;
+        spareTimeRegisterID = spareTimeRegisterID;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    @XmlTransient
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (classID != null ? classID.hashCode () : 0);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode (this.classID);
+        hash = 79 * hash + Objects.hashCode (this.status);
+        hash = 79 * hash + Objects.hashCode (this.userList);
+        hash = 79 * hash + Objects.hashCode (this.homeWorkList);
+        hash = 79 * hash + Objects.hashCode (this.courseID);
+        hash = 79 * hash + Objects.hashCode (this.teacherID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ClassSession)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        ClassSession other = (ClassSession) object;
-        if ((this.classID == null && other.classID != null) || (this.classID != null && !this.classID.equals (other.classID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final ClassSession other = (ClassSession) obj;
+        if (!Objects.equals (this.status, other.status)){
+            return false;
+        }
+        if (!Objects.equals (this.classID, other.classID)){
+            return false;
+        }
+
+        if (!Objects.equals (this.userList, other.userList)){
+            return false;
+        }
+        if (!Objects.equals (this.homeWorkList, other.homeWorkList)){
+            return false;
+        }
+        if (!Objects.equals (this.courseID, other.courseID)){
+            return false;
+        }
+        if (!Objects.equals (this.teacherID, other.teacherID)){
             return false;
         }
         return true;
@@ -158,7 +223,13 @@ public class ClassSession implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.ClassSession[ classID=" + classID + " ]";
+        return "ClassSession {"
+                + "classID=" + classID
+                + ", status=" + status
+                + ", userList=" + userList
+                + ", homeWorkList=" + homeWorkList
+                + ", courseID=" + courseID
+                + ", teacherID=" + teacherID
+        + '}';
     }
-
 }

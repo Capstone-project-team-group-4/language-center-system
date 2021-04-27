@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,6 +97,7 @@ public class ClassSessionService {
         course.getUserList().stream().forEach(u ->userList.add(u));
         classSession.setUserList(userList);
         classSession.setStatus(Constant.STATUS_ACTIVE_CLASS);
+        classSession.setLastModified(new Date());
         classSession.setSpareTimeRegisterID(spareTimeRegister.getSpareTimeID());
         save(classSession);
 
@@ -170,7 +172,8 @@ public class ClassSessionService {
         classSessionSort = Sort.sort(ClassSession.class);
         sortInformation
                 = classSessionSort
-                .by(ClassSession::getSlot).ascending();
+                .by(ClassSession::getStatus).descending().and(classSessionSort
+                        .by(ClassSession::getLastModified).descending());
         pagingInformation = PageRequest.of(
                 pageNumber
                 , pageSize

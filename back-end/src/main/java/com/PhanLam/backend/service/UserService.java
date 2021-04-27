@@ -100,6 +100,7 @@ public class UserService {
 
         if ((pageIndex >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
+            User user = userRepository.findByUserName(userName).get();
             userSortInformation = Sort.sort (User.class);
             sortInformation
                 = userSortInformation.by (User::getFirstName).ascending ()
@@ -114,16 +115,12 @@ public class UserService {
 
             //for search
             SearchSpecification spec1 =
-                    new SearchSpecification(new SearchCriteria("middleName", "like", searchParam));
-            SearchSpecification spec2 =
-                    new SearchSpecification(new SearchCriteria("lastName", "like", searchParam));
-            SearchSpecification spec3 =
-                    new SearchSpecification(new SearchCriteria("firstName", "like", searchParam));
+                    new SearchSpecification(new SearchCriteria("middleName", "forName", searchParam));
             SearchSpecification spec4 =
-                    new SearchSpecification(new SearchCriteria("userName", "notlike", userName));
+                    new SearchSpecification(new SearchCriteria("userID", "notEqual", user.getUserID()));
 
             userPage = userRepository.findAll(
-                    Specification.where(spec1).or(spec2).or(spec3).and(spec4)
+                    Specification.where(spec1).and(spec4)
                     , pagingInformation
             );
             totalRowCount = userPage.getTotalElements ();

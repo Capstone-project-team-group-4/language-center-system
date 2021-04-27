@@ -13,15 +13,17 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [listClass, setListClass] = useState([]);
+  const user = sessionStorage.getItem('loggedInUser');
+  let idUser = user ? JSON.parse(user).id : 0;
 
   useEffect(() => {
     getListClass();
   },[])
-  console.log('aaaa');
+
   function getListClass() {
     classAPI = new ClassAPI();
 
-    classAPI.getListClass(pageNumber, pageSize, 2, 'ROLE_STUDENT' ).then((res) => {
+    classAPI.getListClass(pageNumber, pageSize, '', idUser, 'ROLE_STUDENT').then((res) => {
       setListClass(res.pageDataHolder);
     });
   }

@@ -13,8 +13,12 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [listClass, setListClass] = useState([]);
-  const [listStudent, setListStudent] = useState([]);
+  const [listStudent, setListStudent] = useState<any>([]);
   const [visible, setVisible] = useState(false);
+  const [searchParam, setSearchParam] = useState("");
+  const [classIDComment, setClassIDComment] = useState(0);
+  const user = sessionStorage.getItem("loggedInUser");
+  let idUser = user ? JSON.parse(user).id : 0;
 
   useEffect(() => {
     getListClass();
@@ -24,7 +28,7 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
     classAPI = new ClassAPI();
 
     classAPI
-      .getListClass(pageNumber, pageSize, 2, "ROLE_TEACHER")
+      .getListClass(pageNumber, pageSize, searchParam, idUser, "ROLE_TEACHER")
       .then((res) => {
         setListClass(res.pageDataHolder);
       });
@@ -40,12 +44,38 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
   };
 
   const getAllStudent = (id: number) => {
+    setClassIDComment(id);
     classAPI = new ClassAPI();
 
     classAPI.getAllOFClass(0, 100, id).then((res) => {
       setListStudent(res.pageDataHolder);
       setVisible(true);
     });
+  };
+
+  const searchName = () => {
+    getListClass();
+  };
+
+  const commentForTeacher = (item: any) => {
+    classAPI = new ClassAPI();
+    classAPI
+      .createComment(classIDComment, item.userID, item.commentOfClass)
+      .then((res) => {
+        notification.success({ message: "Success" });
+        setVisible(false);
+      });
+  };
+
+  const handleChangeComment = (value: string, id: number) => {
+    const newList = listStudent.map((el: any) => {
+      if (el.userID === id) {
+        el.commentOfClass = value;
+      }
+      return el;
+    });
+
+    setListStudent(newList);
   };
 
   const columnsStudent: any = [
@@ -74,10 +104,17 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
       dataIndex: "userID",
       key: "userID",
       align: "center",
-      render: (value: any, item: any, index: number) => {
+      render: (value: any, item: any, record: any) => {
         return (
-          <span>
-            <Input />
+          <span style={{ display: "flex" }}>
+            <Input
+              value={item.commentOfClass}
+              onChange={(e) => handleChangeComment(e.target.value, item.userID)}
+            />
+
+            <Button type="primary" onClick={() => commentForTeacher(item)}>
+              Save
+            </Button>
           </span>
         );
       },
@@ -134,7 +171,12 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
       width: "30%",
       align: "center",
       render: (status: any) => {
-        return <span>{status === 1 ? "Active" : "In-Active"}</span>;
+        return (
+          <span>
+            {status === 1 && <div style={{ color: "green" }}>Active</div>}
+            {status === 0 && <div style={{ color: "red" }}>In-Active</div>}
+          </span>
+        );
       },
     },
     {
@@ -147,7 +189,12 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
         return (
           <span>
             {record.status === 1 && (
-              <Button type="primary" onClick={() => getAllStudent(classID)}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  getAllStudent(classID);
+                }}
+              >
                 Show All Student
               </Button>
             )}
@@ -195,6 +242,15 @@ export function TeacherClassPage(props: TeacherClassPageProps): ReactElement {
                 <h3 className="mb-0">
                   <i className="far fa-clone pr-1">Teacher Class Management</i>
                 </h3>
+              </div>
+              <div className="mb-3 col-lg-12">
+                <Input
+                  placeholder="Search"
+                  style={{ width: "500px" }}
+                  value={searchParam}
+                  onChange={(e) => setSearchParam(e.target.value)}
+                  onPressEnter={searchName}
+                />
               </div>
 
               <div className="card-body pt-0">

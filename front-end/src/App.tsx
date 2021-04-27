@@ -424,7 +424,7 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <InfoPage modalDialog={modalDialog} />
       </Route>
-      <Route path="/student/class-page">
+      <Route path="/student-class-page">
         <PageHeader logOut={logOut} />
         <StudentClassPage />
       </Route>

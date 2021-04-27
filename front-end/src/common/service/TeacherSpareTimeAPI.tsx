@@ -29,11 +29,15 @@ export class TeacherSpareTimeAPI {
 
   public async getListTeacherSpareTime(
     pageNumber: number,
-    pageSize: number
+    pageSize: number,
+    searchParam?: string
   ): Promise<any> {
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageNumber", pageNumber.toString());
     this.requestParameterHolder.set("pageSize", pageSize.toString());
+    if(searchParam) {
+      this.requestParameterHolder.set("searchParam", searchParam);
+    }
     try {
       const serverResponse = await this.axiosInstance.get<unknown>(
         "/spare-time-registers",
@@ -73,7 +77,7 @@ export class TeacherSpareTimeAPI {
   }
 
   public async createSpareTime(
-    listCourseTypeId: any[],
+    courseTypeId : any,
     listSlotId: any[]
   ): Promise<AxiosResponse> {
     this.axiosInstanceGetter = new AxiosInstanceGet();
@@ -81,7 +85,7 @@ export class TeacherSpareTimeAPI {
     try {
       this.serverResponse = await this.axiosInstance.post(
         "/spare-time-registers",
-        { listCourseTypeId, listSlotId }
+        { courseTypeId, listSlotId }
       );
       this.typeGuardian = new TypeGuard();
       if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
@@ -97,7 +101,7 @@ export class TeacherSpareTimeAPI {
 
   public async editSpareTime(
     spareTimeRegisterId: number,
-    listCourseTypeId: any[],
+    courseTypeId: any,
     listSlotId: any[]
   ): Promise<AxiosResponse> {
     this.axiosInstanceGetter = new AxiosInstanceGet();
@@ -105,7 +109,7 @@ export class TeacherSpareTimeAPI {
     try {
       this.serverResponse = await this.axiosInstance.put(
         "/spare-time-registers",
-        {spareTimeRegisterId, listCourseTypeId, listSlotId }
+        {spareTimeRegisterId, courseTypeId, listSlotId }
       );
       this.typeGuardian = new TypeGuard();
       if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {

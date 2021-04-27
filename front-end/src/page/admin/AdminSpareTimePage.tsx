@@ -101,7 +101,7 @@ export function AdminSpareTimePage(
   function getListTeacherSpareTime() {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
-    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize).then((res) => {
+    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize, searchParam).then((res) => {
       setListSpareTime(res.pageDataHolder);
     });
   }
@@ -240,7 +240,6 @@ export function AdminSpareTimePage(
   };
 
   const editSpareTime = (record: any) => {
-    console.log("0000", record);
     // @ts-ignore
     let nameCourseType = [];
     // @ts-ignore
@@ -330,8 +329,8 @@ export function AdminSpareTimePage(
       render: (status: any, record: any) => {
         return (
           <div>
-            {status === 2 && "APPROVED"}
-            {status === 3 && "REJECTED"}
+            {status === 2 && <div style={{color: 'green'}}>APPROVED</div>}
+            {status === 3 && <div style={{color: 'red'}}>REJECTED</div>}
             {status === 1 && (
               <div style={{ display: "flex" }}>
                 <div>
@@ -386,7 +385,7 @@ export function AdminSpareTimePage(
                 style={{ width: "500px" }}
                 value={searchParam}
                 onChange={(e) => setSearchParam(e.target.value)}
-                onBlur={searchName}
+                onPressEnter={searchName}
               />
             </div>
 

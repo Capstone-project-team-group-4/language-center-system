@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
+import { Input } from "antd";
 import React, {
   ChangeEvent,
   MouseEvent,
@@ -76,6 +77,7 @@ export function CreateAccountPage(props: CreateAccountPageProps): ReactElement {
 
   let [registerFormAPI] = useState<RegisterFormAPI>(new RegisterFormAPI());
   let [roleAPI] = useState<RoleAPI>(new RoleAPI());
+  const [search, setSearch] = useState("");
 
   async function handleAcceptRequest(
     event: MouseEvent<HTMLElement, globalThis.MouseEvent>
@@ -215,11 +217,12 @@ export function CreateAccountPage(props: CreateAccountPageProps): ReactElement {
   }
 
   async function loadRegisterFormTable(): Promise<void> {
+    console.log("search", search);
     try {
       registerFormDataPage = await registerFormAPI.getAllCreateAccountRequest(
         pageIndex,
         pageSize,
-        ""
+        search
       );
       setTotalRowCount(registerFormDataPage.totalRowCount);
       setRegisterFormHolder(registerFormDataPage.pageDataHolder);
@@ -288,6 +291,10 @@ export function CreateAccountPage(props: CreateAccountPageProps): ReactElement {
     );
   }
 
+  const handleSearch = () => {
+    loadRegisterFormTable();
+  };
+
   return (
     <Container fluid={true}>
       {props.modalDialog}
@@ -311,6 +318,13 @@ export function CreateAccountPage(props: CreateAccountPageProps): ReactElement {
               </Breadcrumb>
               <h1>Create Account Requests</h1>
               <hr />
+              <Input
+                  placeholder="Search"
+                  style={{ width: "300px", marginBottom: "20px" }}
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                  onPressEnter={handleSearch}
+                />
               <Form>
                 <Form.Group>
                   <Form.Row className="justify-content-md-center">
@@ -364,6 +378,7 @@ export function CreateAccountPage(props: CreateAccountPageProps): ReactElement {
                     )}
                   </Form.Row>
                 </Form.Group>
+
                 <Table responsive="md" hover={true}>
                   <thead>
                     <tr>

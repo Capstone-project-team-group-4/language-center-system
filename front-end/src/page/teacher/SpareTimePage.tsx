@@ -48,8 +48,8 @@ export function TeacherSpareTimePage(
   const [visibleModalApprove, setVisibleModalApprove] = useState(false);
   const [listCourseForClass, setListCourseForClass] = useState([]);
   const [listSlotForClass, setListSlotForClass] = useState([]);
-  const [courseValueForClass, setCourseValueForClass] = useState('');
-  const [slotValueForClass, setSlotValueForClass] = useState('');
+  const [courseValueForClass, setCourseValueForClass] = useState("");
+  const [slotValueForClass, setSlotValueForClass] = useState("");
   const [approveID, setApproveID] = useState(0);
   const listSlot = [
     {
@@ -135,95 +135,97 @@ export function TeacherSpareTimePage(
       getListTeacherSpareTime();
     });
   };
-  
+
   const getListCourseForClass = (id: number) => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
     sprareTimeAPI.getListCourseForClass(0, 100, id).then((res) => {
       setListCourseForClass(res.pageDataHolder);
-    })
-  }
+    });
+  };
 
   const getListSlotForClass = (id: number) => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
     sprareTimeAPI.getListSlotForClass(id).then((res) => {
-      setListSlotForClass(res)
-    })
-  }
+      setListSlotForClass(res);
+    });
+  };
 
   const approveSpareTime = (record: any) => {
     getListCourseForClass(record.spareTimeID);
     getListSlotForClass(record.spareTimeID);
     setApproveID(record.spareTimeID);
-    setVisibleModalApprove(true)
-  }
+    setVisibleModalApprove(true);
+  };
   const approveClass = () => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
     let slot: any = listSlotForClass.find((x: any) => {
-      if(x.slotName === slotValueForClass) return x.slotID
-    })
-    
+      if (x.slotName === slotValueForClass) return x.slotID;
+    });
 
     let course: any = listCourseForClass.find((x: any) => {
-      if(x.courseName === courseValueForClass) return x.courseID
-    })
-
-    sprareTimeAPI.approveClass(slot?.slotID, course?.courseID, approveID).then((res) => {
-      setVisibleModalApprove(false);
-      notification.success({ message: "Approved" });
-      getListTeacherSpareTime();
-      setCourseValueForClass('');
-      setSlotValueForClass('');
-    }).catch(error => {
-      console.log(error, 'error');
+      if (x.courseName === courseValueForClass) return x.courseID;
     });
-  }
 
+    sprareTimeAPI
+      .approveClass(slot?.slotID, course?.courseID, approveID)
+      .then((res) => {
+        setVisibleModalApprove(false);
+        notification.success({ message: "Approved" });
+        getListTeacherSpareTime();
+        setCourseValueForClass("");
+        setSlotValueForClass("");
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  };
 
   const saveForm = () => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
-    let courseIds = [];
-    let slotIds = [];
-
-    courseIds = selectedCourse.map((e1) => {
-      const index = listCourse.findIndex((x) => x.typeName === e1);
-      return listCourse[index].typeID;
-    });
-
-    slotIds = selectedSlot.map((e1) => {
+    let slotIds = selectedSlot.map((e1) => {
       const index = listSlot.findIndex((x) => x.name === e1);
       return listSlot[index].value;
     });
 
+    let courseIds: any = listCourse.find((x: any) => {
+      if (x.typeName === selectedCourse) return x.typeID;
+    });
+
     if (isEdit) {
-      sprareTimeAPI.editSpareTime(idEdit, courseIds, slotIds).then((res) => {
-        history.push("/teacher/spare-time-management");
-        notification.success({
-          message: "Sửa thành công",
+      sprareTimeAPI
+        .editSpareTime(idEdit, courseIds?.typeID, slotIds)
+        .then((res) => {
+          history.push("/teacher/spare-time-management");
+          notification.success({
+            message: "Sửa thành công",
+          });
+          getListTeacherSpareTime();
+          setVisibleModalCreate(false);
+          setSelectedCourse([]);
+          setSelectedSlot([]);
         });
-        getListTeacherSpareTime();
-        setVisibleModalCreate(false);
-        setSelectedCourse([]);
-        setSelectedSlot([]);
-      });
     } else {
-      sprareTimeAPI.createSpareTime(courseIds, slotIds).then((res) => {
-        history.push("/teacher/spare-time-management");
-        notification.success({
-          message: "Tạo thành công",
+      sprareTimeAPI
+        .createSpareTime(courseIds?.typeID, slotIds)
+        .then((res) => {
+          history.push("/teacher/spare-time-management");
+          notification.success({
+            message: "Tạo thành công",
+          });
+          getListTeacherSpareTime();
+          setVisibleModalCreate(false);
+          setSelectedCourse([]);
+          setSelectedSlot([]);
+        })
+        .catch((error) => {
+          setVisibleModalCreate(false);
+          setSelectedCourse([]);
+          setSelectedSlot([]);
+          notification.error({ message: error.massage });
         });
-        getListTeacherSpareTime();
-        setVisibleModalCreate(false);
-        setSelectedCourse([]);
-        setSelectedSlot([]);
-      }).catch(error => {
-        setVisibleModalCreate(false);
-        setSelectedCourse([]);
-        setSelectedSlot([]);
-        notification.error({message: error.massage});
-      });
     }
   };
 
@@ -240,7 +242,6 @@ export function TeacherSpareTimePage(
   };
 
   const editSpareTime = (record: any) => {
-    console.log("0000", record);
     // @ts-ignore
     let nameCourseType = [];
     // @ts-ignore
@@ -320,9 +321,9 @@ export function TeacherSpareTimePage(
       render: (status: number) => {
         return (
           <span>
-            {status === 1 && 'PENDING'}
-            {status === 2 && 'APPROVED'}
-            {status === 3 && 'REJECTED'}
+            {status === 1 && <div style={{color: 'orange'}}>PENDING</div>}
+            {status === 2 && <div style={{color: 'green'}}>APPROVED</div>}
+            {status === 3 && <div style={{color: 'red'}}>REJECTED</div>}
           </span>
         );
       },
@@ -390,13 +391,6 @@ export function TeacherSpareTimePage(
               </h3>
             </div>
             <div className="mb-3 col-lg-12">
-              <Input
-                placeholder="Search"
-                style={{ width: "500px" }}
-                value={searchParam}
-                onChange={(e) => setSearchParam(e.target.value)}
-                onBlur={searchName}
-              />
               <Button
                 className="float-right"
                 type="primary"
@@ -448,7 +442,7 @@ export function TeacherSpareTimePage(
           className="border-black-8 border-b pb-2 mb-4"
         >
           <Col>
-            <h3>Create Teacher Spare Time</h3>
+            <h3>{isEdit ? 'Edit' : 'Create'} Teacher Spare Time</h3>
           </Col>
         </Row>
         <div>
@@ -456,7 +450,7 @@ export function TeacherSpareTimePage(
             <Col span={4}>Course Type</Col>
             <Col span={20}>
               <Select
-                mode="multiple"
+                // mode="multiple"
                 style={{ width: "100%" }}
                 placeholder="Select"
                 value={selectedCourse}
@@ -547,13 +541,14 @@ export function TeacherSpareTimePage(
                 onChange={(value) => setCourseValueForClass(value)}
                 optionLabelProp="label"
               >
-                {listCourseForClass && listCourseForClass.map((item: any) => {
-                  return (
-                    <Option value={item.courseName} key={item.courseID}>
-                      {item.courseName}
-                    </Option>
-                  );
-                })}
+                {listCourseForClass &&
+                  listCourseForClass.map((item: any) => {
+                    return (
+                      <Option value={item.courseName} key={item.courseID}>
+                        {item.courseName}
+                      </Option>
+                    );
+                  })}
               </Select>
             </Col>
 
@@ -563,16 +558,19 @@ export function TeacherSpareTimePage(
                 style={{ width: "100%" }}
                 placeholder="Select"
                 value={slotValueForClass}
-                onChange={(value) => { setSlotValueForClass(value)}}
+                onChange={(value) => {
+                  setSlotValueForClass(value);
+                }}
                 optionLabelProp="label"
               >
-                {listSlotForClass && listSlotForClass.map((item: any) => {
-                  return (
-                    <Option value={item.slotName} key={item.slotID}>
-                      {item.slotName}
-                    </Option>
-                  );
-                })}
+                {listSlotForClass &&
+                  listSlotForClass.map((item: any) => {
+                    return (
+                      <Option value={item.slotName} key={item.slotID}>
+                        {item.slotName}
+                      </Option>
+                    );
+                  })}
               </Select>
             </Col>
           </Row>
@@ -589,9 +587,7 @@ export function TeacherSpareTimePage(
               <Button
                 type="primary"
                 className="px-12"
-                disabled={
-                  !courseValueForClass || !slotValueForClass
-                }
+                disabled={!courseValueForClass || !slotValueForClass}
                 onClick={() => approveClass()}
               >
                 Save

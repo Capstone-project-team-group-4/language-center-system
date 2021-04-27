@@ -30,22 +30,26 @@ export class ClassAPI {
   public async getListClass(
     pageNumber: number,
     pageSize: number,
+    searchParam?: string,
     userID?: number,
     role?: string
   ): Promise<any> {
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageNumber", pageNumber.toString());
     this.requestParameterHolder.set("pageSize", pageSize.toString());
+    if (searchParam) {
+      this.requestParameterHolder.set("searchParam", searchParam);
+    }
     try {
       const serverResponse = await this.axiosInstance.get<unknown>(
         "/class-sessions",
-        { params: { pageNumber, pageSize, userID , role } }
+        { params: { pageNumber, pageSize, searchParam, userID, role } }
       );
       if (serverResponse?.data) {
         if (serverResponse?.data)
-      console.log('serverResponse?.data', serverResponse?.data);
+          console.log("serverResponse?.data", serverResponse?.data);
 
-          return Promise.resolve<any>(serverResponse?.data);
+        return Promise.resolve<any>(serverResponse?.data);
       } else {
         // throw new Error("This server response is not valid !");
       }
@@ -59,15 +63,12 @@ export class ClassAPI {
     }
   }
 
-  public async cancelClass(
-    classSessionID: number
-  ): Promise<AxiosResponse> {
+  public async cancelClass(classSessionID: number): Promise<AxiosResponse> {
     this.axiosInstanceGetter = new AxiosInstanceGet();
     this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
     try {
       this.serverResponse = await this.axiosInstance.patch(
-        `/class-sessions/${classSessionID}:cancel`,
-        
+        `/class-sessions/${classSessionID}:cancel`
       );
       this.typeGuardian = new TypeGuard();
       if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
@@ -81,15 +82,12 @@ export class ClassAPI {
     }
   }
 
-  public async deleteClass(
-    classSessionID: number
-  ): Promise<AxiosResponse> {
+  public async deleteClass(classSessionID: number): Promise<AxiosResponse> {
     this.axiosInstanceGetter = new AxiosInstanceGet();
     this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
     try {
       this.serverResponse = await this.axiosInstance.delete(
-        `/class-sessions/${classSessionID}`,
-        
+        `/class-sessions/${classSessionID}`
       );
       this.typeGuardian = new TypeGuard();
       if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
@@ -104,9 +102,9 @@ export class ClassAPI {
   }
 
   public async getAllOFClass(
-    pageIndex : number,
+    pageIndex: number,
     pageSize: number,
-    classID: number,
+    classID: number
   ): Promise<any> {
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageIndex", pageIndex.toString());
@@ -114,13 +112,13 @@ export class ClassAPI {
     try {
       const serverResponse = await this.axiosInstance.get<unknown>(
         `/classes/${classID}/students`,
-        { params: { pageIndex , pageSize } }
+        { params: { pageIndex, pageSize } }
       );
       if (serverResponse?.data) {
         if (serverResponse?.data)
-      console.log('serverResponse?.data', serverResponse?.data);
+          console.log("serverResponse?.data", serverResponse?.data);
 
-          return Promise.resolve<any>(serverResponse?.data);
+        return Promise.resolve<any>(serverResponse?.data);
       } else {
         // throw new Error("This server response is not valid !");
       }
@@ -133,5 +131,28 @@ export class ClassAPI {
       }
     }
   }
-
+  public async createComment(
+    classID: number,
+    userID: number,
+    content: string
+  ): Promise<AxiosResponse> {
+    this.axiosInstanceGetter = new AxiosInstanceGet();
+    this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+    try {
+      this.serverResponse = await this.axiosInstance.post(`/comments`, {
+        classID,
+        userID,
+        content,
+      });
+      this.typeGuardian = new TypeGuard();
+      if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {
+        return this.serverResponse;
+      } else {
+        throw new Error("This server response is not valid !");
+      }
+    } catch (error) {
+      console.error(error.toJSON());
+      return Promise.reject<AxiosResponse>(error);
+    }
+  }
 }

@@ -1,6 +1,6 @@
 // Import package members section:
 import { Class } from "@material-ui/icons";
-import { Table, Tag, Button, Modal } from "antd";
+import { Table, Tag, Button, Modal, Input } from "antd";
 import React, { ReactElement, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -13,6 +13,7 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
   const [pageNumber, setPageNumber] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [listClass, setListClass] = useState([]);
+  const [searchParam, setSearchParam] = useState("");
 
   useEffect(() => {
     getListClass();
@@ -21,7 +22,7 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
   function getListClass() {
     classAPI = new ClassAPI();
 
-    classAPI.getListClass(pageNumber, pageSize).then((res) => {
+    classAPI.getListClass(pageNumber, pageSize, searchParam).then((res) => {
       setListClass(res.pageDataHolder);
     });
   }
@@ -32,6 +33,10 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
     classAPI?.deleteClass(id).then((res) => {
       getListClass();
     });
+  };
+
+  const searchName = () => {
+    getListClass();
   };
 
   const columns: any = [
@@ -113,6 +118,15 @@ export function AdminClassPage(props: AdminClassPageProps): ReactElement {
                 <h3 className="mb-0">
                   <i className="far fa-clone pr-1">Admin Class Management</i>
                 </h3>
+              </div>
+              <div className="mb-3 col-lg-12">
+                <Input
+                  placeholder="Search"
+                  style={{ width: "500px" }}
+                  value={searchParam}
+                  onChange={(e) => setSearchParam(e.target.value)}
+                  onPressEnter={searchName}
+                />
               </div>
 
               <div className="card-body pt-0">

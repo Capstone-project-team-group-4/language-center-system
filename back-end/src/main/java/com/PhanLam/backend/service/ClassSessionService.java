@@ -196,7 +196,9 @@ public class ClassSessionService {
 
         // handle list for teacher
         else if (userID != null && role.equals(Constant.ROLE_TEACHER)) {
-            classSessionPage = classSessionRepository.findAllByTeacherID(pagingInformation, user);
+            SearchSpecification specTeacher =
+                    new SearchSpecification(new SearchCriteria("teacherID.userID", "equal", userID));
+            classSessionPage = classSessionRepository.findAll(Specification.where(spec).and(specTeacher),pagingInformation);
 
             totalRowCount = classSessionPage.getTotalElements();
             classSessionList = classSessionPage.getContent();

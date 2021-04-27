@@ -15,7 +15,10 @@ public class SearchSpecification<T> implements Specification<T> {
 
     @Override
     public javax.persistence.criteria.Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        Path path = getPath(root,criteria.getColumn());
+        Path path = null;
+        if(!criteria.getColumn().equals("")) {
+            path = getPath(root, criteria.getColumn());
+        }
         if (criteria.getOperation().equalsIgnoreCase("like")) {
                 return criteriaBuilder.like(
                         path, "%" + criteria.getValue() + "%");
@@ -31,13 +34,19 @@ public class SearchSpecification<T> implements Specification<T> {
 
         }
         if (criteria.getOperation().equalsIgnoreCase("forName")) {
-            if (root.get(criteria.getColumn()).getJavaType() == String.class) {
                 Expression<String> exp1 = criteriaBuilder.concat(root.<String>get("firstName"), " ");
                 exp1 = criteriaBuilder.concat(exp1, root.<String>get("middleName"));
                 exp1 = criteriaBuilder.concat(exp1, " ");
                 exp1 = criteriaBuilder.concat(exp1, root.<String>get("lastName"));
                 return  criteriaBuilder.or(criteriaBuilder.like(exp1, "%"+ criteria.getValue() +"%"));
-            }
+        }
+        if (criteria.getOperation().equalsIgnoreCase("forNameTeacherClass")) {
+                Expression<String> exp1 = criteriaBuilder.concat(root.get("teacherID").get("firstName"), " ");
+                exp1 = criteriaBuilder.concat(exp1, root.get("teacherID").<String>get("middleName"));
+                exp1 = criteriaBuilder.concat(exp1, " ");
+                exp1 = criteriaBuilder.concat(exp1, root.get("teacherID").<String>get("lastName"));
+                return  criteriaBuilder.or(criteriaBuilder.like(exp1, "%"+ criteria.getValue() +"%"));
+
         }
         return null;
     }

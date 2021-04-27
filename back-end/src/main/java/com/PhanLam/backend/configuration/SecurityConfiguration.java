@@ -247,6 +247,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.GET, "/slots-for-create-class")
                 .hasRole ("ADMIN")
 
+                .antMatchers (HttpMethod.POST, "/comments")
+                .hasRole ("TEACHER")
+
                 .anyRequest ().denyAll ();
 
 

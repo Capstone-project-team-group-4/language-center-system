@@ -52,6 +52,8 @@ export function TeacherSpareTimePage(
   const [slotValueForClass, setSlotValueForClass] = useState("");
   const [approveID, setApproveID] = useState(0);
   const [totalRowCount, setTotalRowCount] = useState(0);
+  const user = sessionStorage.getItem("loggedInUser");
+  let idUser = user ? JSON.parse(user).id : 0;
   const listSlot = [
     {
       name: "M1",

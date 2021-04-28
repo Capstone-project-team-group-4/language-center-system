@@ -105,7 +105,6 @@ export function AdminSpareTimePage(
     sprareTimeAPI
       .getListTeacherSpareTime(pageNumber, pageSize, searchParam)
       .then((res) => {
-        console.log('res', res);
         setTotalRowCount(res.totalRowCount);
         setListSpareTime(res.pageDataHolder);
       });

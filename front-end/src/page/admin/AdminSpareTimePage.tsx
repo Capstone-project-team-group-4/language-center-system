@@ -101,7 +101,7 @@ export function AdminSpareTimePage(
   function getListTeacherSpareTime() {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
-    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize, searchParam).then((res) => {
+    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize,undefined, searchParam).then((res) => {
       setListSpareTime(res.pageDataHolder);
     });
   }
@@ -135,7 +135,7 @@ export function AdminSpareTimePage(
       getListTeacherSpareTime();
     });
   };
-  
+
   const getListCourseForClass = (id: number) => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
@@ -164,7 +164,7 @@ export function AdminSpareTimePage(
     let slot: any = listSlotForClass.find((x: any) => {
       if(x.slotName === slotValueForClass) return x.slotID
     })
-    
+
 
     let course: any = listCourseForClass.find((x: any) => {
       if(x.courseName === courseValueForClass) return x.courseID

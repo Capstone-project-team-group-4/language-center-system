@@ -51,6 +51,8 @@ export function TeacherSpareTimePage(
   const [courseValueForClass, setCourseValueForClass] = useState("");
   const [slotValueForClass, setSlotValueForClass] = useState("");
   const [approveID, setApproveID] = useState(0);
+  const user = sessionStorage.getItem("loggedInUser");
+  let idUser = user ? JSON.parse(user).id : 0;
   const listSlot = [
     {
       name: "M1",
@@ -101,7 +103,7 @@ export function TeacherSpareTimePage(
   function getListTeacherSpareTime() {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
-    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize).then((res) => {
+    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize, idUser).then((res) => {
       setListSpareTime(res.pageDataHolder);
     });
   }

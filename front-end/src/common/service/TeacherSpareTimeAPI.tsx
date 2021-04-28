@@ -30,7 +30,8 @@ export class TeacherSpareTimeAPI {
   public async getListTeacherSpareTime(
     pageNumber: number,
     pageSize: number,
-    searchParam?: string
+    teacherId?: number,
+    searchParam?: string,
   ): Promise<any> {
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageNumber", pageNumber.toString());
@@ -41,7 +42,7 @@ export class TeacherSpareTimeAPI {
     try {
       const serverResponse = await this.axiosInstance.get<unknown>(
         "/spare-time-registers",
-        { params: { pageNumber, pageSize } }
+        { params: { pageNumber, pageSize, teacherId } }
       );
       if (this.typeGuardian.isDataPage<SpareTime>(serverResponse?.data)) {
         this.spareTimeDataPage = serverResponse?.data;
@@ -131,7 +132,7 @@ export class TeacherSpareTimeAPI {
     try {
       this.serverResponse = await this.axiosInstance.patch(
         `/spare-time-registers/${spareTimeID}:reject`,
-        
+
       );
       this.typeGuardian = new TypeGuard();
       if (this.typeGuardian.isAxiosResponse(this.serverResponse)) {

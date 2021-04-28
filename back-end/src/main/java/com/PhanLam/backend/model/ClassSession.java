@@ -5,9 +5,8 @@
  */
 package com.PhanLam.backend.model;
 
-import java.util.Date;
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -156,7 +155,7 @@ public class ClassSession implements Serializable {
     }
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
-        spareTimeRegisterID = spareTimeRegisterID;
+        this.spareTimeRegisterID = spareTimeRegisterID;
     }
 
     public Date getLastModified() {

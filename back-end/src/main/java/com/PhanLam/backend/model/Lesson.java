@@ -5,49 +5,20 @@
  */
 package com.PhanLam.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author roboc
  */
 @Entity
-@Table(name = "Lesson", catalog = "LanguageCenterDB", schema = "dbo", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"LessonName"})})
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery (name = "Lesson.findAll", query = "SELECT l FROM Lesson l"),
-    @NamedQuery (name = "Lesson.findByLessonID", query = "SELECT l FROM Lesson l WHERE l.lessonID = :lessonID"),
-    @NamedQuery (name = "Lesson.findByLessonName", query = "SELECT l FROM Lesson l WHERE l.lessonName = :lessonName"),
-    @NamedQuery (name = "Lesson.findByDescription", query = "SELECT l FROM Lesson l WHERE l.description = :description"),
-    @NamedQuery (name = "Lesson.findByContentURI", query = "SELECT l FROM Lesson l WHERE l.contentURI = :contentURI"),
-    @NamedQuery (name = "Lesson.findByType", query = "SELECT l FROM Lesson l WHERE l.type = :type"),
-    @NamedQuery (name = "Lesson.findByDuration", query = "SELECT l FROM Lesson l WHERE l.duration = :duration"),
-    @NamedQuery (name = "Lesson.findByDateCreated", query = "SELECT l FROM Lesson l WHERE l.dateCreated = :dateCreated")})
 public class Lesson implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -89,7 +60,7 @@ public class Lesson implements Serializable {
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course courseID;
-    
+
     public Lesson() {
     }
 
@@ -117,8 +88,8 @@ public class Lesson implements Serializable {
         this.lastModified = lastModified;
         this.courseID = courseID;
     }
-    
-    
+
+
 
     public Integer getLessonID() {
         return lessonID;
@@ -256,16 +227,16 @@ public class Lesson implements Serializable {
 
     @Override
     public String toString (){
-        return "Lesson {" 
-                + "lessonID=" + lessonID 
-                + ", lessonName=" + lessonName 
-                + ", description=" + description 
-                + ", contentURI=" + contentURI 
-                + ", type=" + type 
-                + ", duration=" + duration 
-                + ", dateCreated=" + dateCreated 
-                + ", lastModified=" + lastModified 
-                + ", courseID=" + courseID 
+        return "Lesson {"
+                + "lessonID=" + lessonID
+                + ", lessonName=" + lessonName
+                + ", description=" + description
+                + ", contentURI=" + contentURI
+                + ", type=" + type
+                + ", duration=" + duration
+                + ", dateCreated=" + dateCreated
+                + ", lastModified=" + lastModified
+                + ", courseID=" + courseID
         + '}';
     }
 }

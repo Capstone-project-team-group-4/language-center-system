@@ -132,9 +132,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.GET, "/getTeacher/*")
-                        .hasRole ("ADMIN") 
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/students*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/getStudent/*")
@@ -152,10 +152,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PATCH, "/getTeacher/*")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.PUT, "/editInfo/*")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.POST, "/courses")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses")
@@ -166,7 +166,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.POST, "/lessons")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/lessons")
@@ -177,7 +177,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/lessons/*")
                         .hasRole ("ADMIN")
-               
+
                 .antMatchers (HttpMethod.GET, "/courses-for-create-class")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses/*/students")
@@ -192,7 +192,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.PUT, "/courses/*/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*/examinations/*")
-                        .hasRole ("ADMIN")               
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/examinations")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PATCH, "/examinations/*")
@@ -204,11 +204,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 .antMatchers (HttpMethod.GET, "/roles")
                         .authenticated ()
-                
+
                 .antMatchers (HttpMethod.GET, "/courses/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/course-types")
-                        .hasRole ("ADMIN")
+                        .hasAnyRole ("ADMIN","TEACHER")
                 .antMatchers (HttpMethod.GET, "/course-types/*/course-levels")
                         .hasRole ("ADMIN")
 
@@ -222,7 +222,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("TEACHER")
                 .antMatchers (HttpMethod.GET, "/examinations/*/quizzes")
                         .hasRole ("ADMIN")
-                
+
                 .antMatchers (HttpMethod.GET, "/courses/*")
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/getCourseByName*")
@@ -267,13 +267,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/class-sessions/*")
                 .   hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/class-sessions*")
-                .   hasAnyRole("ADMIN")
+                .   hasAnyRole("ADMIN","TEACHER","STUDENT")
                 .antMatchers(HttpMethod.GET, "/class-sessions/*")
-                .   hasAnyRole("ADMIN")
+                .   hasAnyRole("ADMIN","TEACHER","STUDENT")
                 .antMatchers(HttpMethod.PATCH, "/class-sessions*")
-                .   hasAnyRole("ADMIN")
+                .   hasAnyRole("ADMIN","TEACHER")
                 .antMatchers(HttpMethod.PATCH, "/class-sessions/*")
-                .   hasAnyRole("ADMIN")
+                .   hasAnyRole("ADMIN","TEACHER")
 
                 .antMatchers (HttpMethod.GET, "/slots-for-create-class")
                 .hasRole ("ADMIN")

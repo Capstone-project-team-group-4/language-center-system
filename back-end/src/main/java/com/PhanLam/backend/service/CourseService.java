@@ -441,7 +441,7 @@ public class CourseService {
 
         courseQueryResults = queryFactory
                 .selectFrom(course)
-                .leftJoin(course.classSession, classSession)
+                .leftJoin(course.classSessionList, classSession)
                 .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(courseTypeIds)))
                         .orderBy (course.courseName.asc ())
                         .limit (pageSize)

@@ -589,7 +589,7 @@ public class UserService {
         studentResults = queryFactory
                 .selectFrom(user)
                 .innerJoin(user.courseList, course)
-                .innerJoin(course.classSession, classSession)
+                .innerJoin(course.classSessionList, classSession)
                 .where(classSession.slot.slotID.eq(slotId).and(course.courseID.eq(courseId)).and(classSession.status.ne(Constant.STATUS_ACTIVE_CLASS)))
                 .fetchResults();
         return studentResults.getResults();

@@ -10,7 +10,8 @@ export class Examination {
     public maxNumberOfAttempt: number;
     public dateCreated: Date;
     public lastModified: Date;
-    public course: Course; 
+    public totalNumberOfQuiz: number;
+    public course: Course;
 
     public constructor ();
 
@@ -25,6 +26,7 @@ export class Examination {
             this.maxNumberOfAttempt = exam.maxNumberOfAttempt;
             this.dateCreated = exam.dateCreated;
             this.lastModified = exam.lastModified;
+            this.totalNumberOfQuiz = exam.totalNumberOfQuiz;
             this.course = exam.course;
         }
         else {
@@ -35,6 +37,7 @@ export class Examination {
             this.maxNumberOfAttempt = NaN;
             this.dateCreated = new Date (0);
             this.lastModified = new Date (0);
+            this.totalNumberOfQuiz = 0;
             this.course = new Course ();
         }
     }

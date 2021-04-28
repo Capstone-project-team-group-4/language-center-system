@@ -6,16 +6,12 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
-import com.PhanLam.backend.controller.exception.NotFoundException;
-import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 /**
  *

@@ -168,12 +168,10 @@ export class UserAPI {
         }
     }
 
-    public async disableAnotherUser (
-        userID: number
-    ): Promise<void> {
+    public async disableAnotherUser (userID: number): Promise<void> {
         try {
             await this.axiosInstance.patch<undefined> (
-                `/users/${userID}:disable`
+                    `/users/${userID}:disable`
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -189,9 +187,7 @@ export class UserAPI {
         }
     }
 
-    public async enableUser (
-            userID: number
-    ): Promise<void> {
+    public async enableUser (userID: number): Promise<void> {
         try {
             await this.axiosInstance.patch<undefined> (
                     `/users/${userID}:enable`

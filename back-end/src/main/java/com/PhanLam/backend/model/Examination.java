@@ -28,6 +28,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -80,6 +81,8 @@ public class Examination implements Serializable {
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
+    @Transient
+    private int totalNumberOfQuiz;
     
     @JsonIgnore
     @JoinTable (name = "ExaminationQuestion", joinColumns = {
@@ -106,7 +109,13 @@ public class Examination implements Serializable {
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
     
-    @OneToMany (mappedBy = "examID", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "exam"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
     
     @JoinColumn (
@@ -203,6 +212,14 @@ public class Examination implements Serializable {
 
     public void setLastModified (Date lastModified){
         this.lastModified = lastModified;
+    }
+
+    public int getTotalNumberOfQuiz (){
+        return totalNumberOfQuiz;
+    }
+
+    public void setTotalNumberOfQuiz (int totalNumberOfQuiz){
+        this.totalNumberOfQuiz = totalNumberOfQuiz;
     }
     
     @XmlTransient

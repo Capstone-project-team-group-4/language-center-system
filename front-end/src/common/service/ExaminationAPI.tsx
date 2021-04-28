@@ -16,6 +16,7 @@ export class ExaminationAPI {
     private serverResponse: AxiosResponse<unknown> | undefined;
     private typeGuardian: TypeGuard;
     private examDataPage: DataPage<Examination> | undefined;
+    private totalNumberOfQuizInExam: number | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -166,6 +167,31 @@ export class ExaminationAPI {
                     , updatedExam
             );
             return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getTotalNumberOfQuizInExam (examID: number): Promise<number> {
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    `/examinations/${examID}/quizzes/count`
+            );
+            if (typeof this.serverResponse.data === "number"){
+                this.totalNumberOfQuizInExam = this.serverResponse.data;
+                return Promise.resolve<number> (this.totalNumberOfQuizInExam);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
         }
         catch (apiError: unknown){
             try {

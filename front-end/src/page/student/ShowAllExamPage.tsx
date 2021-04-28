@@ -90,6 +90,29 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
         , [pageIndex]
     );
     
+    if (examHolder.length === 0){
+        examTable =
+            <tr>
+                <td colSpan = {7} className = "text-center">
+                    <h5>
+                        There are no exams in the system to show here
+                    </h5>
+                </td>
+            </tr>;
+    }
+    else {
+        examTable =
+            examHolder.map (
+                (
+                        exam
+                        , index
+                ) => renderExamTable (
+                        exam
+                        , index
+                )
+            );
+    }
+
     return (
         <Container fluid = {true}>
             {props.modalDialog}
@@ -106,16 +129,16 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item 
                                     linkAs = {Link}
-                                    linkProps = {{to: "/admin-console"}}
+                                    linkProps = {{to: "/student-dashboard"}}
                                 >
-                                    Admin Console
+                                    Student Dashboard
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage Things In Examination
+                                    Your Examination
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">
-                                Manage Things In Examination
+                                All Your Examination
                             </h1>
                             <Form>
                                 <Table responsive = "md" hover = {true}>
@@ -125,16 +148,22 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
                                                 #
                                             </th>
                                             <th>
-                                                Exam ID
-                                            </th>
-                                            <th>
                                                 Exam Type
                                             </th>
                                             <th>
                                                 Course Name
                                             </th>
                                             <th>
+                                                Start Time
+                                            </th>
+                                            <th>
+                                                Total Number Of Question
+                                            </th>
+                                            <th>
                                                 Duration (in minutes)
+                                            </th>
+                                            <th>
+                                                Max Number Of Attempt
                                             </th>
                                             <th>
                                                 Actions
@@ -167,3 +196,54 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
         </Container>
     );
 }  
+
+function renderExamTable (
+        exam: Examination
+        , index: number
+): ReactElement {
+    
+    // Variables declaration:
+    let formattedStartTime: string | undefined;
+    let rawDate: Date | undefined;
+
+    rawDate = new Date (exam.startTime);
+    formattedStartTime = rawDate.toLocaleString ("vi-VN");
+
+    return (
+        <tr key = {exam.examID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {exam.type}
+            </td>
+            <td>
+                {exam.course.courseName}
+            </td>
+            <td>
+                {formattedStartTime}
+            </td>
+            <td>
+                {exam.totalNumberOfQuiz}
+            </td>
+            <td>
+                {exam.duration}
+            </td>
+            <td>
+                {exam.maxNumberOfAttempt}
+            </td>
+            <td>
+                <Button 
+                    variant = "outline-primary"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-things-in-examination-page"
+                        + `/examinations/${exam.examID}/exam-questions`
+                    }
+                >
+                    Manage Exam Question
+                </Button>
+            </td>
+        </tr>
+    );
+}

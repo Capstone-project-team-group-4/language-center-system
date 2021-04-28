@@ -47,7 +47,7 @@ public class ExaminationService {
     
     // Variables declaration:
     private CourseRepository courseRepository;
-    private ExaminationRepository examinationRepository;
+    private ExaminationRepository examRepository;
     private MultipleChoiceQuestionRepository questionRepository;
     private UserRepository userRepository;
     private QueryFactoryGet queryFactoryGetter;
@@ -55,20 +55,20 @@ public class ExaminationService {
 
     public ExaminationService (
             CourseRepository courseRepository
-            , ExaminationRepository examinationRepository
+            , ExaminationRepository examRepository
             , MultipleChoiceQuestionRepository questionRepository
             , UserRepository userRepository
             , QueryFactoryGet queryFactoryGetter
     ){
         this.courseRepository = courseRepository;
-        this.examinationRepository = examinationRepository;
+        this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.queryFactoryGetter = queryFactoryGetter;
     }
 
     public void createExamInCourse (int courseID, Examination exam){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         Date dateCreated;
         
@@ -81,7 +81,7 @@ public class ExaminationService {
             exam.setCourse (course);
             dateCreated = new Date ();
             exam.setDateCreated (dateCreated);
-            examinationRepository.save (exam);
+            examRepository.save (exam);
         }
     }
     
@@ -108,7 +108,7 @@ public class ExaminationService {
                     , pageSize
                     , sortInformation
             );
-            examPage = examinationRepository.findAll (pagingInformation);
+            examPage = examRepository.findAll (pagingInformation);
             totalRowCount = examPage.getTotalElements ();
             examHolder = examPage.getContent ();
             examDataPage = new DataPage<> (totalRowCount, examHolder);
@@ -129,7 +129,7 @@ public class ExaminationService {
             , int pageIndex
             , int pageSize
     ){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         TypedSort<Examination> examSortInformation;
         Sort sortInformation;
@@ -155,7 +155,7 @@ public class ExaminationService {
                         , pageSize
                         , sortInformation
                 );
-                examPage = examinationRepository.findAllByCourse (
+                examPage = examRepository.findAllByCourse (
                         course
                         , pagingInformation
                 );
@@ -195,6 +195,8 @@ public class ExaminationService {
         long totalRowCount;
         List<Examination> examHolder;
         DataPage<Examination> examDataPage;
+        int examID;
+        int totalNumberOfQuiz;
      
         if ((pageIndex >= 0) && (pageSize > 0)){
             userName = principal.getName ();
@@ -231,6 +233,11 @@ public class ExaminationService {
                         .fetchResults ();
                 totalRowCount = examPage.getTotal ();
                 examHolder = examPage.getResults ();
+                for (Examination examination : examHolder){
+                    examID = examination.getExamID ();
+                    totalNumberOfQuiz = getTotalCountOfQuizInExam (examID);
+                    examination.setTotalNumberOfQuiz (totalNumberOfQuiz);
+                }
                 examDataPage = new DataPage<> (totalRowCount, examHolder);
                 return examDataPage;
             }
@@ -249,7 +256,7 @@ public class ExaminationService {
             , int examID
             , Examination updatedExam
     ){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         boolean examExists;
         boolean examExistsInTheCourse;
@@ -261,13 +268,13 @@ public class ExaminationService {
         }
         else {
             course = nullableCourse.get ();
-            examExists = examinationRepository.existsById (examID);
+            examExists = examRepository.existsById (examID);
             if (examExists == false){
                 throw new NotFoundException ("Examination");
             }
             else {
                 examExistsInTheCourse 
-                    = examinationRepository.existsByCourseAndExamID (
+                    = examRepository.existsByCourseAndExamID (
                             course
                             , examID
                     );
@@ -281,16 +288,35 @@ public class ExaminationService {
                 else {
                     lastModified = new Date ();
                     updatedExam.setLastModified (lastModified);
-                    examinationRepository.save (updatedExam);
+                    examRepository.save (updatedExam);
                 }
             }
+        }
+    }
+    
+    @Transactional (readOnly = true)
+    public int getTotalCountOfQuizInExam (int examID){
+        Optional<Examination> nullableExam;
+        Examination exam;
+        List<MultipleChoiceQuestion> questionHolder;
+        int totalCountOfQuiz;
+        
+        nullableExam = examRepository.findById (examID);
+        if (nullableExam.isPresent () == false){
+            throw new NotFoundException ("Examination");
+        }
+        else {
+            exam = nullableExam.get ();
+            questionHolder = exam.getMultipleChoiceQuestionList ();
+            totalCountOfQuiz = questionHolder.size (); 
+            return totalCountOfQuiz;
         }
     }
     
     public void addQuizToExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam;
         List<MultipleChoiceQuestion> questionList;
         boolean alreadyExistsInTheExam;
@@ -303,7 +329,7 @@ public class ExaminationService {
         }
         else {
             question = nullableQuestion.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
@@ -339,7 +365,7 @@ public class ExaminationService {
     public void removeQuizFromExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam;
         List<MultipleChoiceQuestion> questionList;
         boolean existsInTheExam;
@@ -352,7 +378,7 @@ public class ExaminationService {
         }
         else {
             question = nullableQuestion.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
@@ -386,9 +412,9 @@ public class ExaminationService {
     }
     
     public void deleteExamInCourse (int courseID, int examID){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam; 
         boolean examExistsInTheCourse;
         
@@ -398,14 +424,14 @@ public class ExaminationService {
         }
         else {
             course = nullableCourse.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
             else {
                 exam = nullableExam.get ();
                 examExistsInTheCourse 
-                    = examinationRepository.existsByCourseAndExamID (
+                    = examRepository.existsByCourseAndExamID (
                             course
                             , examID
                     );
@@ -417,7 +443,7 @@ public class ExaminationService {
                     );
                 }
                 else {
-                    examinationRepository.delete (exam);
+                    examRepository.delete (exam);
                 }
             }
         }

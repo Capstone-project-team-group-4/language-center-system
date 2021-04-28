@@ -10,20 +10,22 @@ interface StudentClassPageProps {}
 
 export function StudentClassPage(props: StudentClassPageProps): ReactElement {
   let classAPI: ClassAPI | undefined;
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [listClass, setListClass] = useState([]);
+  const [totalRowCount, setTotalRowCount] = useState(0);
   const user = sessionStorage.getItem('loggedInUser');
   let idUser = user ? JSON.parse(user).id : 0;
 
   useEffect(() => {
     getListClass();
-  },[])
+  },[pageNumber])
 
   function getListClass() {
     classAPI = new ClassAPI();
 
     classAPI.getListClass(pageNumber, pageSize, '', idUser, 'ROLE_STUDENT').then((res) => {
+      setTotalRowCount(res.totalRowCount)
       setListClass(res.pageDataHolder);
     });
   }
@@ -90,15 +92,14 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
                   // @ts-ignore
                 //   rowKey={classID}
                   columns={columns}
-                  pagination={false}
-                  // pagination={{
-                  //   position: ["bottomCenter"],
-                  //   current: page,
-                  //   total: data?.categories?.meta?.totalRecord,
-                  //   pageSize: data?.categories?.meta?.limit,
-                  //   onChange: (page: number) => onChangePage(page),
-                  //   showSizeChanger: false,
-                  // }}
+                  pagination={{
+                    position: ["bottomCenter"],
+                    current: pageNumber,
+                    total: totalRowCount,
+                    pageSize: pageSize,
+                    onChange: (page: number) => setPageNumber(page),
+                    showSizeChanger: false,
+                  }}
                 />
               </div>
             </div>

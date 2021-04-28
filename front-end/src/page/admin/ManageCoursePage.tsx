@@ -413,7 +413,7 @@ export function ManageCoursePage(props: ManageCoursePageProps): ReactElement {
     loadCourseTable().catch((error) => {
       console.error(error);
     });
-  }, []);
+  }, [pageIndex]);
 
   useEffect(() => {
     if (selectedCourseTypeID !== 0) {

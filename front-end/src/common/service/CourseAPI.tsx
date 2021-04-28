@@ -41,14 +41,15 @@ export class CourseAPI {
   public async getAllCourse(
     pageIndex: number,
     pageSize: number,
-    searchParam?: string
+    searchParam: string
   ): Promise<DataPage<Course>> {
+    console.log('searchParam', searchParam);
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageIndex", pageIndex.toString());
     this.requestParameterHolder.set("pageSize", pageSize.toString());
-    if (searchParam) {
+    // if (searchParam) {
       this.requestParameterHolder.set("searchParam", searchParam);
-    }
+    // }
     try {
       this.serverResponse = await this.axiosInstance.get<unknown>("/courses", {
         params: this.requestParameterHolder,

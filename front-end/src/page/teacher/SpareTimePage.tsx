@@ -31,7 +31,7 @@ export function TeacherSpareTimePage(
   props: TeacherSpareTimePageProps
 ): ReactElement {
   let sprareTimeAPI: TeacherSpareTimeAPI | undefined;
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [listSpareTime, setListSpareTime] = useState([]);
   const [spareTimeID, setSpareTimeID] = useState<number>(0);
@@ -41,7 +41,7 @@ export function TeacherSpareTimePage(
   const [listCourse, setListCourse] = useState<CourseType[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [idEdit, setIdEdit] = useState<number>(0);
-  const [selectedCourse, setSelectedCourse] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedSlot, setSelectedSlot] = useState([]);
   const [searchParam, setSearchParam] = useState("");
   const history = useHistory();
@@ -51,6 +51,7 @@ export function TeacherSpareTimePage(
   const [courseValueForClass, setCourseValueForClass] = useState("");
   const [slotValueForClass, setSlotValueForClass] = useState("");
   const [approveID, setApproveID] = useState(0);
+  const [totalRowCount, setTotalRowCount] = useState(0);
   const listSlot = [
     {
       name: "M1",
@@ -96,12 +97,13 @@ export function TeacherSpareTimePage(
 
   useEffect(() => {
     getListTeacherSpareTime();
-  }, []);
+  }, [pageNumber]);
 
   function getListTeacherSpareTime() {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
     sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize).then((res) => {
+      setTotalRowCount(res.totalRowCount)
       setListSpareTime(res.pageDataHolder);
     });
   }
@@ -185,6 +187,7 @@ export function TeacherSpareTimePage(
 
   const saveForm = () => {
     sprareTimeAPI = new TeacherSpareTimeAPI();
+
     let slotIds = selectedSlot.map((e1) => {
       const index = listSlot.findIndex((x) => x.name === e1);
       return listSlot[index].value;
@@ -204,8 +207,10 @@ export function TeacherSpareTimePage(
           });
           getListTeacherSpareTime();
           setVisibleModalCreate(false);
-          setSelectedCourse([]);
+          setSelectedCourse("");
           setSelectedSlot([]);
+          setIsEdit(false);
+          setIdEdit(0);
         });
     } else {
       sprareTimeAPI
@@ -217,14 +222,14 @@ export function TeacherSpareTimePage(
           });
           getListTeacherSpareTime();
           setVisibleModalCreate(false);
-          setSelectedCourse([]);
+          setSelectedCourse("");
           setSelectedSlot([]);
         })
         .catch((error) => {
+          notification.error({ message: error.response.data.message });
           setVisibleModalCreate(false);
-          setSelectedCourse([]);
+          setSelectedCourse("");
           setSelectedSlot([]);
-          notification.error({ message: error.massage });
         });
     }
   };
@@ -243,18 +248,18 @@ export function TeacherSpareTimePage(
 
   const editSpareTime = (record: any) => {
     // @ts-ignore
-    let nameCourseType = [];
+    let nameCourseType = "";
     // @ts-ignore
     let nameSlot = [];
-    record.courseTypeList.map((el: any) => {
-      return nameCourseType.push(el.typeName);
+    nameCourseType = record.courseTypeList.map((el: any) => {
+      return el.typeName;
     });
 
     record.slotList.map((el: any) => {
       return nameSlot.push(el.slotName);
     });
     // @ts-ignore
-    setSelectedCourse(nameCourseType);
+    setSelectedCourse(nameCourseType[0]);
     // @ts-ignore
     setSelectedSlot(nameSlot);
     setVisibleModalCreate(true);
@@ -410,15 +415,15 @@ export function TeacherSpareTimePage(
                 // @ts-ignore
                 rowKey={spareTimeID}
                 columns={columns}
-                pagination={false}
-                // pagination={{
-                //   position: ["bottomCenter"],
-                //   current: page,
-                //   total: data?.categories?.meta?.totalRecord,
-                //   pageSize: data?.categories?.meta?.limit,
-                //   onChange: (page: number) => onChangePage(page),
-                //   showSizeChanger: false,
-                // }}
+                // pagination={false}
+                pagination={{
+                  position: ["bottomCenter"],
+                  current: pageNumber,
+                  total: totalRowCount,
+                  pageSize: pageSize,
+                  onChange: (page: number) => setPageNumber(page),
+                  showSizeChanger: false,
+                }}
               />
             </div>
           </div>
@@ -429,7 +434,8 @@ export function TeacherSpareTimePage(
 
       <Modal
         visible={visibleModalCreate}
-        onCancel={() => setVisibleModalCreate(false)}
+        onCancel={() => {}}
+        destroyOnClose={true}
         closable={false}
         maskClosable={false}
         title={null}
@@ -491,7 +497,14 @@ export function TeacherSpareTimePage(
             <Col className="mt-4">
               <Button
                 className="px-12"
-                onClick={() => setVisibleModalCreate(false)}
+                onClick={() => {
+                  setVisibleModalCreate(false);
+                  getListTeacherSpareTime();
+                  setIsEdit(false);
+                  setIdEdit(0);
+                  setSelectedCourse("");
+                  setSelectedSlot([]);
+                }}
               >
                 Cancel
               </Button>

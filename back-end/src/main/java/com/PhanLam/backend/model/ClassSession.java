@@ -140,7 +140,7 @@ public class ClassSession implements Serializable {
     }
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
-        spareTimeRegisterID = spareTimeRegisterID;
+        this.spareTimeRegisterID = spareTimeRegisterID;
     }
 
     public Date getLastModified() {

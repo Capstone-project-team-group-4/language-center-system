@@ -250,7 +250,7 @@ public class Course implements Serializable {
     public void setClassSessionList(List<ClassSession> classSessionList) {
         this.classSessionList = classSessionList;
     }
-
+    
     @XmlTransient
     public List<Examination> getExaminationList (){
         return examinationList;
@@ -341,5 +341,4 @@ public class Course implements Serializable {
                 + ", examinationList=" + examinationList
         + '}';
     }
-
 }

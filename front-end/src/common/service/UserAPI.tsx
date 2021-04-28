@@ -32,6 +32,40 @@ export class UserAPI {
         return this.axiosInstance.get<unknown>("http://localhost:8080/users");
     }
 
+    public async getAllStudents (
+            pageIndex: number
+            , pageSize: number
+    ): Promise<DataPage<User>> {
+        this.requestParameterHolder = new URLSearchParams ();
+        this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
+        this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/students"
+                    , {params: this.requestParameterHolder}
+            );
+            if (this.typeGuardian.isDataPage<User> (
+                    this.serverResponse.data
+            )){
+                this.userDataPage = this.serverResponse.data;
+                return Promise.resolve<DataPage<User>> (this.userDataPage);
+            } 
+            else {
+                throw new Error ("This server response is not valid !");
+            }  
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
     public async getAllUserExcludingCurrentLoggedInUser (
             pageIndex: number
             , pageSize: number
@@ -297,8 +331,8 @@ export class UserAPI {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
-            this.serverResponse = await this.axiosInstance.get(
-                `/getStudent/${userID}`
+            this.serverResponse = await this.axiosInstance.get (
+                    `/getStudent/${userID}`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
@@ -336,6 +370,48 @@ export class UserAPI {
     }
 
     public async viewStudent (userID: number): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/users`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async viewTeacher (): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getTeacher`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async viewUser (): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
         try {
@@ -401,5 +477,47 @@ export class UserAPI {
         }
     }
 
+    public async displayProfile (userName: any): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet ();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getProfile?userName=${userName}`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async updateProfile (user: User, userName: any): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet ();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+        try {
+            this.serverResponse = await this.axiosInstance.put (
+                    `/updateMyProfile?userName=${userName}`
+                    , user
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
 
 }

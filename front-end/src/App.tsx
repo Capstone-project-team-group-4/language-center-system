@@ -33,22 +33,21 @@ import { ManageCoursePage } from './page/admin/ManageCoursePage';
 import {
   ManageStudentInCoursePage
 } from './page/admin/ManageStudentInCoursePage';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
 import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
 import { StudentDashboardPage } from './page/student/StudentDashboardPage';
 import { EditTeacherInfo } from './page/EditTeacherInfo';
 import { ViewProfilePage } from './page/ViewProfilePage';
 import { DetailPage } from './page/DetailPage';
-import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { LessonDetailPage } from './page/student/LessonDetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
-import { ManageStudentPage } from './page/admin/ManageStudentPage';
-import { InfoPage } from './page/student/InfoPage';
 import { 
   ManageThingsInCoursePage 
 } from './page/admin/ManageThingsInCoursePage';
 import { 
   ManageExaminationInCoursePage 
 } from './page/admin/ManageExaminationInCoursePage';
+import { ManageLessonPage } from './page/admin/ManageLessonPage';
 import { TypeConvert } from './common/service/TypeConvert';
 import { 
   ManageThingsInExaminationPage 
@@ -56,6 +55,13 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
+import { DetailPages } from './page/DetailPages';
+import { LessonListPage } from './page/student/LessonListlPage';
+import { CourseDetailPage } from './page/student/CourseDetailPage';
+import { ProfilePage } from './page/student/ProfilePage';
+import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
+import { ContactUs } from './page/contact_us_page/ContactPage';
+import { Header } from './common/component/home_page_header/Header';
 import { useSessionState } from './common/service/PersistedStateHook';
 
 export interface DataPage<T> {
@@ -82,6 +88,7 @@ export function App(): ReactElement {
   let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;
   let teacherPageSecurity: SecurityContext | undefined;  
+  let studentPageSecurity: SecurityContext | undefined;
   let history: History<unknown>;
   let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean> (false);
   let [typeGuardian] = useState<TypeGuard> (new TypeGuard ());
@@ -124,6 +131,12 @@ export function App(): ReactElement {
   );
   acceptableRoleNameHolder = new Array ("ROLE_TEACHER");
   teacherPageSecurity = new SecurityContext (
+    isAuthenticated
+    , loggedInUser
+    , acceptableRoleNameHolder
+  );
+  acceptableRoleNameHolder = new Array("ROLE_STUDENT");
+  studentPageSecurity = new SecurityContext(
     isAuthenticated
     , loggedInUser
     , acceptableRoleNameHolder
@@ -175,6 +188,44 @@ export function App(): ReactElement {
         <HomePageHeader />
         <HomePage modalDialog = {modalDialog} />
       </Route>
+      <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route>
+
+      <ProtectedRoute
+        path = "/admin-console/manage-student-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageStudentPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+        />
+      </ProtectedRoute>
+
+      <Route exact path="/editStudentInfo/studentID">
+        <EditStudentInfo />
+      </Route>
+
+      <Route path="/admin-console/view-student-detail">
+        <ViewProfilePage />
+      </Route>
+
+      {/* <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route> */}
+
+      <ProtectedRoute
+        path = "/admin-console/manage-teacher-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage/>
+      </ProtectedRoute>
 
       <Route path = "/sign-up-page">
         <SignUpPage
@@ -191,6 +242,13 @@ export function App(): ReactElement {
           setIsAuthenticated = {setIsAuthenticated}
           setLoggedInUser = {setLoggedInUser}
           typeGuardian = {typeGuardian}
+        />
+      </Route>
+
+      <Route path="/contact-us">
+        <Header />
+        <ContactUs
+          modalDialog = {modalDialog}
         />
       </Route>
 
@@ -218,11 +276,6 @@ export function App(): ReactElement {
       <Route path = "/user_detail/:studentID">
         <DetailPage />
       </Route>
-
-      <Route path = "/admin-console/manage-student-page">
-        <ManageStudentPage />
-      </Route>
-
 
       <ProtectedRoute
         path = "/admin-console/create-account-request-page"
@@ -339,6 +392,17 @@ export function App(): ReactElement {
       </ProtectedRoute>
 
       <ProtectedRoute 
+        path = "/admin-console/manage-lesson-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <ManageLessonPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
         path = "/admin-console"
         securityContext = {adminPageSecurity}
         dialogController = {dialogController} 
@@ -380,22 +444,50 @@ export function App(): ReactElement {
         <TeacherDashboardPage modalDialog = {modalDialog} />
       </ProtectedRoute>
 
-      <Route path = "/student-dashboard">
-        <PageHeader logOut = {logOut} />
-        <StudentDashboardPage modalDialog = {modalDialog} />
-      </Route>
-      <Route path = "/student-dashboard-course/:courseID">
-        <PageHeader logOut = {logOut} />
-        <CourseDetailPage modalDialog={modalDialog} />
-      </Route>
-      <Route path = "/student-dashboard-lesson/:courseName/:lessonID">
-        <PageHeader logOut = {logOut} />
-        <LessonDetailPage modalDialog = {modalDialog} />
-      </Route>
-      <Route path = "/student">
-        <PageHeader logOut = {logOut} />
-        <InfoPage modalDialog = {modalDialog}/>
-      </Route>
+      <ProtectedRoute 
+        path="/student-dashboard"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <StudentDashboardPage modalDialog={modalDialog} />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path="/student-dashboards/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <LessonListPage modalDialog={modalDialog} />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path="/student-dashboardz/:courseName/:lessonID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <LessonDetailPage modalDialog={modalDialog} />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path="/student-dashboardx/profile/:userID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <ProfilePage modalDialog={modalDialog}/>
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path="/course-detail/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <CourseDetailPage modalDialog={modalDialog}/>
+      </ProtectedRoute>
     </Switch>
   );
 }

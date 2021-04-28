@@ -5,8 +5,9 @@
  */
 package com.PhanLam.backend.model;
 
+import java.util.Date;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -205,7 +206,6 @@ public class ClassSession implements Serializable {
         if (!Objects.equals (this.classID, other.classID)){
             return false;
         }
-
         if (!Objects.equals (this.userList, other.userList)){
             return false;
         }

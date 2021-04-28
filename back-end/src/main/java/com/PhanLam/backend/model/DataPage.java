@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  *
  * @author Phan Lam
- * @param <T>
+ * @param <T> type of the Data.
  */
 public class DataPage<T> {
     

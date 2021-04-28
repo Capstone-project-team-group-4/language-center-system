@@ -28,6 +28,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +83,7 @@ public class UserService {
             , @Lazy CourseService courseService
             , QueryFactoryGet queryFactoryGetter
             , CommentRepository commentRepository
+            , EntityManager entityManager
     ){
         this.userRepository = userRepository;
         this.classSessionService = classSessionService;
@@ -614,6 +617,8 @@ public class UserService {
                             + "Parameter name: pageIndex, pageSize"
             );
         }
+
+        ClassSession classSession = classSessionService.getById(classId);
 
         //get list
         student = new QUser("student");

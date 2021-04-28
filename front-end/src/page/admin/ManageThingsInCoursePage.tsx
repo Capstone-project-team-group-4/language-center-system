@@ -235,6 +235,15 @@ function renderCourseTable (
                 >
                     Manage Examination
                 </Button>
+                <Button 
+                    variant = "outline-primary"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-lesson-page"
+                    }
+                >
+                    Manage Lesson
+                </Button>
             </td>
         </tr>
     );

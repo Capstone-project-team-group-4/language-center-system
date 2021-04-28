@@ -133,6 +133,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/users/*")
                         .hasRole ("ADMIN")
 
+                .antMatchers (HttpMethod.GET, "/getTeacher/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/students*")
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/getStudent/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.PUT, "/editInfo/*")
@@ -141,6 +145,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         HttpMethod.GET
                         , "/students:excluding-student-in-the-course"
                 )
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/getTeacher")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/getTeacher*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/getTeacher/*")
+                        .hasRole ("ADMIN")
+
+                .antMatchers (HttpMethod.PUT, "/editInfo/*")
                         .hasRole ("ADMIN")
 
                 .antMatchers (HttpMethod.POST, "/courses")
@@ -153,13 +166,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*")
                         .hasRole ("ADMIN")
-                .antMatchers (HttpMethod.GET, "/courses-for-create-class")
+
+                .antMatchers (HttpMethod.POST, "/lessons")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/lessons")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PUT, "/lessons/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/lessons/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.DELETE, "/lessons/*")
                         .hasRole ("ADMIN")
 
+                .antMatchers (HttpMethod.GET, "/courses-for-create-class")
+                        .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/courses/*/students")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/classes/*/students")
-                .hasRole ("TEACHER")
+                        .hasRole ("TEACHER")
 
                 .antMatchers (HttpMethod.POST, "/courses/*/examinations")
                         .hasRole ("ADMIN")
@@ -168,6 +192,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.PUT, "/courses/*/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.DELETE, "/courses/*/examinations/*")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.GET, "/examinations")
+                        .hasRole ("ADMIN")
+                .antMatchers (HttpMethod.PATCH, "/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/examinations")
                         .hasRole ("ADMIN")
@@ -205,7 +233,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.GET, "/lesson*")
                         .hasRole ("STUDENT")
-
+                .antMatchers (HttpMethod.GET, "/getProfile*")
+                        .hasRole ("STUDENT")
+                .antMatchers (HttpMethod.PUT, "/updateMyProfile*")
+                        .hasRole ("STUDENT")
 
                 .antMatchers(HttpMethod.GET, "/spare-time-registers/*")
                     .hasAnyRole("ADMIN","TEACHER")
@@ -251,7 +282,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .hasRole ("TEACHER")
 
                 .anyRequest ().denyAll ();
-
-
     }
 }

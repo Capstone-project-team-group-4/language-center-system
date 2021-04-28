@@ -43,7 +43,7 @@ public class ClassSessionController {
     ) {
         DataPage<ClassSession> classSessionDataPage;
         classSessionDataPage = classSessionService.getAllClassSession(
-                pageNumber
+                pageNumber -1
                 , pageSize
                 , userID
                 , role

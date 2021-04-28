@@ -115,7 +115,8 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-
+    
+    @JsonIgnore
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     private List<ClassSession> classList;
 

@@ -14,9 +14,11 @@ import { DialogControl } from '../../common/component/ModalDialog';
 import { UserAPI } from '../../common/service/UserAPI';
 import { LoggedInUser } from '../../model/LoggedInUser';
 import { Location, History } from "history";
-import { useHistory, useLocation } from 'react-router-dom';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import { LocationState } from '../../common/component/ProtectedRoute';
 import { Role } from '../../model/Role';
+import { StudentDashboardPage } from '../student/StudentDashboardPage';
+import { LocalStorageService } from '../../common/service/LocalStorageService';
 
 class LoginSucceededLocation implements Location<unknown> {
     public pathname: string;
@@ -56,6 +58,7 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let role: Role | undefined;
     let roleName: string | undefined;
     let loggedInUser: LoggedInUser | undefined;
+    let localStorageService = new LocalStorageService();
 
     let [userAPI] = useState<UserAPI> (new UserAPI ());
     currentLocation = useLocation ();
@@ -109,10 +112,10 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             break;
 
                         case "ROLE_STUDENT":
-                            // <Route path="/student-dashboard" render={(props) => <StudentDashboardPage LoginUser="Hello, " {...props} />} />
                             loginSucceededLocation.pathname
                                 = "/student-dashboard";
-                            localStorage.setItem('account', JSON.stringify(loggedInUser));
+                            localStorageService.setLoggedUserName(loggedInUser);
+                            // localStorage.setItem('account', JSON.stringify(loggedInUser));
                             break;
                     }
                 }
@@ -163,9 +166,10 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                         align-items-center`
                     }>
                         <Form
-                            id = "LogInForm"
-                            className = "bg-white p-5 h-auto"
-                            onSubmit = {
+                            id="LogInForm"
+                            className="bg-white p-5 h-auto"
+                            style={{borderRadius:10 + 'px'}}
+                            onSubmit={
                                 (event) => {
                                     logIn (event).catch (
                                             (error: unknown) => {
@@ -218,14 +222,21 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     }
                                 />
                             </Form.Group>
-
-                            <Button 
-                                variant = "success"
-                                type = "submit"
-                                block = {true}
+                            <Button
+                                variant="success"
+                                type="submit"
+                                block={true}
                             >
                                 Log in
                             </Button>
+                            <div>
+                                <a 
+                                    href="/sign-up-page"
+                                    style={{fontSize:11 + 'px'}}
+                                >
+                                    Don't have an account?
+                                </a>
+                            </div>
                         </Form>
                     </Row>
                 </Container>

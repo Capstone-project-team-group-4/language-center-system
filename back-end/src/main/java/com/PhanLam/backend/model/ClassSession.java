@@ -190,7 +190,6 @@ public class ClassSession implements Serializable {
         if (!Objects.equals (this.classID, other.classID)){
             return false;
         }
-
         if (!Objects.equals (this.userList, other.userList)){
             return false;
         }

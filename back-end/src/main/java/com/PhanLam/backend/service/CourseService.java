@@ -301,7 +301,6 @@ public class CourseService {
                         //add student to class
                         if(classSession !=null){
                             classSession.getUserList().add(user);
-                            classSessionService.save(classSession);
                         }
                     }
                 }
@@ -382,6 +381,14 @@ public class CourseService {
                     }
                     else {
                         userList.remove (user);
+                        ClassSession classSession =course.getClassSessionList().stream()
+                                .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
+                                .findFirst().get();
+
+                        //remove student to class
+                        if(classSession !=null){
+                            classSession.getUserList().remove(user);
+                        }
                     }
                 }
             }

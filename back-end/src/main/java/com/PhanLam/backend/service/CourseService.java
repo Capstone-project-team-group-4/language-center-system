@@ -301,7 +301,6 @@ public class CourseService {
                         //add student to class
                         if(classSession !=null){
                             classSession.getUserList().add(user);
-                            classSessionService.save(classSession);
                         }
                     }
                 }

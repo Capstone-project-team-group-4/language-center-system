@@ -216,7 +216,7 @@ public class ClassSessionService {
                     .selectFrom(classSession)
                     .innerJoin(classSession.userList, student)
                     .where(
-                            student.userID.eq(user.getUserID()).and(classSession.courseID.courseName.eq("%"+searchParam+"%"))
+                            student.userID.eq(user.getUserID()).and(classSession.courseID.courseName.like("%"+searchParam+"%"))
                     )
                     .orderBy(classSession.status.asc())
                     .limit(pageSize)

@@ -6,15 +6,26 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+import com.PhanLam.backend.controller.exception.ForbiddenActionException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.ExaminationRepository;
 import com.PhanLam.backend.dal.repository_interface.MultipleChoiceQuestionRepository;
+import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Examination;
 import com.PhanLam.backend.model.MultipleChoiceQuestion;
+import com.PhanLam.backend.model.QCourse;
+import com.PhanLam.backend.model.QExamination;
+import com.PhanLam.backend.model.QUser;
+import com.PhanLam.backend.model.Role;
+import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.service.common.QueryFactoryGet;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,21 +47,28 @@ public class ExaminationService {
     
     // Variables declaration:
     private CourseRepository courseRepository;
-    private ExaminationRepository examinationRepository;
+    private ExaminationRepository examRepository;
     private MultipleChoiceQuestionRepository questionRepository;
+    private UserRepository userRepository;
+    private QueryFactoryGet queryFactoryGetter;
+    private JPAQueryFactory queryFactory;
 
     public ExaminationService (
             CourseRepository courseRepository
-            , ExaminationRepository examinationRepository
+            , ExaminationRepository examRepository
             , MultipleChoiceQuestionRepository questionRepository
+            , UserRepository userRepository
+            , QueryFactoryGet queryFactoryGetter
     ){
         this.courseRepository = courseRepository;
-        this.examinationRepository = examinationRepository;
+        this.examRepository = examRepository;
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
+        this.queryFactoryGetter = queryFactoryGetter;
     }
 
     public void createExamInCourse (int courseID, Examination exam){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         Date dateCreated;
         
@@ -63,7 +81,7 @@ public class ExaminationService {
             exam.setCourse (course);
             dateCreated = new Date ();
             exam.setDateCreated (dateCreated);
-            examinationRepository.save (exam);
+            examRepository.save (exam);
         }
     }
     
@@ -90,7 +108,7 @@ public class ExaminationService {
                     , pageSize
                     , sortInformation
             );
-            examPage = examinationRepository.findAll (pagingInformation);
+            examPage = examRepository.findAll (pagingInformation);
             totalRowCount = examPage.getTotalElements ();
             examHolder = examPage.getContent ();
             examDataPage = new DataPage<> (totalRowCount, examHolder);
@@ -111,7 +129,7 @@ public class ExaminationService {
             , int pageIndex
             , int pageSize
     ){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         TypedSort<Examination> examSortInformation;
         Sort sortInformation;
@@ -137,7 +155,7 @@ public class ExaminationService {
                         , pageSize
                         , sortInformation
                 );
-                examPage = examinationRepository.findAllByCourse (
+                examPage = examRepository.findAllByCourse (
                         course
                         , pagingInformation
                 );
@@ -156,12 +174,89 @@ public class ExaminationService {
         }
     }
     
+    @Transactional (readOnly = true)
+    public DataPage<Examination> getAllExamByStudentID (
+            Principal principal
+            , int pageIndex
+            , int pageSize
+    ){
+        String userName;
+        Optional<User> nullableUser;
+        User user;
+        List<Role> roleHolder;
+        int i;
+        Role role;
+        boolean thisUserIsStudent;
+        QueryResults<Examination> examPage;
+        QExamination exam;
+        QCourse course;
+        QUser student;
+        int userID;  
+        long totalRowCount;
+        List<Examination> examHolder;
+        DataPage<Examination> examDataPage;
+        int examID;
+        int totalNumberOfQuiz;
+     
+        if ((pageIndex >= 0) && (pageSize > 0)){
+            userName = principal.getName ();
+            nullableUser = userRepository.findByUserName (userName);
+            user = nullableUser.get ();
+            roleHolder = user.getRoleList ();
+            thisUserIsStudent = false;
+            for (i = 0; i < roleHolder.size (); i++){
+                role = roleHolder.get (i);
+                if (role.getRoleName ().equals ("ROLE_STUDENT")){
+                    thisUserIsStudent = true;
+                    break;
+                }
+            }
+            if (thisUserIsStudent == false){
+                throw new ForbiddenActionException (
+                        "You cannot get exams because you are not a student."
+                );
+            }
+            else {
+                exam = new QExamination ("exam");
+                course = QCourse.course;
+                student = new QUser ("student");
+                userID = user.getUserID ();
+                queryFactory = queryFactoryGetter.getQueryFactory ();
+                examPage = queryFactory
+                        .selectFrom (exam)
+                            .leftJoin (exam.course, course)
+                            .leftJoin (course.userList, student)
+                        .where (student.userID.eq (userID))
+                        .orderBy (exam.startTime.asc ())
+                        .limit (pageSize)
+                        .offset (pageSize * pageIndex)
+                        .fetchResults ();
+                totalRowCount = examPage.getTotal ();
+                examHolder = examPage.getResults ();
+                for (Examination examination : examHolder){
+                    examID = examination.getExamID ();
+                    totalNumberOfQuiz = getTotalCountOfQuizInExam (examID);
+                    examination.setTotalNumberOfQuiz (totalNumberOfQuiz);
+                }
+                examDataPage = new DataPage<> (totalRowCount, examHolder);
+                return examDataPage;
+            }
+        }
+        else {
+            throw new InvalidRequestArgumentException (
+                    "The page index number and page size number parameters "
+                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "Parameter name: pageIndex, pageSize"
+            );
+        }
+    }
+    
     public void updateExamInCourse (
             int courseID
             , int examID
             , Examination updatedExam
     ){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
         boolean examExists;
         boolean examExistsInTheCourse;
@@ -173,13 +268,13 @@ public class ExaminationService {
         }
         else {
             course = nullableCourse.get ();
-            examExists = examinationRepository.existsById (examID);
+            examExists = examRepository.existsById (examID);
             if (examExists == false){
                 throw new NotFoundException ("Examination");
             }
             else {
                 examExistsInTheCourse 
-                    = examinationRepository.existsByCourseAndExamID (
+                    = examRepository.existsByCourseAndExamID (
                             course
                             , examID
                     );
@@ -193,16 +288,35 @@ public class ExaminationService {
                 else {
                     lastModified = new Date ();
                     updatedExam.setLastModified (lastModified);
-                    examinationRepository.save (updatedExam);
+                    examRepository.save (updatedExam);
                 }
             }
+        }
+    }
+    
+    @Transactional (readOnly = true)
+    public int getTotalCountOfQuizInExam (int examID){
+        Optional<Examination> nullableExam;
+        Examination exam;
+        List<MultipleChoiceQuestion> questionHolder;
+        int totalCountOfQuiz;
+        
+        nullableExam = examRepository.findById (examID);
+        if (nullableExam.isPresent () == false){
+            throw new NotFoundException ("Examination");
+        }
+        else {
+            exam = nullableExam.get ();
+            questionHolder = exam.getMultipleChoiceQuestionList ();
+            totalCountOfQuiz = questionHolder.size (); 
+            return totalCountOfQuiz;
         }
     }
     
     public void addQuizToExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam;
         List<MultipleChoiceQuestion> questionList;
         boolean alreadyExistsInTheExam;
@@ -215,7 +329,7 @@ public class ExaminationService {
         }
         else {
             question = nullableQuestion.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
@@ -251,7 +365,7 @@ public class ExaminationService {
     public void removeQuizFromExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam;
         List<MultipleChoiceQuestion> questionList;
         boolean existsInTheExam;
@@ -264,7 +378,7 @@ public class ExaminationService {
         }
         else {
             question = nullableQuestion.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
@@ -298,9 +412,9 @@ public class ExaminationService {
     }
     
     public void deleteExamInCourse (int courseID, int examID){
-        Optional <Course> nullableCourse;
+        Optional<Course> nullableCourse;
         Course course;
-        Optional <Examination> nullableExam;
+        Optional<Examination> nullableExam;
         Examination exam; 
         boolean examExistsInTheCourse;
         
@@ -310,14 +424,14 @@ public class ExaminationService {
         }
         else {
             course = nullableCourse.get ();
-            nullableExam = examinationRepository.findById (examID);
+            nullableExam = examRepository.findById (examID);
             if (nullableExam.isPresent () == false){
                 throw new NotFoundException ("Examination");
             }
             else {
                 exam = nullableExam.get ();
                 examExistsInTheCourse 
-                    = examinationRepository.existsByCourseAndExamID (
+                    = examRepository.existsByCourseAndExamID (
                             course
                             , examID
                     );
@@ -329,7 +443,7 @@ public class ExaminationService {
                     );
                 }
                 else {
-                    examinationRepository.delete (exam);
+                    examRepository.delete (exam);
                 }
             }
         }

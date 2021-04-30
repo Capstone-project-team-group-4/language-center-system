@@ -17,15 +17,13 @@ import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Examination } from "../../model/Examination";
 
-interface ManageThingsInExaminationPageProps {
+interface ShowAllExamPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
     typeGuardian: TypeGuard;
 }
 
-export function ManageThingsInExaminationPage (
-        props: ManageThingsInExaminationPageProps
-): ReactElement {
+export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
 
     // Variables declaration:
     let [examHolder, setExamHolder] 
@@ -35,12 +33,12 @@ export function ManageThingsInExaminationPage (
     let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let examTable: ReactNode;
-        
+
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
-    
+
     async function loadExamTable (): Promise<void> {
         try {
-            examDataPage = await examAPI.getAllExam (
+            examDataPage = await examAPI.getAllExamByCurrentLoggedInStudent (
                     pageIndex
                     , pageSize
             );
@@ -76,7 +74,7 @@ export function ManageThingsInExaminationPage (
         }
         , []
     );
-    
+
     function goToPage (destinationPageIndex: number): void {
         setPageIndex (destinationPageIndex);
     }
@@ -95,7 +93,7 @@ export function ManageThingsInExaminationPage (
     if (examHolder.length === 0){
         examTable =
             <tr>
-                <td colSpan = {6} className = "text-center">
+                <td colSpan = {7} className = "text-center">
                     <h5>
                         There are no exams in the system to show here
                     </h5>
@@ -131,16 +129,16 @@ export function ManageThingsInExaminationPage (
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item 
                                     linkAs = {Link}
-                                    linkProps = {{to: "/admin-console"}}
+                                    linkProps = {{to: "/student-dashboard"}}
                                 >
-                                    Admin Console
+                                    Student Dashboard
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item active>
-                                    Manage Things In Examination
+                                    Your Examination
                                 </Breadcrumb.Item>
                             </Breadcrumb>
                             <h1 className = "mb-3">
-                                Manage Things In Examination
+                                All Your Examination
                             </h1>
                             <Form>
                                 <Table responsive = "md" hover = {true}>
@@ -150,16 +148,22 @@ export function ManageThingsInExaminationPage (
                                                 #
                                             </th>
                                             <th>
-                                                Exam ID
-                                            </th>
-                                            <th>
                                                 Exam Type
                                             </th>
                                             <th>
                                                 Course Name
                                             </th>
                                             <th>
+                                                Start Time
+                                            </th>
+                                            <th>
+                                                Total Number Of Question
+                                            </th>
+                                            <th>
                                                 Duration (in minutes)
+                                            </th>
+                                            <th>
+                                                Max Number Of Attempt
                                             </th>
                                             <th>
                                                 Actions
@@ -191,19 +195,24 @@ export function ManageThingsInExaminationPage (
             </footer>
         </Container>
     );
-}
+}  
 
 function renderExamTable (
         exam: Examination
         , index: number
 ): ReactElement {
+    
+    // Variables declaration:
+    let formattedStartTime: string | undefined;
+    let rawDate: Date | undefined;
+
+    rawDate = new Date (exam.startTime);
+    formattedStartTime = rawDate.toLocaleString ("vi-VN");
+
     return (
         <tr key = {exam.examID}>
             <td>
                 {index + 1}
-            </td>
-            <td>
-                {exam.examID}
             </td>
             <td>
                 {exam.type}
@@ -212,7 +221,16 @@ function renderExamTable (
                 {exam.course.courseName}
             </td>
             <td>
+                {formattedStartTime}
+            </td>
+            <td>
+                {exam.totalNumberOfQuiz}
+            </td>
+            <td>
                 {exam.duration}
+            </td>
+            <td>
+                {exam.maxNumberOfAttempt}
             </td>
             <td>
                 <Button 

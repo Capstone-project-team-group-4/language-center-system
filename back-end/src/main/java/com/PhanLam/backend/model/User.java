@@ -8,6 +8,8 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -138,7 +140,7 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-    
+
     @JsonIgnore
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     private List<ClassSession> classList;
@@ -170,7 +172,14 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
+
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "user"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
 
     @JsonIgnore
@@ -195,8 +204,19 @@ public class User implements Serializable {
 
     @Transient
     private String commentOfClass;
+
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "user"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
+
     public User (){
-        multipleChoiceQuestionList = new ArrayList<>();
+        multipleChoiceQuestionList = new ArrayList<> ();
+//        examinationAttemptList = new ArrayList<> ();
     }
 
     public User (
@@ -448,6 +468,16 @@ public class User implements Serializable {
         this.commentOfClass = commentOfClass;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (
+            List<ExaminationAttempt> examinationAttemptList
+    ){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+
     @Override
     public int hashCode (){
         int hash = 7;
@@ -476,6 +506,7 @@ public class User implements Serializable {
         hash = 13 * hash + Objects.hashCode (this.classList1);
         hash = 13 * hash + Objects.hashCode (this.addressList);
         hash = 13 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
+        hash = 13 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
@@ -566,6 +597,9 @@ public class User implements Serializable {
         if (!Objects.equals (this.multipleChoiceQuestionList, other.multipleChoiceQuestionList)){
             return false;
         }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
+            return false;
+        }
         return true;
     }
 
@@ -597,6 +631,7 @@ public class User implements Serializable {
                 + ", classList1=" + classList1
                 + ", addressList=" + addressList
                 + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
+                + ", examinationAttemptList=" + examinationAttemptList
         + '}';
     }
 }

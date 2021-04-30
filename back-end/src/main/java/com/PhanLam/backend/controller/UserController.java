@@ -6,26 +6,16 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
-import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
-import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.security.Principal;
 import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

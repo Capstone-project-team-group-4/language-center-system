@@ -1131,7 +1131,7 @@ function renderCourseTable (
                 {course.courseLevel.levelName}
             </td>
             <td>
-                {course.tuitionFee}
+                {`${course.tuitionFee.toLocaleString ()} đ`}
             </td>
             <td>
                 <Button 

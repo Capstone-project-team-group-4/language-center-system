@@ -281,7 +281,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.POST, "/comments")
                 .hasRole ("TEACHER")
 
-                .   hasAnyRole("ADMIN")
 
                 .antMatchers (
                         HttpMethod.GET

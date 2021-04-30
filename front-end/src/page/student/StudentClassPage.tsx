@@ -10,20 +10,22 @@ interface StudentClassPageProps {}
 
 export function StudentClassPage(props: StudentClassPageProps): ReactElement {
   let classAPI: ClassAPI | undefined;
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [listClass, setListClass] = useState([]);
+  const [totalRowCount, setTotalRowCount] = useState(0);
   const user = sessionStorage.getItem('loggedInUser');
   let idUser = user ? JSON.parse(user).id : 0;
 
   useEffect(() => {
     getListClass();
-  },[])
+  },[pageNumber])
 
   function getListClass() {
     classAPI = new ClassAPI();
 
     classAPI.getListClass(pageNumber, pageSize, '', idUser, 'ROLE_STUDENT').then((res) => {
+      setTotalRowCount(res.totalRowCount)
       setListClass(res.pageDataHolder);
     });
   }
@@ -48,7 +50,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
         },
       },
       {
-        title: "User Name",
+        title: "Teacher Name",
         dataIndex: "teacherID",
         key: "teacherID",
         width: "30%",
@@ -76,7 +78,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
             <div className="card shadow-sm mt-5">
               <div className="card-header bg-transparent border-0">
                 <h3 className="mb-0">
-                  <i className="far fa-clone pr-1">Admin Class Management</i>
+                  <i className="far fa-clone pr-1">Student Class Management</i>
                 </h3>
               </div>
 
@@ -90,15 +92,14 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
                   // @ts-ignore
                 //   rowKey={classID}
                   columns={columns}
-                  pagination={false}
-                  // pagination={{
-                  //   position: ["bottomCenter"],
-                  //   current: page,
-                  //   total: data?.categories?.meta?.totalRecord,
-                  //   pageSize: data?.categories?.meta?.limit,
-                  //   onChange: (page: number) => onChangePage(page),
-                  //   showSizeChanger: false,
-                  // }}
+                  pagination={{
+                    position: ["bottomCenter"],
+                    current: pageNumber,
+                    total: totalRowCount,
+                    pageSize: pageSize,
+                    onChange: (page: number) => setPageNumber(page),
+                    showSizeChanger: false,
+                  }}
                 />
               </div>
             </div>

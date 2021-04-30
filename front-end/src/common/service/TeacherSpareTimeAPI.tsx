@@ -30,8 +30,8 @@ export class TeacherSpareTimeAPI {
   public async getListTeacherSpareTime(
     pageNumber: number,
     pageSize: number,
-    teacherId?: number,
     searchParam?: string,
+    teacherId?: number,
   ): Promise<any> {
     this.requestParameterHolder = new URLSearchParams();
     this.requestParameterHolder.set("pageNumber", pageNumber.toString());

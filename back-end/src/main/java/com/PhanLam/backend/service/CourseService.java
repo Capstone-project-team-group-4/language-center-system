@@ -287,15 +287,15 @@ public class CourseService {
             }
         }
     }
-    
+
     public List<Course> getAllCourse(){
         return courseRepository.findAll();
     }
-    
-    public Course getCourseById(Integer courseID) {     
+
+    public Course getCourseById(Integer courseID) {
         return courseRepository.findById(courseID).orElseThrow();
     }
-    
+
     public Course getByCourseId(int id){
         Optional<Course> nullableCourse = courseRepository.findById(id);
         if(!nullableCourse.isPresent()){

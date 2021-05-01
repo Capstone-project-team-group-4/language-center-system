@@ -88,7 +88,7 @@ public class UserService {
         Page<User> userPage;
         long totalRowCount;
         DataPage<User> userDataPage;
-        
+
         if ((pageIndex >= 0) && (pageSize >= 0)){
             userName = principal.getName ();
             userSortInformation = Sort.sort (User.class);
@@ -179,7 +179,7 @@ public class UserService {
     }
 
     @Transactional (readOnly = true)
-    public DataPage<User> getAllStudents (         
+    public DataPage<User> getAllStudents (
             int pageIndex
             , int pageSize
     ){
@@ -189,16 +189,16 @@ public class UserService {
         QueryResults<User> studentPage;
         DataPage<User> studentDataPage;
         long totalRowCount;
-        
+
         if ((pageIndex >= 0) && (pageSize > 0)){
                 student = new QUser ("student");
                 role = QRole.role;
                 queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
                         .selectFrom (student)
-                            .leftJoin (student.roleList, role)                          
+                            .leftJoin (student.roleList, role)
                         .where (
-                                role.roleName.eq ("ROLE_STUDENT")                            
+                                role.roleName.eq ("ROLE_STUDENT")
                         )
                         .orderBy (
                                 student.firstName.asc ()
@@ -215,12 +215,12 @@ public class UserService {
             else {
                 throw new InvalidRequestArgumentException (
                         "The page index number and page size number parameters "
-                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "cannot be less than zero." + System.lineSeparator ()
                         + "Parameter name: pageIndex, pageSize"
                 );
             }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<User> getAllStudentByCourseID (
             int courseID

@@ -6,22 +6,13 @@
 package com.PhanLam.backend.controller;
 
 import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.service.LessonService;
-import javax.validation.Valid;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import com.PhanLam.backend.model.Lesson;
-import java.util.List;
+import com.PhanLam.backend.service.LessonService;
 import org.springframework.http.HttpStatus;
-import com.PhanLam.backend.dal.repository_interface.LessonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -29,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class LessonController {
-    
+
     // Variables declaration:
     private LessonService lessonService;
 
     public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;
     }
-    
+
     @PostMapping ("/lessons")
     @ResponseStatus (HttpStatus.CREATED)
     public void createNewLesson (
@@ -44,20 +35,21 @@ public class LessonController {
     ){
         lessonService.createLessonInCourse(lesson);
     }
-    
+
     @GetMapping ("/lessons")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Lesson> getAllLesson (
             @RequestParam int pageIndex
             , @RequestParam int pageSize
+            , @RequestParam int courseId
     ){
         DataPage<Lesson> lessonDataPage;
-        
-        lessonDataPage = lessonService.getAllLesson(pageIndex, pageSize);
+
+        lessonDataPage = lessonService.getAllLesson(pageIndex, pageSize,courseId);
         return lessonDataPage;
     }
-    
-    @PutMapping ("/lessons/{lessonID}") 
+
+    @PutMapping ("/lessons/{lessonID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateLesson (
             @PathVariable int lessonID
@@ -65,25 +57,25 @@ public class LessonController {
     ){
         lessonService.updateLesson(lessonID, updatedLesson);
     }
-    
+
     @DeleteMapping ("/lessons/{lessonID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void deleteLesson (@PathVariable int lessonID){
         lessonService.deleteLessonByID(lessonID);
     }
-      
+
     @GetMapping("/lesson")
     @ResponseStatus(HttpStatus.OK)
     public List<Lesson> getLessonByCourseID(@RequestParam("courseID") Integer courseID){
         return lessonService.getAllLessonByCourseID(courseID);
     }
-    
+
 //    @GetMapping("/lessons")
 //    @ResponseStatus(HttpStatus.OK)
 //    public List<Lesson> getAllLesson(){
 //        return lessonService.getAllLesson();
 //    }
-    
+
     @GetMapping("/id")
     @ResponseStatus(HttpStatus.OK)
     public Lesson getOne(@RequestParam("lessonID") Integer lessonID){

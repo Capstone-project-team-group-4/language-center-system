@@ -244,7 +244,7 @@ function renderCourseTable (
 
                     }
                 >
-                    Manage Lessons
+                    Manage Lesson
                 </Button>
             </td>
         </tr>

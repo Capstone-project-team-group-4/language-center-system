@@ -241,9 +241,10 @@ function renderCourseTable (
                     to = {
                         "/admin-console/manage-lesson-page/" +
                         `${course.courseID}`
+
                     }
                 >
-                    Manage Lesson
+                    Manage Lessons
                 </Button>
             </td>
         </tr>

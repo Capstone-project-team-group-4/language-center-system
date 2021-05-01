@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, ReactNode, useEffect, useState } from "react";
-import { 
+import {
     Breadcrumb
     , Button
     , Col
     , Container
     , Form
     , Row
-    , Table 
+    , Table
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { DataPage } from "../../App";
@@ -28,22 +28,22 @@ export function ManageThingsInCoursePage (
 ): ReactElement {
 
     // Variables declaration:
-    let [courseHolder, setCourseHolder] 
+    let [courseHolder, setCourseHolder]
         = useState<Course[]> (new Array<Course> ());
     let courseDataPage: DataPage<Course> | undefined;
     let [pageIndex, setPageIndex] = useState<number> (0);
     let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let courseTable: ReactNode;
-    
+
     let [courseAPI] = useState<CourseAPI> (new CourseAPI ());
-    
+
     async function loadCourseTable (): Promise<void> {
         try {
             courseDataPage = await courseAPI.getAllCourse (
                     pageIndex
                     , pageSize
-            ); 
+            );
             setTotalRowCount (courseDataPage.totalRowCount);
             setCourseHolder (courseDataPage.pageDataHolder);
             return Promise.resolve<undefined> (undefined);
@@ -76,7 +76,7 @@ export function ManageThingsInCoursePage (
         }
         , []
     );
-    
+
     function goToPage (destinationPageIndex: number): void {
         setPageIndex (destinationPageIndex);
     }
@@ -91,7 +91,7 @@ export function ManageThingsInCoursePage (
         }
         , [pageIndex]
     );
-    
+
     if (courseHolder.length === 0){
         courseTable =
             <tr>
@@ -123,13 +123,13 @@ export function ManageThingsInCoursePage (
                     <Row className = "bg-white">
                         <Col>
                             <Breadcrumb>
-                                <Breadcrumb.Item 
+                                <Breadcrumb.Item
                                     linkAs = {Link}
                                     linkProps = {{to: "/"}}
                                 >
                                     Home
                                 </Breadcrumb.Item>
-                                <Breadcrumb.Item 
+                                <Breadcrumb.Item
                                     linkAs = {Link}
                                     linkProps = {{to: "/admin-console"}}
                                 >
@@ -171,16 +171,16 @@ export function ManageThingsInCoursePage (
                                     </tbody>
                                 </Table>
                                 <Form.Group>
-                                    <Form.Row 
+                                    <Form.Row
                                         className = "justify-content-md-center"
                                     >
-                                        <PagingSection 
+                                        <PagingSection
                                             pageIndex = {pageIndex}
                                             pageSize = {pageSize}
                                             totalRowCount = {totalRowCount}
                                             goToPage = {goToPage}
                                         />
-                                    </Form.Row> 
+                                    </Form.Row>
                                 </Form.Group>
                             </Form>
                         </Col>
@@ -215,7 +215,7 @@ function renderCourseTable (
                 {course.courseLevel.levelName}
             </td>
             <td>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
@@ -225,7 +225,7 @@ function renderCourseTable (
                 >
                     Manage Student
                 </Button>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
@@ -235,11 +235,12 @@ function renderCourseTable (
                 >
                     Manage Examination
                 </Button>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
-                        "/admin-console/manage-lesson-page"
+                        "/admin-console/manage-lesson-page/" +
+                        `${course.courseID}`
                     }
                 >
                     Manage Lesson

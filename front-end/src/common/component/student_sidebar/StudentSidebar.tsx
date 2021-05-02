@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { ReactElement, useEffect, useState } from "react";
 import { Accordion, Button, Card, ListGroup } from "react-bootstrap";
@@ -115,11 +116,14 @@ export function StudentSidebar(): ReactElement {
                     >
                         Profile
                     </ListGroup.Item>
-                    <ListGroup.Item action={true}
-                                    style={{backgroundColor: '#242424', color:'#e6ccb3'}}
-                                    className="btt"
+                    <ListGroup.Item 
+                        action = {true}
+                        style = {{backgroundColor: '#242424', color:'#e6ccb3'}}
+                        className = "btt"
+                        as = {Link}
+                        to = {"/student-dashboard/show-all-exam-page"}
                     >
-                        Test
+                        Your Examination
                     </ListGroup.Item>
                 </ListGroup>
             </nav>

@@ -8,29 +8,8 @@ package com.PhanLam.backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -191,7 +170,14 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "user"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
 
     @JsonIgnore
@@ -209,9 +195,19 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "user"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
+    
     public User (){
-        multipleChoiceQuestionList = new ArrayList<>();
+        multipleChoiceQuestionList = new ArrayList<> ();
+//        examinationAttemptList = new ArrayList<> ();
     }
 
     public User (
@@ -446,6 +442,16 @@ public class User implements Serializable {
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (
+            List<ExaminationAttempt> examinationAttemptList
+    ){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+    
     @Override
     public int hashCode (){
         int hash = 7;
@@ -474,6 +480,7 @@ public class User implements Serializable {
         hash = 13 * hash + Objects.hashCode (this.classList1);
         hash = 13 * hash + Objects.hashCode (this.addressList);
         hash = 13 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
+        hash = 13 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
@@ -564,6 +571,9 @@ public class User implements Serializable {
         if (!Objects.equals (this.multipleChoiceQuestionList, other.multipleChoiceQuestionList)){
             return false;
         }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
+            return false;
+        }
         return true;
     }
 
@@ -583,18 +593,19 @@ public class User implements Serializable {
                 + ", photoURI=" + photoURI
                 + ", selfDescription=" + selfDescription
                 + ", password=[protected]"
-                + ", accountStatus=" + accountStatus
-                + ", dateCreated=" + dateCreated
-                + ", lastLogin=" + lastLogin
-                + ", lastModified=" + lastModified
-                + ", courseList=" + courseList
-                + ", classList=" + classList
-                + ", roleList=" + roleList
-                + ", spareTimeRegisterList=" + spareTimeRegisterList
-                + ", studentScoreList=" + studentScoreList
-                + ", classList1=" + classList1
-                + ", addressList=" + addressList
+                + ", accountStatus=" + accountStatus 
+                + ", dateCreated=" + dateCreated 
+                + ", lastLogin=" + lastLogin 
+                + ", lastModified=" + lastModified 
+                + ", courseList=" + courseList 
+                + ", classList=" + classList 
+                + ", roleList=" + roleList 
+                + ", spareTimeRegisterList=" + spareTimeRegisterList 
+                + ", studentScoreList=" + studentScoreList 
+                + ", classList1=" + classList1 
+                + ", addressList=" + addressList 
                 + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
+                + ", examinationAttemptList=" + examinationAttemptList
         + '}';
     }
 }

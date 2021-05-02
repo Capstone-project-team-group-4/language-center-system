@@ -17,6 +17,7 @@ import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
+import java.util.Date;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -92,17 +93,19 @@ public class UserService {
      * @param principal
      * @return loggedInUser
      */
-    @Transactional (readOnly = true)
     public LoggedInUser getLoggedInUser (Principal principal){
         LoggedInUser loggedInUser;
         String userName;
         Optional<User> nullableUser;
         User user;
         List<Role> roleHolder;
+        Date lastLogin;
 
         userName = principal.getName ();
         nullableUser = userRepository.findByUserName (userName);
         user = nullableUser.get ();
+        lastLogin = new Date ();
+        user.setLastLogin (lastLogin);
         roleHolder = user.getRoleList ();
         loggedInUser = new LoggedInUser (userName, roleHolder);
         return loggedInUser;

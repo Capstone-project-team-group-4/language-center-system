@@ -55,7 +55,6 @@ import {
 import { 
   ManageExamQuestionInExaminationPage 
 } from './page/admin/ManageExamQuestionInExaminationPage';
-import { DetailPages } from './page/DetailPages';
 import { LessonListPage } from './page/student/LessonListlPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
 import { ProfilePage } from './page/student/ProfilePage';
@@ -63,6 +62,8 @@ import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
 import { ContactUs } from './page/contact_us_page/ContactPage';
 import { Header } from './common/component/home_page_header/Header';
 import { useSessionState } from './common/service/PersistedStateHook';
+import { ShowAllExamPage } from './page/student/ShowAllExamPage';
+import { TakeExamPage } from './page/student/TakeExamPage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -442,6 +443,31 @@ export function App(): ReactElement {
       >
         <PageHeader logOut = {logOut} />
         <TeacherDashboardPage modalDialog = {modalDialog} />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/take-exam-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <TakeExamPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/student-dashboard/show-all-exam-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut} />
+        <ShowAllExamPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
+        />
       </ProtectedRoute>
 
       <ProtectedRoute 

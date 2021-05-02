@@ -1,10 +1,12 @@
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -54,8 +56,16 @@ public class HomeWork implements Serializable {
     @Column (name = "Deadline", nullable = false)
     @Temporal (TemporalType.TIMESTAMP)
     private Date deadline;
-    @OneToMany (mappedBy = "homeWorkID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "homeWork"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
+    
     @OneToMany (mappedBy = "requirementID", fetch = FetchType.LAZY)
     private List<Document> documentList;
     @OneToMany (mappedBy = "solutionID", fetch = FetchType.LAZY)

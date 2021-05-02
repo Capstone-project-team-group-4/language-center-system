@@ -52,15 +52,30 @@ public class StudentScore implements Serializable {
     @Size (min = 1, max = 500)
     @Column (name = "Status", nullable = false, length = 500)
     private String status;
-    @JoinColumn (name = "ExamID", referencedColumnName = "ExamID")
-    @ManyToOne (fetch = FetchType.LAZY)
-    private Examination examID;
-    @JoinColumn (name = "HomeWorkID", referencedColumnName = "HomeWorkID")
-    @ManyToOne (fetch = FetchType.LAZY)
-    private HomeWork homeWorkID;
-    @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
-    private User userID;
+    
+    @JoinColumn (
+            name = "ExamID"
+            , referencedColumnName = "ExamID"
+            , nullable = true
+    )
+    @ManyToOne (fetch = FetchType.EAGER)
+    private Examination exam;
+    
+    @JoinColumn (
+            name = "HomeWorkID"
+            , referencedColumnName = "HomeWorkID"
+            , nullable = true
+    )
+    @ManyToOne (fetch = FetchType.EAGER)
+    private HomeWork homeWork;
+    
+    @JoinColumn (
+            name = "UserID"
+            , referencedColumnName = "UserID"
+            , nullable = false
+    )
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    private User user;
 
     public StudentScore (){
     }
@@ -69,12 +84,20 @@ public class StudentScore implements Serializable {
         this.scoreID = scoreID;
     }
 
-    public StudentScore (Integer scoreID, double score, String status){
-        this.scoreID = scoreID;
+    public StudentScore (
+            double score
+            , String status
+            , Examination exam
+            , HomeWork homeWork
+            , User user
+    ){
         this.score = score;
         this.status = status;
+        this.exam = exam;
+        this.homeWork = homeWork;
+        this.user = user;
     }
-
+    
     public Integer getScoreID (){
         return scoreID;
     }
@@ -99,28 +122,28 @@ public class StudentScore implements Serializable {
         this.status = status;
     }
 
-    public Examination getExamID (){
-        return examID;
+    public Examination getExam (){
+        return exam;
     }
 
-    public void setExamID (Examination examID){
-        this.examID = examID;
+    public void setExam (Examination exam){
+        this.exam = exam;
     }
 
-    public HomeWork getHomeWorkID (){
-        return homeWorkID;
+    public HomeWork getHomeWork (){
+        return homeWork;
     }
 
-    public void setHomeWorkID (HomeWork homeWorkID){
-        this.homeWorkID = homeWorkID;
+    public void setHomeWork (HomeWork homeWork){
+        this.homeWork = homeWork;
     }
 
-    public User getUserID (){
-        return userID;
+    public User getUser (){
+        return user;
     }
 
-    public void setUserID (User userID){
-        this.userID = userID;
+    public void setUser (User user){
+        this.user = user;
     }
 
     @Override
@@ -129,9 +152,9 @@ public class StudentScore implements Serializable {
         hash = 67 * hash + Objects.hashCode (this.scoreID);
         hash = 67 * hash + (int) (Double.doubleToLongBits (this.score) ^ (Double.doubleToLongBits (this.score) >>> 32));
         hash = 67 * hash + Objects.hashCode (this.status);
-        hash = 67 * hash + Objects.hashCode (this.examID);
-        hash = 67 * hash + Objects.hashCode (this.homeWorkID);
-        hash = 67 * hash + Objects.hashCode (this.userID);
+        hash = 67 * hash + Objects.hashCode (this.exam);
+        hash = 67 * hash + Objects.hashCode (this.homeWork);
+        hash = 67 * hash + Objects.hashCode (this.user);
         return hash;
     }
 
@@ -156,13 +179,13 @@ public class StudentScore implements Serializable {
         if (!Objects.equals (this.scoreID, other.scoreID)){
             return false;
         }
-        if (!Objects.equals (this.examID, other.examID)){
+        if (!Objects.equals (this.exam, other.exam)){
             return false;
         }
-        if (!Objects.equals (this.homeWorkID, other.homeWorkID)){
+        if (!Objects.equals (this.homeWork, other.homeWork)){
             return false;
         }
-        if (!Objects.equals (this.userID, other.userID)){
+        if (!Objects.equals (this.user, other.user)){
             return false;
         }
         return true;
@@ -174,9 +197,9 @@ public class StudentScore implements Serializable {
                 + "scoreID=" + scoreID 
                 + ", score=" + score 
                 + ", status=" + status 
-                + ", examID=" + examID 
-                + ", homeWorkID=" + homeWorkID 
-                + ", userID=" + userID 
+                + ", examID=" + exam 
+                + ", homeWorkID=" + homeWork 
+                + ", userID=" + user 
         + '}';
     }
 }

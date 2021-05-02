@@ -5,14 +5,14 @@
  */
 package com.PhanLam.backend.model;
 
-import java.util.Date;
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,11 +44,13 @@ public class ClassSession implements Serializable {
     @Basic (optional = false)
     @Column (name = "ClassID", nullable = false)
     private Integer classID;
-
+    @Column(name = "LastModified")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastModified;
     @Basic (optional = false)
     @NotNull
     @Column (name = "Status", nullable = false)
-    private int status;
+    private Integer status;
 
     @JsonIgnore
     @JoinTable (name = "UserClass", joinColumns = {
@@ -59,7 +61,7 @@ public class ClassSession implements Serializable {
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
-    @OneToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
     private Course courseID;
     @JoinColumn (name = "TeacherID", referencedColumnName = "UserID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
@@ -74,6 +76,9 @@ public class ClassSession implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Slot slot;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classSession", fetch = FetchType.LAZY)
+    private List<Comment> commentList;
 
     public ClassSession (){
     }
@@ -82,7 +87,7 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public ClassSession (Integer classID, int status){
+    public ClassSession (Integer classID, Integer status){
         this.classID = classID;
         this.status = status;
     }
@@ -103,11 +108,11 @@ public class ClassSession implements Serializable {
         this.classID = classID;
     }
 
-    public int getStatus (){
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus (int status){
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -150,7 +155,24 @@ public class ClassSession implements Serializable {
     }
 
     public void setSpareTimeRegisterID(Integer spareTimeRegisterID) {
-        spareTimeRegisterID = spareTimeRegisterID;
+        this.spareTimeRegisterID = spareTimeRegisterID;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    @XmlTransient
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 
     @Override

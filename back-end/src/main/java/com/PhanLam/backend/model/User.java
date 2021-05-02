@@ -15,8 +15,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -138,7 +140,7 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<Course> courseList;
-    
+
     @JsonIgnore
     @ManyToMany (mappedBy = "userList", fetch = FetchType.LAZY)
     private List<ClassSession> classList;
@@ -170,7 +172,7 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "userID", fetch = FetchType.LAZY)
     private List<SpareTimeRegister> spareTimeRegisterList;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -195,7 +197,14 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-    
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> commentList;
+
+    @Transient
+    private String commentOfClass;
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -204,7 +213,7 @@ public class User implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<ExaminationAttempt> examinationAttemptList;
-    
+
     public User (){
         multipleChoiceQuestionList = new ArrayList<> ();
 //        examinationAttemptList = new ArrayList<> ();
@@ -442,6 +451,23 @@ public class User implements Serializable {
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
 
+    @XmlTransient
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
+    public String getCommentOfClass() {
+        return commentOfClass;
+    }
+
+    public void setCommentOfClass(String commentOfClass) {
+        this.commentOfClass = commentOfClass;
+    }
+
     public List<ExaminationAttempt> getExaminationAttemptList (){
         return examinationAttemptList;
     }
@@ -451,7 +477,7 @@ public class User implements Serializable {
     ){
         this.examinationAttemptList = examinationAttemptList;
     }
-    
+
     @Override
     public int hashCode (){
         int hash = 7;
@@ -593,17 +619,17 @@ public class User implements Serializable {
                 + ", photoURI=" + photoURI
                 + ", selfDescription=" + selfDescription
                 + ", password=[protected]"
-                + ", accountStatus=" + accountStatus 
-                + ", dateCreated=" + dateCreated 
-                + ", lastLogin=" + lastLogin 
-                + ", lastModified=" + lastModified 
-                + ", courseList=" + courseList 
-                + ", classList=" + classList 
-                + ", roleList=" + roleList 
-                + ", spareTimeRegisterList=" + spareTimeRegisterList 
-                + ", studentScoreList=" + studentScoreList 
-                + ", classList1=" + classList1 
-                + ", addressList=" + addressList 
+                + ", accountStatus=" + accountStatus
+                + ", dateCreated=" + dateCreated
+                + ", lastLogin=" + lastLogin
+                + ", lastModified=" + lastModified
+                + ", courseList=" + courseList
+                + ", classList=" + classList
+                + ", roleList=" + roleList
+                + ", spareTimeRegisterList=" + spareTimeRegisterList
+                + ", studentScoreList=" + studentScoreList
+                + ", classList1=" + classList1
+                + ", addressList=" + addressList
                 + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
                 + ", examinationAttemptList=" + examinationAttemptList
         + '}';

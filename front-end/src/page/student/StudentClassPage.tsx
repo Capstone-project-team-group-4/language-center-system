@@ -50,7 +50,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
         },
       },
       {
-        title: "User Name",
+        title: "Teacher Name",
         dataIndex: "teacherID",
         key: "teacherID",
         width: "30%",
@@ -78,7 +78,7 @@ export function StudentClassPage(props: StudentClassPageProps): ReactElement {
             <div className="card shadow-sm mt-5">
               <div className="card-header bg-transparent border-0">
                 <h3 className="mb-0">
-                  <i className="far fa-clone pr-1">Admin Class Management</i>
+                  <i className="far fa-clone pr-1">Student Class Management</i>
                 </h3>
               </div>
 

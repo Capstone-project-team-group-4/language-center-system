@@ -68,4 +68,22 @@ public class ExaminationSessionController {
     ){
         examinationSessionManager.goToPreviousQuestion (quizAnswer);
     }
+    
+    @GetMapping ("/examination-sessions/current/quiz:isFirstQuestion")
+    @ResponseStatus (HttpStatus.OK)
+    public boolean currentQuestionIsFirstQuestion (){
+        boolean isFirstQuestion;
+        
+        isFirstQuestion = examinationSessionManager.isFirstQuestion ();
+        return isFirstQuestion;
+    } 
+    
+    @GetMapping ("/examination-sessions/current/quiz:isLastQuestion")
+    @ResponseStatus (HttpStatus.OK)
+    public boolean currentQuestionIsLastQuestion (){
+        boolean isLastQuestion;
+        
+        isLastQuestion = examinationSessionManager.isLastQuestion ();
+        return isLastQuestion;
+    }
 }

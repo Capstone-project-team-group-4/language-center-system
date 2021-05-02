@@ -83,6 +83,8 @@ public class ExaminationSessionManage {
     private BigDecimal examScoreInBigDecimal;
     private StudentScore studentScore;
     private StudentScoreRepository studentScoreRepository;
+    private boolean isFirstQuestion; 
+    private boolean isLastQuestion;
 
     public ExaminationSessionManage (
             ExaminationRepository examRepository
@@ -136,6 +138,7 @@ public class ExaminationSessionManage {
             totalNumberOfQuestion = questionHolder.size ();
             questionIndex = 0;
             startExamTime = System.nanoTime ();
+            allowedTime = (exam.getDuration () * 60000000000L);
             examAnswer = new ArrayList<> ();
             numberOfCorrectAnswerData = 0;
             examScoreDiscarded = false;
@@ -159,6 +162,9 @@ public class ExaminationSessionManage {
         }
         question = questionHolder.get (questionIndex);
         questionOptionHolder = question.getQuestionOptionList ();
+        for (QuestionOption quizQuestionOption : questionOptionHolder){
+            quizQuestionOption.setIsCorrectAnswer (false);
+        }
         quiz = new Quiz (question, questionOptionHolder);
         return quiz;
     }
@@ -224,7 +230,6 @@ public class ExaminationSessionManage {
                     numberOfCorrectAnswer++;
                 }
             }
-            allowedTime = (totalNumberOfQuestion * 60000000000L);
             elapsedTime = (System.nanoTime () - startExamTime);
             if ((elapsedTime - allowedTime) > 900000000000L){
                 roundedExamScore = 0;
@@ -285,9 +290,60 @@ public class ExaminationSessionManage {
                     + "previous exam question anymore."
             );
         }
-        examAnswer.set (questionIndex, quizAnswer);
+        if ((questionIndex + 1) > examAnswer.size ()){
+            examAnswer.add (quizAnswer);
+        }
+        else {
+            examAnswer.set (questionIndex, quizAnswer);
+        }
         if (questionIndex > 0){
             questionIndex--;
         }
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public boolean isFirstQuestion (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't check "
+                    + "the status of current question right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't check "
+                    + "the status of current question anymore."
+            );
+        }
+        if (questionIndex == 0){
+            isFirstQuestion = true;
+        }
+        else {
+            isFirstQuestion = false;
+        }
+        return isFirstQuestion;
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public boolean isLastQuestion (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't check "
+                    + "the status of current question right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't check "
+                    + "the status of current question anymore."
+            );
+        }
+        if (questionIndex >= (totalNumberOfQuestion - 1)){
+            isLastQuestion = true;
+        }
+        else {
+            isLastQuestion = false;
+        }
+        return isLastQuestion;
     }
 }

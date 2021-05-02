@@ -16,6 +16,8 @@ export class ExaminationSessionAPI {
     private axiosError: AxiosError<unknown> | undefined;
     private typeGuardian: TypeGuard;
     private quiz: Quiz | undefined;
+    private isFirstQuestion: boolean | undefined;
+    private isLastQuestion: boolean | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -48,9 +50,7 @@ export class ExaminationSessionAPI {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/examination-sessions/current/quiz"
             );
-            if (this.typeGuardian.isQuiz (
-                    this.serverResponse.data
-            )){
+            if (this.typeGuardian.isQuiz (this.serverResponse.data)){
                 this.quiz = this.serverResponse.data;
                 return Promise.resolve<Quiz> (this.quiz);
             }
@@ -106,6 +106,56 @@ export class ExaminationSessionAPI {
             try {
                 this.axiosError
                     = await this.errorHandler.handleApiError (apiError);
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async currentQuestionIsFirstQuestion (): Promise<boolean> {
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examination-sessions/current/quiz:isFirstQuestion"
+            );
+            if (typeof this.serverResponse.data === "boolean"){
+                this.isFirstQuestion = this.serverResponse.data;
+                return Promise.resolve<boolean> (this.isFirstQuestion);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async currentQuestionIsLastQuestion (): Promise<boolean> {
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examination-sessions/current/quiz:isLastQuestion"
+            );
+            if (typeof this.serverResponse.data === "boolean"){
+                this.isLastQuestion = this.serverResponse.data;
+                return Promise.resolve<boolean> (this.isLastQuestion);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){

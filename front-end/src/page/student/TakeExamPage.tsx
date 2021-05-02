@@ -1,5 +1,6 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ChangeEvent, ReactElement, ReactNode, useEffect, useState } from "react";
 import { 
     Breadcrumb
     , Button
@@ -14,8 +15,12 @@ import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
+import { ExaminationSessionAPI } from "../../common/service/ExaminationSessionAPI";
+import { useSessionState } from "../../common/service/PersistedStateHook";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Examination } from "../../model/Examination";
+import { QuestionOption } from "../../model/QuestionOption";
+import { Quiz } from "../../model/Quiz";
 
 interface TakeExamPageProps {
     dialogController: DialogControl;
@@ -25,6 +30,314 @@ interface TakeExamPageProps {
 
 export function TakeExamPage (props: TakeExamPageProps): ReactElement {
     
+    // Variables declaration:
+    let [quiz, setQuiz] = useState<Quiz> (new Quiz ());
+    let [option1, setOption1] 
+        = useState<QuestionOption> (new QuestionOption ()); 
+    let [option2, setOption2] 
+        = useState<QuestionOption> (new QuestionOption ());
+    let [option3, setOption3] 
+        = useState<QuestionOption> (new QuestionOption ());
+    let [option4, setOption4] 
+        = useState<QuestionOption> (new QuestionOption ());
+    let htmlElement: 
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
+    let updatedOption: QuestionOption | undefined;
+    let [isFirstQuestion, setIsFirstQuestion] = useState<boolean> (true);
+    let [isLastQuestion, setIsLastQuestion] = useState<boolean> (false);
+    let nextQuestionButton: ReactElement | undefined;
+    let previousQuestionButton: ReactElement | undefined;
+    let quizAnswer: QuestionOption[] | undefined; 
+    let [archivedExamAnswer] 
+        = useSessionState<Array<QuestionOption[]>> (
+                "archivedExamAnswer"
+                , new Array<QuestionOption[]> () 
+        );
+    let [questionIndex, setQuestionIndex] = useSessionState<number> (
+        "questionIndex"
+        , 0  
+    );
+    let archivedQuizAnswer: QuestionOption[] | undefined;
+
+    let [examSessionAPI] = useState<ExaminationSessionAPI> (
+        new ExaminationSessionAPI ()
+    );
+    
+    async function goToPreviousQuestion (): Promise<void> {
+        quizAnswer = new Array<QuestionOption> ();
+        if (option1.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[0]);
+        }
+        if (option2.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[1]);
+        }
+        if (option3.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[2]);
+        }
+        if (option4.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[3]);
+        }
+        try {
+            await examSessionAPI.goToPreviousQuestion (quizAnswer);
+            archivedQuizAnswer = new Array<QuestionOption> ();
+            archivedQuizAnswer.push (option1);
+            archivedQuizAnswer.push (option2);
+            archivedQuizAnswer.push (option3);
+            archivedQuizAnswer.push (option4);
+            if ((questionIndex + 1) > archivedExamAnswer.length){
+                archivedExamAnswer.push (archivedQuizAnswer);
+            }
+            else {
+                archivedExamAnswer[questionIndex] = archivedQuizAnswer;
+            }
+            setQuestionIndex (questionIndex - 1);
+            await loadExamQuiz ();
+            await loadExamQuizState ();
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function goToNextQuestion (): Promise<void> {
+        quizAnswer = new Array<QuestionOption> ();
+        if (option1.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[0]);
+        }
+        if (option2.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[1]);
+        }
+        if (option3.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[2]);
+        }
+        if (option4.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[3]);
+        }
+        try {
+            await examSessionAPI.goToNextQuestion (quizAnswer);
+            archivedQuizAnswer = new Array<QuestionOption> ();
+            archivedQuizAnswer.push (option1);
+            archivedQuizAnswer.push (option2);
+            archivedQuizAnswer.push (option3);
+            archivedQuizAnswer.push (option4);
+            if ((questionIndex + 1) > archivedExamAnswer.length){
+                archivedExamAnswer.push (archivedQuizAnswer);
+            }
+            else {
+                archivedExamAnswer[questionIndex] = archivedQuizAnswer;
+            }
+            setQuestionIndex (questionIndex + 1);
+            await loadExamQuiz ();
+            await loadExamQuizState ();
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    function handleChange (
+        event: ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >
+    ): void {
+        htmlElement = event.target;
+        switch (htmlElement.name){
+            default:
+                throw new Error ("Unknown html element !");
+
+            case "option1Checkbox":
+                updatedOption = new QuestionOption (option1);
+                updatedOption.isCorrectAnswer 
+                    = (htmlElement as HTMLInputElement).checked;
+                setOption1 (updatedOption);
+                break;
+
+            case "option2Checkbox":
+                updatedOption = new QuestionOption (option2);
+                updatedOption.isCorrectAnswer 
+                    = (htmlElement as HTMLInputElement).checked;
+                setOption2 (updatedOption);
+                break;
+
+            case "option3Checkbox":
+                updatedOption = new QuestionOption (option3);
+                updatedOption.isCorrectAnswer 
+                    = (htmlElement as HTMLInputElement).checked;
+                setOption3 (updatedOption);
+                break;
+
+            case "option4Checkbox":
+                updatedOption = new QuestionOption (option4);
+                updatedOption.isCorrectAnswer 
+                    = (htmlElement as HTMLInputElement).checked;
+                setOption4 (updatedOption);
+                break;
+        }
+    }
+
+    async function loadExamQuiz (): Promise<void> {
+        try {
+            setQuiz (
+                await examSessionAPI.getCurrentExamQuiz ()  
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function loadExamQuizState (): Promise<void> {
+        try {
+            setIsFirstQuestion (
+                await examSessionAPI.currentQuestionIsFirstQuestion ()
+            );
+            setIsLastQuestion (
+                await examSessionAPI.currentQuestionIsLastQuestion ()
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    useEffect (
+        () => {
+            loadExamQuiz ().catch (
+                    (error) => {
+                        console.error (error);
+                    }
+            );
+        }
+        , []
+    );
+    
+    useEffect (
+        () => {
+            if (archivedExamAnswer[questionIndex] != undefined){
+                setOption1 (archivedExamAnswer[questionIndex][0]);
+                setOption2 (archivedExamAnswer[questionIndex][1]);
+                setOption3 (archivedExamAnswer[questionIndex][2]);
+                setOption4 (archivedExamAnswer[questionIndex][3]);
+            }
+            else {
+                setOption1 (new QuestionOption ());
+                setOption2 (new QuestionOption ());
+                setOption3 (new QuestionOption ());
+                setOption4 (new QuestionOption ());
+            }
+        }
+        , [questionIndex]
+    );
+
+    if (isFirstQuestion === true){
+        previousQuestionButton = 
+            <Button 
+                variant = "secondary"
+                type = "button"
+                className = "mr-4"
+            >
+                Previous Question
+            </Button>;
+    }
+    else {
+        previousQuestionButton = 
+            <Button 
+                variant = "outline-primary"
+                type = "button"
+                className = "mr-4"
+                onClick = {
+                    () => {
+                        goToPreviousQuestion ();
+                    }
+                }
+            >
+                Previous Question
+            </Button>;
+    }
+
+    if (isLastQuestion === false){
+        nextQuestionButton =
+            <Button 
+                variant = "outline-primary"
+                type = "button"
+                onClick = {
+                    () => {
+                        goToNextQuestion ();
+                    }
+                }
+            >
+                Next Question
+            </Button>;
+    }
+    else {
+        nextQuestionButton =
+            <Button 
+                variant = "success"
+                type = "button"
+                onClick = {
+                    () => {
+                        goToNextQuestion ();
+                    }
+                }
+            >
+                Submit Exam
+            </Button>;
+    }
+
     return (
         <Container fluid = {true} className = "h-100">
             {props.modalDialog}
@@ -42,38 +355,8 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                         }
                     >
                         <Form className = "w-75">
-                            <Form.Group as = {Row} controlId = "LastModifiedInfo">
-                                <Form.Label
-                                    column = {true}
-                                    md = {3}
-                                >
-                                    + Last Modified:
-                                </Form.Label>
-                                <Col md = {9}>
-                                    <Form.Control
-                                        plaintext = {true} 
-                                        readOnly = {true}
-                                        // value = {formattedLastModified}
-                                    />
-                                </Col>
-                            </Form.Group>
-
-                            <Form.Group as = {Row} controlId = "DateCreatedInfo">
-                                <Form.Label
-                                    column = {true}
-                                    md = {3}
-                                >
-                                    + Date Created:
-                                </Form.Label>
-                                <Col md = {9}>
-                                    <Form.Control
-                                        plaintext = {true} 
-                                        readOnly = {true}
-                                        // value = {formattedDateCreated}
-                                    />
-                                </Col>
-                            </Form.Group>
                             
+
                             <hr />
 
                             <Form.Group controlId = "QuestionInfo">
@@ -85,7 +368,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Form.Control
                                     plaintext = {true} 
                                     readOnly = {true}
-                                    // value = {question.content}
+                                    value = {quiz.multipleChoiceQuestion.content}
                                 />
                             </Form.Group>
                             
@@ -98,7 +381,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Form.Control
                                     plaintext = {true} 
                                     readOnly = {true}
-                                    // value = {option1.content}
+                                    value = {quiz.questionOptionHolder[0].content}
                                 />
                             </Form.Group>
 
@@ -111,7 +394,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Form.Control
                                     plaintext = {true} 
                                     readOnly = {true}
-                                    // value = {option2.content}
+                                    value = {quiz.questionOptionHolder[1].content}
                                 />
                             </Form.Group>
                             
@@ -124,7 +407,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Form.Control
                                     plaintext = {true} 
                                     readOnly = {true}
-                                    // value = {option3.content}
+                                    value = {quiz.questionOptionHolder[2].content}
                                 />
                             </Form.Group>
                             
@@ -137,18 +420,18 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Form.Control
                                     plaintext = {true} 
                                     readOnly = {true}
-                                    // value = {option4.content}
+                                    value = {quiz.questionOptionHolder[3].content}
                                 />
                             </Form.Group>
 
                             <hr />
                             Answer(s):
 
-                            <Form.Row className = "mt-3">
+                            <Form.Row>
                                 <Col md = {3} className = "pr-4">
                                     <Form.Group 
                                         as = {Row} 
-                                        controlId = "Option1CheckboxInfo"
+                                        controlId = "Option1Checkbox"
                                     >
                                         <Form.Label
                                             column = {true}
@@ -160,8 +443,15 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                         <Col md = {7}>
                                             <Form.Control
                                                 type = "checkbox"
-                                                disabled = {true}
-                                                // checked = {option1.isCorrectAnswer}
+                                                autoFocus = {false}
+                                                name = "option1Checkbox"
+                                                required = {false}
+                                                checked = {option1.isCorrectAnswer}
+                                                onChange = {
+                                                    (event) => {
+                                                        handleChange (event);
+                                                    }
+                                                }
                                             />
                                         </Col>
                                     </Form.Group>
@@ -170,7 +460,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Col md = {3} className = "pr-4">
                                     <Form.Group 
                                         as = {Row} 
-                                        controlId = "Option2CheckboxInfo"
+                                        controlId = "Option2Checkbox"
                                     >
                                         <Form.Label
                                             column = {true}
@@ -182,8 +472,15 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                         <Col md = {7}>
                                             <Form.Control
                                                 type = "checkbox"
-                                                disabled = {true}
-                                                // checked = {option2.isCorrectAnswer}
+                                                autoFocus = {false}
+                                                name = "option2Checkbox"
+                                                required = {false}
+                                                checked = {option2.isCorrectAnswer}
+                                                onChange = {
+                                                    (event) => {
+                                                        handleChange (event);
+                                                    }
+                                                }
                                             />
                                         </Col>
                                     </Form.Group>
@@ -192,7 +489,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Col md = {3} className = "pr-4">
                                     <Form.Group 
                                         as = {Row} 
-                                        controlId = "Option3CheckboxInfo"
+                                        controlId = "Option3Checkbox"
                                     >
                                         <Form.Label
                                             column = {true}
@@ -204,8 +501,15 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                         <Col md = {7}>
                                             <Form.Control
                                                 type = "checkbox"
-                                                disabled = {true}
-                                                // checked = {option3.isCorrectAnswer}
+                                                autoFocus = {false}
+                                                name = "option3Checkbox"
+                                                required = {false}
+                                                checked = {option3.isCorrectAnswer}
+                                                onChange = {
+                                                    (event) => {
+                                                        handleChange (event);
+                                                    }
+                                                }
                                             />
                                         </Col>
                                     </Form.Group>
@@ -214,7 +518,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 <Col md = {3} className = "pr-4">
                                     <Form.Group 
                                         as = {Row} 
-                                        controlId = "Option4CheckboxInfo"
+                                        controlId = "Option4Checkbox"
                                     >
                                         <Form.Label
                                             column = {true}
@@ -226,10 +530,25 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                         <Col md = {7}>
                                             <Form.Control
                                                 type = "checkbox"
-                                                disabled = {true}
-                                                // checked = {option4.isCorrectAnswer}
+                                                autoFocus = {false}
+                                                name = "option4Checkbox"
+                                                required = {false}
+                                                checked = {option4.isCorrectAnswer}
+                                                onChange = {
+                                                    (event) => {
+                                                        handleChange (event);
+                                                    }
+                                                }
                                             />
                                         </Col>
+                                    </Form.Group>
+                                </Col>
+                            </Form.Row>
+                            <Form.Row>
+                                <Col>
+                                    <Form.Group>
+                                        {previousQuestionButton}
+                                        {nextQuestionButton}
                                     </Form.Group>
                                 </Col>
                             </Form.Row>

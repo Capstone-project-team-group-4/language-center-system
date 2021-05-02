@@ -34,7 +34,7 @@ public class SlotService {
     public Slot getById(int id) {
         Optional<Slot> slotNullAble = slotRepository.findById(id);
         if (!slotNullAble.isPresent()) {
-            throw new NotFoundException("CourseType");
+            throw new NotFoundException("Slot");
         }
         return slotNullAble.get();
     }

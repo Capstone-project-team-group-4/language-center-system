@@ -63,7 +63,6 @@ export function EditStudentInfo(): ReactElement {
                         updateStudent(event, param.userID);
                     }}
                     className="wrapper"
-                    style={{ width: 1000 }}
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>Edit My Profile</Modal.Title>

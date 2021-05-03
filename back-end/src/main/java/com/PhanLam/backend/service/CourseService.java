@@ -294,12 +294,13 @@ public class CourseService {
                     }
                     else {
                         userList.add (user);
-                        ClassSession classSession =course.getClassSessionList().stream()
+                        Optional<ClassSession> nullAbleClassSession =course.getClassSessionList().stream()
                                 .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
-                                .findFirst().get();
+                                .findFirst();
 
                         //add student to class
-                        if(classSession !=null){
+                        if(nullAbleClassSession.isPresent()){
+                            ClassSession classSession = nullAbleClassSession.get();
                             classSession.getUserList().add(user);
                         }
                     }
@@ -381,12 +382,13 @@ public class CourseService {
                     }
                     else {
                         userList.remove (user);
-                        ClassSession classSession =course.getClassSessionList().stream()
+                        Optional<ClassSession> nullAbleClassSession =course.getClassSessionList().stream()
                                 .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
-                                .findFirst().get();
+                                .findFirst();
 
                         //remove student to class
-                        if(classSession !=null){
+                        if(nullAbleClassSession.isPresent()){
+                            ClassSession classSession = nullAbleClassSession.get();
                             classSession.getUserList().remove(user);
                         }
                     }

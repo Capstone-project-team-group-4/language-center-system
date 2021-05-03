@@ -9949,4 +9949,22 @@ h3 {
   z-index: 3;
 }
 
+.table-custom .ant-table {
+  padding: 8px;
+  border-radius: 8px;
+}
+.table-custom .ant-table .ant-table-content thead tr th {
+  background: rgba(240, 77, 86, 0.08);
+  font-weight: bold;
+}
+.table-custom .ant-table .ant-table-content tbody tr td {
+  color: #000000;
+}
+.table-custom .ant-table .column-bold {
+  font-weight: bold;
+}
+.table-custom .ant-empty-description {
+  text-align: center;
+}
+
 /*# sourceMappingURL=App.css.map */

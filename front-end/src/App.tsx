@@ -5,47 +5,70 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import "./App.css";
 import { PageHeader } from "./common/component/PageHeader";
 import { ModalDialog, DialogControl } from "./common/component/ModalDialog";
-import { HomePageHeader } from "./common/component/home_page_header/HomePageHeader";
-import {
-  ProtectedRoute,
-  SecurityContext,
-} from "./common/component/ProtectedRoute";
-import { LogOutAPI } from "./common/service/LogOutAPI";
-import { TypeGuard } from "./common/service/TypeGuard";
-import { LoggedInUser } from "./model/LoggedInUser";
-import { AdminConsolePage } from "./page/admin/AdminConsolePage";
-import { CreateAccountPage } from "./page/admin/CreateAccountPage";
-import { HomePage } from "./page/home_page/HomePage";
-import { EditStudentInfo } from "./page/EditStudentInfo";
-import { LogInPage } from "./page/log_in_page/LogInPage";
-import { SelectRolePage } from "./page/select_role_page/SelectRolePage";
-import { SignUpPage } from "./page/sign_up_page/SignUpPage";
-import { History } from "../node_modules/@types/history";
-import { DisableOrDeleteAccountPage } from "./page/admin/DisableOrDeleteAccountPage";
-import { ManageCoursePage } from "./page/admin/ManageCoursePage";
-import { ManageStudentInCoursePage } from "./page/admin/ManageStudentInCoursePage";
-import { TeacherDashboardPage } from "./page/teacher/TeacherDashboardPage";
-import { StudentDashboardPage } from "./page/student/StudentDashboardPage";
-import { EditTeacherInfo } from "./page/EditTeacherInfo";
-import { ViewProfilePage } from "./page/ViewProfilePage";
-import { DetailPage } from "./page/DetailPage";
-import { CourseDetailPage } from "./page/student/CourseDetailPage";
-import { LessonDetailPage } from "./page/student/LessonDetailPage";
-import { ManageExamQuestionPage } from "./page/teacher/ManageExamQuestionPage";
-import { ManageStudentPage } from "./page/admin/ManageStudentPage";
 import { InfoPage } from "./page/student/InfoPage";
-import { ManageThingsInCoursePage } from "./page/admin/ManageThingsInCoursePage";
-import { ManageExaminationInCoursePage } from "./page/admin/ManageExaminationInCoursePage";
-import { TypeConvert } from "./common/service/TypeConvert";
-import { ManageThingsInExaminationPage } from "./page/admin/ManageThingsInExaminationPage";
-import { ManageExamQuestionInExaminationPage } from "./page/admin/ManageExamQuestionInExaminationPage";
 import { TeacherSpareTimePage } from "./page/teacher/SpareTimePage";
-import { useSessionState } from "./common/service/PersistedStateHook";
 import 'antd/dist/antd.css';
 import { AdminClassPage } from "./page/admin/AdminClassPage";
 import { TeacherClassPage } from "./page/teacher/TeacherClassPage";
 import { StudentClassPage } from "./page/student/StudentClassPage";
 import { AdminSpareTimePage } from "./page/admin/AdminSpareTimePage";
+import {
+  HomePageHeader
+} from './common/component/home_page_header/HomePageHeader';
+import {
+  ProtectedRoute
+  , SecurityContext
+} from './common/component/ProtectedRoute';
+import { LogOutAPI } from './common/service/LogOutAPI';
+import { TypeGuard } from './common/service/TypeGuard';
+import { LoggedInUser } from './model/LoggedInUser';
+import { AdminConsolePage } from './page/admin/AdminConsolePage';
+import { CreateAccountPage } from './page/admin/CreateAccountPage';
+import { HomePage } from './page/home_page/HomePage';
+import { EditStudentInfo } from './page/EditStudentInfo';
+import { LogInPage } from './page/log_in_page/LogInPage';
+import { SelectRolePage } from './page/select_role_page/SelectRolePage';
+import { SignUpPage } from './page/sign_up_page/SignUpPage';
+import { History } from '../node_modules/@types/history';
+import {
+  DisableOrDeleteAccountPage
+} from './page/admin/DisableOrDeleteAccountPage';
+import { ManageCoursePage } from './page/admin/ManageCoursePage';
+import {
+  ManageStudentInCoursePage
+} from './page/admin/ManageStudentInCoursePage';
+import { ManageStudentPage } from './page/admin/ManageStudentPage';
+import { TeacherDashboardPage } from './page/teacher/TeacherDashboardPage';
+import { StudentDashboardPage } from './page/student/StudentDashboardPage';
+import { EditTeacherInfo } from './page/EditTeacherInfo';
+import { ViewProfilePage } from './page/ViewProfilePage';
+import { DetailPage } from './page/DetailPage';
+import { LessonDetailPage } from './page/student/LessonDetailPage';
+import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
+import { 
+  ManageThingsInCoursePage 
+} from './page/admin/ManageThingsInCoursePage';
+import { 
+  ManageExaminationInCoursePage 
+} from './page/admin/ManageExaminationInCoursePage';
+import { ManageLessonPage } from './page/admin/ManageLessonPage';
+import { TypeConvert } from './common/service/TypeConvert';
+import { 
+  ManageThingsInExaminationPage 
+} from './page/admin/ManageThingsInExaminationPage';
+import { 
+  ManageExamQuestionInExaminationPage 
+} from './page/admin/ManageExamQuestionInExaminationPage';
+import { LessonListPage } from './page/student/LessonListlPage';
+import { CourseDetailPage } from './page/student/CourseDetailPage';
+import { ProfilePage } from './page/student/ProfilePage';
+import { ManageTeacherPage } from './page/admin/ManageTeacherPage';
+import { ContactUs } from './page/contact_us_page/ContactPage';
+import { Header } from './common/component/home_page_header/Header';
+import { useSessionState } from './common/service/PersistedStateHook';
+import { ShowAllExamPage } from './page/student/ShowAllExamPage';
+import { TakeExamPage } from './page/student/TakeExamPage';
+
 export interface DataPage<T> {
   totalRowCount: number;
   pageDataHolder: T[];
@@ -70,7 +93,8 @@ export function App(): ReactElement {
   let acceptableRoleNameHolder: string[] | undefined;
   let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;
-  let teacherPageSecurity: SecurityContext | undefined;
+  let teacherPageSecurity: SecurityContext | undefined;  
+  let studentPageSecurity: SecurityContext | undefined;
   let history: History<unknown>;
   let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean>(false);
   let [typeGuardian] = useState<TypeGuard>(new TypeGuard());
@@ -118,10 +142,16 @@ export function App(): ReactElement {
     loggedInUser,
     acceptableRoleNameHolder
   );
-  acceptableRoleNameHolder = new Array(
-    "ROLE_ADMIN",
-    "ROLE_TEACHER",
-    "ROLE_STUDENT"
+  acceptableRoleNameHolder = new Array("ROLE_STUDENT");
+  studentPageSecurity = new SecurityContext(
+    isAuthenticated
+    , loggedInUser
+    , acceptableRoleNameHolder
+  );
+  acceptableRoleNameHolder = new Array (
+    "ROLE_ADMIN"
+    , "ROLE_TEACHER"
+    , "ROLE_STUDENT"
   );
   selectRolePageSecurity = new SecurityContext(
     isAuthenticated,
@@ -160,6 +190,44 @@ export function App(): ReactElement {
         <HomePageHeader />
         <HomePage modalDialog={modalDialog} />
       </Route>
+      <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route>
+
+      <ProtectedRoute
+        path = "/admin-console/manage-student-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageStudentPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+        />
+      </ProtectedRoute>
+
+      <Route exact path="/editStudentInfo/studentID">
+        <EditStudentInfo />
+      </Route>
+
+      <Route path="/admin-console/view-student-detail">
+        <ViewProfilePage />
+      </Route>
+
+      {/* <Route path = "/admin-console/manage-teacher-page">
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage />
+      </Route> */}
+
+      <ProtectedRoute
+        path = "/admin-console/manage-teacher-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut}/>
+        <ManageTeacherPage/>
+      </ProtectedRoute>
 
       <Route path="/sign-up-page">
         <SignUpPage
@@ -176,6 +244,13 @@ export function App(): ReactElement {
           setIsAuthenticated={setIsAuthenticated}
           setLoggedInUser={setLoggedInUser}
           typeGuardian={typeGuardian}
+        />
+      </Route>
+
+      <Route path="/contact-us">
+        <Header />
+        <ContactUs
+          modalDialog = {modalDialog}
         />
       </Route>
 
@@ -202,10 +277,6 @@ export function App(): ReactElement {
 
       <Route path="/user_detail/:studentID">
         <DetailPage />
-      </Route>
-
-      <Route path="/admin-console/manage-student-page">
-        <ManageStudentPage />
       </Route>
 
       <ProtectedRoute

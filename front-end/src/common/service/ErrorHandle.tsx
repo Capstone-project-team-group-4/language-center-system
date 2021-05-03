@@ -7,7 +7,7 @@ export class ErrorHandle {
 
     // Variables declaration:
     private typeGuardian: TypeGuard;
-    private exceptionResponseBody: ExceptionResponseBody | undefined; 
+    private exceptionResponse: ExceptionResponseBody | undefined; 
     
     public constructor (){
         this.typeGuardian = new TypeGuard ();
@@ -17,12 +17,18 @@ export class ErrorHandle {
         if (this.typeGuardian.isAxiosError (apiError)){
             if (apiError.response){
                 // The request was made and the server responded 
-                // with a status code that falls out of the range of 2xx.
-                this.exceptionResponseBody = (
-                    apiError.response.data as ExceptionResponseBody
-                );
-                apiError.name = this.exceptionResponseBody.exceptionTitle;
-                apiError.message = this.exceptionResponseBody.message;
+                // with a status code that falls out of the range of 2xx.              
+                if (this.typeGuardian.isExceptionResponseBody (
+                        apiError.response.data    
+                )){
+                    this.exceptionResponse = (apiError.response.data);
+                    apiError.name = this.exceptionResponse.exceptionTitle;
+                    apiError.message = this.exceptionResponse.message;
+                }
+                else {
+                    apiError.name = "An unknown error has occurred !";
+                    apiError.message = "Please contact our Admin for support.";
+                }
                 return Promise.resolve<AxiosError<unknown>> (apiError);
             }
             else if (apiError.request){

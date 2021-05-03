@@ -1,94 +1,91 @@
+/* eslint-disable max-len */
 import React, { ReactElement, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { DataPage } from "../../App";
+import { DialogControl } from "../../common/component/ModalDialog";
+import { TypeGuard } from "../../common/service/TypeGuard";
 import { UserAPI } from "../../common/service/UserAPI";
+import { User } from "../../model/User";
+import './ManageStudentPage.css';
 
-export function ManageStudentPage (): ReactElement {
-    let [user, setUser] = useState<[]>([]);
+interface ManageStudentPageProps {
+    dialogController: DialogControl;
+    modalDialog: ReactElement;
+}
+
+export function ManageStudentPage (props: ManageStudentPageProps): ReactElement {
     let userAPI: UserAPI = new UserAPI();
-    useEffect(() => {
-        userAPI.listUsers().then(
-            (res) => {
-                setUser(res.data);
+    let typeGuardian: TypeGuard;
+    let studentDataPage: DataPage<User> | undefined;
+    let [totalPageCount, setTotalPageCount] = useState<number>(0);
+    let [studentHolder, setStudentHolder] = useState<User[]>([]);
+    let [pageIndex] = useState<number>(0);
+    let [pageSize] = useState<number>(10);
+    // useEffect(() => {
+    //     userAPI.listUsers().then(
+    //         (res) => {
+    //             setUser(res.data);
+    //         }
+    //     )
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
+
+    async function loadStudentTable (): Promise<void> {
+        try {
+            studentDataPage = await userAPI.getAllStudents(
+                pageIndex
+                , pageSize
+            );
+            setTotalPageCount(studentDataPage.totalRowCount);
+            setStudentHolder(studentDataPage.pageDataHolder);
+            return Promise.resolve<undefined>(undefined);
+        }
+        catch (apiError: unknown) {
+            if (typeGuardian.isAxiosError(apiError)) {
+                if (typeof apiError.code === "string") {
+                    props.dialogController.setDialogTitle(
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle(apiError.name);
+                }
+                props.dialogController.setDialogBody(apiError.message);
+                props.dialogController.setDialogType("error");
+                props.dialogController.setShowDialog(true);
             }
-        );
-    }, []);
+            return Promise.reject(apiError);
+        }
+    }
+
+    useEffect(
+        (): void => {
+            loadStudentTable().catch(
+                (error: unknown) => {
+                    console.error(error);
+                }
+            );
+        }
+        , []
+    );
+
     return (
-        <div className="container">
+        <div className="container" id="grid">
             <div className="text-center">
-                <h1>Quản Lý Học Viên</h1>
+                <h1>Manage All Students</h1>
                 <hr />
             </div>
             <div className="row">
-                <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    <button type="button" className="btn btn-primary">
+                {/* <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8"> */}
+                    {/* <button type="button" className="btn btn-primary">
                         <span className=
                             "fa fa-plus mr-5">
                         </span>
                                 Thêm học viên
-                </button>
-                    <div className="row mt-15">
-                        <div className=
-                            "col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <div className="input-group">
-                                <input type="text" className="form-control"
-                                    placeholder="Nhập từ khóa..." />
-                                <span className="input-group-btn">
-                                    <button className="btn btn-primary"
-                                        type="button">
-                                        <span
-                                            className="fa fa-search mr-5">
-                                        </span>
-                                                Tìm
-                            </button>
-                                </span>
-                            </div>
-                        </div>
-                        <div className=
-                            "col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <div className="dropdown">
-                                <button className=
-                                    "btn btn-primary dropdown-toggle"
-                                    type="button"
-                                    id="dropdownMenu1"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="true">
-                                    Sắp Xếp
-                                <span className=
-                                        "fa fa-caret-square-o-down ml-5">
-                                    </span>
-                                </button>
-                                <ul className="dropdown-menu"
-                                    aria-labelledby="dropdownMenu1">
-                                    <li>
-                                        <a role="button">
-                                            <span className=
-                                                "fa fa-sort-alpha-asc pr-5">
-                                                Tên A-Z
-                                                </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a role="button">
-                                            <span className=
-                                                "fa fa-sort-alpha-desc pr-5"
-                                            >
-                                                Tên Z-A
-                                                </span>
-                                        </a>
-                                    </li>
-                                    <li role="separator"
-                                        className="divider"></li>
-                                    <li><a role="button">
-                                        Trạng Thái Kích Hoạt
-                                    </a></li>
-                                    <li><a role="button">
-                                        Trạng Thái Ẩn
-                                    </a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mt-15">
+                </button> */}
+                    <div className="row mt-15" id="table-cover">
                         <div className=
                             "col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <table className=
@@ -97,33 +94,29 @@ export function ManageStudentPage (): ReactElement {
                                     <tr>
                                         <th className="text-center">ID</th>
                                         <th className="text-center">
-                                            Tên đăng nhập</th>
+                                            User Name</th>
                                         <th className="text-center">
-                                            Tên</th>
+                                            First Name</th>
                                         <th className="text-center">
-                                            Họ</th>
+                                            Middle Name</th>
+                                        <th className="text-center">
+                                            Last Name</th>
                                         <th className="text-center">
                                             Email
                                                 </th>
                                         <th className="text-center">
-                                            Số điện thoại
+                                            Phone
                                                 </th>
                                         <th className="text-center">
-                                            Avatar
+                                            Status
                                                 </th>
                                         <th className="text-center">
-                                            Trạng Thái
-                                                </th>
-                                        <th className="text-center">
-                                            Lần cuối đăng nhập
-                                                </th>      
-                                        <th className="text-center">
-                                            Hành Động
+                                            Actions
                                                 </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {/* <tr>
                                         <td></td>
                                         <td>
                                             <input type="text"
@@ -162,44 +155,41 @@ export function ManageStudentPage (): ReactElement {
                                         </td>
                                         <td></td>
                                         <td></td>
-                                    </tr>
-                                    {user.map((item, index) => <tr key={index}>
+                                    </tr> */}
+                                    {studentHolder.map((item, index) => <tr key={index}>
                                         <td>{item["userID"]}</td>
                                         <td>{item["userName"]}</td>
                                         <td>{item["firstName"]}</td>
+                                        <td>{item["middleName"]}</td>
                                         <td>{item["lastName"]}</td>
                                         <td>{item["email"]}</td>
                                         <td>{item["phoneNumber"]}</td>
-                                        <td>{item["photoURI"]}</td>
                                         <td className="text-center">
                                             <span
                                                 className="label label-success">
                                                 {item["accountStatus"]}
-                                                </span>
+                                            </span>
                                         </td>
-                                        <td>{item["lastLogin"]}</td>
-                                        <td className="text-center">
-                                        <button type="button"
-                                            className="btn btn-info">
-                                                <span className=
-                                                    "fa fa-pencil mr-5">
-                                                </span>Xem
-                                        </button>
+                                        <td className="text-center" id="action">
+                                            <Link to={`/user_detail/${item["userID"]}`}>
+                                                <button type="button"
+                                                    className="btn btn-primary" id="btn_details">
+                                                    <span className=
+                                                        "fa fa-pencil mr-5">
+                                                            Details
+                                                    </span>
+                                                </button>
+                                            </Link>
                                         &nbsp;
-                                        <button type="button"
-                                            className="btn btn-warning">
-                                                <span className=
-                                                    "fa fa-pencil mr-5">
-                                                </span>Sửa    
-                                        </button>
-                                        &nbsp;
-                                        <button type="button"
-                                                className="btn btn-danger">
-                                                <span className=
-                                                    "fa fa-trash mr-5">
-                                                </span>
-                                                Xóa
-                                        </button>
+                                            <Link to="/editStudentInfo/studentID">
+                                                <button type="button"
+                                                    className="btn btn-success" id="btn_edit">
+                                                    <span className=
+                                                        "fa fa-pencil mr-5">
+                                                            Edit
+                                                    </span>
+                                                </button>
+                                            </Link>
                                         </td>
                                     </tr>
                                     )
@@ -210,6 +200,6 @@ export function ManageStudentPage (): ReactElement {
                     </div>
                 </div>
             </div>
-        </div>
+        // </div>
     );
 }

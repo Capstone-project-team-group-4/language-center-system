@@ -6,7 +6,9 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
+import com.PhanLam.backend.model.MultipleChoiceQuestion;
 import com.PhanLam.backend.model.QuestionOption;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -18,4 +20,12 @@ public interface QuestionOptionRepository
 
     @Override
     public QuestionOption save (QuestionOption questionOption);
+
+    @Override
+    public Optional<QuestionOption> findById (Integer optionID);
+    
+    public int countByMultipleChoiceQuestionAndIsCorrectAnswer (
+            MultipleChoiceQuestion question
+            , boolean isCorrectAnswer
+    );
 }

@@ -36,54 +36,74 @@ export function StudentDashboardPage(props: any): ReactElement {
     });
   }, []);
 
-  return (
-    <Container id="StudentDashboardPage">
-      {props.modalDialog}
-      <main>
-        <StudentSidebar />
-        <Container>
-          <Row>
-            <Col>
-              <Breadcrumb>
-                <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
-                  Home
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active={true}>
-                  Student Dashboard
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {myCourseList.map((course) => {
-                  return (
-                    <Card style={{ width: 400, marginRight: 50 }}>
-                      <Card.Body>
-                        <Card.Title>
-                          {course.courseName}
-                          {/* {i.name} */}
-                        </Card.Title>
-                        <Card.Text>
-                          {course.description}
-                          {/* {i.age} */}
-                        </Card.Text>
-                        <Button
-                          variant="primary"
-                          style={{ alignItems: "stretch" }}
-                        >
-                          Detail
-                        </Button>
-                        <Button
-                          variant="primary"
-                          href={"/student-dashboard-course/" + course.courseID}
-                          style={{ alignItems: "stretch" }}
-                        >
-                          Learn
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  );
-                })}
-              </div>
-              <Accordion>
+    return (
+        <Container id="StudentDashboardPage">
+            {props.modalDialog}
+            <main>
+                <StudentSidebar />
+                <Container>
+                    <Row>
+                        <Col>
+                            <Breadcrumb>
+                                <Breadcrumb.Item
+                                    linkAs={Link}
+                                    linkProps={{ to: "/" }}
+                                >
+                                    Home
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item active={true}>
+                                    Student Dashboard
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                            <Row>
+                                {myCourseList.map((course) => {
+                                    return (
+                                        <Col md={3}>
+                                            <Card className="mb-3">
+                                                <Card.Body>
+                                                    <Card.Title>
+                                                        {course.courseName}
+                                                        {/* {i.name} */}
+                                                    </Card.Title>
+                                                    <Card.Text>
+                                                        {course.description}
+                                                        {/* {i.age} */}
+                                                    </Card.Text>
+                                                    <Row>
+                                                        <Col>
+                                                            <Button 
+                                                                style={{alignItems: 'stretch', backgroundColor: 'blueviolet', borderColor: 'blueviolet'}}
+                                                                block = {true}
+                                                                size="sm"
+                                                                as = {Link}
+                                                                to = {
+                                                                    "/course-detail/" + course.courseID
+                                                                }
+                                                            >
+                                                                Detail
+                                                            </Button>
+                                                        </Col>
+                                                        <Col>
+                                                            <Button 
+                                                                    as = {Link}
+                                                                    to = {
+                                                                        "/student-dashboards/" + course.courseID
+                                                                    }
+                                                                    style={{ alignItems: 'stretch' }} 
+                                                                    size="sm" 
+                                                                    block
+                                                            >
+                                                                Learn
+                                                        </Button>
+                                                        </Col>
+                                                    </Row>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
+                                    )
+                                })}
+                            </Row>
+                            <Accordion>
               <Card>
                 <Accordion.Toggle as={Card.Header} eventKey="3">
                   Student Class Management
@@ -102,10 +122,10 @@ export function StudentDashboardPage(props: any): ReactElement {
                 </Accordion.Collapse>
               </Card>
             </Accordion>
-            </Col>
-          </Row>
-        </Container>
-      </main>
-    </Container>
-  );
+                        </Col>
+                    </Row>
+                </Container>
+            </main >
+        </Container >
+    );
 }

@@ -163,36 +163,58 @@ export function ManageThingsInCoursePage(
   );
 }
 
-function renderCourseTable(course: Course, index: number): ReactElement {
-  return (
-    <tr key={course.courseID}>
-      <td>{index + 1}</td>
-      <td>{course.courseID}</td>
-      <td>{course.courseName}</td>
-      <td>{course.courseType.typeName}</td>
-      <td>{course.courseLevel.levelName}</td>
-      <td>
-        <Button
-          variant="outline-primary"
-          as={Link}
-          to={
-            "/admin-console/manage-things-in-course-page" +
-            `/courses/${course.courseID}/students`
-          }
-        >
-          Manage Student
-        </Button>
-        <Button
-          variant="outline-primary"
-          as={Link}
-          to={
-            "/admin-console/manage-things-in-course-page" +
-            `/courses/${course.courseID}/examinations`
-          }
-        >
-          Manage Examination
-        </Button>
-      </td>
-    </tr>
-  );
+function renderCourseTable (
+        course: Course
+        , index: number
+): ReactElement {
+    return (
+        <tr key = {course.courseID}>
+            <td>
+                {index + 1}
+            </td>
+            <td>
+                {course.courseID}
+            </td>
+            <td>
+                {course.courseName}
+            </td>
+            <td>
+                {course.courseType.typeName}
+            </td>
+            <td>
+                {course.courseLevel.levelName}
+            </td>
+            <td>
+                <Button 
+                    variant = "outline-primary"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-things-in-course-page"
+                        + `/courses/${course.courseID}/students`
+                    }
+                >
+                    Manage Student
+                </Button>
+                <Button 
+                    variant = "outline-primary"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-things-in-course-page"
+                        + `/courses/${course.courseID}/examinations`
+                    }
+                >
+                    Manage Examination
+                </Button>
+                <Button 
+                    variant = "outline-primary"
+                    as = {Link}
+                    to = {
+                        "/admin-console/manage-lesson-page"
+                    }
+                >
+                    Manage Lesson
+                </Button>
+            </td>
+        </tr>
+    );
 }

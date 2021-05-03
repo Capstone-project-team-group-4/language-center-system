@@ -1,19 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Import package members section:
 import React, { ReactElement, useEffect, useState } from "react";
 import { Accordion, Button, Card, ListGroup } from "react-bootstrap";
 import './StudentSidebar.css';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CourseAPI } from "../../service/CourseAPI";
 import { Course } from "../../../model/Course";
 import { LocalStorageService } from "../../service/LocalStorageService";
+import { UserAPI } from "../../service/UserAPI";
+import { User } from "../../../model/User";
 
 export function StudentSidebar(): ReactElement {
 
     // Variables declaration:
-    let a: number[] = [17, 16, 22]
-    let [courseList, setCourseList] = useState<Course[]>([]);
     let courseAPI = new CourseAPI();
-    let [course, setCourse] = useState<Course>(new Course());
+    let userAPI = new UserAPI();
+    let [user, setUser] = useState<User>(new User());
     let [sideBarActivated, setSideBarActivated]
         = useState<string>("");
     let localStorageService = new LocalStorageService();
@@ -21,24 +23,17 @@ export function StudentSidebar(): ReactElement {
 
 
     useEffect(() => {
-        // courseAPI = new CourseAPI();
-        // a.map((id) => {
-        //     return (
-        //         courseAPI.getOneCourse(id).then(
-        //             (res) => {
-        //                 courseList.push(res.data);
-        //                 setCourseList(courseList);
-        //                 // console.log(student.userName);
-        //             }
-        //         )
-        //     )
-        // })
         const name = localStorageService.getLoggedUserName();
         courseAPI.getAllCoursesByCurrentUser(name).then(
             (res) => {
                 setMyCourseList(res.data);
             }
         )
+        userAPI.displayProfile(name).then(
+            (res) => {
+                setUser(res.data);
+            }
+        ) 
     }, []);
 
 
@@ -69,29 +64,66 @@ export function StudentSidebar(): ReactElement {
                 id="SideBar"
                 className={`Side_Bar_Z_Index ${sideBarActivated}`}
             >
-                <ListGroup variant="flush">
-                    <ListGroup.Item variant="light" action={true} href="\student-dashboard">
+                <span style={{color:'white', textAlign:'start'}}>Hi {user.userName}!</span>
+                <ListGroup >
+                    <ListGroup.Item action={true} 
+                                    as = {Link}
+                                    to = {
+                                        "/student-dashboard"
+                                    }
+                                    style={{backgroundColor: '#242424', color:'#e6ccb3'}}
+                                    className="btt"
+                    >
                         Dashboard
-                    </ListGroup.Item>
-                    <Accordion>
-                        <Card>
-                            <Accordion.Toggle as={Card.Header} eventKey="0">
+                    </ListGroup.Item >
+                    <Accordion style={{backgroundColor: '#242424'}}>
+                        <Card style={{backgroundColor: '#242424'}} className="btt">
+                            <Accordion.Toggle as={Card.Header} eventKey="0" style={{color:'#e6ccb3'}}>
                                 Course
                             </Accordion.Toggle>
                             {myCourseList.map((course) => {
                                 return (
                                     <Accordion.Collapse eventKey="0">
-                                        <Card.Body><a href={"/student-dashboard-course/" + course.courseID}>{course.courseName}</a></Card.Body>
+                                        <Card.Body>
+                                            <Button
+                                                className="btt"
+                                                as = {Link}
+                                                size="sm"
+                                                to = {
+                                                    "/student-dashboards/" + course.courseID
+                                                }
+                                                style={{backgroundColor: "#242424",
+                                                        borderColor: "#242424",
+                                                        padding: "0 30 0 30",
+                                                        
+                                                        }}
+                                            >
+                                                {course.courseName}
+                                            </Button>
+                                        </Card.Body>
                                     </Accordion.Collapse>
                                 )
                             })}
                         </Card>
                     </Accordion>
-                    <ListGroup.Item variant="light" action={true}>
-                        Info
+                    <ListGroup.Item action={true} 
+                                    as = {Link}
+                                    to = {
+                                        "/student-dashboardx/profile/" + user.userID
+                                    }
+                                    style={{backgroundColor: '#242424', color:'#e6ccb3'}}
+                                    className="btt"
+                    >
+                        Profile
                     </ListGroup.Item>
-                    <ListGroup.Item variant="light" action={true}>
-                        Test
+                    <ListGroup.Item 
+                        action = {true}
+                        style = {{backgroundColor: '#242424', color:'#e6ccb3'}}
+                        className = "btt"
+                        as = {Link}
+                        to = {"/student-dashboard/show-all-exam-page"}
+                    >
+                        Your Examination
                     </ListGroup.Item>
                 </ListGroup>
             </nav>

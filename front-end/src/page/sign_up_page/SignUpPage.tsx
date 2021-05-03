@@ -108,20 +108,14 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
     }
 
     return (
-        <Container 
-            fluid = {true} 
-            className = "h-100"
-        >   
+        <Container fluid = {true} className = "h-100">   
             {props.modalDialog}
             <header>
             </header>
             <nav>
             </nav>
             <main className = "h-100">
-                <Container 
-                    fluid = {true} 
-                    className = "h-100"
-                >
+                <Container fluid = {true} className = "h-100">
                     <Row className = "h-100 justify-content-md-center">
                         <Form
                             id = "SignUpForm"

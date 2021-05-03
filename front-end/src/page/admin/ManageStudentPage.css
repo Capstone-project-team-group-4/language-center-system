@@ -1,0 +1,19 @@
+#grid {
+    background-color: white;
+}
+
+#table-cover {
+    margin: 0 auto;
+}
+
+#btn_details, #btn_edit {
+    width: 75px;
+    text-align: center;
+}
+
+/* #action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+} */
+

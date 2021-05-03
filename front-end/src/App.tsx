@@ -5,7 +5,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import "./App.css";
 import { PageHeader } from "./common/component/PageHeader";
 import { ModalDialog, DialogControl } from "./common/component/ModalDialog";
-import { InfoPage } from "./page/student/InfoPage";
+// import { InfoPage } from "./page/student/InfoPage";
 import { TeacherSpareTimePage } from "./page/teacher/SpareTimePage";
 import 'antd/dist/antd.css';
 import { AdminClassPage } from "./page/admin/AdminClassPage";
@@ -491,10 +491,10 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
       </Route>
-      <Route path="/student">
+      {/* <Route path="/student">
         <PageHeader logOut={logOut} />
         <InfoPage modalDialog={modalDialog} />
-      </Route>
+      </Route> */}
       <Route path="/student-class-page">
         <PageHeader logOut={logOut} />
         <StudentClassPage />

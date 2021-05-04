@@ -6,47 +6,22 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "Examination", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "Examination.findAll", query = "SELECT e FROM Examination e"),
-    @NamedQuery (name = "Examination.findByExamID", query = "SELECT e FROM Examination e WHERE e.examID = :examID"),
-    @NamedQuery (name = "Examination.findByStartTime", query = "SELECT e FROM Examination e WHERE e.startTime = :startTime"),
-    @NamedQuery (name = "Examination.findByType", query = "SELECT e FROM Examination e WHERE e.type = :type"),
-    @NamedQuery (name = "Examination.findByDuration", query = "SELECT e FROM Examination e WHERE e.duration = :duration")})
+
 public class Examination implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -83,7 +58,7 @@ public class Examination implements Serializable {
     private Date lastModified;
     @Transient
     private int totalNumberOfQuiz;
-    
+
     @JsonIgnore
     @JoinTable (name = "ExaminationQuestion", joinColumns = {
         @JoinColumn (
@@ -108,7 +83,7 @@ public class Examination implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -117,7 +92,7 @@ public class Examination implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<StudentScore> studentScoreList;
-    
+
     @JoinColumn (
             name = "CourseID"
             , referencedColumnName = "CourseID"
@@ -125,7 +100,7 @@ public class Examination implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course course;
-    
+
     @JsonIgnore
     @OneToMany (
             cascade = CascadeType.ALL
@@ -157,7 +132,7 @@ public class Examination implements Serializable {
         this.dateCreated = dateCreated;
         this.course = course;
     }
-    
+
     public Integer getExamID (){
         return examID;
     }
@@ -197,7 +172,7 @@ public class Examination implements Serializable {
     public void setMaxNumberOfAttempt (int maxNumberOfAttempt){
         this.maxNumberOfAttempt = maxNumberOfAttempt;
     }
-    
+
     public Date getDateCreated (){
         return dateCreated;
     }
@@ -221,7 +196,7 @@ public class Examination implements Serializable {
     public void setTotalNumberOfQuiz (int totalNumberOfQuiz){
         this.totalNumberOfQuiz = totalNumberOfQuiz;
     }
-    
+
     @XmlTransient
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList (){
         return multipleChoiceQuestionList;
@@ -255,7 +230,7 @@ public class Examination implements Serializable {
     public void setExaminationAttemptList (List<ExaminationAttempt> examinationAttemptList){
         this.examinationAttemptList = examinationAttemptList;
     }
-    
+
     @Override
     public int hashCode (){
         int hash = 7;
@@ -323,17 +298,17 @@ public class Examination implements Serializable {
 
     @Override
     public String toString (){
-        return "Examination {" 
-                + "examID=" + examID 
-                + ", startTime=" + startTime 
-                + ", type=" + type 
-                + ", duration=" + duration 
-                + ", maxNumberOfAttempt=" + maxNumberOfAttempt 
-                + ", dateCreated=" + dateCreated 
-                + ", lastModified=" + lastModified 
-                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
-                + ", studentScoreList=" + studentScoreList 
-                + ", course=" + course 
+        return "Examination {"
+                + "examID=" + examID
+                + ", startTime=" + startTime
+                + ", type=" + type
+                + ", duration=" + duration
+                + ", maxNumberOfAttempt=" + maxNumberOfAttempt
+                + ", dateCreated=" + dateCreated
+                + ", lastModified=" + lastModified
+                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList
+                + ", studentScoreList=" + studentScoreList
+                + ", course=" + course
                 + ", course=" + examinationAttemptList
         + '}';
     }

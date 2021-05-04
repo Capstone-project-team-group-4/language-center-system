@@ -5,34 +5,17 @@
  */
 package com.PhanLam.backend.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-@Table (name = "ExaminationAttempt", catalog = "LanguageCenterDB", schema = "dbo")
-@XmlRootElement
-@NamedQueries ({
-    @NamedQuery (name = "ExaminationAttempt.findAll", query = "SELECT e FROM ExaminationAttempt e"),
-    @NamedQuery (name = "ExaminationAttempt.findByAttemptID", query = "SELECT e FROM ExaminationAttempt e WHERE e.attemptID = :attemptID"),
-    @NamedQuery (name = "ExaminationAttempt.findByNumberOfAttemptTaken", query = "SELECT e FROM ExaminationAttempt e WHERE e.numberOfAttemptTaken = :numberOfAttemptTaken")})
+
 public class ExaminationAttempt implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +28,7 @@ public class ExaminationAttempt implements Serializable {
     @NotNull
     @Column (name = "NumberOfAttemptTaken", nullable = false)
     private int numberOfAttemptTaken;
-    
+
     @JoinColumn (
             name = "UserID"
             , referencedColumnName = "UserID"
@@ -53,7 +36,7 @@ public class ExaminationAttempt implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private User user;
-    
+
     @JoinColumn (
             name = "ExamID"
             , referencedColumnName = "ExamID"
@@ -150,11 +133,11 @@ public class ExaminationAttempt implements Serializable {
 
     @Override
     public String toString (){
-        return "ExaminationAttempt {" 
-                + "attemptID=" + attemptID 
-                + ", numberOfAttemptTaken=" + numberOfAttemptTaken 
-                + ", user=" + user 
-                + ", examination=" + examination 
+        return "ExaminationAttempt {"
+                + "attemptID=" + attemptID
+                + ", numberOfAttemptTaken=" + numberOfAttemptTaken
+                + ", user=" + user
+                + ", examination=" + examination
         + '}';
     }
 }

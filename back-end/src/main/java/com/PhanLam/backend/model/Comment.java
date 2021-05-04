@@ -24,6 +24,7 @@ public class Comment {
 
     @JsonIgnore
     @JoinColumn(name = "ClassID",referencedColumnName = "ClassID",nullable = false)
+    @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private ClassSession classSession;
     @Basic (optional = false)
     @NotNull

@@ -54,8 +54,16 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
                 , new Array<QuestionOption[]> () 
         );
     let [, setQuestionIndex] = useSessionState<number> (
-        "questionIndex"
-        , 0  
+            "questionIndex"
+            , 0  
+    );
+    let [, setTotalNumberOfQuestion] = useSessionState<number> (
+            "totalNumberOfQuestion"
+            , 0  
+    );
+    let [, setTimeRemainingInSeconds] = useSessionState<number> (
+            "timeRemainingInSeconds"
+            , 1  
     );
 
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
@@ -82,6 +90,12 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
             await examSessionAPI.startExamSession (pendingExamID);
             setArchivedExamAnswer (new Array<QuestionOption[]> ());
             setQuestionIndex (0);
+            setTotalNumberOfQuestion (
+                await examSessionAPI.getExamTotalNumberOfQuestion ()
+            );
+            setTimeRemainingInSeconds (
+                await examSessionAPI.getExamTimeLimitInSeconds ()
+            );
             history.push ("/take-exam-page");
             return Promise.resolve<undefined> (undefined);
         }

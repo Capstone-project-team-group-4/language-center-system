@@ -18,6 +18,8 @@ export class ExaminationSessionAPI {
     private quiz: Quiz | undefined;
     private isFirstQuestion: boolean | undefined;
     private isLastQuestion: boolean | undefined;
+    private totalNumberOfQuestion: number | undefined;
+    private timeLimitInSeconds: number | undefined;
 
     public constructor (){
         this.axiosInstanceGetter = new AxiosInstanceGet ();
@@ -156,6 +158,78 @@ export class ExaminationSessionAPI {
             try {
                 this.axiosError 
                     = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getExamTotalNumberOfQuestion (): Promise<number> {
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examination-sessions/current/total-number-of-question"
+            );
+            if (typeof this.serverResponse.data === "number"){
+                this.totalNumberOfQuestion = this.serverResponse.data;
+                return Promise.resolve<number> (this.totalNumberOfQuestion);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async getExamTimeLimitInSeconds (): Promise<number> {
+        try {
+            this.serverResponse = await this.axiosInstance.get<unknown> (
+                    "/examination-sessions/current/time-limit-in-seconds"
+            );
+            if (typeof this.serverResponse.data === "number"){
+                this.timeLimitInSeconds = this.serverResponse.data;
+                return Promise.resolve<number> (this.timeLimitInSeconds);
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError 
+                    = await this.errorHandler.handleApiError (apiError); 
+                return Promise.reject (this.axiosError);
+            }
+            catch (apiError2: unknown){
+                return Promise.reject (apiError2);
+            }
+        }
+    }
+
+    public async submitExam (
+            quizAnswer: QuestionOption[]
+    ): Promise<void> {
+        try {
+            await this.axiosInstance.patch<undefined> (
+                    "/examination-sessions/current:submit"
+                    , quizAnswer
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            try {
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){

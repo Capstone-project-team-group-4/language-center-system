@@ -10,7 +10,7 @@ import {
     , Row
     , Table 
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { PagingSection } from "../../common/component/PagingSection";
@@ -21,6 +21,7 @@ import { TypeGuard } from "../../common/service/TypeGuard";
 import { Examination } from "../../model/Examination";
 import { QuestionOption } from "../../model/QuestionOption";
 import { Quiz } from "../../model/Quiz";
+import { History } from "history";
 
 interface TakeExamPageProps {
     dialogController: DialogControl;
@@ -54,15 +55,44 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                 , new Array<QuestionOption[]> () 
         );
     let [questionIndex, setQuestionIndex] = useSessionState<number> (
-        "questionIndex"
-        , 0  
+            "questionIndex"
+            , 0  
     );
     let archivedQuizAnswer: QuestionOption[] | undefined;
+    let [totalNumberOfQuestion] = useSessionState<number> (
+            "totalNumberOfQuestion"
+            , 0  
+    );
+    let [timeRemainingInSeconds, setTimeRemainingInSeconds] 
+        = useSessionState<number> (
+                "timeRemainingInSeconds"
+                , 1  
+        );
+    let minuteCountdown: number | undefined;
+    let secondCountdown: number | undefined;
+    let [pendingQuizAnswer, setPendingQuizAnswer]
+        = useSessionState<QuestionOption[]> (
+                "pendingQuizAnswer"
+                , new Array<QuestionOption> ()   
+        );
+    let history: History<unknown>;
 
     let [examSessionAPI] = useState<ExaminationSessionAPI> (
         new ExaminationSessionAPI ()
     );
+    history = useHistory ();
     
+    function countDown (): void {
+        setTimeRemainingInSeconds (
+                (previousTimeRemaining) => {
+                    let newTimeRemaining: number | undefined;
+
+                    newTimeRemaining = (previousTimeRemaining - 1); 
+                    return newTimeRemaining;
+                }
+        );       
+    } 
+
     async function goToPreviousQuestion (): Promise<void> {
         quizAnswer = new Array<QuestionOption> ();
         if (option1.isCorrectAnswer === true){
@@ -142,6 +172,87 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
             setQuestionIndex (questionIndex + 1);
             await loadExamQuiz ();
             await loadExamQuizState ();
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    function handleSubmitExam (): void {
+        if (option1.isCorrectAnswer === true){
+            pendingQuizAnswer.push (quiz.questionOptionHolder[0]);
+        }
+        if (option2.isCorrectAnswer === true){
+            pendingQuizAnswer.push (quiz.questionOptionHolder[1]);
+        }
+        if (option3.isCorrectAnswer === true){
+            pendingQuizAnswer.push (quiz.questionOptionHolder[2]);
+        }
+        if (option4.isCorrectAnswer === true){
+            pendingQuizAnswer.push (quiz.questionOptionHolder[3]);
+        }
+        props.dialogController.setDialogTitle ("Confirm Submit Exam");
+        props.dialogController.setDialogBody (
+                "Are you sure you want to submit this exam ?"
+        );
+        props.dialogController.setDialogType ("confirm");
+        props.dialogController.setShowDialog (true);
+    }
+
+    async function executeExamSubmission (): Promise<void> {
+        try {
+            await examSessionAPI.submitExam (pendingQuizAnswer);
+            setPendingQuizAnswer (new Array<QuestionOption> ());
+            history.push ("/show-exam-score-page");
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function submitExamWhenTimeLimitReached (): Promise<void> {
+        quizAnswer = new Array<QuestionOption> ();
+        if (option1.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[0]);
+        }
+        if (option2.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[1]);
+        }
+        if (option3.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[2]);
+        }
+        if (option4.isCorrectAnswer === true){
+            quizAnswer.push (quiz.questionOptionHolder[3]);
+        }
+        try {
+            await examSessionAPI.submitExam (quizAnswer);
+            history.push ("/show-exam-score-page");
         }
         catch (apiError: unknown){
             if (props.typeGuardian.isAxiosError (apiError)){
@@ -254,6 +365,30 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
         }
     }
 
+    minuteCountdown = Math.floor (timeRemainingInSeconds / 60);
+    secondCountdown = (timeRemainingInSeconds % 60);
+    
+    useEffect (
+        () => {
+            let timerID: number | undefined;
+
+            if (timeRemainingInSeconds > 0){
+                timerID = window.setTimeout (countDown, 1000);
+            }
+            else {
+                submitExamWhenTimeLimitReached ().catch (
+                        (error) => {
+                            console.error (error);
+                        }
+                );
+            }
+            return () => {
+                window.clearTimeout (timerID);
+            } 
+        }
+        , [timeRemainingInSeconds]
+    );
+
     useEffect (
         () => {
             loadExamQuiz ().catch (
@@ -281,6 +416,20 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
             }
         }
         , [questionIndex]
+    );
+    
+    useEffect (
+        () => {
+            if (props.dialogController.dialogIsConfirmed === true){
+                executeExamSubmission ().catch (
+                        (error) => {
+                            console.error (error);
+                        }
+                );
+                props.dialogController.setDialogIsConfirmed (false); 
+            }
+        }
+        , [props.dialogController.dialogIsConfirmed]
     );
 
     if (isFirstQuestion === true){
@@ -326,15 +475,10 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
     else {
         nextQuestionButton =
             <Button 
-                variant = "success"
+                variant = "secondary"
                 type = "button"
-                onClick = {
-                    () => {
-                        goToNextQuestion ();
-                    }
-                }
             >
-                Submit Exam
+                Next Question
             </Button>;
     }
 
@@ -355,14 +499,18 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                         }
                     >
                         <Form className = "w-75">
-                            
+                            <Form.Group as = {Row} className = "justify-content-md-center">
+                                <h4>
+                                    + Time Remaining: {minuteCountdown}:{secondCountdown}
+                                </h4>
+                            </Form.Group>
 
                             <hr />
 
                             <Form.Group controlId = "QuestionInfo">
                                 <Form.Label>
                                     <h5>
-                                        Question:
+                                        Question: ({questionIndex + 1} of {totalNumberOfQuestion})  
                                     </h5>
                                 </Form.Label>
                                 <Form.Control
@@ -545,10 +693,26 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                                 </Col>
                             </Form.Row>
                             <Form.Row>
-                                <Col>
+                                <Col md = {7}>
                                     <Form.Group>
                                         {previousQuestionButton}
                                         {nextQuestionButton}
+                                    </Form.Group>
+                                </Col>
+                                <Col md = {5}>
+                                    <Form.Group>
+                                        <Button 
+                                            variant = "success"
+                                            type = "button"
+                                            className = "ml-5"
+                                            onClick = {
+                                                () => {
+                                                    handleSubmitExam ();
+                                                }
+                                            }
+                                        >
+                                            Submit
+                                        </Button>
                                     </Form.Group>
                                 </Col>
                             </Form.Row>

@@ -1,27 +1,22 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ChangeEvent, ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import { 
-    Breadcrumb
-    , Button
+    Button
     , Col
     , Container
     , Form
     , Row
-    , Table 
 } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
-import { DataPage } from "../../App";
+import { useHistory } from "react-router-dom";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { PagingSection } from "../../common/component/PagingSection";
-import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { ExaminationSessionAPI } from "../../common/service/ExaminationSessionAPI";
 import { useSessionState } from "../../common/service/PersistedStateHook";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { Examination } from "../../model/Examination";
 import { QuestionOption } from "../../model/QuestionOption";
 import { Quiz } from "../../model/Quiz";
 import { History } from "history";
+import { StudentScore } from "../../model/StudentScore";
 
 interface TakeExamPageProps {
     dialogController: DialogControl;
@@ -76,6 +71,10 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
                 , new Array<QuestionOption> ()   
         );
     let history: History<unknown>;
+    let [, setStudentScore] = useSessionState<StudentScore> (
+            "studentScore"
+            , new StudentScore ()  
+    );
 
     let [examSessionAPI] = useState<ExaminationSessionAPI> (
         new ExaminationSessionAPI ()
@@ -216,6 +215,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
         try {
             await examSessionAPI.submitExam (pendingQuizAnswer);
             setPendingQuizAnswer (new Array<QuestionOption> ());
+            await loadStudentScore ();
             history.push ("/show-exam-score-page");
         }
         catch (apiError: unknown){
@@ -252,6 +252,7 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
         }
         try {
             await examSessionAPI.submitExam (quizAnswer);
+            await loadStudentScore ();
             history.push ("/show-exam-score-page");
         }
         catch (apiError: unknown){
@@ -344,6 +345,31 @@ export function TakeExamPage (props: TakeExamPageProps): ReactElement {
             );
             setIsLastQuestion (
                 await examSessionAPI.currentQuestionIsLastQuestion ()
+            );
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                            `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
+
+    async function loadStudentScore (): Promise<void> {
+        try {
+            setStudentScore (
+                    await examSessionAPI.getExamScore ()
             );
             return Promise.resolve<undefined> (undefined);
         }

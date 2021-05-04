@@ -1,25 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ChangeEvent, ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { 
-    Breadcrumb
-    , Button
-    , Col
+    Button
     , Container
     , Form
-    , Row
-    , Table 
-} from "react-bootstrap";
+    , Row} from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
-import { PagingSection } from "../../common/component/PagingSection";
-import { ExaminationAPI } from "../../common/service/ExaminationAPI";
-import { ExaminationSessionAPI } from "../../common/service/ExaminationSessionAPI";
 import { useSessionState } from "../../common/service/PersistedStateHook";
 import { TypeGuard } from "../../common/service/TypeGuard";
-import { Examination } from "../../model/Examination";
-import { QuestionOption } from "../../model/QuestionOption";
-import { Quiz } from "../../model/Quiz";
+import { StudentScore } from "../../model/StudentScore";
 
 interface ShowExamScorePageProps {
     dialogController: DialogControl;
@@ -28,6 +18,12 @@ interface ShowExamScorePageProps {
 }
 
 export function ShowExamScorePage (props: ShowExamScorePageProps): ReactElement {
+
+    // Variables declaration:
+    let [studentScore] = useSessionState<StudentScore> (
+            "studentScore"
+            , new StudentScore ()  
+    );
 
     return (
         <Container fluid = {true} className = "vh-100">   
@@ -50,12 +46,38 @@ export function ShowExamScorePage (props: ShowExamScorePageProps): ReactElement 
                             className = "bg-white p-5 h-auto"
                             style = {{borderRadius:10 + 'px'}}
                         >
-                            <Form.Group>
-                                aaaaaa
+                            <Form.Group 
+                                as = {Row} 
+                                className = "justify-content-md-center"
+                            >
+                                <h2>
+                                    Your Score: {studentScore.score}
+                                </h2>
                             </Form.Group>
 
-                            <Form.Group>
-                                bbbbbb
+                            <Form.Group 
+                                as = {Row} 
+                                className = "justify-content-md-center"
+                            >
+                                <h1>
+                                    You have {studentScore.status} !
+                                </h1>
+                            </Form.Group>
+
+                            <Form.Group 
+                                as = {Row} 
+                                className = "justify-content-md-center"
+                            >
+                                <Button 
+                                    variant = "primary"
+                                    block = {true}
+                                    as = {Link}
+                                    to = {
+                                        "/student-dashboard/show-all-exam-page"
+                                    }
+                                >
+                                    Done
+                                </Button>
                             </Form.Group>
                         </Form>
                     </Row>

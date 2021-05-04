@@ -8,6 +8,7 @@ import { ExceptionResponseBody } from "../../model/ExceptionResponseBody";
 import { LoggedInUser } from "../../model/LoggedInUser";
 import { Quiz } from "../../model/Quiz";
 import { Role } from "../../model/Role";
+import { StudentScore } from "../../model/StudentScore";
 
 export class TypeGuard {
 
@@ -165,6 +166,18 @@ export class TypeGuard {
         this.isValid = false;
         if (unknownObject != undefined){
             if ((unknownObject as Quiz).questionOptionHolder != undefined){
+                this.isValid = true;
+            }
+        }
+        return this.isValid;
+    }
+
+    public isStudentScore (
+            unknownObject: unknown
+    ): unknownObject is StudentScore {
+        this.isValid = false;
+        if (unknownObject != undefined){
+            if ((unknownObject as StudentScore).score != undefined){
                 this.isValid = true;
             }
         }

@@ -6,22 +6,17 @@
 package com.PhanLam.backend.controller;
 
 // Import package members section:
+
+import com.PhanLam.backend.controller.DTO.ChartResponse;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Examination;
 import com.PhanLam.backend.service.ExaminationService;
-import java.security.Principal;
-import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 
 /**
  *
@@ -29,14 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ExaminationController {
-    
+
     // Variables declaration:
-    private ExaminationService examinationService; 
+    private ExaminationService examinationService;
 
     public ExaminationController (ExaminationService examinationService){
         this.examinationService = examinationService;
     }
-    
+
     @PostMapping ("/courses/{courseID}/examinations")
     @ResponseStatus (HttpStatus.CREATED)
     public void createNewExamInCourse (
@@ -45,7 +40,7 @@ public class ExaminationController {
     ){
         examinationService.createExamInCourse (courseID, exam);
     }
-    
+
     @GetMapping ("/examinations")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Examination> getAllExam (
@@ -53,11 +48,11 @@ public class ExaminationController {
             , @RequestParam int pageSize
     ){
         DataPage<Examination> examDataPage;
-        
+
         examDataPage = examinationService.getAllExam (pageIndex, pageSize);
         return examDataPage;
     }
-    
+
     @GetMapping ("/courses/{courseID}/examinations")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Examination> getAllExamByCourseID (
@@ -66,7 +61,7 @@ public class ExaminationController {
             , @RequestParam int pageSize
     ){
         DataPage<Examination> examDataPage;
-        
+
         examDataPage = examinationService.getAllExamByCourseID (
                 courseID
                 , pageIndex
@@ -74,7 +69,7 @@ public class ExaminationController {
         );
         return examDataPage;
     }
-    
+
     @GetMapping ("/examinations:by-logged-in-student")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Examination> getAllExamByCurrentLoggedInStudent (
@@ -83,25 +78,25 @@ public class ExaminationController {
             , @RequestParam int pageSize
     ){
         DataPage<Examination> examDataPage;
-        
+
         examDataPage = examinationService.getAllExamByStudentID (
                 principal
                 , pageIndex
                 , pageSize
         );
         return examDataPage;
-    }  
-    
-    @PutMapping ("/courses/{courseID}/examinations/{examID}") 
+    }
+
+    @PutMapping ("/courses/{courseID}/examinations/{examID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateExamInCourse (
             @PathVariable int courseID
             , @PathVariable int examID
-            , @Valid @RequestBody Examination updatedExam 
+            , @Valid @RequestBody Examination updatedExam
     ){
         examinationService.updateExamInCourse (courseID, examID, updatedExam);
     }
-    
+
     @PatchMapping ("/examinations/{examID}:add-a-quiz")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void addAQuizToExam (
@@ -110,7 +105,7 @@ public class ExaminationController {
     ){
         examinationService.addQuizToExam (questionID, examID);
     }
-    
+
     @PatchMapping ("/examinations/{examID}:remove-a-quiz")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void removeAQuizFromExam (
@@ -119,7 +114,7 @@ public class ExaminationController {
     ){
         examinationService.removeQuizFromExam (questionID, examID);
     }
-    
+
     @DeleteMapping ("/courses/{courseID}/examinations/{examID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void deleteExamInCourse (
@@ -127,5 +122,12 @@ public class ExaminationController {
             , @PathVariable int examID
     ){
         examinationService.deleteExamInCourse (courseID, examID);
+    }
+    @GetMapping ("/examinations-score:forChart")
+    @ResponseStatus (HttpStatus.OK)
+    public List<ChartResponse> examScoreForChart (
+    ){
+        List<ChartResponse> chartResponseList = examinationService.examScoresForChart();
+        return chartResponseList;
     }
 }

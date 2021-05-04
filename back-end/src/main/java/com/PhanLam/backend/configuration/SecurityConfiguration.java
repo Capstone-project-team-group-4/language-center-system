@@ -194,7 +194,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers (HttpMethod.DELETE, "/courses/*/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/examinations*")
-                        .hasAnyRole ("STUDENT", "ADMIN")
+                        .hasAnyRole ("STUDENT", "ADMIN","TEACHER")
                 .antMatchers (HttpMethod.PATCH, "/examinations/*")
                         .hasRole ("ADMIN")
                 .antMatchers (HttpMethod.GET, "/examinations")

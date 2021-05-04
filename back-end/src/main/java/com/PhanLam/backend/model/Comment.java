@@ -17,11 +17,12 @@ public class Comment {
     private Integer CommentId;
 
     @JsonIgnore
+    @JoinColumn(name = "UserID",referencedColumnName = "UserID",nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private User user;
 
     @JsonIgnore
-    @ManyToOne (optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ClassID",referencedColumnName = "ClassID",nullable = false)
     private ClassSession classSession;
     @Basic (optional = false)
     @NotNull

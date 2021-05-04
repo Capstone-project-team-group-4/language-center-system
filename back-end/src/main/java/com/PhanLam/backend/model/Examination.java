@@ -6,20 +6,47 @@
 package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
+@Table (name = "Examination", catalog = "LanguageCenterDB", schema = "dbo")
+@XmlRootElement
+@NamedQueries ({
+    @NamedQuery (name = "Examination.findAll", query = "SELECT e FROM Examination e"),
+    @NamedQuery (name = "Examination.findByExamID", query = "SELECT e FROM Examination e WHERE e.examID = :examID"),
+    @NamedQuery (name = "Examination.findByStartTime", query = "SELECT e FROM Examination e WHERE e.startTime = :startTime"),
+    @NamedQuery (name = "Examination.findByType", query = "SELECT e FROM Examination e WHERE e.type = :type"),
+    @NamedQuery (name = "Examination.findByDuration", query = "SELECT e FROM Examination e WHERE e.duration = :duration")})
 public class Examination implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,7 +81,9 @@ public class Examination implements Serializable {
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
-
+    @Transient
+    private int totalNumberOfQuiz;
+    
     @JsonIgnore
     @JoinTable (name = "ExaminationQuestion", joinColumns = {
         @JoinColumn (
@@ -79,10 +108,16 @@ public class Examination implements Serializable {
             , fetch = FetchType.LAZY
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
-
-    @OneToMany (mappedBy = "examID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "exam"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
-
+    
     @JoinColumn (
             name = "CourseID"
             , referencedColumnName = "CourseID"
@@ -90,6 +125,15 @@ public class Examination implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course course;
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "examination"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
 
     public Examination (){
     }
@@ -113,7 +157,7 @@ public class Examination implements Serializable {
         this.dateCreated = dateCreated;
         this.course = course;
     }
-
+    
     public Integer getExamID (){
         return examID;
     }
@@ -153,7 +197,7 @@ public class Examination implements Serializable {
     public void setMaxNumberOfAttempt (int maxNumberOfAttempt){
         this.maxNumberOfAttempt = maxNumberOfAttempt;
     }
-
+    
     public Date getDateCreated (){
         return dateCreated;
     }
@@ -170,6 +214,14 @@ public class Examination implements Serializable {
         this.lastModified = lastModified;
     }
 
+    public int getTotalNumberOfQuiz (){
+        return totalNumberOfQuiz;
+    }
+
+    public void setTotalNumberOfQuiz (int totalNumberOfQuiz){
+        this.totalNumberOfQuiz = totalNumberOfQuiz;
+    }
+    
     @XmlTransient
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList (){
         return multipleChoiceQuestionList;
@@ -196,21 +248,74 @@ public class Examination implements Serializable {
         this.course = course;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (List<ExaminationAttempt> examinationAttemptList){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+    
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (examID != null ? examID.hashCode () : 0);
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode (this.examID);
+        hash = 19 * hash + Objects.hashCode (this.startTime);
+        hash = 19 * hash + Objects.hashCode (this.type);
+        hash = 19 * hash + this.duration;
+        hash = 19 * hash + this.maxNumberOfAttempt;
+        hash = 19 * hash + Objects.hashCode (this.dateCreated);
+        hash = 19 * hash + Objects.hashCode (this.lastModified);
+        hash = 19 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
+        hash = 19 * hash + Objects.hashCode (this.studentScoreList);
+        hash = 19 * hash + Objects.hashCode (this.course);
+        hash = 19 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Examination)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        Examination other = (Examination) object;
-        if ((this.examID == null && other.examID != null) || (this.examID != null && !this.examID.equals (other.examID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final Examination other = (Examination) obj;
+        if (this.duration != other.duration){
+            return false;
+        }
+        if (this.maxNumberOfAttempt != other.maxNumberOfAttempt){
+            return false;
+        }
+        if (!Objects.equals (this.type, other.type)){
+            return false;
+        }
+        if (!Objects.equals (this.examID, other.examID)){
+            return false;
+        }
+        if (!Objects.equals (this.startTime, other.startTime)){
+            return false;
+        }
+        if (!Objects.equals (this.dateCreated, other.dateCreated)){
+            return false;
+        }
+        if (!Objects.equals (this.lastModified, other.lastModified)){
+            return false;
+        }
+        if (!Objects.equals (this.multipleChoiceQuestionList, other.multipleChoiceQuestionList)){
+            return false;
+        }
+        if (!Objects.equals (this.studentScoreList, other.studentScoreList)){
+            return false;
+        }
+        if (!Objects.equals (this.course, other.course)){
+            return false;
+        }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
             return false;
         }
         return true;
@@ -218,7 +323,18 @@ public class Examination implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.Examination[ examID=" + examID + " ]";
+        return "Examination {" 
+                + "examID=" + examID 
+                + ", startTime=" + startTime 
+                + ", type=" + type 
+                + ", duration=" + duration 
+                + ", maxNumberOfAttempt=" + maxNumberOfAttempt 
+                + ", dateCreated=" + dateCreated 
+                + ", lastModified=" + lastModified 
+                + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
+                + ", studentScoreList=" + studentScoreList 
+                + ", course=" + course 
+                + ", course=" + examinationAttemptList
+        + '}';
     }
-
 }

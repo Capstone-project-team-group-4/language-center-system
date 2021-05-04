@@ -146,30 +146,26 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     }
     
     return (
-        <Container 
-            fluid = {true} 
-            className = "vh-100"
-        >   
+        <Container fluid = {true} className = "vh-100">   
             {props.modalDialog}
             <header>
             </header>
             <nav>
             </nav>
             <main className = "h-100">
-                <Container 
-                    fluid = {true} 
-                    className = "h-100"
-                >
-                    <Row className = {
-                        `h-100 
-                        justify-content-center 
-                        align-items-center`
-                    }>
+                <Container fluid = {true} className = "h-100">
+                    <Row 
+                        className = {
+                            `h-100 
+                            justify-content-md-center 
+                            align-items-center`
+                        }
+                    >
                         <Form
                             id="LogInForm"
                             className="bg-white p-5 h-auto"
-                            style={{borderRadius:10 + 'px'}}
-                            onSubmit={
+                            style = {{borderRadius:10 + 'px'}}
+                            onSubmit = {
                                 (event) => {
                                     logIn (event).catch (
                                             (error: unknown) => {

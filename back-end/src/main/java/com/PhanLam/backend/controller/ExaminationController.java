@@ -9,6 +9,7 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Examination;
 import com.PhanLam.backend.service.ExaminationService;
+import java.security.Principal;
 import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,6 +74,23 @@ public class ExaminationController {
         );
         return examDataPage;
     }
+    
+    @GetMapping ("/examinations:by-logged-in-student")
+    @ResponseStatus (HttpStatus.OK)
+    public DataPage<Examination> getAllExamByCurrentLoggedInStudent (
+            Principal principal
+            , @RequestParam int pageIndex
+            , @RequestParam int pageSize
+    ){
+        DataPage<Examination> examDataPage;
+        
+        examDataPage = examinationService.getAllExamByStudentID (
+                principal
+                , pageIndex
+                , pageSize
+        );
+        return examDataPage;
+    }  
     
     @PutMapping ("/courses/{courseID}/examinations/{examID}") 
     @ResponseStatus (HttpStatus.NO_CONTENT)

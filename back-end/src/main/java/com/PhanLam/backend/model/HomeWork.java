@@ -1,19 +1,43 @@
 package com.PhanLam.backend.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Phan Lam
  */
 @Entity
-
+@Table (name = "HomeWork", catalog = "LanguageCenterDB", schema = "dbo")
+@XmlRootElement
+@NamedQueries ({
+    @NamedQuery (name = "HomeWork.findAll", query = "SELECT h FROM HomeWork h"),
+    @NamedQuery (name = "HomeWork.findByHomeWorkID", query = "SELECT h FROM HomeWork h WHERE h.homeWorkID = :homeWorkID"),
+    @NamedQuery (name = "HomeWork.findByRequirement", query = "SELECT h FROM HomeWork h WHERE h.requirement = :requirement"),
+    @NamedQuery (name = "HomeWork.findByDeadline", query = "SELECT h FROM HomeWork h WHERE h.deadline = :deadline")})
 public class HomeWork implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,8 +56,16 @@ public class HomeWork implements Serializable {
     @Column (name = "Deadline", nullable = false)
     @Temporal (TemporalType.TIMESTAMP)
     private Date deadline;
-    @OneToMany (mappedBy = "homeWorkID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "homeWork"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
+    
     @OneToMany (mappedBy = "requirementID", fetch = FetchType.LAZY)
     private List<Document> documentList;
     @OneToMany (mappedBy = "solutionID", fetch = FetchType.LAZY)
@@ -127,19 +159,52 @@ public class HomeWork implements Serializable {
 
     @Override
     public int hashCode (){
-        int hash = 0;
-        hash += (homeWorkID != null ? homeWorkID.hashCode () : 0);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode (this.homeWorkID);
+        hash = 71 * hash + Objects.hashCode (this.requirement);
+        hash = 71 * hash + Objects.hashCode (this.deadline);
+        hash = 71 * hash + Objects.hashCode (this.studentScoreList);
+        hash = 71 * hash + Objects.hashCode (this.documentList);
+        hash = 71 * hash + Objects.hashCode (this.documentList1);
+        hash = 71 * hash + Objects.hashCode (this.classID);
+        hash = 71 * hash + Objects.hashCode (this.lessonID);
         return hash;
     }
 
     @Override
-    public boolean equals (Object object){
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof HomeWork)){
+    public boolean equals (Object obj){
+        if (this == obj){
+            return true;
+        }
+        if (obj == null){
             return false;
         }
-        HomeWork other = (HomeWork) object;
-        if ((this.homeWorkID == null && other.homeWorkID != null) || (this.homeWorkID != null && !this.homeWorkID.equals (other.homeWorkID))){
+        if (getClass () != obj.getClass ()){
+            return false;
+        }
+        final HomeWork other = (HomeWork) obj;
+        if (!Objects.equals (this.requirement, other.requirement)){
+            return false;
+        }
+        if (!Objects.equals (this.homeWorkID, other.homeWorkID)){
+            return false;
+        }
+        if (!Objects.equals (this.deadline, other.deadline)){
+            return false;
+        }
+        if (!Objects.equals (this.studentScoreList, other.studentScoreList)){
+            return false;
+        }
+        if (!Objects.equals (this.documentList, other.documentList)){
+            return false;
+        }
+        if (!Objects.equals (this.documentList1, other.documentList1)){
+            return false;
+        }
+        if (!Objects.equals (this.classID, other.classID)){
+            return false;
+        }
+        if (!Objects.equals (this.lessonID, other.lessonID)){
             return false;
         }
         return true;
@@ -147,7 +212,15 @@ public class HomeWork implements Serializable {
 
     @Override
     public String toString (){
-        return "com.PhanLam.backend.model.HomeWork[ homeWorkID=" + homeWorkID + " ]";
+        return "HomeWork {" 
+                + "homeWorkID=" + homeWorkID 
+                + ", requirement=" + requirement 
+                + ", deadline=" + deadline 
+                + ", studentScoreList=" + studentScoreList 
+                + ", documentList=" + documentList 
+                + ", documentList1=" + documentList1 
+                + ", classID=" + classID 
+                + ", lessonID=" + lessonID 
+        + '}';
     }
-
 }

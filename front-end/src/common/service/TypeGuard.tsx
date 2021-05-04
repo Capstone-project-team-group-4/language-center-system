@@ -4,7 +4,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import { DataPage } from "../../App";
 import { CourseLevel } from "../../model/CourseLevel";
 import { CourseType } from "../../model/CourseType";
+import { ExceptionResponseBody } from "../../model/ExceptionResponseBody";
 import { LoggedInUser } from "../../model/LoggedInUser";
+import { Quiz } from "../../model/Quiz";
 import { Role } from "../../model/Role";
 
 export class TypeGuard {
@@ -141,6 +143,28 @@ export class TypeGuard {
         this.isValid = false;
         if (unknownObject != undefined){
             if ((unknownObject as DataPage<T>).pageDataHolder != undefined){
+                this.isValid = true;
+            }
+        }
+        return this.isValid;
+    }
+
+    public isExceptionResponseBody (
+            unknownObject: unknown
+    ): unknownObject is ExceptionResponseBody {
+        this.isValid = false;
+        if (unknownObject != undefined){
+            if ((unknownObject as ExceptionResponseBody).exceptionTitle != undefined){
+                this.isValid = true;
+            }
+        }
+        return this.isValid;
+    }
+
+    public isQuiz (unknownObject: unknown): unknownObject is Quiz {
+        this.isValid = false;
+        if (unknownObject != undefined){
+            if ((unknownObject as Quiz).questionOptionHolder != undefined){
                 this.isValid = true;
             }
         }

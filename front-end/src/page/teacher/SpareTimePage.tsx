@@ -104,7 +104,7 @@ export function TeacherSpareTimePage(
   function getListTeacherSpareTime() {
     sprareTimeAPI = new TeacherSpareTimeAPI();
 
-    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize).then((res) => {
+    sprareTimeAPI.getListTeacherSpareTime(pageNumber, pageSize, undefined, idUser).then((res) => {
       setTotalRowCount(res.totalRowCount)
       setListSpareTime(res.pageDataHolder);
     });

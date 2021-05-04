@@ -65,9 +65,26 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                 </Card>
                 <Card>
                   <Accordion.Toggle as={Card.Header} eventKey="1">
-                    Course
+                    Student
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <Button
+                        variant="success"
+                        block={true}
+                        as={Link}
+                        to={"/admin-console/manage-student-page"}
+                      >
+                        Manage Student
+                      </Button>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="2">
+                    Course
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="2">
                     <Card.Body>
                       <Button
                         variant="success"
@@ -92,11 +109,30 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>
+
                 <Card>
-                  <Accordion.Toggle as={Card.Header} eventKey="2">
+                  <Accordion.Toggle as={Card.Header} eventKey="3">
+                    Teacher
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="3">
+                    <Card.Body>
+                      <Button
+                        variant="success"
+                        block={true}
+                        as={Link}
+                        to={"/admin-console" + "/manage-teacher-page"}
+                      >
+                        Manage Teacher
+                      </Button>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="4">
                     Examination
                   </Accordion.Toggle>
-                  <Accordion.Collapse eventKey="2">
+                  <Accordion.Collapse eventKey="4">
                     <Card.Body>
                       <Button
                         variant="success"
@@ -113,12 +149,11 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>
-
                 <Card>
-                  <Accordion.Toggle as={Card.Header} eventKey="3">
+                  <Accordion.Toggle as={Card.Header} eventKey="5">
                     Spare Time Management
                   </Accordion.Toggle>
-                  <Accordion.Collapse eventKey="3">
+                  <Accordion.Collapse eventKey="5">
                     <Card.Body>
                       <Button
                         variant="success"
@@ -133,10 +168,10 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                 </Card>
 
                 <Card>
-                  <Accordion.Toggle as={Card.Header} eventKey="4">
+                  <Accordion.Toggle as={Card.Header} eventKey="6">
                     Class Management
                   </Accordion.Toggle>
-                  <Accordion.Collapse eventKey="4">
+                  <Accordion.Collapse eventKey="6">
                     <Card.Body>
                       <Button
                         variant="success"
@@ -156,5 +191,8 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
       </main>
       <footer></footer>
     </Container>
+    //   </main>
+    //   <footer></footer>
+    // </Container>
   );
 }

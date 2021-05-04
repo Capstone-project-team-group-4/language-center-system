@@ -284,7 +284,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 .antMatchers (
                         HttpMethod.GET
-                        , "/examination-sessions/current/quiz"
+                        , "/examination-sessions/current/*"
                 )
                         .hasRole ("STUDENT")
                 .antMatchers (HttpMethod.PATCH, "/examination-sessions/*")

@@ -72,10 +72,10 @@ public class HomeWork implements Serializable {
     private List<Document> documentList1;
     @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
-    private ClassSession classID;
+    private ClassSession classSession;
     @JoinColumn (name = "LessonID", referencedColumnName = "LessonID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
-    private Lesson lessonID;
+    private Lesson lesson;
 
     public HomeWork (){
     }
@@ -141,20 +141,20 @@ public class HomeWork implements Serializable {
         this.documentList1 = documentList1;
     }
 
-    public ClassSession getClassID (){
-        return classID;
+    public ClassSession getClassSession (){
+        return classSession;
     }
 
-    public void setClassID (ClassSession classID){
-        this.classID = classID;
+    public void setClassSession (ClassSession classSession){
+        this.classSession = classSession;
     }
 
-    public Lesson getLessonID (){
-        return lessonID;
+    public Lesson getLesson (){
+        return lesson;
     }
 
-    public void setLessonID (Lesson lessonID){
-        this.lessonID = lessonID;
+    public void setLesson (Lesson lesson){
+        this.lesson = lesson;
     }
 
     @Override
@@ -166,8 +166,8 @@ public class HomeWork implements Serializable {
         hash = 71 * hash + Objects.hashCode (this.studentScoreList);
         hash = 71 * hash + Objects.hashCode (this.documentList);
         hash = 71 * hash + Objects.hashCode (this.documentList1);
-        hash = 71 * hash + Objects.hashCode (this.classID);
-        hash = 71 * hash + Objects.hashCode (this.lessonID);
+        hash = 71 * hash + Objects.hashCode (this.classSession);
+        hash = 71 * hash + Objects.hashCode (this.lesson);
         return hash;
     }
 
@@ -201,10 +201,10 @@ public class HomeWork implements Serializable {
         if (!Objects.equals (this.documentList1, other.documentList1)){
             return false;
         }
-        if (!Objects.equals (this.classID, other.classID)){
+        if (!Objects.equals (this.classSession, other.classSession)){
             return false;
         }
-        if (!Objects.equals (this.lessonID, other.lessonID)){
+        if (!Objects.equals (this.lesson, other.lesson)){
             return false;
         }
         return true;
@@ -219,8 +219,8 @@ public class HomeWork implements Serializable {
                 + ", studentScoreList=" + studentScoreList 
                 + ", documentList=" + documentList 
                 + ", documentList1=" + documentList1 
-                + ", classID=" + classID 
-                + ", lessonID=" + lessonID 
+                + ", classID=" + classSession 
+                + ", lessonID=" + lesson 
         + '}';
     }
 }

@@ -87,25 +87,27 @@ export function DisableOrDeleteAccountPage(
     }
   }
 
-  async function executeUserDisablement(): Promise<void> {
-    try {
-      await userAPI.disableAnotherUser(pendingUserID);
-      await loadUserTable();
-      return Promise.resolve<undefined>(undefined);
-    } catch (apiError: unknown) {
-      if (props.typeGuardian.isAxiosError(apiError)) {
-        if (typeof apiError.code === "string") {
-          props.dialogController.setDialogTitle(
-            `${apiError.code}: ${apiError.name}`
-          );
-        } else {
-          props.dialogController.setDialogTitle(apiError.name);
+    async function executeUserDisablement (): Promise<void> {
+        try {
+            await userAPI.disableAnotherUser (pendingUserID);
+            await loadUserTable ();
+            return Promise.resolve<undefined> (undefined);
         }
-        props.dialogController.setDialogBody(apiError.message);
-        props.dialogController.setDialogType("error");
-        props.dialogController.setShowDialog(true);
-      }
-      return Promise.reject(apiError);
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
     }
   }
 

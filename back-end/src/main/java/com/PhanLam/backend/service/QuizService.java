@@ -241,7 +241,7 @@ public class QuizService {
                 question = new QMultipleChoiceQuestion ("question");
                 exam = new QExamination ("exam");
                 questionPage = queryFactory
-                        .selectFrom (question)
+                        .selectFrom (question).distinct ()
                             .leftJoin (question.examinationList, exam)
                         .where (
                                 exam.examID.ne (examID)

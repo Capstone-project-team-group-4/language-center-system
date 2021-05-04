@@ -58,7 +58,7 @@ public class ClassSession implements Serializable {
         @JoinColumn (name = "UserID", referencedColumnName = "UserID", nullable = false)})
     @ManyToMany (fetch = FetchType.LAZY)
     private List<User> userList;
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "classID", fetch = FetchType.LAZY)
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "classSession", fetch = FetchType.LAZY)
     private List<HomeWork> homeWorkList;
     @JoinColumn (name = "CourseID", referencedColumnName = "CourseID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)

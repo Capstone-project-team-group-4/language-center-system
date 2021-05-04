@@ -68,6 +68,7 @@ import { Header } from './common/component/home_page_header/Header';
 import { useSessionState } from './common/service/PersistedStateHook';
 import { ShowAllExamPage } from './page/student/ShowAllExamPage';
 import { TakeExamPage } from './page/student/TakeExamPage';
+import { ShowExamScorePage } from './page/student/ShowExamScorePage';
 
 export interface DataPage<T> {
   totalRowCount: number;
@@ -476,6 +477,31 @@ export function App(): ReactElement {
           modalDialog={modalDialog}
           dialogController={dialogController}
           typeGuardian={typeGuardian}
+        />
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = "/show-exam-score-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <ShowExamScorePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/student-dashboard/show-all-exam-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut = {logOut} />
+        <ShowAllExamPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 

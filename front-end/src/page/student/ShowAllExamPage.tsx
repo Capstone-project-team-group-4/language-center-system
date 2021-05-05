@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { 
+    MouseEvent
+    , ReactElement
+    , ReactNode
+    , useEffect
+    , useState 
+} from "react";
 import { 
     Breadcrumb
     , Button
@@ -9,13 +15,19 @@ import {
     , Row
     , Table 
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { PagingSection } from "../../common/component/PagingSection";
 import { ExaminationAPI } from "../../common/service/ExaminationAPI";
 import { TypeGuard } from "../../common/service/TypeGuard";
 import { Examination } from "../../model/Examination";
+import { 
+    ExaminationSessionAPI 
+} from "../../common/service/ExaminationSessionAPI";
+import { History } from "history";
+import { useSessionState } from "../../common/service/PersistedStateHook";
+import { QuestionOption } from "../../model/QuestionOption";
 
 interface ShowAllExamPageProps {
     dialogController: DialogControl;
@@ -33,8 +45,77 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
     let [pageSize] = useState<number> (5);
     let [totalRowCount, setTotalRowCount] = useState<number> (0);
     let examTable: ReactNode;
+    let button: HTMLButtonElement | undefined;
+    let [pendingExamID, setPendingExamID] = useState<number> (0);
+    let history: History<unknown>;
+    let [, setArchivedExamAnswer] 
+        = useSessionState<Array<QuestionOption[]>> (
+                "archivedExamAnswer"
+                , new Array<QuestionOption[]> () 
+        );
+    let [, setQuestionIndex] = useSessionState<number> (
+            "questionIndex"
+            , 0  
+    );
+    let [, setTotalNumberOfQuestion] = useSessionState<number> (
+            "totalNumberOfQuestion"
+            , 0  
+    );
+    let [, setTimeRemainingInSeconds] = useSessionState<number> (
+            "timeRemainingInSeconds"
+            , 1  
+    );
 
     let [examAPI] = useState<ExaminationAPI> (new ExaminationAPI ());
+    let [examSessionAPI] = useState<ExaminationSessionAPI> (
+        new ExaminationSessionAPI ()
+    );
+    history = useHistory ();
+
+    function handleStartExam (
+            event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+    ): void {
+        button = event.target as HTMLButtonElement;
+        setPendingExamID (Number (button.value));
+        props.dialogController.setDialogTitle ("Confirm Start Exam");
+        props.dialogController.setDialogBody (
+                "Are you sure you want to start this exam ?"
+        );
+        props.dialogController.setDialogType ("confirm");
+        props.dialogController.setShowDialog (true);
+    }
+
+    async function executeExamStart (): Promise<void> {
+        try {
+            await examSessionAPI.startExamSession (pendingExamID);
+            setArchivedExamAnswer (new Array<QuestionOption[]> ());
+            setQuestionIndex (0);
+            setTotalNumberOfQuestion (
+                await examSessionAPI.getExamTotalNumberOfQuestion ()
+            );
+            setTimeRemainingInSeconds (
+                await examSessionAPI.getExamTimeLimitInSeconds ()
+            );
+            history.push ("/take-exam-page");
+            return Promise.resolve<undefined> (undefined);
+        }
+        catch (apiError: unknown){
+            if (props.typeGuardian.isAxiosError (apiError)){
+                if (typeof apiError.code === "string"){
+                    props.dialogController.setDialogTitle (
+                        `${apiError.code}: ${apiError.name}`
+                    );
+                }
+                else {
+                    props.dialogController.setDialogTitle (apiError.name);
+                }
+                props.dialogController.setDialogBody (apiError.message);
+                props.dialogController.setDialogType ("error");
+                props.dialogController.setShowDialog (true);
+            }
+            return Promise.reject (apiError);
+        }
+    }
 
     async function loadExamTable (): Promise<void> {
         try {
@@ -74,6 +155,20 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
         }
         , []
     );
+    
+    useEffect (
+        () => {
+            if (props.dialogController.dialogIsConfirmed === true){
+                executeExamStart ().catch (
+                        (error) => {
+                            console.error (error);
+                        }
+                );
+                props.dialogController.setDialogIsConfirmed (false); 
+            }
+        }
+        , [props.dialogController.dialogIsConfirmed]
+    );
 
     function goToPage (destinationPageIndex: number): void {
         setPageIndex (destinationPageIndex);
@@ -109,6 +204,7 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
                 ) => renderExamTable (
                         exam
                         , index
+                        , handleStartExam
                 )
             );
     }
@@ -200,6 +296,9 @@ export function ShowAllExamPage (props: ShowAllExamPageProps): ReactElement {
 function renderExamTable (
         exam: Examination
         , index: number
+        , handleStartExam: (
+                event: MouseEvent<HTMLElement, globalThis.MouseEvent>
+        ) => void
 ): ReactElement {
     
     // Variables declaration:
@@ -234,14 +333,16 @@ function renderExamTable (
             </td>
             <td>
                 <Button 
-                    variant = "outline-primary"
-                    as = {Link}
-                    to = {
-                        "/admin-console/manage-things-in-examination-page"
-                        + `/examinations/${exam.examID}/exam-questions`
+                    variant = "outline-success"
+                    type = "button"
+                    value = {exam.examID}
+                    onClick = {
+                        (event) => {
+                            handleStartExam (event);
+                        }
                     }
                 >
-                    Manage Exam Question
+                    Start
                 </Button>
             </td>
         </tr>

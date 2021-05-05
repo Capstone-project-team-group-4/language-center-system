@@ -213,7 +213,12 @@ export function TeacherSpareTimePage(
           setSelectedSlot([]);
           setIsEdit(false);
           setIdEdit(0);
-        });
+        }).catch((error) => {
+        notification.error({ message: error.response.data.message });
+        setVisibleModalCreate(false);
+        setSelectedCourse("");
+        setSelectedSlot([]);
+      });;
     } else {
       sprareTimeAPI
         .createSpareTime(courseIds?.typeID, slotIds)

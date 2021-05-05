@@ -44,6 +44,7 @@ public class ExaminationService {
     private UserRepository userRepository;
     private QueryFactoryGet queryFactoryGetter;
     private JPAQueryFactory queryFactory;
+    private UserService userService;
     private StudentScoreRepository studentScoreRepository;
 
     public ExaminationService (
@@ -53,6 +54,7 @@ public class ExaminationService {
             , UserRepository userRepository
             , QueryFactoryGet queryFactoryGetter
             , @Lazy StudentScoreRepository studentScoreRepository
+            , @Lazy UserService userService
     ){
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
@@ -60,6 +62,7 @@ public class ExaminationService {
         this.userRepository = userRepository;
         this.queryFactoryGetter = queryFactoryGetter;
         this.studentScoreRepository = studentScoreRepository;
+        this.userService = userService;
     }
 
     public void createExamInCourse (int courseID, Examination exam){
@@ -443,9 +446,15 @@ public class ExaminationService {
             }
         }
     }
-    public List<ChartResponse> examScoresForChart(){
-        List<ChartResponse> chartResponseList = null;
-        List<StudentScore> studentScoreList = studentScoreRepository.findAll();
+    public List<ChartResponse> examScoresForChart(Integer studentId){
+        List<ChartResponse> chartResponseList;
+        List<StudentScore> studentScoreList;
+        if (studentId == null) {
+            studentScoreList = studentScoreRepository.findAll();
+        } else {
+            User user = userService.getById(studentId);
+            studentScoreList = studentScoreRepository.findAllByUser(user);
+        }
 
         // calculate averaging of each exam
         Map<Integer,Double> map =studentScoreList.stream()

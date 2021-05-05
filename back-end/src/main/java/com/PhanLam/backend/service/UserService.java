@@ -323,7 +323,7 @@ public class UserService {
                 course = QCourse.course;
                 queryFactory = queryFactoryGetter.getQueryFactory ();
                 studentPage = queryFactory
-                        .selectFrom (student).distinct ()
+                        .selectFrom (student)
                             .leftJoin (student.roleList, role)
                             .leftJoin (student.courseList, course)
                         .where (

@@ -74,7 +74,7 @@ public class ExaminationSessionManage {
     private QuestionOption questionOption;
     private boolean isCorrectAnswer;
     private int numberOfCorrectAnswerData;
-    private long allowedTime;
+    private long timeLimit;
     private long elapsedTime;
     private double roundedExamScore;
     private String resultState;
@@ -83,6 +83,9 @@ public class ExaminationSessionManage {
     private BigDecimal examScoreInBigDecimal;
     private StudentScore studentScore;
     private StudentScoreRepository studentScoreRepository;
+    private boolean isFirstQuestion; 
+    private boolean isLastQuestion;
+    private int timeLimitInSeconds;
 
     public ExaminationSessionManage (
             ExaminationRepository examRepository
@@ -133,13 +136,22 @@ public class ExaminationSessionManage {
                 }
             }
             questionHolder = exam.getMultipleChoiceQuestionList ();
-            totalNumberOfQuestion = questionHolder.size ();
-            questionIndex = 0;
-            startExamTime = System.nanoTime ();
-            examAnswer = new ArrayList<> ();
-            numberOfCorrectAnswerData = 0;
-            examScoreDiscarded = false;
-            examSessionStatus = "Started";
+            if (questionHolder.isEmpty ()){
+                throw new ForbiddenActionException (
+                        "You can't start exam because this examination "
+                        + "doesn't contain any exam question."
+                );
+            }
+            else {
+                totalNumberOfQuestion = questionHolder.size ();
+                questionIndex = 0;
+                startExamTime = System.nanoTime ();
+                timeLimit = (exam.getDuration () * 60000000000L);
+                examAnswer = new ArrayList<> ();
+                numberOfCorrectAnswerData = 0;
+                examScoreDiscarded = false;
+                examSessionStatus = "Started";
+            }
         }
     }
     
@@ -159,10 +171,14 @@ public class ExaminationSessionManage {
         }
         question = questionHolder.get (questionIndex);
         questionOptionHolder = question.getQuestionOptionList ();
+        for (QuestionOption quizQuestionOption : questionOptionHolder){
+            quizQuestionOption.setIsCorrectAnswer (false);
+        }
         quiz = new Quiz (question, questionOptionHolder);
         return quiz;
     }
     
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
     public void goToNextQuestion (List<QuestionOption> quizAnswer){
         if (examSessionStatus.equals ("Not Started")){
             throw new ForbiddenActionException (
@@ -185,90 +201,6 @@ public class ExaminationSessionManage {
         if ((questionIndex + 1) < totalNumberOfQuestion){
             questionIndex++;
         }
-        else {
-            numberOfCorrectAnswer = 0;
-            for (i = 0; i < examAnswer.size (); i++){
-                quizAnswer = examAnswer.get (i);
-                quizFinalResult = true;
-                for (k = 0; k < quizAnswer.size (); k++){
-                    chosenQuestionOption = quizAnswer.get (k);
-                    chosenQuestionOptionId = chosenQuestionOption
-                            .getOptionID ();
-                    nullableQuestionOption = questionOptionRepository
-                            .findById (chosenQuestionOptionId);
-                    if (nullableQuestionOption.isPresent () == false){
-                        throw new InvalidRequestArgumentException (
-                                "This question option does not exist."
-                        );
-                    }
-                    else {
-                        questionOption = nullableQuestionOption.get ();
-                        isCorrectAnswer = questionOption.getIsCorrectAnswer ();
-                        quizFinalResult = (
-                                quizFinalResult && isCorrectAnswer
-                        );
-                    }
-                }
-                if (quizAnswer.size () > 0){
-                    question = questionOption.getMultipleChoiceQuestion ();
-                    numberOfCorrectAnswerData = questionOptionRepository
-                            .countByMultipleChoiceQuestionAndIsCorrectAnswer (
-                                    question
-                                    , true
-                            );
-                }
-                if (quizAnswer.size () < numberOfCorrectAnswerData){
-                    quizFinalResult = false;
-                }
-                if (quizFinalResult == true){
-                    numberOfCorrectAnswer++;
-                }
-            }
-            allowedTime = (totalNumberOfQuestion * 60000000000L);
-            elapsedTime = (System.nanoTime () - startExamTime);
-            if ((elapsedTime - allowedTime) > 900000000000L){
-                roundedExamScore = 0;
-                resultState = "Failed";
-                examScoreDiscarded = true;
-            }
-            else {
-                examScore = (
-                        (
-                                (double) numberOfCorrectAnswer
-                        ) / totalNumberOfQuestion
-                );
-                examScoreInBigDecimal = new BigDecimal (examScore);
-                examScoreInBigDecimal = (examScoreInBigDecimal.multiply (
-                        new BigDecimal (10)
-                ));
-                examScoreInBigDecimal = examScoreInBigDecimal.setScale (
-                        2
-                        , RoundingMode.HALF_UP
-                );
-                roundedExamScore = examScoreInBigDecimal.doubleValue ();
-                if (roundedExamScore >= 5){
-                    resultState = "Passed";
-                }
-                else {
-                    resultState = "Failed";
-                }
-            }
-            studentScore = new StudentScore (
-                    roundedExamScore
-                    , resultState
-                    , exam
-                    , null
-                    , user
-            );
-            studentScoreRepository.save (studentScore);
-            examSessionStatus = "Finished";
-            if (examScoreDiscarded == true){
-                throw new ForbiddenActionException (
-                        "You can't not submit, your score discarded "
-                        + "because of the submit result timeout."
-                );
-            }
-        }
     } 
     
     @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
@@ -285,9 +217,210 @@ public class ExaminationSessionManage {
                     + "previous exam question anymore."
             );
         }
-        examAnswer.set (questionIndex, quizAnswer);
+        if ((questionIndex + 1) > examAnswer.size ()){
+            examAnswer.add (quizAnswer);
+        }
+        else {
+            examAnswer.set (questionIndex, quizAnswer);
+        }
         if (questionIndex > 0){
             questionIndex--;
         }
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public boolean isFirstQuestion (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't check "
+                    + "the status of current question right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't check "
+                    + "the status of current question anymore."
+            );
+        }
+        if (questionIndex == 0){
+            isFirstQuestion = true;
+        }
+        else {
+            isFirstQuestion = false;
+        }
+        return isFirstQuestion;
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public boolean isLastQuestion (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't check "
+                    + "the status of current question right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't check "
+                    + "the status of current question anymore."
+            );
+        }
+        if (questionIndex >= (totalNumberOfQuestion - 1)){
+            isLastQuestion = true;
+        }
+        else {
+            isLastQuestion = false;
+        }
+        return isLastQuestion;
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public int getTotalNumberOfQuestion (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't get "
+                    + "total number of question right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't get "
+                    + "total number of question anymore."
+            );
+        }
+        return totalNumberOfQuestion;
+    }
+    
+    @Transactional (propagation = Propagation.SUPPORTS, readOnly = true)
+    public int getTimeLimitInSeconds (){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't get "
+                    + "time limit in seconds right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't get "
+                    + "time limit in seconds anymore."
+            );
+        }
+        timeLimitInSeconds = (exam.getDuration () * 60);
+        return timeLimitInSeconds;
+    }
+    
+    public void submitExam (List<QuestionOption> quizAnswer){
+        if (examSessionStatus.equals ("Not Started")){
+            throw new ForbiddenActionException (
+                    "Exam session hasn't started yet, you can't submit exam "
+                    + "right now."
+            );
+        }
+        if (examSessionStatus.equals ("Finished")){
+            throw new ForbiddenActionException (
+                    "Exam session has already finished, you can't submit exam "
+                    + "anymore."
+            );
+        }
+        if ((questionIndex + 1) > examAnswer.size ()){
+            examAnswer.add (quizAnswer);
+        }
+        else {
+            examAnswer.set (questionIndex, quizAnswer);
+        }
+        numberOfCorrectAnswer = 0;
+        for (i = 0; i < examAnswer.size (); i++){
+            quizAnswer = examAnswer.get (i);
+            quizFinalResult = true;
+            for (k = 0; k < quizAnswer.size (); k++){
+                chosenQuestionOption = quizAnswer.get (k);
+                chosenQuestionOptionId = chosenQuestionOption
+                        .getOptionID ();
+                nullableQuestionOption = questionOptionRepository
+                        .findById (chosenQuestionOptionId);
+                if (nullableQuestionOption.isPresent () == false){
+                    throw new InvalidRequestArgumentException (
+                            "This question option does not exist."
+                    );
+                }
+                else {
+                    questionOption = nullableQuestionOption.get ();
+                    isCorrectAnswer = questionOption.getIsCorrectAnswer ();
+                    quizFinalResult = (
+                            quizFinalResult && isCorrectAnswer
+                    );
+                }
+            }
+            if (quizAnswer.isEmpty () == false){
+                question = questionOption.getMultipleChoiceQuestion ();
+                numberOfCorrectAnswerData = questionOptionRepository
+                        .countByMultipleChoiceQuestionAndIsCorrectAnswer (
+                                question
+                                , true
+                        );
+            }
+            else {
+                quizFinalResult = false;
+            }
+            if (quizAnswer.size () < numberOfCorrectAnswerData){
+                quizFinalResult = false;
+            }
+            if (quizFinalResult == true){
+                numberOfCorrectAnswer++;
+            }
+        }
+        elapsedTime = (System.nanoTime () - startExamTime);
+        if ((elapsedTime - timeLimit) > 900000000000L){
+            roundedExamScore = 0;
+            resultState = "Failed";
+            examScoreDiscarded = true;
+        }
+        else {
+            examScore = (
+                    (
+                            (double) numberOfCorrectAnswer
+                    ) / totalNumberOfQuestion
+            );
+            examScoreInBigDecimal = new BigDecimal (examScore);
+            examScoreInBigDecimal = (examScoreInBigDecimal.multiply (
+                    new BigDecimal (10)
+            ));
+            examScoreInBigDecimal = examScoreInBigDecimal.setScale (
+                    2
+                    , RoundingMode.HALF_UP
+            );
+            roundedExamScore = examScoreInBigDecimal.doubleValue ();
+            if (roundedExamScore >= 5){
+                resultState = "Passed";
+            }
+            else {
+                resultState = "Failed";
+            }
+        }
+        studentScore = new StudentScore (
+                roundedExamScore
+                , resultState
+                , exam
+                , null
+                , user
+        );
+        studentScoreRepository.save (studentScore);
+        examSessionStatus = "Finished";
+        if (examScoreDiscarded == true){
+            throw new ForbiddenActionException (
+                    "You can't not submit, your score discarded "
+                    + "because of the submit result timeout."
+            );
+        }
+    }
+    
+    public StudentScore getExamScore (){
+        if (!(examSessionStatus.equals ("Finished"))){
+            throw new ForbiddenActionException (
+                    "Exam session has not started or has not finished "
+                    + ", you can't get score right now."
+            );
+        }
+        return studentScore;
     }
 }

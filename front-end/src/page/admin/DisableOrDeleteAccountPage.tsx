@@ -90,9 +90,7 @@ export function DisableOrDeleteAccountPage (
 
     async function executeUserDisablement (): Promise<void> {
         try {
-            await userAPI.disableAnotherUser (
-                    pendingUserID
-            );
+            await userAPI.disableAnotherUser (pendingUserID);
             await loadUserTable ();
             return Promise.resolve<undefined> (undefined);
         }

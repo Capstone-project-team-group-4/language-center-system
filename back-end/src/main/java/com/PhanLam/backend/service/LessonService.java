@@ -68,7 +68,7 @@ public class LessonService {
         Date dateCreated;
         
         //hard code
-        nullableCourse = courseRepository.findById(17);
+        nullableCourse = courseRepository.findById(24);
         if (nullableCourse.isPresent() == false) {
             throw new NotFoundException("Course");
         } else {
@@ -109,7 +109,7 @@ public class LessonService {
                     , pageSize
                     , sortInformation
             );
-            lessonPage = lessonRepository.findByCourseID_CourseID (17, pagingInformation);
+            lessonPage = lessonRepository.findByCourseID_CourseID (24, pagingInformation);
             lessonHolder = new ArrayList<> (lessonPage.getContent ());
             lessonDataPage = new DataPage<> (
                     lessonPage.getTotalPages ()

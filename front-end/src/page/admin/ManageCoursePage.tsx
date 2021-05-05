@@ -566,7 +566,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                 }
                             />
                             <Form.Text className = "text-muted">
-                                format: characters only !  
+                                format: letters only !  
                             </Form.Text>
                         </Form.Group>
 
@@ -1069,7 +1069,7 @@ export function ManageCoursePage (props: ManageCoursePageProps): ReactElement {
                                                 Course Level
                                             </th>
                                             <th>
-                                                Tuition Fee
+                                                Tuition Fee (VND)
                                             </th>
                                             <th>
                                                 Actions

@@ -6,16 +6,22 @@
 package com.PhanLam.backend.dal.repository_interface;
 
 // Import package members section:
+
 import com.PhanLam.backend.model.StudentScore;
+import com.PhanLam.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  *
  * @author Phan Lam
  */
-public interface StudentScoreRepository 
+public interface StudentScoreRepository
         extends JpaRepository<StudentScore, Integer> {
-    
+
     @Override
-    public StudentScore save (StudentScore studentScore);
+    StudentScore save (StudentScore studentScore);
+
+    List<StudentScore> findAllByUser(User user);
 }

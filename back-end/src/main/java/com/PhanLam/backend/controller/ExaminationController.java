@@ -126,8 +126,9 @@ public class ExaminationController {
     @GetMapping ("/examinations-score:forChart")
     @ResponseStatus (HttpStatus.OK)
     public List<ChartResponse> examScoreForChart (
+            @RequestParam(required = false) Integer studentId
     ){
-        List<ChartResponse> chartResponseList = examinationService.examScoresForChart();
+        List<ChartResponse> chartResponseList = examinationService.examScoresForChart(studentId);
         return chartResponseList;
     }
 }

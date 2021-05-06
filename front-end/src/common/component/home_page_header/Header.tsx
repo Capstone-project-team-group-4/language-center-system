@@ -60,14 +60,6 @@ export function Header(): ReactElement {
                             Contact us
                         </Nav.Link>
                     </Nav>
-                    <Form className="d-md-inline-flex">
-                        <FormControl
-                            type="text"
-                            placeholder="Search"
-                            className="mr-md-2"
-                        />
-                        <Button variant="success">Search</Button>
-                    </Form>
                 </Navbar>
             </nav>
         </Container>

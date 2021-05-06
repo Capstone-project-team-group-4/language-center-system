@@ -6,17 +6,22 @@ import com.PhanLam.backend.controller.exception.NotFoundException;
 import com.PhanLam.backend.dal.repository_interface.ClassSessionRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.PhanLam.backend.service.common.SearchCriteria;
+import com.PhanLam.backend.service.common.SearchSpecification;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +40,7 @@ public class ClassSessionService {
                                CourseTypeService courseTypeService,
                                SlotService slotService,
                                EntityManager entityManager,
-                               SpareTimeRegisterService spareTimeRegisterService,
+                               @Lazy SpareTimeRegisterService spareTimeRegisterService,
                                CourseService courseService,
                                UserService userService
     ) {
@@ -53,6 +58,7 @@ public class ClassSessionService {
         SpareTimeRegister spareTimeRegister = spareTimeRegisterService.getById(classSessionRequest.getSpareTimeRegisterID());
         Course course = courseService.getByCourseId(classSessionRequest.getCourseID());
         Slot slot = slotService.getById(classSessionRequest.getSlotID());
+        User user = spareTimeRegister.getUserID();
 
         //validate request
         boolean isContainSlotInSpareRegister = spareTimeRegister.getSlotList()
@@ -68,7 +74,7 @@ public class ClassSessionService {
         }
 
         //check if teacher also is student
-        boolean isStudent = userService.isUserHaveInCourse(course.getCourseID(),spareTimeRegister.getUserID().getUserID());
+        boolean isStudent = userService.isUserHaveInCourse(course.getCourseID(),user.getUserID());
         if(isStudent){
             throw new InvalidRequestArgumentException("The teacher also is student of this course");
         }
@@ -79,6 +85,13 @@ public class ClassSessionService {
             throw new InvalidRequestArgumentException("User "+users+" already have class in slot "+slot.getSlotName());
         }
 
+        // check teacher
+        ClassSession classByTeacherAndSlot = getClassSessionByTeacherAndSlot(user.getUserID(),slot.getSlotID());
+        if(classByTeacherAndSlot !=null){
+            throw new InvalidRequestArgumentException("Teacher " + user.getUserName() + " already has class at slot " + slot.getSlotName());
+        }
+
+
         //set information for classSession
         classSession.setCourseID(course);
         classSession.setSlot(slot);
@@ -87,6 +100,7 @@ public class ClassSessionService {
         course.getUserList().stream().forEach(u ->userList.add(u));
         classSession.setUserList(userList);
         classSession.setStatus(Constant.STATUS_ACTIVE_CLASS);
+        classSession.setLastModified(new Date());
         classSession.setSpareTimeRegisterID(spareTimeRegister.getSpareTimeID());
         save(classSession);
 
@@ -122,7 +136,7 @@ public class ClassSessionService {
     }
 
     @Transactional (readOnly = true)
-    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role) {
+    public DataPage<ClassSession> getAllClassSession(int pageNumber, int pageSize, Integer userID, String role,String searchParam) {
         Sort.TypedSort<ClassSession> classSessionSort;
         Sort sortInformation;
         PageRequest pagingInformation;
@@ -157,18 +171,23 @@ public class ClassSessionService {
             );
         }
 
+        //for search
+        SearchSpecification spec =
+                new SearchSpecification(new SearchCriteria("courseID.courseName", "like", searchParam));
+
         // handle list for admin
         classSessionSort = Sort.sort(ClassSession.class);
         sortInformation
                 = classSessionSort
-                .by(ClassSession::getSlot).ascending();
+                .by(ClassSession::getStatus).descending().and(classSessionSort
+                        .by(ClassSession::getLastModified).descending());
         pagingInformation = PageRequest.of(
                 pageNumber
                 , pageSize
                 , sortInformation
         );
         if (userID == null) {
-            classSessionPage = classSessionRepository.findAll(pagingInformation);
+            classSessionPage = classSessionRepository.findAll( Specification.where(spec),pagingInformation);
 
             totalRowCount = classSessionPage.getTotalElements();
             classSessionList = classSessionPage.getContent();
@@ -177,7 +196,9 @@ public class ClassSessionService {
 
         // handle list for teacher
         else if (userID != null && role.equals(Constant.ROLE_TEACHER)) {
-            classSessionPage = classSessionRepository.findAllByTeacherID(pagingInformation, user);
+            SearchSpecification specTeacher =
+                    new SearchSpecification(new SearchCriteria("teacherID.userID", "equal", userID));
+            classSessionPage = classSessionRepository.findAll(Specification.where(spec).and(specTeacher),pagingInformation);
 
             totalRowCount = classSessionPage.getTotalElements();
             classSessionList = classSessionPage.getContent();
@@ -195,7 +216,7 @@ public class ClassSessionService {
                     .selectFrom(classSession)
                     .innerJoin(classSession.userList, student)
                     .where(
-                            student.userID.eq(user.getUserID())
+                            student.userID.eq(user.getUserID()).and(classSession.courseID.courseName.like("%"+searchParam+"%"))
                     )
                     .orderBy(classSession.status.asc())
                     .limit(pageSize)
@@ -217,6 +238,12 @@ public class ClassSessionService {
         }
         classSession.setStatus(Constant.STATUS_INACTIVE_CLASS);
         save(classSession);
+    }
+
+    public ClassSession getClassSessionByTeacherAndSlot(int teacherId, int slotId) {
+        User user = userService.getById(teacherId);
+        Slot slot = slotService.getById(slotId);
+        return classSessionRepository.findByTeacherIDAndSlot(user,slot);
     }
 
 

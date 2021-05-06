@@ -14,25 +14,10 @@ import { DialogControl } from '../../common/component/ModalDialog';
 import { UserAPI } from '../../common/service/UserAPI';
 import { LoggedInUser } from '../../model/LoggedInUser';
 import { Location, History } from "history";
-import { Route, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { LocationState } from '../../common/component/ProtectedRoute';
 import { Role } from '../../model/Role';
-import { StudentDashboardPage } from '../student/StudentDashboardPage';
 import { LocalStorageService } from '../../common/service/LocalStorageService';
-
-class LoginSucceededLocation implements Location<unknown> {
-    public pathname: string;
-    public search: string;
-    public state: unknown;
-    public hash: string;
-    public key?: string | undefined;
-
-    public constructor (){
-        this.pathname = "";
-        this.search = "";
-        this.hash = "";
-    }
-}
 
 interface LogInPageProps {
     dialogController: DialogControl;
@@ -52,7 +37,6 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let currentLocation: Location<unknown>;
     let locationState: LocationState | undefined;
     let previousLocation: Location<unknown> | undefined;
-    let loginSucceededLocation: LoginSucceededLocation | undefined;
     let history: History<unknown>;
     let roleHolder: Role[] | undefined;
     let role: Role | undefined;
@@ -94,7 +78,6 @@ export function LogInPage (props: LogInPageProps): ReactElement {
             } 
             else {
                 roleHolder = loggedInUser.roleHolder;
-                loginSucceededLocation = new LoginSucceededLocation ();
                 if (roleHolder.length === 1){
                     role = roleHolder[0];
                     roleName = role.roleName;
@@ -103,26 +86,23 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             throw new Error ("Unknown role name !");
 
                         case "ROLE_ADMIN":
-                            loginSucceededLocation.pathname = "/admin-console";
+                            history.replace ("/admin-console");
                             break;
 
                         case "ROLE_TEACHER":
-                            loginSucceededLocation.pathname
-                                = "/teacher-dashboard";
+                            history.replace ("/teacher-dashboard");
                             break;
 
                         case "ROLE_STUDENT":
-                            loginSucceededLocation.pathname
-                                = "/student-dashboard";
+                            history.replace ("/student-dashboard");
                             localStorageService.setLoggedUserName(loggedInUser);
                             // localStorage.setItem('account', JSON.stringify(loggedInUser));
                             break;
                     }
                 }
                 else {
-                    loginSucceededLocation.pathname = "/select-role-page";
+                    history.replace ("/select-role-page");
                 }
-                history.replace (loginSucceededLocation);
             }
             return Promise.resolve<undefined> (undefined);
         }

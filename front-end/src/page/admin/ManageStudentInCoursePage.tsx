@@ -326,7 +326,7 @@ export function ManageStudentInCoursePage (
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Table responsive = "lg" hover = {true}>
+                        <Table responsive = "xl" hover = {true}>
                             <thead>
                                 <tr>
                                     <th>

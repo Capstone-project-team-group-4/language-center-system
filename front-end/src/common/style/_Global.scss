@@ -18,3 +18,28 @@
 #SideBar {
     z-index: 3;
 }
+
+.table-custom {
+    .ant-table  {
+      padding: 8px;
+      border-radius: 8px;
+    
+      .ant-table-content {
+        thead tr th{
+          background: rgba(240, 77, 86, 0.08);
+          font-weight: bold;
+        }
+  
+        tbody tr td {
+          color: #000000;
+        }
+      }
+  
+      .column-bold {
+        font-weight: bold;
+      }
+    }
+    .ant-empty-description {
+        text-align: center;
+    }
+  }

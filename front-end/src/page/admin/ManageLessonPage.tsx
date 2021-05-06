@@ -11,6 +11,7 @@ import {Link, useParams} from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { TypeGuard } from "../../common/service/TypeGuard";
+import ReactPlayer from "react-player";
 
 function renderLessonTable (
     lesson: Lesson
@@ -244,6 +245,9 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
             case "durationField":
                 updatedLesson.duration = Number(htmlElement.value);
                 break;
+            case "contentURI":
+                updatedLesson.contentURI = htmlElement.value;
+                break;
         }
         setLesson(updatedLesson);
     }
@@ -449,6 +453,29 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 format: no special character !
                             </Form.Text>
                         </Form.Group>
+                        <Form.Group controlId="contentURI">
+                            <Form.Label>
+                                URI:
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="contentURI"
+                                placeholder="URI for the lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.contentURI}
+                                onChange={
+                                    (event) => {
+                                        handleChange(event);
+                                    }
+                                }
+                            />
+                            <Form.Text className="text-muted">
+                                format: no special character !
+                            </Form.Text>
+                        </Form.Group>
 
                         <Form.Group controlId="DescriptionTextarea">
                             <Form.Label>
@@ -621,6 +648,26 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                             </Form.Group>
 
                         </Form.Row>
+                        <Form.Row>
+
+                            <Form.Group as={Row} controlId="DurationInfo">
+                                <Form.Label
+                                    column={true}
+                                    md={6}
+                                >
+                                    + Content:
+                                </Form.Label>
+                                <Col
+                                    sm={8}
+                                >
+                                    <ReactPlayer
+                                        controls
+                                        url={lesson.contentURI}
+                                    />
+                                </Col>
+                            </Form.Group>
+
+                        </Form.Row>
 
                         <Form.Row>
 
@@ -738,6 +785,30 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
                                 required={true}
                                 spellCheck={false}
                                 value={lesson.type}
+                                onChange={
+                                    (event) => {
+                                        handleChange(event);
+                                    }
+                                }
+                            />
+                            <Form.Text className="text-muted">
+                                format: no special character !
+                            </Form.Text>
+                        </Form.Group>
+
+                        <Form.Group controlId="contentURI">
+                            <Form.Label>
+                                URI:
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                autoComplete="on"
+                                autoFocus={true}
+                                name="contentURI"
+                                placeholder="URI for the lesson ?"
+                                required={true}
+                                spellCheck={false}
+                                value={lesson.contentURI}
                                 onChange={
                                     (event) => {
                                         handleChange(event);

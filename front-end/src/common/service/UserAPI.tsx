@@ -67,11 +67,12 @@ export class UserAPI {
 
     public async getAllUserExcludingCurrentLoggedInUser (
             pageIndex: number
-            , pageSize: number
+            , pageSize: number, searchParam: string
     ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        this.requestParameterHolder.set ("searchParam", searchParam.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/users:excluding-logged-in-user"

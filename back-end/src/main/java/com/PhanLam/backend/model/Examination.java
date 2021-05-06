@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -136,6 +137,8 @@ public class Examination implements Serializable {
     private List<ExaminationAttempt> examinationAttemptList;
 
     public Examination (){
+        studentScoreList = new ArrayList<> ();
+        examinationAttemptList = new ArrayList<> ();
     }
 
     public Examination (Integer examID){

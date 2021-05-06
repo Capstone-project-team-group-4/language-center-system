@@ -8,7 +8,7 @@ public class ClassSessionRequest {
     @NotNull
     private Integer courseID;
     @NotNull
-        private Integer spareTimeRegisterID;
+    private Integer spareTimeRegisterID;
 
     public Integer getSlotID() {
         return slotID;

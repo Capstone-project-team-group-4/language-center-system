@@ -58,24 +58,26 @@ public class UserController {
             Principal principal
             , @RequestParam int pageIndex
             , @RequestParam int pageSize
+            , @RequestParam String searchParam
     ){
         DataPage<User> userDataPage;
-        
+
         userDataPage = userService.getAllUserWithUserNameIsNot (
                 principal
                 , pageIndex
                 , pageSize
+                , searchParam
         );
         return userDataPage;
     }
-    
+
     @GetMapping ("/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudents (
             @RequestParam int pageIndex
             , @RequestParam int pageSize){
         DataPage<User> studentDataPage;
-        
+
         studentDataPage = userService.getAllStudents(pageIndex, pageSize);
         return studentDataPage;
     }
@@ -96,7 +98,7 @@ public class UserController {
         );
         return studentDataPage;
     }
-    
+
     @GetMapping ("/courses/{courseID}/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentAreInTheCourse (
@@ -181,7 +183,7 @@ public class UserController {
         }
         return teacherUserList;
     }
-    
+
     @GetMapping("/getUsers/{userID}")
     public User showAllUserByID(
             @RequestBody User user
@@ -190,14 +192,14 @@ public class UserController {
         User showUser = userService.showInfo(user, userID);
         return showUser;
     }
-    
+
     @GetMapping("/getProfile")
     @ResponseStatus(HttpStatus.OK)
     public User getProfile(@RequestParam(value = "userName") String userName) {
         User user = userService.getProfileByUserName(userName);
         return user;
     }
-    
+
     @PutMapping("/updateMyProfile")
     @ResponseStatus(HttpStatus.OK)
     public User updateProfile(@RequestBody User user, @RequestParam(value = "userName") String userName) {

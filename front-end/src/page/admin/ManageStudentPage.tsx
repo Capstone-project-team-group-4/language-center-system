@@ -182,7 +182,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                                 </button>
                                             </Link>
                                         &nbsp;
-                                            <Link to="/editStudentInfo/studentID">
+                                            <Link to={`/admin-console/editStudentInfo/${item["userID"]}`}>
                                                 <button type="button"
                                                     className="btn btn-success" id="btn_edit">
                                                     <span className=

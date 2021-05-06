@@ -139,6 +139,7 @@ public class Course implements Serializable {
     public Course (){
         lessonList = new ArrayList<> ();
         examinationList = new ArrayList<> ();
+        classSessionList = new ArrayList<> ();
     }
 
     public Course (Integer courseID){

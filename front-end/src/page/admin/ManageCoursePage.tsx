@@ -889,7 +889,7 @@ export function ManageCoursePage(props: ManageCoursePageProps): ReactElement {
                       <th>Course Name</th>
                       <th>Course Type</th>
                       <th>Course Level</th>
-                      <th>Tuition Fee</th>
+                      <th>Tuition Fee (VND)</th>
                       <th>Actions</th>
                     </tr>
                   </thead>

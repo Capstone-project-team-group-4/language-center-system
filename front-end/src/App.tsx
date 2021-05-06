@@ -208,18 +208,13 @@ export function App(): ReactElement {
         />
       </ProtectedRoute>
 
-      <Route exact path="/editStudentInfo/studentID">
+      {/* <Route exact path="/editStudentInfo/studentID">
         <EditStudentInfo />
-      </Route>
+      </Route> */}
 
       <Route path="/admin-console/view-student-detail">
         <ViewProfilePage />
       </Route>
-
-      {/* <Route path = "/admin-console/manage-teacher-page">
-        <PageHeader logOut = {logOut}/>
-        <ManageTeacherPage />
-      </Route> */}
 
       <ProtectedRoute
         path = "/admin-console/manage-teacher-page"
@@ -402,6 +397,17 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <AdminClassPage />
       </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path = "/admin-console/manage-lesson-page"
+        securityContext = {adminPageSecurity}
+        dialogController = {dialogController} 
+      >
+        <ManageLessonPage
+          dialogController = {dialogController}
+          modalDialog = {modalDialog} 
+        />
+      </ProtectedRoute>
 
       <ProtectedRoute
         path="/admin-console"
@@ -481,18 +487,6 @@ export function App(): ReactElement {
       </ProtectedRoute>
       
       <ProtectedRoute 
-        path = "/show-exam-score-page"
-        securityContext = {studentPageSecurity}
-        dialogController = {dialogController}
-      >
-        <ShowExamScorePage 
-          dialogController = {dialogController}
-          modalDialog = {modalDialog}
-          typeGuardian = {typeGuardian}
-        />
-      </ProtectedRoute>
-
-      <ProtectedRoute 
         path = "/student-dashboard/show-all-exam-page"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -505,18 +499,42 @@ export function App(): ReactElement {
         />
       </ProtectedRoute>
 
-      <Route path="/student-dashboard">
+      <ProtectedRoute 
+        path="/student-dashboard"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <StudentDashboardPage modalDialog={modalDialog} />
-      </Route>
-      <Route path="/student-dashboard-course/:courseID">
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path="/student-dashboards/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
-        <CourseDetailPage modalDialog={modalDialog} />
-      </Route>
-      <Route path="/student-dashboard-lesson/:courseName/:lessonID">
+        <LessonListPage modalDialog={modalDialog} />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path="/student-dashboardz/:courseName/:lessonID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
-      </Route>
+      </ProtectedRoute>
+      
+      <ProtectedRoute 
+        path="/student-dashboardx/profile/:userID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <ProfilePage modalDialog={modalDialog}/>
+      </ProtectedRoute>
+
       {/* <Route path="/student">
         <PageHeader logOut={logOut} />
         <InfoPage modalDialog={modalDialog} />
@@ -525,6 +543,39 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <StudentClassPage />
       </Route>
+
+      <ProtectedRoute 
+        path="/course-detail/:courseID"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <PageHeader logOut={logOut} />
+        <CourseDetailPage modalDialog={modalDialog}/>
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/take-exam-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <TakeExamPage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
+
+      <ProtectedRoute 
+        path = "/show-exam-score-page"
+        securityContext = {studentPageSecurity}
+        dialogController = {dialogController}
+      >
+        <ShowExamScorePage 
+          dialogController = {dialogController}
+          modalDialog = {modalDialog}
+          typeGuardian = {typeGuardian}
+        />
+      </ProtectedRoute>
     </Switch>
   );
 }

@@ -42,7 +42,7 @@ export function TeacherDashboardPage(
     chartAPI.getDataChart().then((res) => {
       const newValue = res.map((e: any, index: number) => {
         return {
-          valueX: e.valueX.toString(),
+          valueX: "Exam " + e.valueX.toString(),
           valueY: e.valueY,
         };
       });

@@ -7,7 +7,7 @@ import { Breadcrumb, Button, Col, Container, Form, Modal, Row, Table }
     from "react-bootstrap";
 import { Lesson } from '../../model/Lesson';
 import { LessonAPI } from '../../common/service/LessonAPI';
-import { Link } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { DataPage } from "../../App";
 import { DialogControl } from "../../common/component/ModalDialog";
 import { TypeGuard } from "../../common/service/TypeGuard";
@@ -83,7 +83,9 @@ function renderLessonTable (
         </tr>
     );
 }
-
+interface ManageLessonInCoursePageUrlParameter {
+    courseID: string;
+}
 interface ManageLessonPageProps {
     dialogController: DialogControl;
     modalDialog: ReactElement;
@@ -107,6 +109,7 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
     let [lessonHolder, setLessonHolder] = useState<Lesson[]>([]);
     let [showViewDetailDialog, setShowViewDetailDialog]
         = useState<boolean>(false);
+    let courseID = useParams<ManageLessonInCoursePageUrlParameter> ().courseID;
     let button: HTMLButtonElement | undefined;
     let lessonID: number | undefined;
     let lessonSample: Lesson | undefined;
@@ -321,9 +324,11 @@ export function ManageLessonPage (props: ManageLessonPageProps): ReactElement {
 
     async function loadLessonTable (): Promise<void> {
         try {
-            lessonDataPage = await lessonAPI.getAllLesson(
+            console.log(courseID,'courseId')
+            lessonDataPage = await lessonAPI. getAllLesson(
                 pageIndex
                 , pageSize
+                , Number (courseID)
             );
             setTotalPageCount(lessonDataPage.totalRowCount);
             setLessonHolder(lessonDataPage.pageDataHolder);

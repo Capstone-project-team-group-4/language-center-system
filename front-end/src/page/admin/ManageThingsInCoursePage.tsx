@@ -185,7 +185,7 @@ function renderCourseTable (
                 {course.courseLevel.levelName}
             </td>
             <td>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
@@ -195,7 +195,7 @@ function renderCourseTable (
                 >
                     Manage Student
                 </Button>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
@@ -205,14 +205,16 @@ function renderCourseTable (
                 >
                     Manage Examination
                 </Button>
-                <Button 
+                <Button
                     variant = "outline-primary"
                     as = {Link}
                     to = {
-                        "/admin-console/manage-lesson-page"
+                        "/admin-console/manage-lesson-page/" +
+                        `${course.courseID}`
+
                     }
                 >
-                    Manage Lesson
+                    Manage Lessons
                 </Button>
             </td>
         </tr>

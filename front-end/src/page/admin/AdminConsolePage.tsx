@@ -197,8 +197,8 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                       <Button
                         variant="success"
                         block={true}
-                        as={Link}
-                        to={"/admin" + "/spare-time-management"}
+                        // as={Link}
+                        // to={"/admin" + "/spare-time-management"}
                       >
                         List Spare Time
                       </Button>
@@ -215,8 +215,8 @@ export function AdminConsolePage(props: AdminConsolePageProps): ReactElement {
                       <Button
                         variant="success"
                         block={true}
-                        as={Link}
-                        to={"/admin-console" + "/class-page"}
+                        // as={Link}
+                        // to={"/admin-console" + "/class-page"}
                       >
                         Class
                       </Button>

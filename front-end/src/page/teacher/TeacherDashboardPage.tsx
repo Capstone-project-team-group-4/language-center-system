@@ -67,8 +67,8 @@ export function TeacherDashboardPage(
                       <Button
                         variant="success"
                         block={true}
-                        as={Link}
-                        to={"/teacher" + "/spare-time-management"}
+                        // as={Link}
+                        // to={"/teacher" + "/spare-time-management"}
                       >
                         Spare Time
                       </Button>
@@ -84,8 +84,8 @@ export function TeacherDashboardPage(
                       <Button
                         variant="success"
                         block={true}
-                        as={Link}
-                        to={"/teacher" + "/class-page"}
+                        // as={Link}
+                        // to={"/teacher" + "/class-page"}
                       >
                         Class
                       </Button>

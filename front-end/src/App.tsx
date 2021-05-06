@@ -45,19 +45,19 @@ import { ViewProfilePage } from './page/ViewProfilePage';
 import { DetailPage } from './page/DetailPage';
 import { LessonDetailPage } from './page/student/LessonDetailPage';
 import { ManageExamQuestionPage } from './page/teacher/ManageExamQuestionPage';
-import { 
-  ManageThingsInCoursePage 
+import {
+  ManageThingsInCoursePage
 } from './page/admin/ManageThingsInCoursePage';
-import { 
-  ManageExaminationInCoursePage 
+import {
+  ManageExaminationInCoursePage
 } from './page/admin/ManageExaminationInCoursePage';
 import { ManageLessonPage } from './page/admin/ManageLessonPage';
 import { TypeConvert } from './common/service/TypeConvert';
-import { 
-  ManageThingsInExaminationPage 
+import {
+  ManageThingsInExaminationPage
 } from './page/admin/ManageThingsInExaminationPage';
-import { 
-  ManageExamQuestionInExaminationPage 
+import {
+  ManageExamQuestionInExaminationPage
 } from './page/admin/ManageExamQuestionInExaminationPage';
 import { LessonListPage } from './page/student/LessonListlPage';
 import { CourseDetailPage } from './page/student/CourseDetailPage';
@@ -94,7 +94,7 @@ export function App(): ReactElement {
   let acceptableRoleNameHolder: string[] | undefined;
   let adminPageSecurity: SecurityContext | undefined;
   let selectRolePageSecurity: SecurityContext | undefined;
-  let teacherPageSecurity: SecurityContext | undefined;  
+  let teacherPageSecurity: SecurityContext | undefined;
   let studentPageSecurity: SecurityContext | undefined;
   let history: History<unknown>;
   let [dialogIsConfirmed, setDialogIsConfirmed] = useState<boolean>(false);
@@ -397,15 +397,15 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <AdminClassPage />
       </ProtectedRoute>
-      
-      <ProtectedRoute 
-        path = "/admin-console/manage-lesson-page"
+
+      <ProtectedRoute
+        path = "/admin-console/manage-lesson-page/:courseID"
         securityContext = {adminPageSecurity}
-        dialogController = {dialogController} 
+        dialogController = {dialogController}
       >
         <ManageLessonPage
           dialogController = {dialogController}
-          modalDialog = {modalDialog} 
+          modalDialog = {modalDialog}
         />
       </ProtectedRoute>
 
@@ -485,21 +485,21 @@ export function App(): ReactElement {
           typeGuardian={typeGuardian}
         />
       </ProtectedRoute>
-      
-      <ProtectedRoute 
+
+      <ProtectedRoute
         path = "/student-dashboard/show-all-exam-page"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
       >
         <PageHeader logOut = {logOut} />
-        <ShowAllExamPage 
+        <ShowAllExamPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
           typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path="/student-dashboard"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -508,7 +508,7 @@ export function App(): ReactElement {
         <StudentDashboardPage modalDialog={modalDialog} />
       </ProtectedRoute>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path="/student-dashboards/:courseID"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -517,7 +517,7 @@ export function App(): ReactElement {
         <LessonListPage modalDialog={modalDialog} />
       </ProtectedRoute>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path="/student-dashboardz/:courseName/:lessonID"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -525,8 +525,8 @@ export function App(): ReactElement {
         <PageHeader logOut={logOut} />
         <LessonDetailPage modalDialog={modalDialog} />
       </ProtectedRoute>
-      
-      <ProtectedRoute 
+
+      <ProtectedRoute
         path="/student-dashboardx/profile/:userID"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -544,7 +544,7 @@ export function App(): ReactElement {
         <StudentClassPage />
       </Route>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path="/course-detail/:courseID"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
@@ -553,24 +553,24 @@ export function App(): ReactElement {
         <CourseDetailPage modalDialog={modalDialog}/>
       </ProtectedRoute>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path = "/take-exam-page"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
       >
-        <TakeExamPage 
+        <TakeExamPage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
           typeGuardian = {typeGuardian}
         />
       </ProtectedRoute>
 
-      <ProtectedRoute 
+      <ProtectedRoute
         path = "/show-exam-score-page"
         securityContext = {studentPageSecurity}
         dialogController = {dialogController}
       >
-        <ShowExamScorePage 
+        <ShowExamScorePage
           dialogController = {dialogController}
           modalDialog = {modalDialog}
           typeGuardian = {typeGuardian}

@@ -7,6 +7,7 @@ package com.PhanLam.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -80,6 +82,8 @@ public class Examination implements Serializable {
     @Column (name = "LastModified")
     @Temporal (TemporalType.TIMESTAMP)
     private Date lastModified;
+    @Transient
+    private int totalNumberOfQuiz;
     
     @JsonIgnore
     @JoinTable (name = "ExaminationQuestion", joinColumns = {
@@ -106,7 +110,13 @@ public class Examination implements Serializable {
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList;
     
-    @OneToMany (mappedBy = "examID", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "exam"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
     
     @JoinColumn (
@@ -116,8 +126,19 @@ public class Examination implements Serializable {
     )
     @ManyToOne (optional = false, fetch = FetchType.EAGER)
     private Course course;
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "examination"
+            , fetch = FetchType.LAZY
+    )
+    private List<ExaminationAttempt> examinationAttemptList;
 
     public Examination (){
+        studentScoreList = new ArrayList<> ();
+        examinationAttemptList = new ArrayList<> ();
     }
 
     public Examination (Integer examID){
@@ -195,6 +216,14 @@ public class Examination implements Serializable {
     public void setLastModified (Date lastModified){
         this.lastModified = lastModified;
     }
+
+    public int getTotalNumberOfQuiz (){
+        return totalNumberOfQuiz;
+    }
+
+    public void setTotalNumberOfQuiz (int totalNumberOfQuiz){
+        this.totalNumberOfQuiz = totalNumberOfQuiz;
+    }
     
     @XmlTransient
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList (){
@@ -222,6 +251,14 @@ public class Examination implements Serializable {
         this.course = course;
     }
 
+    public List<ExaminationAttempt> getExaminationAttemptList (){
+        return examinationAttemptList;
+    }
+
+    public void setExaminationAttemptList (List<ExaminationAttempt> examinationAttemptList){
+        this.examinationAttemptList = examinationAttemptList;
+    }
+    
     @Override
     public int hashCode (){
         int hash = 7;
@@ -235,6 +272,7 @@ public class Examination implements Serializable {
         hash = 19 * hash + Objects.hashCode (this.multipleChoiceQuestionList);
         hash = 19 * hash + Objects.hashCode (this.studentScoreList);
         hash = 19 * hash + Objects.hashCode (this.course);
+        hash = 19 * hash + Objects.hashCode (this.examinationAttemptList);
         return hash;
     }
 
@@ -280,6 +318,9 @@ public class Examination implements Serializable {
         if (!Objects.equals (this.course, other.course)){
             return false;
         }
+        if (!Objects.equals (this.examinationAttemptList, other.examinationAttemptList)){
+            return false;
+        }
         return true;
     }
 
@@ -296,6 +337,7 @@ public class Examination implements Serializable {
                 + ", multipleChoiceQuestionList=" + multipleChoiceQuestionList 
                 + ", studentScoreList=" + studentScoreList 
                 + ", course=" + course 
+                + ", course=" + examinationAttemptList
         + '}';
     }
 }

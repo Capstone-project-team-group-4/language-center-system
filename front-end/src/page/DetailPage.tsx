@@ -20,7 +20,7 @@ function renderUserTable (
     return (
         <table key={user.userID} className="table table-bordered">
             <tr>
-                <th>First Name</th>
+                <th>Name</th>
                 <td>{user.firstName + " " + user.middleName + " " + user.lastName}</td>
             </tr>
             <tr>
@@ -142,6 +142,18 @@ export function DetailPage (): ReactElement {
                                                         )
                                                     )} */}
                                                 </div>
+                                                &nbsp;
+                                                    <Link to={"/admin-console/manage-teacher-page"}>
+                                                    <button type="button" className="btn btn-outline-primary" style={{
+                                                        marginLeft: '900px'
+                                                    }}>
+                                                        <span className="fa fa-pencil mr-5 text-center" style={{
+                                                        marginLeft: '35px'
+                                                        }}>
+                                                            Close
+                                                            </span>
+                                                    </button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

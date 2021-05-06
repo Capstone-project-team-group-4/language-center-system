@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.PhanLam.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,18 +56,26 @@ public class HomeWork implements Serializable {
     @Column (name = "Deadline", nullable = false)
     @Temporal (TemporalType.TIMESTAMP)
     private Date deadline;
-    @OneToMany (mappedBy = "homeWorkID", fetch = FetchType.LAZY)
+    
+    @JsonIgnore
+    @OneToMany (
+            cascade = CascadeType.ALL
+            , orphanRemoval = true
+            , mappedBy = "homeWork"
+            , fetch = FetchType.LAZY
+    )
     private List<StudentScore> studentScoreList;
+    
     @OneToMany (mappedBy = "requirementID", fetch = FetchType.LAZY)
     private List<Document> documentList;
     @OneToMany (mappedBy = "solutionID", fetch = FetchType.LAZY)
     private List<Document> documentList1;
     @JoinColumn (name = "ClassID", referencedColumnName = "ClassID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
-    private ClassSession classID;
+    private ClassSession classSession;
     @JoinColumn (name = "LessonID", referencedColumnName = "LessonID", nullable = false)
     @ManyToOne (optional = false, fetch = FetchType.LAZY)
-    private Lesson lessonID;
+    private Lesson lesson;
 
     public HomeWork (){
     }
@@ -136,20 +141,20 @@ public class HomeWork implements Serializable {
         this.documentList1 = documentList1;
     }
 
-    public ClassSession getClassID (){
-        return classID;
+    public ClassSession getClassSession (){
+        return classSession;
     }
 
-    public void setClassID (ClassSession classID){
-        this.classID = classID;
+    public void setClassSession (ClassSession classSession){
+        this.classSession = classSession;
     }
 
-    public Lesson getLessonID (){
-        return lessonID;
+    public Lesson getLesson (){
+        return lesson;
     }
 
-    public void setLessonID (Lesson lessonID){
-        this.lessonID = lessonID;
+    public void setLesson (Lesson lesson){
+        this.lesson = lesson;
     }
 
     @Override
@@ -161,8 +166,8 @@ public class HomeWork implements Serializable {
         hash = 71 * hash + Objects.hashCode (this.studentScoreList);
         hash = 71 * hash + Objects.hashCode (this.documentList);
         hash = 71 * hash + Objects.hashCode (this.documentList1);
-        hash = 71 * hash + Objects.hashCode (this.classID);
-        hash = 71 * hash + Objects.hashCode (this.lessonID);
+        hash = 71 * hash + Objects.hashCode (this.classSession);
+        hash = 71 * hash + Objects.hashCode (this.lesson);
         return hash;
     }
 
@@ -196,10 +201,10 @@ public class HomeWork implements Serializable {
         if (!Objects.equals (this.documentList1, other.documentList1)){
             return false;
         }
-        if (!Objects.equals (this.classID, other.classID)){
+        if (!Objects.equals (this.classSession, other.classSession)){
             return false;
         }
-        if (!Objects.equals (this.lessonID, other.lessonID)){
+        if (!Objects.equals (this.lesson, other.lesson)){
             return false;
         }
         return true;
@@ -214,8 +219,8 @@ public class HomeWork implements Serializable {
                 + ", studentScoreList=" + studentScoreList 
                 + ", documentList=" + documentList 
                 + ", documentList1=" + documentList1 
-                + ", classID=" + classID 
-                + ", lessonID=" + lessonID 
+                + ", classID=" + classSession 
+                + ", lessonID=" + lesson 
         + '}';
     }
 }

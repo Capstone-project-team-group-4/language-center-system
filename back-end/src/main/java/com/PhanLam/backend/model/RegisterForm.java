@@ -19,7 +19,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -49,21 +52,45 @@ public class RegisterForm implements Serializable {
     @Basic (optional = false)
     @Column (name = "FormID", nullable = false)
     private Integer formID;
+    @Pattern (
+            regexp = "^[\\p{L}\\p{N} .'-]+$"
+            , message 
+                    = "The user name which is entered is invalid"
+                    + ", please enter an acceptable user name !!!"
+    )
     @Basic (optional = false)
     @NotNull
     @Size (min = 1, max = 400)
     @Column (name = "UserName", nullable = false, length = 400)
     private String userName;
+    @Pattern (
+            regexp = "^[\\p{L} .'-]+$"
+            , message 
+                    = "The middle name which is entered is invalid"
+                    + ", please enter an acceptable human name !!!"
+    )
     @Basic (optional = false)
     @NotNull
     @Size (min = 1, max = 1000)
     @Column (name = "MiddleName", nullable = false, length = 1000)
     private String middleName;
+    @Pattern (
+            regexp = "^[\\p{L} .'-]+$"
+            , message 
+                    = "The first name which is entered is invalid"
+                    + ", please enter an acceptable human name !!!"
+    )
     @Basic (optional = false)
     @NotNull
     @Size (min = 1, max = 1000)
     @Column (name = "FirstName", nullable = false, length = 1000)
     private String firstName;
+    @Pattern (
+            regexp = "^[\\p{L} .'-]+$"
+            , message 
+                    = "The last name which is entered is invalid"
+                    + ", please enter an acceptable human name !!!"
+    )
     @Basic (optional = false)
     @NotNull
     @Size (min = 1, max = 1000)
@@ -75,8 +102,13 @@ public class RegisterForm implements Serializable {
     @Column (name = "PhoneNumber", nullable = false, length = 100)
     private String phoneNumber;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Email (
+            message 
+                    = "The email address which is entered is invalid"
+                    + ", please enter an acceptable email address !!!"
+    )
     @Basic (optional = false)
-    @NotNull
+    @NotBlank (message = "The email address can not be blank !!!")
     @Size (min = 1, max = 1000)
     @Column (name = "Email", nullable = false, length = 1000)
     private String email;

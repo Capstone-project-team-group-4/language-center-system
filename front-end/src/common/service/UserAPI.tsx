@@ -18,7 +18,6 @@ export class UserAPI {
     private axiosError: AxiosError<unknown> | undefined;
     private errorHandler: ErrorHandle;
     private requestParameterHolder: URLSearchParams | undefined;
-    private userHolder: User[] | undefined;
     private userDataPage: DataPage<User> | undefined;
 
     public constructor (){
@@ -68,11 +67,12 @@ export class UserAPI {
 
     public async getAllUserExcludingCurrentLoggedInUser (
             pageIndex: number
-            , pageSize: number
+            , pageSize: number, searchParam: string
     ): Promise<DataPage<User>> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        this.requestParameterHolder.set ("searchParam", searchParam.toString ());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/users:excluding-logged-in-user"
@@ -169,12 +169,10 @@ export class UserAPI {
         }
     }
 
-    public async disableAnotherUser (
-        userID: number
-    ): Promise<void> {
+    public async disableAnotherUser (userID: number): Promise<void> {
         try {
             await this.axiosInstance.patch<undefined> (
-                `/users/${userID}:disable`
+                    `/users/${userID}:disable`
             );
             return Promise.resolve<undefined> (undefined);
         }
@@ -190,9 +188,7 @@ export class UserAPI {
         }
     }
 
-    public async enableUser (
-            userID: number
-    ): Promise<void> {
+    public async enableUser (userID: number): Promise<void> {
         try {
             await this.axiosInstance.patch<undefined> (
                     `/users/${userID}:enable`
@@ -331,8 +327,8 @@ export class UserAPI {
         this.axiosInstanceGetter = new AxiosInstanceGet ();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
         try {
-            this.serverResponse = await this.axiosInstance.get(
-                `/getStudent/${userID}`
+            this.serverResponse = await this.axiosInstance.get (
+                    `/getStudent/${userID}`
             );
             this.typeGuardian = new TypeGuard ();
             if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
@@ -370,6 +366,48 @@ export class UserAPI {
     }
 
     public async viewStudent (userID: number): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/users`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async viewTeacher (): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getTeacher`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async viewUser (): Promise<AxiosResponse> {
         this.axiosInstanceGetter = new AxiosInstanceGet();
         this.axiosInstance = this.axiosInstanceGetter.getNewInstance();
         try {
@@ -435,5 +473,47 @@ export class UserAPI {
         }
     }
 
+    public async displayProfile (userName: any): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet ();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+        try {
+            this.serverResponse = await this.axiosInstance.get(
+                `/getProfile?userName=${userName}`
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
+
+    public async updateProfile (user: User, userName: any): Promise<AxiosResponse> {
+        this.axiosInstanceGetter = new AxiosInstanceGet ();
+        this.axiosInstance = this.axiosInstanceGetter.getNewInstance ();
+        try {
+            this.serverResponse = await this.axiosInstance.put (
+                    `/updateMyProfile?userName=${userName}`
+                    , user
+            );
+            this.typeGuardian = new TypeGuard ();
+            if (this.typeGuardian.isAxiosResponse (this.serverResponse)){
+                return this.serverResponse;
+            }
+            else {
+                throw new Error ("This server response is not valid !");
+            }
+        }
+        catch (error){
+            console.error (error.toJSON ());
+            return Promise.reject<AxiosResponse> (error);
+        }
+    }
 
 }

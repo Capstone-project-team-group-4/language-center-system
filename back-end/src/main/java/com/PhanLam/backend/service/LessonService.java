@@ -69,7 +69,7 @@ public class LessonService {
         Date dateCreated;
 
         //hard code
-        nullableCourse = courseRepository.findById(16);
+        nullableCourse = courseRepository.findById(24);
         if (nullableCourse.isPresent() == false) {
             throw new NotFoundException("Course");
         } else {
@@ -143,10 +143,7 @@ public class LessonService {
             lesson.setType (updatedLesson.getType ());
             lesson.setDuration (updatedLesson.getDuration ());
             lesson.setDescription (updatedLesson.getDescription ());
-            //lay file chua lam duoc
-            //
-            //
-            //
+            lesson.setContentURI(updatedLesson.getContentURI());
             lastModified = new Date ();
             lesson.setLastModified (lastModified);
         }

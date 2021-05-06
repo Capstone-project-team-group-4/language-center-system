@@ -108,20 +108,14 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
     }
 
     return (
-        <Container 
-            fluid = {true} 
-            className = "h-100"
-        >   
+        <Container fluid = {true} className = "h-100">   
             {props.modalDialog}
             <header>
             </header>
             <nav>
             </nav>
             <main className = "h-100">
-                <Container 
-                    fluid = {true} 
-                    className = "h-100"
-                >
+                <Container fluid = {true} className = "h-100">
                     <Row className = "h-100 justify-content-md-center">
                         <Form
                             id = "SignUpForm"
@@ -162,7 +156,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         }
                                     />
                                     <Form.Text muted = {true}>
-                                        format: characters only !  
+                                        format: letters only !  
                                     </Form.Text>
                                 </Form.Group>
 
@@ -191,7 +185,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         }
                                     />
                                     <Form.Text muted = {true}>
-                                        format: characters only !  
+                                        format: letters only !  
                                     </Form.Text>
                                 </Form.Group>
 
@@ -220,7 +214,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                         }
                                     />
                                     <Form.Text muted = {true}>
-                                        format: characters only !  
+                                        format: letters only !  
                                     </Form.Text>
                                 </Form.Group>
                             </Form.Row>
@@ -287,7 +281,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     autoComplete = "on"
                                     autoFocus = {false}
                                     name = "userNameField"
-                                    pattern = "^[\p{L} .'-]+$"
+                                    pattern = "^[\p{L}\p{N} .'-]+$"
                                     placeholder = "Your new user name"
                                     required = {true}
                                     spellCheck = {false}
@@ -299,7 +293,7 @@ export function SignUpPage (props: SignUpPageProps): ReactElement {
                                     }
                                 />
                                 <Form.Text muted = {true}>
-                                    format: characters only !  
+                                    format: letters and numbers only !  
                                 </Form.Text>
                             </Form.Group>
 

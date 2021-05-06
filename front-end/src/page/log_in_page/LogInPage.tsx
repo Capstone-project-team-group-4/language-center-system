@@ -17,20 +17,7 @@ import { Location, History } from "history";
 import { useHistory, useLocation } from 'react-router-dom';
 import { LocationState } from '../../common/component/ProtectedRoute';
 import { Role } from '../../model/Role';
-
-class LoginSucceededLocation implements Location<unknown> {
-    public pathname: string;
-    public search: string;
-    public state: unknown;
-    public hash: string;
-    public key?: string | undefined;
-
-    public constructor (){
-        this.pathname = "";
-        this.search = "";
-        this.hash = "";
-    }
-}
+import { LocalStorageService } from '../../common/service/LocalStorageService';
 
 interface LogInPageProps {
     dialogController: DialogControl;
@@ -50,12 +37,12 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     let currentLocation: Location<unknown>;
     let locationState: LocationState | undefined;
     let previousLocation: Location<unknown> | undefined;
-    let loginSucceededLocation: LoginSucceededLocation | undefined;
     let history: History<unknown>;
     let roleHolder: Role[] | undefined;
     let role: Role | undefined;
     let roleName: string | undefined;
     let loggedInUser: LoggedInUser | undefined;
+    let localStorageService = new LocalStorageService();
 
     let [userAPI] = useState<UserAPI> (new UserAPI ());
     currentLocation = useLocation ();
@@ -91,7 +78,6 @@ export function LogInPage (props: LogInPageProps): ReactElement {
             } 
             else {
                 roleHolder = loggedInUser.roleHolder;
-                loginSucceededLocation = new LoginSucceededLocation ();
                 if (roleHolder.length === 1){
                     role = roleHolder[0];
                     roleName = role.roleName;
@@ -100,26 +86,23 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                             throw new Error ("Unknown role name !");
 
                         case "ROLE_ADMIN":
-                            loginSucceededLocation.pathname = "/admin-console";
+                            history.replace ("/admin-console");
                             break;
 
                         case "ROLE_TEACHER":
-                            loginSucceededLocation.pathname
-                                = "/teacher-dashboard";
+                            history.replace ("/teacher-dashboard");
                             break;
 
                         case "ROLE_STUDENT":
-                            // <Route path="/student-dashboard" render={(props) => <StudentDashboardPage LoginUser="Hello, " {...props} />} />
-                            loginSucceededLocation.pathname
-                                = "/student-dashboard";
-                            localStorage.setItem('account', JSON.stringify(loggedInUser));
+                            history.replace ("/student-dashboard");
+                            localStorageService.setLoggedUserName(loggedInUser);
+                            // localStorage.setItem('account', JSON.stringify(loggedInUser));
                             break;
                     }
                 }
                 else {
-                    loginSucceededLocation.pathname = "/select-role-page";
+                    history.replace ("/select-role-page");
                 }
-                history.replace (loginSucceededLocation);
             }
             return Promise.resolve<undefined> (undefined);
         }
@@ -143,28 +126,25 @@ export function LogInPage (props: LogInPageProps): ReactElement {
     }
     
     return (
-        <Container 
-            fluid = {true} 
-            className = "vh-100"
-        >   
+        <Container fluid = {true} className = "vh-100">   
             {props.modalDialog}
             <header>
             </header>
             <nav>
             </nav>
             <main className = "h-100">
-                <Container 
-                    fluid = {true} 
-                    className = "h-100"
-                >
-                    <Row className = {
-                        `h-100 
-                        justify-content-center 
-                        align-items-center`
-                    }>
+                <Container fluid = {true} className = "h-100">
+                    <Row 
+                        className = {
+                            `h-100 
+                            justify-content-md-center 
+                            align-items-center`
+                        }
+                    >
                         <Form
-                            id = "LogInForm"
-                            className = "bg-white p-5 h-auto"
+                            id="LogInForm"
+                            className="bg-white p-5 h-auto"
+                            style = {{borderRadius:10 + 'px'}}
                             onSubmit = {
                                 (event) => {
                                     logIn (event).catch (
@@ -218,14 +198,21 @@ export function LogInPage (props: LogInPageProps): ReactElement {
                                     }
                                 />
                             </Form.Group>
-
-                            <Button 
-                                variant = "success"
-                                type = "submit"
-                                block = {true}
+                            <Button
+                                variant="success"
+                                type="submit"
+                                block={true}
                             >
                                 Log in
                             </Button>
+                            <div>
+                                <a 
+                                    href="/sign-up-page"
+                                    style={{fontSize:11 + 'px'}}
+                                >
+                                    Don't have an account?
+                                </a>
+                            </div>
                         </Form>
                     </Row>
                 </Container>

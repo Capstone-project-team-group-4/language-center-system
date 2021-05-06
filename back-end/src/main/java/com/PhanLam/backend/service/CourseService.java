@@ -1,11 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * CourseService.java
+ *
+ * All Rights Reserved
+ * Copyright (c) 2021 FPT University
  */
 package com.PhanLam.backend.service;
 
 // Import package members section:
+
 import com.PhanLam.backend.controller.exception.AlreadyExistException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
@@ -13,6 +15,8 @@ import com.PhanLam.backend.dal.repository_interface.CourseRepository;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.Constant;
+import com.PhanLam.backend.service.common.SearchCriteria;
+import com.PhanLam.backend.service.common.SearchSpecification;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Lazy;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.TypedSort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,37 +33,73 @@ import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
+ * CourseService class <br>
  *
+ * <pre>
+ * Service class for managing Course objects
+ * </pre>
+ *
+ * @author roboc
  * @author Phan Lam
+ * @version 1.0
  */
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class CourseService {
 
-    // Variables declaration:
+    /**
+     * Variables declaration:
+     * - userRepository
+     * - courseRepository
+     */
     private CourseRepository courseRepository;
     private UserRepository userRepository;
     private CourseTypeService courseTypeService;
     private JPAQueryFactory queryFactory;
     private ClassSessionService classSessionService;
+    private SpareTimeRegisterService spareTimeRegisterService;
 
+
+    /**
+     * Constructor<br>
+     *
+     * <pre>
+     * This constructs a CourseService with a specified
+     * userRepository and courseRepository
+     * </pre>
+     *
+     * @param courseRepository
+     * @param userRepository
+     */
     public CourseService (
             CourseRepository courseRepository
             , UserRepository userRepository
             , CourseTypeService courseTypeService
             , EntityManager entityManager
             , @Lazy ClassSessionService classSessionService
+            , @Lazy SpareTimeRegisterService spareTimeRegisterService
     ){
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.courseTypeService = courseTypeService;
         this.classSessionService = classSessionService;
+        this.spareTimeRegisterService = spareTimeRegisterService;
         queryFactory = new JPAQueryFactory (entityManager);
     }
 
+    /**
+     * createCourse<br>
+     *
+     * <pre>
+     * Method will create a Course
+     * </pre>
+     *
+     * @param course
+     */
     public void createCourse (Course course){
         String courseName;
         boolean courseAlreadyExist;
@@ -76,10 +117,23 @@ public class CourseService {
         }
     }
 
+    /**
+     * getAllCourse<br>
+     *
+     * <pre>
+     * Method will get all courses
+     * </pre>
+     *
+     * @param pageIndex
+     * @param pageSize
+     * @return courseDatapage
+     * @throws InvalidRequestArgumentException
+     */
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourse (
             int pageIndex
             , int pageSize
+            , String searchParam
     ){
         List<Course> courseHolder;
         PageRequest pagingInformation;
@@ -99,7 +153,11 @@ public class CourseService {
                     , pageSize
                     , sortInformation
             );
-            coursePage = courseRepository.findAll (pagingInformation);
+
+            //for seaching
+            SearchSpecification spec =
+                    new SearchSpecification(new SearchCriteria("courseName", "like", searchParam));
+            coursePage = courseRepository.findAll (Specification.where(spec),pagingInformation);
             totalRowCount = coursePage.getTotalElements ();
             courseHolder = coursePage.getContent ();
             courseDataPage = new DataPage<> (totalRowCount, courseHolder);
@@ -114,6 +172,16 @@ public class CourseService {
         }
     }
 
+    /**
+     * updateCourse<br>
+     *
+     * <pre>
+     * Method will update information of course
+     * </pre>
+     *
+     * @param courseID
+     * @param updatedCourse
+     */
     public void updateCourse (int courseID, Course updatedCourse){
         boolean courseExists;
         Date lastModified;
@@ -129,6 +197,15 @@ public class CourseService {
         }
     }
 
+    /**
+     * deleteCourseByID<br>
+     *
+     * <pre>
+     * Method will delete a course by courseID
+     * </pre>
+     *
+     * @param courseID
+     */
     public void deleteCourseByID (int courseID){
         Optional <Course> nullableCourse;
         Course course;
@@ -143,6 +220,17 @@ public class CourseService {
         }
     }
 
+    /**
+     * addStudentToCourse<br>
+     *
+     * <pre>
+     * Method will add student to one or many courses
+     * </pre>
+     *
+     * @param userID
+     * @param courseID
+     * @throws InvalidRequestArgumentException
+     */
     public void addStudentToCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -206,12 +294,14 @@ public class CourseService {
                     }
                     else {
                         userList.add (user);
-                        ClassSession classSession =course.getClassSession();
+                        Optional<ClassSession> nullAbleClassSession =course.getClassSessionList().stream()
+                                .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
+                                .findFirst();
 
                         //add student to class
-                        if(classSession !=null){
+                        if(nullAbleClassSession.isPresent()){
+                            ClassSession classSession = nullAbleClassSession.get();
                             classSession.getUserList().add(user);
-                            classSessionService.save(classSession);
                         }
                     }
                 }
@@ -219,6 +309,16 @@ public class CourseService {
         }
     }
 
+    /**
+     * removeStudentFromCourse<br>
+     *
+     * <pre>
+     * Method will remove a student from one or many courses
+     * </pre>
+     *
+     * @param userID
+     * @param courseID
+     */
     public void removeStudentFromCourse (int userID, int courseID){
         Optional<User> nullableUser;
         User user;
@@ -282,16 +382,36 @@ public class CourseService {
                     }
                     else {
                         userList.remove (user);
+                        Optional<ClassSession> nullAbleClassSession =course.getClassSessionList().stream()
+                                .filter(item ->item.getStatus() == Constant.STATUS_ACTIVE_CLASS)
+                                .findFirst();
+
+                        //remove student to class
+                        if(nullAbleClassSession.isPresent()){
+                            ClassSession classSession = nullAbleClassSession.get();
+                            classSession.getUserList().remove(user);
+                        }
                     }
                 }
             }
         }
     }
 
+    /**
+     * getAllCourse<br>
+     *
+     * @return
+     */
     public List<Course> getAllCourse(){
         return courseRepository.findAll();
     }
 
+    /**
+     * getCourseById<br>
+     *
+     * @param courseID
+     * @return
+     */
     public Course getCourseById(Integer courseID) {
         return courseRepository.findById(courseID).orElseThrow();
     }
@@ -303,12 +423,17 @@ public class CourseService {
         }
         return nullableCourse.get();
     }
+
     @Transactional (readOnly = true)
     public DataPage<Course> getAllCourseAvailableToCreateClass(
             int pageIndex
             ,int pageSize
-            ,List<Integer> typeIds){
+            ,int spareTimeId){
 
+        SpareTimeRegister spareTimeRegister =spareTimeRegisterService.getById(spareTimeId);
+        List<Integer> courseTypeIds = spareTimeRegister.getCourseTypeList().stream()
+                .map(CourseType::getTypeID)
+                .collect(Collectors.toList());
         //validate request
         if ((pageIndex < 0) || (pageSize <= 0)) {
             throw new InvalidRequestArgumentException(
@@ -317,7 +442,6 @@ public class CourseService {
                             + "Parameter name: pageIndex, pageSize"
             );
         }
-        typeIds.forEach(typeId ->courseTypeService.getCourseTypeById(typeId));// check existed course type or not
 
         //get list
         QClassSession classSession = new QClassSession("classSession");;
@@ -326,8 +450,8 @@ public class CourseService {
 
         courseQueryResults = queryFactory
                 .selectFrom(course)
-                .leftJoin(course.classSession, classSession)
-                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(typeIds)))
+                .leftJoin(course.classSessionList, classSession)
+                .where(classSession.isNull().or(classSession.status.eq(Constant.STATUS_INACTIVE_CLASS)).and(course.courseType.typeID.in(courseTypeIds)))
                         .orderBy (course.courseName.asc ())
                         .limit (pageSize)
                         .offset (pageSize * pageIndex)
@@ -338,11 +462,23 @@ public class CourseService {
 
     }
 
+    /**
+     * getCourseByCurrentUserName<br>
+     *
+     * @param userName
+     * @return
+     */
     public List<Course> getCoursesByCurrentUserName(String userName) {
         User user = userRepository.findByUserName(userName).orElseThrow();
         return user.getCourseList();
     }
 
+    /**
+     * getCourseName<br>
+     *
+     * @param courseName
+     * @return
+     */
     public Course getCourseByName(String courseName) {
         return courseRepository.findByCourseName(courseName);
     }

@@ -9,13 +9,9 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.dal.repository_interface.UserRepository;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.LoggedInUser;
+import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.model.User;
 import com.PhanLam.backend.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -41,13 +37,12 @@ public class UserController {
     private UserService userService;
     private UserRepository userRepository;
 
-    public UserController (
+    public UserController(
             UserService userService
             , UserRepository userRepository
-    ){
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
     @GetMapping("/users")
@@ -63,24 +58,26 @@ public class UserController {
             Principal principal
             , @RequestParam int pageIndex
             , @RequestParam int pageSize
+            , @RequestParam String searchParam
     ){
         DataPage<User> userDataPage;
-        
+
         userDataPage = userService.getAllUserWithUserNameIsNot (
                 principal
                 , pageIndex
                 , pageSize
+                , searchParam
         );
         return userDataPage;
     }
-    
+
     @GetMapping ("/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudents (
             @RequestParam int pageIndex
             , @RequestParam int pageSize){
         DataPage<User> studentDataPage;
-        
+
         studentDataPage = userService.getAllStudents(pageIndex, pageSize);
         return studentDataPage;
     }
@@ -101,7 +98,7 @@ public class UserController {
         );
         return studentDataPage;
     }
-    
+
     @GetMapping ("/courses/{courseID}/students")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<User> getAllStudentAreInTheCourse (
@@ -132,7 +129,7 @@ public class UserController {
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void enableUser (
             @PathVariable int userID
-    ){
+    ) {
         userService.enableUserByID (userID);
     }
 
@@ -170,6 +167,23 @@ public class UserController {
         return user;
     }
 
+    @GetMapping("/getTeacher")
+    public List<User> listTeacher() {
+        Role teacherRole = new Role(3, "ROLE_TEACHER");
+        List<User> teacherUserList = new ArrayList<>();
+        List<User> userList = userRepository.findAll();
+        for (User user : userList) {
+            List<Role> roleList = user.getRoleList();
+            for (Role role : roleList) {
+                if (role.getRoleID() == 3) {
+                    teacherUserList.add(user);
+                    break;
+                }
+            }
+        }
+        return teacherUserList;
+    }
+
     @GetMapping("/getUsers/{userID}")
     public User showAllUserByID(
             @RequestBody User user
@@ -177,6 +191,19 @@ public class UserController {
     ){
         User showUser = userService.showInfo(user, userID);
         return showUser;
+    }
+
+    @GetMapping("/getProfile")
+    @ResponseStatus(HttpStatus.OK)
+    public User getProfile(@RequestParam(value = "userName") String userName) {
+        User user = userService.getProfileByUserName(userName);
+        return user;
+    }
+
+    @PutMapping("/updateMyProfile")
+    @ResponseStatus(HttpStatus.OK)
+    public User updateProfile(@RequestBody User user, @RequestParam(value = "userName") String userName) {
+        return userService.updateProfile(user, userName);
     }
 
     @GetMapping ("/classes/{classID}/students")

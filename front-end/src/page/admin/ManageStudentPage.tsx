@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React, { ReactElement, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
     let userAPI: UserAPI = new UserAPI();
     let typeGuardian: TypeGuard;
     let studentDataPage: DataPage<User> | undefined;
-    let [totalPageCount, setTotalPageCount] = useState<number>(0);
+    let [, setTotalPageCount] = useState<number>(0);
     let [studentHolder, setStudentHolder] = useState<User[]>([]);
     let [pageIndex] = useState<number>(0);
     let [pageSize] = useState<number>(10);
@@ -171,7 +172,7 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                             </span>
                                         </td>
                                         <td className="text-center" id="action">
-                                            <Link to="/admin-console/view-student-profile">
+                                            <Link to={`/user_detail/${item["userID"]}`}>
                                                 <button type="button"
                                                     className="btn btn-primary" id="btn_details">
                                                     <span className=
@@ -181,14 +182,14 @@ export function ManageStudentPage (props: ManageStudentPageProps): ReactElement 
                                                 </button>
                                             </Link>
                                         &nbsp;
-                                        <Link to="/editStudentInfo/studentID">
+                                            <Link to={`/admin-console/editStudentInfo/${item["userID"]}`}>
                                                 <button type="button"
                                                     className="btn btn-success" id="btn_edit">
                                                     <span className=
                                                         "fa fa-pencil mr-5">
                                                             Edit
                                                     </span>
-                                        </button>
+                                                </button>
                                             </Link>
                                         </td>
                                     </tr>

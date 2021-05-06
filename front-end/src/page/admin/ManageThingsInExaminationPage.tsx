@@ -106,10 +106,10 @@ export function ManageThingsInExaminationPage (
         examTable =
             examHolder.map (
                 (
-                        course
+                        exam
                         , index
                 ) => renderExamTable (
-                        course
+                        exam
                         , index
                 )
             );

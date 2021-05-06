@@ -13,6 +13,7 @@ import com.PhanLam.backend.dal.repository_interface.LessonRepository;
 import com.PhanLam.backend.model.Course;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Lesson;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,7 +39,7 @@ public class LessonService {
     private LessonRepository lessonRepository;
     private CourseRepository courseRepository;
 
-    public LessonService(LessonRepository lessonRepository, CourseRepository courseRepository) {
+    public LessonService(LessonRepository lessonRepository, CourseRepository courseRepository, @Lazy CourseService courseService) {
         this.lessonRepository = lessonRepository;
         this.courseRepository = courseRepository;
     }
@@ -91,6 +92,7 @@ public class LessonService {
     public DataPage<Lesson> getAllLesson (
             int pageIndex
             , int pageSize
+            , int courseId
     ){
         ArrayList<Lesson> lessonHolder;
         PageRequest pagingInformation;
@@ -109,7 +111,7 @@ public class LessonService {
                     , pageSize
                     , sortInformation
             );
-            lessonPage = lessonRepository.findByCourseID_CourseID (24, pagingInformation);
+            lessonPage = lessonRepository.findByCourseID_CourseID (courseId, pagingInformation);
             lessonHolder = new ArrayList<> (lessonPage.getContent ());
             lessonDataPage = new DataPage<> (
                     lessonPage.getTotalPages ()

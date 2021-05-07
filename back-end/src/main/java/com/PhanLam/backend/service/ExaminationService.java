@@ -457,6 +457,7 @@ public class ExaminationService {
         }
 
         // calculate averaging of each exam
+        // Map (ExamID, Score)
         Map<Integer,Double> map =studentScoreList.stream()
                 .collect(Collectors.groupingBy(i -> i.getExam().getExamID(),
                         Collectors.averagingDouble(i->i.getScore())));

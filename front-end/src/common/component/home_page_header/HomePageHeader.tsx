@@ -8,6 +8,7 @@ import './HomePageHeader.css';
 import Carousel1 from './Carousel-1.jpg';
 import Carousel2 from './Carousel-2.jpg';
 import Carousel3 from './Carousel-3.jpg';
+import Logo from './Logo.png';
 import { textSpanEnd } from "typescript";
 
 export function HomePageHeader (): ReactElement {
@@ -24,7 +25,7 @@ export function HomePageHeader (): ReactElement {
                             alt="First slide"
                         />
                         <Carousel.Caption>
-                            <h1>Welcome to Language Center</h1>
+                            <h1 style={{color:"white"}}>Welcome to Language Center</h1>
                             <p style={{textAlign:'left'}}>
                             LCS has a mission to help improve and improve foreign languages for employees, 
                             students easily get job opportunities and deeply integrate in the knowledge economy.
@@ -38,7 +39,7 @@ export function HomePageHeader (): ReactElement {
                             alt="Third slide"
                         />
                         <Carousel.Caption>
-                            <h1 style={{textAlign:'left'}}>Career Skills - Soft skills develop themselves at work</h1>
+                            <h1 style={{textAlign:'left', color:"white"}}>Career Skills - Soft skills develop themselves at work</h1>
                             <p style={{textAlign:'left'}}>
                             Giving learners 5 essential and important soft skills for employees: Study skills; 
                             Personal development skills; Communication skills; Speech skills; Leadership skills
@@ -52,7 +53,7 @@ export function HomePageHeader (): ReactElement {
                             alt="Third slide"
                         />
                         <Carousel.Caption>
-                            <h1 style={{textAlign:'left'}}>JLPT certified Japanese for student and employee</h1>
+                            <h1 style={{textAlign:'left', color:"white"}}>JLPT certified Japanese for student and employee</h1>
                             <p style={{textAlign:'left'}}>
                             Expand your opportunities for personal development by Japanese-Language Proficiency Test - JLPT
                             with a commitment to meeting the output standards with a minimum of N4
@@ -75,9 +76,15 @@ export function HomePageHeader (): ReactElement {
                                         color: 'white',
                                     }}
                     >
-                        <span style={{fontSize: 40 + 'px', verticalAlign: 'top'}} >LCS</span>
-                        {/* <span style={{fontSize:10}}>Language Center System</span> */}
-                        
+                        <img
+                            className="d-block"
+                            style = {{
+                                width: 150
+                                , height: 40
+                            }}
+                            src = {Logo}
+                            alt = "Logo"
+                        />
                     </Navbar.Brand>
                     <Nav 
                         id = "NavLinkSection" 
@@ -97,14 +104,6 @@ export function HomePageHeader (): ReactElement {
                             Contact us
                         </Nav.Link>
                     </Nav>
-                    <Form className = "d-md-inline-flex">
-                        <FormControl 
-                            type = "text" 
-                            placeholder = "Search" 
-                            className = "mr-md-2" 
-                        />
-                        <Button variant = "success">Search</Button>
-                    </Form>
                 </Navbar>
             </nav>
         </Container>

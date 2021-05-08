@@ -36,7 +36,7 @@ public class SpareTimeRegisterController {
 
         spareTimeRegisterHolder = spareTimeService.getAllSpareTime(
                 teacherId
-                , pageNumber
+                , pageNumber - 1
                 , pageSize
 
         );

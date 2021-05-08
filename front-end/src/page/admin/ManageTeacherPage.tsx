@@ -118,7 +118,7 @@ export function ManageTeacherPage(): ReactElement {
                                 Add teacher
                 </button> */}
                     <div className="row mt-15" id="table-cover" style={{
-                        marginLeft: '300px'
+                        marginLeft: '150px'
                     }}>
 
                         <div className=

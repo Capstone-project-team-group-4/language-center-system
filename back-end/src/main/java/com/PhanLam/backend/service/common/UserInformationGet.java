@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.PhanLam.backend.service;
+package com.PhanLam.backend.service.common;
 
 // Import package members section:
 import com.PhanLam.backend.dal.repository_interface.UserRepository;

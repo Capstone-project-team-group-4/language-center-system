@@ -6,7 +6,7 @@
 package com.PhanLam.backend.configuration;
 
 // Import package members section:
-import com.PhanLam.backend.service.UserInformationGet;
+import com.PhanLam.backend.service.common.UserInformationGet;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

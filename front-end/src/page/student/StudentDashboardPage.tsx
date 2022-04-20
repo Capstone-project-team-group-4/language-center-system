@@ -151,8 +151,8 @@ export function StudentDashboardPage(props: any): ReactElement {
                       <Button
                         variant="success"
                         block={true}
-                        // as={Link}
-                        // to={"/student-class-page"}
+                        as={Link}
+                        to={"/student-class-page"}
                       >
                         Student Class
                       </Button>

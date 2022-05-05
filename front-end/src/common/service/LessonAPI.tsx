@@ -30,13 +30,13 @@ export class LessonAPI {
             await this.axiosInstance.post<undefined> (
                     "/lessons"
                     , lesson
-            );            
+            );
             return Promise.resolve<undefined> (undefined);
         }
         catch (apiError: unknown){
             try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
@@ -48,10 +48,12 @@ export class LessonAPI {
     public async getAllLesson (
         pageIndex: number
         , pageSize: number
+        , courseId: number
     ): Promise<DataPage<Lesson>> {
         this.requestParameterHolder = new URLSearchParams();
         this.requestParameterHolder.set("pageIndex", pageIndex.toString());
         this.requestParameterHolder.set("pageSize", pageSize.toString());
+        this.requestParameterHolder.set("courseId", courseId.toString());
         try {
             this.serverResponse = await this.axiosInstance.get<unknown>(
                 "/lessons"
@@ -112,8 +114,8 @@ export class LessonAPI {
         }
         catch (apiError: unknown){
             try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){
@@ -131,8 +133,8 @@ export class LessonAPI {
         }
         catch (apiError: unknown){
             try {
-                this.axiosError 
-                    = await this.errorHandler.handleApiError (apiError); 
+                this.axiosError
+                    = await this.errorHandler.handleApiError (apiError);
                 return Promise.reject (this.axiosError);
             }
             catch (apiError2: unknown){

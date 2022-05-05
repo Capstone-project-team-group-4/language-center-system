@@ -9,18 +9,11 @@ package com.PhanLam.backend.controller;
 import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.Quiz;
 import com.PhanLam.backend.service.QuizService;
-import java.security.Principal;
-import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  *
@@ -28,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class QuizController {
-    
+
     // Variables declaration:
     private QuizService quizService;
 
     public QuizController (QuizService quizService){
         this.quizService = quizService;
     }
-    
+
     @PostMapping ("/quizzes")
     @ResponseStatus (HttpStatus.CREATED)
     public void createNewQuiz (
@@ -44,7 +37,7 @@ public class QuizController {
     ){
         quizService.createQuiz (quiz, principal);
     }
-    
+
     @GetMapping ("/quizzes:created-by-logged-in-user")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Quiz> getAllQuizCreatedByCurrentLoggedInUser (
@@ -53,7 +46,7 @@ public class QuizController {
             , @RequestParam int pageSize
     ){
         DataPage<Quiz> quizDataPage;
-        
+
         quizDataPage = quizService.getAllQuizByCreator (
                 principal
                 , pageIndex
@@ -61,7 +54,7 @@ public class QuizController {
         );
         return quizDataPage;
     }
-    
+
     @GetMapping ("/examinations/{examID}/quizzes")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Quiz> getAllQuizAreInTheExam (
@@ -70,15 +63,15 @@ public class QuizController {
             , @RequestParam int pageSize
     ){
         DataPage<Quiz> quizDataPage;
-        
+
         quizDataPage = quizService.getAllQuizByExamID (
                 examID
                 , pageIndex
                 , pageSize
         );
         return quizDataPage;
-    } 
-    
+    }
+
     @GetMapping ("/quizzes:excluding-quiz-in-the-exam")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<Quiz> getAllQuizExcludingQuizInTheExam (
@@ -87,7 +80,7 @@ public class QuizController {
             , @RequestParam int pageSize
     ){
         DataPage<Quiz> quizDataPage;
-        
+
         quizDataPage = quizService.getAllQuizWithExamIDIsNot (
                 examID
                 , pageIndex
@@ -95,8 +88,8 @@ public class QuizController {
         );
         return quizDataPage;
     }
-    
-    @PutMapping ("/quizzes/{questionID}") 
+
+    @PutMapping ("/quizzes/{questionID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void updateQuiz (
             @PathVariable int questionID
@@ -105,7 +98,7 @@ public class QuizController {
     ){
         quizService.updateQuiz (questionID, principal, updatedQuiz);
     }
-    
+
     @DeleteMapping ("/quizzes/{questionID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void deleteQuizByQuestionID (@PathVariable int questionID){

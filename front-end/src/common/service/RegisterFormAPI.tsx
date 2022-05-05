@@ -51,11 +51,12 @@ export class RegisterFormAPI {
 
     public async getAllCreateAccountRequest (
             pageIndex: number
-            , pageSize: number
+            , pageSize: number, searchParam: string
     ): Promise<DataPage<RegisterForm>> {
         this.requestParameterHolder = new URLSearchParams ();
         this.requestParameterHolder.set ("pageIndex", pageIndex.toString ());
         this.requestParameterHolder.set ("pageSize", pageSize.toString ());
+        this.requestParameterHolder.set ("searchParam", searchParam);
         try {
             this.serverResponse = await this.axiosInstance.get<unknown> (
                     "/register-forms"

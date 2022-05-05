@@ -10,18 +10,11 @@ import com.PhanLam.backend.model.DataPage;
 import com.PhanLam.backend.model.RegisterForm;
 import com.PhanLam.backend.model.Role;
 import com.PhanLam.backend.service.RegisterFormService;
-import java.util.List;
-import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -29,29 +22,31 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class RegisterFormController {
-    
+
     // Variables declaration:
     private RegisterFormService registerFormService;
 
     public RegisterFormController (RegisterFormService registerFormService){
         this.registerFormService = registerFormService;
     }
-    
+
     @GetMapping ("/register-forms")
     @ResponseStatus (HttpStatus.OK)
     public DataPage<RegisterForm> getAllCreateAccountRequest (
             @RequestParam int pageIndex
             , @RequestParam int pageSize
+            , @RequestParam String searchParam
     ){
         DataPage<RegisterForm> registerFormDataPage;
-        
+
         registerFormDataPage = registerFormService.getAllRegisterForm (
                 pageIndex
                 , pageSize
+                , searchParam
         );
         return registerFormDataPage;
-    } 
-    
+    }
+
     @PostMapping ("/register-forms")
     @ResponseStatus (HttpStatus.CREATED)
     public void registerNewCreateAccountRequest (
@@ -59,7 +54,7 @@ public class RegisterFormController {
     ){
         registerFormService.createRegisterForm (registerForm);
     }
-    
+
     @PatchMapping ("/register-forms/{formID}:accept")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void acceptCreateAccountRequest (
@@ -70,8 +65,8 @@ public class RegisterFormController {
                 formID
                 , newAccountRoleList
         );
-    } 
-    
+    }
+
     @DeleteMapping ("/register-forms/{formID}")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     public void rejectCreateAccountRequest (@PathVariable int formID){

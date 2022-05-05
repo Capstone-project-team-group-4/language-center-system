@@ -43,14 +43,6 @@ export function PageHeader(props: PageHeaderProps): ReactElement {
                             </Col>
                         </Row>
                     </Nav>
-                    <Form inline>
-                        <FormControl
-                            type="text"
-                            placeholder="Search"
-                            className="mr-md-2"
-                        />
-                        <Button variant="info">Search</Button>
-                    </Form>
                 </Navbar>
             </nav>
         </Container>

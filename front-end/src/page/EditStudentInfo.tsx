@@ -60,7 +60,7 @@ export function EditStudentInfo(): ReactElement {
                 <Form
                     noValidate={false}
                     onSubmit={(event) => {
-                        updateStudent(event, param.userID);
+                        updateStudent(event, param.studentID);
                     }}
                     className="wrapper"
                 >
@@ -78,7 +78,7 @@ export function EditStudentInfo(): ReactElement {
                                 autoFocus={true}
                                 name="userName"
                                 id="userName"
-                                pattern="^[\p{L} .'-]+$"
+                                pattern="^[\p{L}\p{N} .'-]+$"
                                 value={user.userName}
                                 required={true}
                                 spellCheck={false}
@@ -220,12 +220,12 @@ export function EditStudentInfo(): ReactElement {
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={handleClose} block={true}>
+                        <Button variant="primary" type="submit" onClick={handleClose} block={true}>
                             Save Changes
-                                                        </Button>
-                        <Button variant="secondary" onClick={handleClose} type="submit" block={true}>
+                        </Button>
+                        <Button variant="secondary" onClick={handleClose}  block={true}>
                             Close
-                                                        </Button>
+                        </Button>
                     </Modal.Footer>
                 </Form>
             </Modal>

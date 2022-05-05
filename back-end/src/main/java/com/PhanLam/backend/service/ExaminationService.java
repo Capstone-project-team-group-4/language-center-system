@@ -6,29 +6,17 @@
 package com.PhanLam.backend.service;
 
 // Import package members section:
+
+import com.PhanLam.backend.controller.DTO.ChartResponse;
 import com.PhanLam.backend.controller.exception.ForbiddenActionException;
 import com.PhanLam.backend.controller.exception.InvalidRequestArgumentException;
 import com.PhanLam.backend.controller.exception.NotFoundException;
-import com.PhanLam.backend.dal.repository_interface.CourseRepository;
-import com.PhanLam.backend.dal.repository_interface.ExaminationRepository;
-import com.PhanLam.backend.dal.repository_interface.MultipleChoiceQuestionRepository;
-import com.PhanLam.backend.dal.repository_interface.UserRepository;
-import com.PhanLam.backend.model.Course;
-import com.PhanLam.backend.model.DataPage;
-import com.PhanLam.backend.model.Examination;
-import com.PhanLam.backend.model.MultipleChoiceQuestion;
-import com.PhanLam.backend.model.QCourse;
-import com.PhanLam.backend.model.QExamination;
-import com.PhanLam.backend.model.QUser;
-import com.PhanLam.backend.model.Role;
-import com.PhanLam.backend.model.User;
+import com.PhanLam.backend.dal.repository_interface.*;
+import com.PhanLam.backend.model.*;
 import com.PhanLam.backend.service.common.QueryFactoryGet;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.security.Principal;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,6 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author Phan Lam
@@ -44,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional (propagation = Propagation.REQUIRES_NEW, readOnly = false)
 public class ExaminationService {
-    
+
     // Variables declaration:
     private CourseRepository courseRepository;
     private ExaminationRepository examRepository;
@@ -52,6 +44,8 @@ public class ExaminationService {
     private UserRepository userRepository;
     private QueryFactoryGet queryFactoryGetter;
     private JPAQueryFactory queryFactory;
+    private UserService userService;
+    private StudentScoreRepository studentScoreRepository;
 
     public ExaminationService (
             CourseRepository courseRepository
@@ -59,19 +53,23 @@ public class ExaminationService {
             , MultipleChoiceQuestionRepository questionRepository
             , UserRepository userRepository
             , QueryFactoryGet queryFactoryGetter
+            , @Lazy StudentScoreRepository studentScoreRepository
+            , @Lazy UserService userService
     ){
         this.courseRepository = courseRepository;
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.queryFactoryGetter = queryFactoryGetter;
+        this.studentScoreRepository = studentScoreRepository;
+        this.userService = userService;
     }
 
     public void createExamInCourse (int courseID, Examination exam){
         Optional<Course> nullableCourse;
         Course course;
         Date dateCreated;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -84,7 +82,7 @@ public class ExaminationService {
             examRepository.save (exam);
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<Examination> getAllExam (
             int pageIndex
@@ -97,10 +95,10 @@ public class ExaminationService {
         Page<Examination> examPage;
         long totalRowCount;
         DataPage<Examination> examDataPage;
-        
+
         if ((pageIndex >= 0) && (pageSize > 0)){
             examSortInformation = Sort.sort (Examination.class);
-            sortInformation 
+            sortInformation
                 = examSortInformation
                     .by (Examination::getStartTime).ascending ();
             pagingInformation = PageRequest.of (
@@ -117,12 +115,12 @@ public class ExaminationService {
         else {
             throw new InvalidRequestArgumentException (
                     "The page index number and page size number parameters "
-                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "cannot be less than zero." + System.lineSeparator ()
                     + "Parameter name: pageIndex, pageSize"
             );
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<Examination> getAllExamByCourseID (
             int courseID
@@ -138,7 +136,7 @@ public class ExaminationService {
         long totalRowCount;
         List<Examination> examHolder;
         DataPage<Examination> examDataPage;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -147,7 +145,7 @@ public class ExaminationService {
             if ((pageIndex >= 0) && (pageSize > 0)){
                 course = nullableCourse.get ();
                 examSortInformation = Sort.sort (Examination.class);
-                sortInformation 
+                sortInformation
                     = examSortInformation
                         .by (Examination::getStartTime).ascending ();
                 pagingInformation = PageRequest.of (
@@ -167,13 +165,13 @@ public class ExaminationService {
             else {
                 throw new InvalidRequestArgumentException (
                         "The page index number and page size number parameters "
-                        + "cannot be less than zero." + System.lineSeparator () 
+                        + "cannot be less than zero." + System.lineSeparator ()
                         + "Parameter name: pageIndex, pageSize"
                 );
             }
         }
     }
-    
+
     @Transactional (readOnly = true)
     public DataPage<Examination> getAllExamByStudentID (
             Principal principal
@@ -191,13 +189,13 @@ public class ExaminationService {
         QExamination exam;
         QCourse course;
         QUser student;
-        int userID;  
+        int userID;
         long totalRowCount;
         List<Examination> examHolder;
         DataPage<Examination> examDataPage;
         int examID;
         int totalNumberOfQuiz;
-     
+
         if ((pageIndex >= 0) && (pageSize > 0)){
             userName = principal.getName ();
             nullableUser = userRepository.findByUserName (userName);
@@ -245,12 +243,12 @@ public class ExaminationService {
         else {
             throw new InvalidRequestArgumentException (
                     "The page index number and page size number parameters "
-                    + "cannot be less than zero." + System.lineSeparator () 
+                    + "cannot be less than zero." + System.lineSeparator ()
                     + "Parameter name: pageIndex, pageSize"
             );
         }
     }
-    
+
     public void updateExamInCourse (
             int courseID
             , int examID
@@ -261,7 +259,7 @@ public class ExaminationService {
         boolean examExists;
         boolean examExistsInTheCourse;
         Date lastModified;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -273,7 +271,7 @@ public class ExaminationService {
                 throw new NotFoundException ("Examination");
             }
             else {
-                examExistsInTheCourse 
+                examExistsInTheCourse
                     = examRepository.existsByCourseAndExamID (
                             course
                             , examID
@@ -281,7 +279,7 @@ public class ExaminationService {
                 if (examExistsInTheCourse == false){
                     throw new InvalidRequestArgumentException (
                             "This examination does not exist in the course so "
-                            + "you can't update it." + System.lineSeparator () 
+                            + "you can't update it." + System.lineSeparator ()
                             + "Parameter name: courseID, examID"
                     );
                 }
@@ -293,14 +291,14 @@ public class ExaminationService {
             }
         }
     }
-    
+
     @Transactional (readOnly = true)
     public int getTotalCountOfQuizInExam (int examID){
         Optional<Examination> nullableExam;
         Examination exam;
         List<MultipleChoiceQuestion> questionHolder;
         int totalCountOfQuiz;
-        
+
         nullableExam = examRepository.findById (examID);
         if (nullableExam.isPresent () == false){
             throw new NotFoundException ("Examination");
@@ -308,11 +306,11 @@ public class ExaminationService {
         else {
             exam = nullableExam.get ();
             questionHolder = exam.getMultipleChoiceQuestionList ();
-            totalCountOfQuiz = questionHolder.size (); 
+            totalCountOfQuiz = questionHolder.size ();
             return totalCountOfQuiz;
         }
     }
-    
+
     public void addQuizToExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
@@ -322,7 +320,7 @@ public class ExaminationService {
         boolean alreadyExistsInTheExam;
         int i;
         MultipleChoiceQuestion questionInTheExam;
-        
+
         nullableQuestion = questionRepository.findById (questionID);
         if (nullableQuestion.isPresent () == false){
             throw new NotFoundException ("Quiz");
@@ -350,8 +348,8 @@ public class ExaminationService {
                     throw new InvalidRequestArgumentException (
                             "This exam question has already existed "
                             + "in the exam please add an exam question "
-                            + "which is not in the exam." 
-                            + System.lineSeparator () 
+                            + "which is not in the exam."
+                            + System.lineSeparator ()
                             + "Parameter name: questionID, examID"
                     );
                 }
@@ -361,7 +359,7 @@ public class ExaminationService {
             }
         }
     }
-    
+
     public void removeQuizFromExam (int questionID, int examID){
         Optional<MultipleChoiceQuestion> nullableQuestion;
         MultipleChoiceQuestion question;
@@ -371,7 +369,7 @@ public class ExaminationService {
         boolean existsInTheExam;
         int i;
         MultipleChoiceQuestion questionInTheExam;
-        
+
         nullableQuestion = questionRepository.findById (questionID);
         if (nullableQuestion.isPresent () == false){
             throw new NotFoundException ("Quiz");
@@ -399,8 +397,8 @@ public class ExaminationService {
                     throw new InvalidRequestArgumentException (
                             "This exam question no longer exists "
                             + "in the exam please remove an exam question "
-                            + "which is still in the exam." 
-                            + System.lineSeparator () 
+                            + "which is still in the exam."
+                            + System.lineSeparator ()
                             + "Parameter name: questionID, examID"
                     );
                 }
@@ -410,14 +408,14 @@ public class ExaminationService {
             }
         }
     }
-    
+
     public void deleteExamInCourse (int courseID, int examID){
         Optional<Course> nullableCourse;
         Course course;
         Optional<Examination> nullableExam;
-        Examination exam; 
+        Examination exam;
         boolean examExistsInTheCourse;
-        
+
         nullableCourse = courseRepository.findById (courseID);
         if (nullableCourse.isPresent () == false){
             throw new NotFoundException ("Course");
@@ -430,7 +428,7 @@ public class ExaminationService {
             }
             else {
                 exam = nullableExam.get ();
-                examExistsInTheCourse 
+                examExistsInTheCourse
                     = examRepository.existsByCourseAndExamID (
                             course
                             , examID
@@ -438,7 +436,7 @@ public class ExaminationService {
                 if (examExistsInTheCourse == false){
                     throw new InvalidRequestArgumentException (
                             "This examination does not exist in the course so "
-                            + "you can't delete it." + System.lineSeparator () 
+                            + "you can't delete it." + System.lineSeparator ()
                             + "Parameter name: courseID, examID"
                     );
                 }
@@ -447,5 +445,30 @@ public class ExaminationService {
                 }
             }
         }
+    }
+    public List<ChartResponse> examScoresForChart(Integer studentId){
+        List<ChartResponse> chartResponseList;
+        List<StudentScore> studentScoreList;
+        if (studentId == null) {
+            studentScoreList = studentScoreRepository.findAll();
+        } else {
+            User user = userService.getById(studentId);
+            studentScoreList = studentScoreRepository.findAllByUser(user);
+        }
+
+        // calculate averaging of each exam
+        // Map (ExamID, Score)
+        Map<Integer,Double> map =studentScoreList.stream()
+                .collect(Collectors.groupingBy(i -> i.getExam().getExamID(),
+                        Collectors.averagingDouble(i->i.getScore())));
+
+        // convert to list chartResponse
+        chartResponseList = map.entrySet()
+                .stream()
+                .map(m->new ChartResponse(m.getKey(), m.getValue()))
+                .sorted(Comparator.comparing(i->(Integer)i.getValueX()))
+                .collect(Collectors.toList());
+        return chartResponseList;
+
     }
 }
